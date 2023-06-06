@@ -1,0 +1,8 @@
+[workspace]
+
+members = [
+    "sound_floats",
+]
+
+[profile.release]
+panic = "abort"
