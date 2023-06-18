@@ -3,7 +3,7 @@
 //! zero overhead :everything is checked at compile time.
 //! (only `try_from` adds a little overhead at runtime)
 //!
-//! `NaN` is rehected by all types.
+//! `NaN` is rejected by all types.
 //!
 //! The types provided by this crate are:
 //! - `NonNaN`,`NonNaNFinite`, `NonZeroNonNaN`, `NonZeroNonNaNFinite`
