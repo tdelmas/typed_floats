@@ -1,15 +1,16 @@
 [package]
-name = "sound_floats"
+name = "typed_floats"
 version = "0.1.0"
 edition = "2021"
+license = "MIT OR Apache-2.0"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-aquamarine = "0.3.2"
 serde = { version = "1.0", features = ["derive"], optional = true }
 serde_json = { version = "1.0"}
-generate_sound_floats = { path = "../generate_sound_floats" }
+thiserror = "1.0"
+typed_floats_macros = { version = "0.1.0", path = "../typed_floats_macros" }
 
 [features]
 serde = ["dep:serde"]

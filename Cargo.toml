@@ -1,7 +1,8 @@
 [workspace]
 
 members = [
-    "sound_floats",
+    "typed_floats",
+    "typed_floats_macros",
 ]
 
 [profile.release]
