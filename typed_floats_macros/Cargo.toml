@@ -9,6 +9,6 @@ description = "Crate only used to generate the `typed_floats` crate."
 proc-macro = true
 
 [dependencies]
-quote = "*"
-syn = { version = "*", features = ["extra-traits"] }
-proc-macro2 = "*"
+quote = "1.0"
+syn = { version = "2.0", features = ["extra-traits"] }
+proc-macro2 = "1.0"
