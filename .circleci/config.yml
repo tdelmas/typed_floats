@@ -12,7 +12,7 @@ jobs:
     resource_class: arm.medium
     steps:
       - checkout
-      - run: curl --proto '=https' --tlsv1.3 https://sh.rustup.rs -sSf | sh
+      - run: curl https://sh.rustup.rs -sSf | sh -s -- -y
       - run: cargo test
 
 workflows:
