@@ -4,4 +4,16 @@ jobs:
       - image: cimg/rust:1.70.0
     steps:
       - checkout
+      - run: cargo build
+  test:
+    docker:
+      - image: cimg/rust:1.70.0
+    steps:
+      - checkout
       - run: cargo test
+
+workflows:
+  build_and_test:
+    jobs:
+      - build
+      - test
