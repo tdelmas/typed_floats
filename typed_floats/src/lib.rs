@@ -309,4 +309,25 @@ mod tests {
             }
         }
     }
+
+    #[cfg(feature = "serde")]
+    #[test]
+    fn test_serde() {
+        let map = serde_json::json!({
+            "a": 1.0,
+        });
+
+        #[derive(Serialize)]
+        struct A {
+            a: NonNaN,
+        }
+
+        let a = A {
+            a: NonNaN::try_from(1.0).unwrap(),
+        };
+
+        let a_json = serde_json::to_value(a).unwrap();
+
+        assert_eq!(a_json, map);
+    }
 }
