@@ -6,18 +6,22 @@
 //! `NaN` is rejected by all types.
 //!
 //! The types provided by this crate are:
-//! - `NonNaN`,`NonNaNFinite`, `NonZeroNonNaN`, `NonZeroNonNaNFinite`
+//! - [`NonNaN`],[`NonNaNFinite`], [`NonZeroNonNaN`], [`NonZeroNonNaNFinite`]
 //! Their positive and negative counterparts:
-//! - `Positive`,`PositiveFinite`, `StrictlyPositive`, `StrictlyPositiveFinite`
-//! - `Negative`,`NegativeFinite`, `StrictlyNegative`, `StrictlyNegativeFinite`
+//! - [`Positive`],[`PositiveFinite`], [`StrictlyPositive`], [`StrictlyPositiveFinite`]
+//! - [`Negative`],[`NegativeFinite`], [`StrictlyNegative`], [`StrictlyNegativeFinite`]
 //!
-//! By default all types are `f64` but you can use the `f32` like `Positive<f32>`.
+//! By default all types are [`f64`] but you can use the [`f32`] like `Positive<f32>`.
 //!
 //! The following conversions are implemented:
 //! - Between all the types of this crate
-//! - From `f64`
-//! - From integers types (expect `u128` and `i128`)
-//! - From `NonZero*`
+//! - From [`f64`]
+//! - From integers types (expect [`u128`] and [`i128`])
+//! - From [`NonZeroUsize`](core::num::NonZeroUsize) and others `NonZero*`
+//!
+//! # Rules
+//!
+//! Non-trivial conversions rules for operations are summarized in [`Float`].
 //!
 //! # Examples
 //!
@@ -81,14 +85,13 @@
 #![warn(clippy::unwrap_used)]
 #![warn(clippy::unwrap_in_result)]
 #![warn(clippy::indexing_slicing)]
+typed_floats_macros::generate_floats!();
 
 #[cfg(feature = "serde")]
 use serde::Serialize;
 
 use core::num::{NonZeroI16, NonZeroI32, NonZeroI64, NonZeroI8};
 use core::num::{NonZeroU16, NonZeroU32, NonZeroU64, NonZeroU8};
-
-use typed_floats_macros::generate_floats;
 
 use thiserror::Error;
 
@@ -106,8 +109,6 @@ pub enum InvalidNumber {
     Infinite,
 }
 
-generate_floats!();
-
 pub const INFINITY: StrictlyPositive = StrictlyPositive(f64::INFINITY);
 pub const NEG_INFINITY: StrictlyNegative = StrictlyNegative(f64::NEG_INFINITY);
 pub const MAX: StrictlyPositiveFinite = StrictlyPositiveFinite(f64::MAX);
@@ -121,167 +122,7 @@ mod tests {
 
     use crate::*;
 
-    macro_rules! test_one {
-        ($values:ident,$T:ty) => {
-            for a in $values.iter() {
-                let a = <$T>::try_from(*a);
-
-                match a {
-                    Ok(num_a) => {
-                        println!("num={:?}", num_a);
-                        println!("neg={:?}", -num_a);
-                        println!("abs={:?}", num_a.abs());
-                    }
-                    Err(_) => {}
-                }
-            }
-        };
-    }
-
-    macro_rules! assert_eq_nan {
-        ($a:expr, $b:expr, $($arg:tt)+ ) => {
-            let a_is_nan = $a != $a;
-            let b_is_nan = $b != $b;
-
-            assert_eq!(a_is_nan, b_is_nan, $($arg)+);
-
-            if (!a_is_nan && !b_is_nan) {
-                assert_eq!($a, $b, $($arg)+);
-            }
-        };
-    }
-
-    macro_rules! assert_is_smalest_container {
-        ($vec:expr) => {
-            //let smallest_container =
-            //if found smaller container that can handle all the values, ok.
-            0;
-        };
-    }
-
-    macro_rules! test_all {
-        ($values:ident,$T:ty,$U:ty) => {
-            let mut adds = Vec::new();
-
-            for a in $values.iter() {
-                let a = <$T>::try_from(*a);
-
-                match a {
-                    Ok(num_a) => {
-                        for b in $values.iter() {
-                            let b = <$U>::try_from(*b);
-
-                            match b {
-                                Ok(num_b) => {
-                                    println!("a={:?}", num_a);
-                                    println!("b={:?}", num_b);
-
-                                    let add = num_a + num_b;
-                                    adds.push(add);
-
-                                    println!("a+b={:?}", add);
-                                    println!("a-b={:?}", num_a - num_b);
-                                    println!("a*b={:?}", num_a * num_b);
-                                    println!("a/b={:?}", num_a / num_b);
-                                    println!("a%b={:?}", num_a % num_b);
-
-                                    assert_eq_nan!(
-                                        num_a + num_b,
-                                        num_b + num_a,
-                                        "{} + {} != {} + {}",
-                                        num_a,
-                                        num_b,
-                                        num_b,
-                                        num_a
-                                    );
-                                    assert_eq_nan!(
-                                        num_a * num_b,
-                                        num_b * num_a,
-                                        "{} * {} != {} * {}",
-                                        num_a,
-                                        num_b,
-                                        num_b,
-                                        num_a
-                                    );
-                                }
-                                Err(_) => {}
-                            }
-                        }
-                    }
-                    Err(_) => {}
-                }
-            }
-
-            assert_is_smalest_container!(adds)
-        };
-    }
-
-    macro_rules! impl_for_one {
-        ($values:ident,$($name:ty,)*) => {
-            $(
-                test_one!($values, $name);
-            )*
-        };
-    }
-
-    macro_rules! impl_for_all {
-        ($values:ident,$($name:ty,)*) => {
-            $(
-                test_all!($values, $name, NonNaN);
-            )*
-        };
-    }
-
-    #[test]
-    fn test_all() {
-        let values = [
-            f64::NAN,
-            f64::INFINITY,
-            f64::NEG_INFINITY,
-            f64::MAX,
-            f64::MIN,
-            f64::MIN_POSITIVE,
-            -f64::MIN_POSITIVE,
-            0.0f64,
-            -0.0f64,
-            1.0,
-            2.0,
-            -1.0,
-            -2.0,
-        ];
-
-        impl_for_one!(
-            values,
-            NonNaN,
-            NonZeroNonNaN,
-            NonNaNFinite,
-            NonZeroNonNaNFinite,
-            Positive,
-            Negative,
-            StrictlyPositive,
-            StrictlyNegative,
-            StrictlyNegativeFinite,
-            StrictlyPositiveFinite,
-            NegativeFinite,
-            PositiveFinite,
-        );
-
-        impl_for_all!(
-            values,
-            NonNaN,
-            NonZeroNonNaN,
-            NonNaNFinite,
-            NonZeroNonNaNFinite,
-            Positive,
-            Negative,
-            StrictlyPositive,
-            StrictlyNegative,
-            StrictlyNegativeFinite,
-            StrictlyPositiveFinite,
-            NegativeFinite,
-            PositiveFinite,
-        );
-    }
+    typed_floats_macros::generate_tests!();
 
     #[test]
     fn test_others() {

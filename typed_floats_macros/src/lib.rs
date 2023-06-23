@@ -23,26 +23,6 @@ struct FloatDefinition {
 }
 
 impl FloatDefinition {
-    const fn new(
-        name: &'static str,
-        float_type: &'static str,
-        accept_inf: bool,
-        accept_zero: bool,
-        accept_positive: bool,
-        accept_negative: bool,
-    ) -> Self {
-        Self {
-            name,
-            float_type,
-            s: FloatSpecifications {
-                accept_inf,
-                accept_zero,
-                accept_positive,
-                accept_negative,
-            },
-        }
-    }
-
     fn name_ident(&self) -> Ident {
         Ident::new(self.name, Span::call_site())
     }
@@ -66,57 +46,303 @@ impl FloatDefinition {
     }
 }
 
+fn get_specifications() -> Vec<(&'static str, FloatSpecifications)> {
+    vec![
+        (
+            "NonNaN",
+            FloatSpecifications {
+                accept_inf: true,
+                accept_zero: true,
+                accept_positive: true,
+                accept_negative: true,
+            },
+        ),
+        (
+            "NonZeroNonNaN",
+            FloatSpecifications {
+                accept_inf: true,
+                accept_zero: false,
+                accept_positive: true,
+                accept_negative: true,
+            },
+        ),
+        (
+            "NonNaNFinite",
+            FloatSpecifications {
+                accept_inf: false,
+                accept_zero: true,
+                accept_positive: true,
+                accept_negative: true,
+            },
+        ),
+        (
+            "NonZeroNonNaNFinite",
+            FloatSpecifications {
+                accept_inf: false,
+                accept_zero: false,
+                accept_positive: true,
+                accept_negative: true,
+            },
+        ),
+        (
+            "Positive",
+            FloatSpecifications {
+                accept_inf: true,
+                accept_zero: true,
+                accept_positive: true,
+                accept_negative: false,
+            },
+        ),
+        (
+            "Negative",
+            FloatSpecifications {
+                accept_inf: true,
+                accept_zero: true,
+                accept_positive: false,
+                accept_negative: true,
+            },
+        ),
+        (
+            "PositiveFinite",
+            FloatSpecifications {
+                accept_inf: false,
+                accept_zero: true,
+                accept_positive: true,
+                accept_negative: false,
+            },
+        ),
+        (
+            "NegativeFinite",
+            FloatSpecifications {
+                accept_inf: false,
+                accept_zero: true,
+                accept_positive: false,
+                accept_negative: true,
+            },
+        ),
+        (
+            "StrictlyPositive",
+            FloatSpecifications {
+                accept_inf: true,
+                accept_zero: false,
+                accept_positive: true,
+                accept_negative: false,
+            },
+        ),
+        (
+            "StrictlyNegative",
+            FloatSpecifications {
+                accept_inf: true,
+                accept_zero: false,
+                accept_positive: false,
+                accept_negative: true,
+            },
+        ),
+        (
+            "StrictlyPositiveFinite",
+            FloatSpecifications {
+                accept_inf: false,
+                accept_zero: false,
+                accept_positive: true,
+                accept_negative: false,
+            },
+        ),
+        (
+            "StrictlyNegativeFinite",
+            FloatSpecifications {
+                accept_inf: false,
+                accept_zero: false,
+                accept_positive: false,
+                accept_negative: true,
+            },
+        ),
+    ]
+}
+
+fn get_definitions(float_type: &'static str) -> Vec<FloatDefinition> {
+    let specifications = get_specifications();
+
+    specifications
+        .iter()
+        .map(|specification| FloatDefinition {
+            name: specification.0,
+            float_type,
+            s: specification.1.clone(),
+        })
+        .collect::<Vec<_>>()
+}
+
 #[proc_macro]
 pub fn generate_floats(_input: proc_macro::TokenStream) -> proc_macro::TokenStream {
+    let floats_f64 = get_definitions("f64");
+    let floats_f32 = get_definitions("f32");
+
     let mut output = proc_macro2::TokenStream::new();
 
-    output.extend(do_generate_floats("f64", true));
-    output.extend(do_generate_floats("f32", false));
+    output.extend(comment_line(
+        "/// When the result is [`f64`], it may be `NaN`.",
+    ));
+    output.extend(generate_op_table(&floats_f64, "+"));
+    output.extend(generate_op_table(&floats_f64, "-"));
+    output.extend(generate_op_table(&floats_f64, "%"));
+    output.extend(generate_op_table(&floats_f64, "/"));
+    output.extend(quote! {
+        pub trait Float {}
+    });
+
+    output.extend(do_generate_floats(&floats_f64, true));
+    output.extend(do_generate_floats(&floats_f32, false));
 
     output.into()
 }
 
-fn do_generate_floats(float_type: &'static str, with_generic: bool) -> proc_macro2::TokenStream {
+#[proc_macro]
+pub fn generate_tests(_input: proc_macro::TokenStream) -> proc_macro::TokenStream {
+    let floats_f64 = get_definitions("f64");
+
     let mut output = proc_macro2::TokenStream::new();
 
-    let floats = [
-        FloatDefinition::new("NonNaN", float_type, true, true, true, true),
-        FloatDefinition::new("NonZeroNonNaN", float_type, true, false, true, true),
-        FloatDefinition::new("NonNaNFinite", float_type, false, true, true, true),
-        FloatDefinition::new("NonZeroNonNaNFinite", float_type, false, false, true, true),
-        FloatDefinition::new("Positive", float_type, true, true, true, false),
-        FloatDefinition::new("Negative", float_type, true, true, false, true),
-        FloatDefinition::new("PositiveFinite", float_type, false, true, true, false),
-        FloatDefinition::new("NegativeFinite", float_type, false, true, false, true),
-        FloatDefinition::new("StrictlyPositive", float_type, true, false, true, false),
-        FloatDefinition::new("StrictlyNegative", float_type, true, false, false, true),
-        FloatDefinition::new(
-            "StrictlyPositiveFinite",
-            float_type,
-            false,
-            false,
-            true,
-            false,
-        ),
-        FloatDefinition::new(
-            "StrictlyNegativeFinite",
-            float_type,
-            false,
-            false,
-            false,
-            true,
-        ),
-    ];
+    let float_type = floats_f64[0].float_type_ident();
 
-    for float in &floats {
+    for float_a in &floats_f64 {
+        let full_type_a = float_a.full_type_ident();
+
+        output.extend(quote! {
+            for a in values.iter() {
+                let a = <#full_type_a>::try_from(*a);
+
+                println!("a = {:?}", a);
+                match a {
+                    Ok(num_a) => {
+                        println!("num={:?}", num_a);
+                        println!("neg={:?}", -num_a);
+                        println!("abs={:?}", num_a.abs());
+                    }
+                    Err(_) => {}
+                }
+            }
+        });
+
+        for float_b in &floats_f64 {
+            let full_type_b = float_b.full_type_ident();
+
+            output.extend(quote! {
+                for a in values.iter() {
+
+                    for b in values.iter() {
+                        println!("a = {:?} b = {:?}", a, b);
+                        let a = <#full_type_a>::try_from(*a);
+                        let b = <#full_type_b>::try_from(*b);
+                        println!("a = {:?} b = {:?}", a, b);
+
+
+                        match (a, b) {
+                            (Ok(num_a), Ok(num_b)) => {
+                                println!("{:?} + {:?} = {:?}", num_a, num_b, num_a + num_b);
+                                println!("{:?} - {:?} = {:?}", num_a, num_b, num_a - num_b);
+                                println!("{:?} * {:?} = {:?}", num_a, num_b, num_a * num_b);
+                                println!("{:?} / {:?} = {:?}", num_a, num_b, num_a / num_b);
+                                println!("{:?} % {:?} = {:?}", num_a, num_b, num_a % num_b);
+                            }
+                            _ => {}
+                        }
+                    }
+                }
+            });
+        }
+    }
+
+    quote! {
+        #[test]
+        fn test_floats() {
+
+            let values = [
+                #float_type::NAN,
+                #float_type::INFINITY,
+                #float_type::NEG_INFINITY,
+                #float_type::MAX,
+                #float_type::MIN,
+                #float_type::MIN_POSITIVE,
+                -#float_type::MIN_POSITIVE,
+                0.0,
+                -0.0,
+                1.0,
+                2.0,
+                -1.0,
+                -2.0,
+            ];
+
+            #output
+        }
+    }
+    .into()
+}
+
+fn comment_line(str: &str) -> proc_macro2::TokenStream {
+    str.parse().unwrap()
+}
+
+fn generate_op_table(floats: &[FloatDefinition], op: &str) -> proc_macro2::TokenStream {
+    let mut output = proc_macro2::TokenStream::new();
+
+    let mut str: String = format!("/// |  {op}  |");
+    for rhs in floats {
+        str += format!(" {rhs_name} |", rhs_name = rhs.name).as_str();
+    }
+    str += "\n";
+
+    output.extend(comment_line(&str));
+
+    let mut str: String = "/// |-|".to_string();
+    for _ in floats {
+        str += "-|";
+    }
+    str += "\n";
+
+    output.extend(comment_line(&str));
+
+    for float in floats {
+        let name = float.name;
+        let float_type = float.float_type;
+
+        let mut str: String = format!("/// {name} | ").to_string();
+
+        for rhs in floats {
+            let result = match op {
+                "+" => add_result(&float.s, &rhs.s, floats),
+                "-" => sub_result(&float.s, &rhs.s, floats),
+                "%" => rem_result(&float.s, &rhs.s, floats),
+                "/" => div_result(&float.s, &rhs.s, floats),
+                _ => panic!("Unknown op {}", op),
+            };
+
+            let result_str = match result {
+                Some(result) => result.name,
+                None => float_type,
+            };
+            str += format!(" {result_str} |").as_str();
+        }
+
+        output.extend(comment_line(&str));
+    }
+
+    output.extend(comment_line("///\n"));
+
+    output
+}
+
+fn do_generate_floats(floats: &[FloatDefinition], with_generic: bool) -> proc_macro2::TokenStream {
+    let mut output = proc_macro2::TokenStream::new();
+
+    for float in floats {
         let name = float.name_ident();
         let float_type = float.float_type_ident();
         let full_type = float.full_type_ident();
 
         if with_generic {
             output.extend(quote! {
+                //#[cfg_attr(feature = "serde", derive(Serialize))]
                 #[derive(Debug, Copy, Clone)]
-                #[cfg_attr(feature = "serde", derive(Serialize))]
                 pub struct #name<T=#float_type>(T);
             });
         }
@@ -140,11 +366,11 @@ fn do_generate_floats(float_type: &'static str, with_generic: bool) -> proc_macr
                     Self(value)
                 }
 
-                /*#[inline]
+                #[inline]
                 #[must_use]
-                pub fn new(value: #float_type) -> Self {
+                pub fn new(value: #float_type) -> Result<Self, InvalidNumber> {
                     Self::try_from(value)
-                }*/
+                }
 
                 #[inline]
                 #[must_use]
@@ -199,24 +425,24 @@ fn do_generate_floats(float_type: &'static str, with_generic: bool) -> proc_macr
         output.extend(generate_try_ints(float));
     }
 
-    for float_a in &floats {
-        for float_b in &floats {
+    for float_a in floats {
+        for float_b in floats {
             if float_a.name != float_b.name {
                 output.extend(impl_from_or_try_from(float_a, float_b));
             }
         }
     }
 
-    for float_a in &floats {
-        output.extend(impl_neg(float_a, &floats));
-        output.extend(impl_abs(float_a, &floats));
+    for float_a in floats {
+        output.extend(impl_neg(float_a, floats));
+        output.extend(impl_abs(float_a, floats));
 
-        for float_b in &floats {
-            output.extend(impl_add(float_a, float_b, &floats));
-            output.extend(impl_sub(float_a, float_b, &floats));
-            output.extend(impl_mul(float_a, float_b, &floats));
-            output.extend(impl_div(float_a, float_b, &floats));
-            output.extend(impl_rem(float_a, float_b, &floats));
+        for float_b in floats {
+            output.extend(impl_add(float_a, float_b, floats));
+            output.extend(impl_sub(float_a, float_b, floats));
+            output.extend(impl_mul(float_a, float_b, floats));
+            output.extend(impl_div(float_a, float_b, floats));
+            output.extend(impl_rem(float_a, float_b, floats));
         }
     }
 
@@ -378,14 +604,11 @@ const fn can_fit_into(from: &FloatSpecifications, to: &FloatSpecifications) -> b
         && (!from.accept_negative || to.accept_negative)
 }
 
-fn impl_add(
-    float_a: &FloatDefinition,
-    float_b: &FloatDefinition,
+fn add_result(
+    spec_a: &FloatSpecifications,
+    spec_b: &FloatSpecifications,
     floats: &[FloatDefinition],
-) -> proc_macro2::TokenStream {
-    let spec_a = &float_a.s;
-    let spec_b = &float_b.s;
-
+) -> Option<FloatDefinition> {
     let can_sign_be_different = (spec_a.accept_negative && spec_b.accept_positive)
         || (spec_a.accept_positive && spec_b.accept_negative);
     let can_sign_be_same = (spec_a.accept_negative && spec_b.accept_negative)
@@ -402,7 +625,7 @@ fn impl_add(
 
     let can_be_nan = can_add_inf_and_negative_inf;
 
-    let output = match can_be_nan {
+    match can_be_nan {
         true => None,
         false => {
             let spec = FloatSpecifications {
@@ -414,21 +637,26 @@ fn impl_add(
 
             find_float(&spec, floats)
         }
-    };
+    }
+}
+
+fn impl_add(
+    float_a: &FloatDefinition,
+    float_b: &FloatDefinition,
+    floats: &[FloatDefinition],
+) -> proc_macro2::TokenStream {
+    let output = add_result(&float_a.s, &float_b.s, floats);
 
     let op = quote! { self.get() + rhs.get() };
 
     impl_op_rhs(float_a, float_b, &output, &op, "Add", "add")
 }
 
-fn impl_sub(
-    float_a: &FloatDefinition,
-    float_b: &FloatDefinition,
+fn sub_result(
+    spec_a: &FloatSpecifications,
+    spec_b: &FloatSpecifications,
     floats: &[FloatDefinition],
-) -> proc_macro2::TokenStream {
-    let spec_a = &float_a.s;
-    let spec_b = &float_b.s;
-
+) -> Option<FloatDefinition> {
     let can_sign_be_different = (spec_a.accept_negative && spec_b.accept_positive)
         || (spec_a.accept_positive && spec_b.accept_negative);
     let can_sign_be_same = (spec_a.accept_negative && spec_b.accept_negative)
@@ -440,7 +668,7 @@ fn impl_sub(
 
     let can_be_nan = can_sub_inf_and_inf;
 
-    let output = match can_be_nan {
+    match can_be_nan {
         true => None,
         false => {
             let spec = FloatSpecifications {
@@ -451,11 +679,41 @@ fn impl_sub(
             };
             find_float(&spec, floats)
         }
-    };
+    }
+}
+
+fn impl_sub(
+    float_a: &FloatDefinition,
+    float_b: &FloatDefinition,
+    floats: &[FloatDefinition],
+) -> proc_macro2::TokenStream {
+    let output = sub_result(&float_a.s, &float_b.s, floats);
 
     let op = quote! { self.get() - rhs.get() };
 
     impl_op_rhs(float_a, float_b, &output, &op, "Sub", "sub")
+}
+
+fn rem_result(
+    spec_a: &FloatSpecifications,
+    spec_b: &FloatSpecifications,
+    floats: &[FloatDefinition],
+) -> Option<FloatDefinition> {
+    let can_be_nan = spec_b.accept_zero || spec_a.accept_inf;
+
+    match can_be_nan {
+        true => None,
+        false => {
+            let output_def = FloatSpecifications {
+                accept_inf: spec_a.accept_inf || spec_b.accept_zero,
+                accept_zero: true,
+                accept_positive: spec_a.accept_positive,
+                accept_negative: spec_a.accept_negative,
+            };
+
+            find_float(&output_def, floats)
+        }
+    }
 }
 
 fn impl_rem(
@@ -463,43 +721,18 @@ fn impl_rem(
     float_b: &FloatDefinition,
     floats: &[FloatDefinition],
 ) -> proc_macro2::TokenStream {
-    let spec_a = &float_a.s;
-    let spec_b = &float_b.s;
-
-    let can_sign_be_different = (spec_a.accept_negative && spec_b.accept_positive)
-        || (spec_a.accept_positive && spec_b.accept_negative);
-    let can_sign_be_same = (spec_a.accept_negative && spec_b.accept_negative)
-        || (spec_a.accept_positive && spec_b.accept_positive);
-
-    let can_be_nan = spec_b.accept_zero;
-
-    let output = match can_be_nan {
-        true => None,
-        false => {
-            let output_def = FloatSpecifications {
-                accept_inf: spec_a.accept_inf || spec_b.accept_zero,
-                accept_zero: spec_a.accept_zero,
-                accept_positive: can_sign_be_same,
-                accept_negative: can_sign_be_different,
-            };
-
-            find_float(&output_def, floats)
-        }
-    };
+    let output = rem_result(&float_a.s, &float_b.s, floats);
 
     let op = quote! { self.get() % rhs.get() };
 
     impl_op_rhs(float_a, float_b, &output, &op, "Rem", "rem")
 }
 
-fn impl_div(
-    float_a: &FloatDefinition,
-    float_b: &FloatDefinition,
+fn div_result(
+    spec_a: &FloatSpecifications,
+    spec_b: &FloatSpecifications,
     floats: &[FloatDefinition],
-) -> proc_macro2::TokenStream {
-    let spec_a = &float_a.s;
-    let spec_b = &float_b.s;
-
+) -> Option<FloatDefinition> {
     let can_zero_divide_zero = spec_a.accept_zero && spec_b.accept_zero;
     let can_inf_divide_inf = spec_a.accept_inf && spec_b.accept_inf;
 
@@ -510,33 +743,38 @@ fn impl_div(
 
     let can_be_nan = can_zero_divide_zero || can_inf_divide_inf;
 
-    let output = match can_be_nan {
+    match can_be_nan {
         true => None,
         false => {
             let output_def = FloatSpecifications {
-                accept_inf: spec_a.accept_inf || spec_b.accept_zero,
-                accept_zero: spec_a.accept_zero || spec_b.accept_inf,
+                accept_inf: true,
+                accept_zero: true,
                 accept_positive: can_sign_be_same,
                 accept_negative: can_sign_be_different,
             };
 
             find_float(&output_def, floats)
         }
-    };
+    }
+}
+
+fn impl_div(
+    float_a: &FloatDefinition,
+    float_b: &FloatDefinition,
+    floats: &[FloatDefinition],
+) -> proc_macro2::TokenStream {
+    let output = div_result(&float_a.s, &float_b.s, floats);
 
     let op = quote! { self.get() / rhs.get() };
 
     impl_op_rhs(float_a, float_b, &output, &op, "Div", "div")
 }
 
-fn impl_mul(
-    float: &FloatDefinition,
-    rhs: &FloatDefinition,
+fn mul_result(
+    spec_a: &FloatSpecifications,
+    spec_b: &FloatSpecifications,
     floats: &[FloatDefinition],
-) -> proc_macro2::TokenStream {
-    let spec_a = &float.s;
-    let spec_b = &rhs.s;
-
+) -> Option<FloatDefinition> {
     let can_sign_be_different = (spec_a.accept_negative && spec_b.accept_positive)
         || (spec_a.accept_positive && spec_b.accept_negative);
     let can_sign_be_same = (spec_a.accept_negative && spec_b.accept_negative)
@@ -547,7 +785,7 @@ fn impl_mul(
 
     let can_be_nan = can_zero_multiply_inf;
 
-    let output = match can_be_nan {
+    match can_be_nan {
         true => None,
         false => {
             let output_def = FloatSpecifications {
@@ -559,7 +797,15 @@ fn impl_mul(
 
             find_float(&output_def, floats)
         }
-    };
+    }
+}
+
+fn impl_mul(
+    float: &FloatDefinition,
+    rhs: &FloatDefinition,
+    floats: &[FloatDefinition],
+) -> proc_macro2::TokenStream {
+    let output = mul_result(&float.s, &rhs.s, floats);
 
     let op = quote! { self.get() * rhs.get() };
 
