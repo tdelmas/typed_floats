@@ -7,44 +7,11 @@ use proc_macro2::Span;
 use quote::quote;
 use syn::Ident;
 
-#[derive(Clone, Debug)]
-struct FloatSpecifications {
-    accept_inf: bool,
-    accept_zero: bool,
-    accept_positive: bool,
-    accept_negative: bool,
-}
+mod try_from;
+use try_from::*;
 
-#[derive(Clone, Debug)]
-struct FloatDefinition {
-    name: &'static str,
-    float_type: &'static str,
-    s: FloatSpecifications,
-}
-
-impl FloatDefinition {
-    fn name_ident(&self) -> Ident {
-        Ident::new(self.name, Span::call_site())
-    }
-
-    fn float_type_ident(&self) -> Ident {
-        Ident::new(self.float_type, Span::call_site())
-    }
-
-    fn full_type_ident(&self) -> proc_macro2::TokenStream {
-        let name = self.name_ident();
-        let float_type = self.float_type_ident();
-
-        quote! { #name<#float_type> }
-    }
-
-    fn call_tokens(&self) -> proc_macro2::TokenStream {
-        let name = self.name_ident();
-        let float_type = self.float_type_ident();
-
-        quote! { #name::<#float_type> }
-    }
-}
+mod types;
+use types::*;
 
 fn get_specifications() -> Vec<(&'static str, FloatSpecifications)> {
     vec![
@@ -216,6 +183,7 @@ pub fn generate_tests(_input: proc_macro::TokenStream) -> proc_macro::TokenStrea
                     Ok(num_a) => {
                         println!("num={:?}", num_a);
                         println!("neg={:?}", -num_a);
+                        println!("floor={:?}", num_a.floor());
                         println!("abs={:?}", num_a.abs());
                     }
                     Err(_) => {}
@@ -341,8 +309,8 @@ fn do_generate_floats(floats: &[FloatDefinition], with_generic: bool) -> proc_ma
 
         if with_generic {
             output.extend(quote! {
-                //#[cfg_attr(feature = "serde", derive(Serialize))]
                 #[derive(Debug, Copy, Clone)]
+                #[cfg_attr(feature = "serde", derive(Serialize))]
                 pub struct #name<T=#float_type>(T);
             });
         }
@@ -435,6 +403,7 @@ fn do_generate_floats(floats: &[FloatDefinition], with_generic: bool) -> proc_ma
 
     for float_a in floats {
         output.extend(impl_neg(float_a, floats));
+        output.extend(impl_floor(float_a, floats));
         output.extend(impl_abs(float_a, floats));
 
         for float_b in floats {
@@ -544,6 +513,36 @@ fn impl_neg(float: &FloatDefinition, floats: &[FloatDefinition]) -> proc_macro2:
     }
 }
 
+fn floor_result(float: &FloatDefinition, floats: &[FloatDefinition]) -> FloatDefinition {
+    if float.s.accept_positive {
+        let mut output_spec = float.s.clone();
+        output_spec.accept_zero = true;
+
+        find_float(&output_spec, floats).unwrap()
+    } else {
+        float.clone()
+    }
+}
+
+fn impl_floor(float: &FloatDefinition, floats: &[FloatDefinition]) -> proc_macro2::TokenStream {
+    let full_type = &float.full_type_ident();
+
+    let output = floor_result(float, floats);
+
+    let output_type = output.full_type_ident();
+    let output_call = &output.call_tokens().clone();
+
+    quote! {
+        impl #full_type {
+
+            #[inline]
+            pub fn floor(self) -> #output_type {
+                unsafe { #output_call::new_unchecked(self.get().floor()) }
+            }
+        }
+    }
+}
+
 fn impl_abs(float: &FloatDefinition, floats: &[FloatDefinition]) -> proc_macro2::TokenStream {
     let full_type = &float.full_type_ident();
 
@@ -595,13 +594,6 @@ fn impl_abs(float: &FloatDefinition, floats: &[FloatDefinition]) -> proc_macro2:
             }
         }
     }
-}
-
-const fn can_fit_into(from: &FloatSpecifications, to: &FloatSpecifications) -> bool {
-    (!from.accept_inf || to.accept_inf)
-        && (!from.accept_zero || to.accept_zero)
-        && (!from.accept_positive || to.accept_positive)
-        && (!from.accept_negative || to.accept_negative)
 }
 
 fn add_result(
@@ -854,7 +846,7 @@ fn impl_op_rhs(
     };
 
     if let Some(output) = output {
-        if can_fit_into(&output.s, &float.s) {
+        if output.s.can_fit_into(&float.s) {
             res.extend(quote! {
                 impl core::ops::#trait_assign_ident<#rhs_full_type> for #float_full_type {
                     #[inline]
@@ -869,225 +861,4 @@ fn impl_op_rhs(
     }
 
     res
-}
-
-fn impl_from(float_from: &FloatDefinition, float_to: &FloatDefinition) -> proc_macro2::TokenStream {
-    let from_full_type = &float_from.full_type_ident();
-    let to_full_type = &float_to.full_type_ident();
-
-    quote! {
-        impl core::convert::From<#from_full_type> for #to_full_type {
-            #[inline]
-            #[must_use]
-            fn from(value: #from_full_type) -> Self {
-                unsafe { Self::new_unchecked(value.get()) }
-            }
-        }
-    }
-}
-
-fn impl_try_from(
-    float_from: &FloatDefinition,
-    float_to: &FloatDefinition,
-) -> proc_macro2::TokenStream {
-    let from_full_type = &float_from.full_type_ident();
-    let to_full_type = &float_to.full_type_ident();
-
-    quote! {
-        impl core::convert::TryFrom<#from_full_type> for #to_full_type {
-            type Error = InvalidNumber;
-
-            #[inline]
-            #[must_use]
-            fn try_from(value: #from_full_type) -> Result<Self, Self::Error> {
-                Self::try_from(value.get())
-            }
-        }
-    }
-}
-
-/// Conversion from float_a to float_b
-fn impl_from_or_try_from(
-    float_from: &FloatDefinition,
-    float_to: &FloatDefinition,
-) -> proc_macro2::TokenStream {
-    let from = &float_from.s;
-    let to = &float_to.s;
-
-    if (!from.accept_positive && to.accept_negative)
-        && (!from.accept_negative && to.accept_positive)
-    {
-        // No conversion between positive and negative
-        proc_macro2::TokenStream::new()
-    } else if can_fit_into(from, to) {
-        impl_from(float_from, float_to)
-    } else {
-        impl_try_from(float_from, float_to)
-    }
-}
-
-fn generate_try_from_float(float: &FloatDefinition) -> proc_macro2::TokenStream {
-    let float_type = &float.float_type_ident();
-    let full_type = &float.full_type_ident();
-    let call_tokens = &float.call_tokens();
-
-    let mut try_from_float = proc_macro2::TokenStream::new();
-
-    try_from_float.extend(quote! {
-        if value.is_nan() {
-            return Err(InvalidNumber::NaN);
-        }
-    });
-
-    if !float.s.accept_inf {
-        try_from_float.extend(quote! {
-            if value.is_infinite() {
-                return Err(InvalidNumber::Infinite);
-            }
-        });
-    }
-
-    if !float.s.accept_zero {
-        try_from_float.extend(quote! {
-            if value == 0.0 {
-                return Err(InvalidNumber::Zero);
-            }
-        });
-    }
-
-    if !float.s.accept_positive {
-        try_from_float.extend(quote! {
-            if value.is_sign_positive() {
-                return Err(InvalidNumber::Positive);
-            }
-        });
-    }
-
-    if !float.s.accept_negative {
-        try_from_float.extend(quote! {
-            if value.is_sign_negative() {
-                return Err(InvalidNumber::Negative);
-            }
-        });
-    }
-
-    quote! {
-        impl TryFrom<#float_type> for #full_type {
-            type Error = InvalidNumber;
-
-            #[inline]
-            #[must_use]
-            fn try_from(value: #float_type) -> Result<Self, Self::Error> {
-                #try_from_float
-
-                Ok(#call_tokens(value))
-            }
-        }
-    }
-}
-
-fn generate_try_ints(float: &FloatDefinition) -> proc_macro2::TokenStream {
-    let mut try_from_ints = proc_macro2::TokenStream::new();
-
-    // https://doc.rust-lang.org/1.49.0/reference/expressions/operator-expr.html#type-cast-expressions
-
-    // with the current set of numeric types, overflow can only happen on u128 as f32
-
-    let types = vec!["u8", "u16", "u32", "u64"];
-    for int_type in types {
-        try_from_ints.extend(generate_try_int(float, int_type, false));
-    }
-
-    let types = vec!["i8", "i16", "i32", "i64"];
-    for int_type in types {
-        try_from_ints.extend(generate_try_int(float, int_type, true));
-    }
-
-    let types = vec!["NonZeroU8", "NonZeroU16", "NonZeroU32", "NonZeroU64"];
-    for int_type in types {
-        try_from_ints.extend(generate_try_int_nonzero(float, int_type, false));
-    }
-
-    let types = vec!["NonZeroI8", "NonZeroI16", "NonZeroI32", "NonZeroI64"];
-    for int_type in types {
-        try_from_ints.extend(generate_try_int_nonzero(float, int_type, true));
-    }
-
-    try_from_ints
-}
-
-fn generate_try_int(
-    float: &FloatDefinition,
-    int_type: &str,
-    can_be_negative: bool,
-) -> proc_macro2::TokenStream {
-    let int_type: Ident = Ident::new(int_type, Span::call_site());
-
-    let float_type = &float.float_type_ident();
-    let full_type = &float.full_type_ident();
-    let call_tokens = &float.call_tokens();
-
-    if can_be_negative && !float.s.accept_negative {
-        quote! {
-            impl TryFrom<#int_type> for #full_type {
-                type Error = InvalidNumber;
-
-                #[inline]
-                #[must_use]
-                fn try_from(value: #int_type) -> Result<Self, Self::Error> {
-                    if value == 0 {
-                        Err(InvalidNumber::Zero)
-                    } else {
-                        unsafe { Ok(#call_tokens::new_unchecked(value as #float_type )) }
-                    }
-                }
-            }
-        }
-    } else {
-        quote! {
-            impl From<#int_type> for #full_type {
-                #[inline]
-                #[must_use]
-                fn from(value: #int_type) -> Self {
-                    unsafe { #call_tokens::new_unchecked(value as #float_type ) }
-                }
-            }
-        }
-    }
-}
-
-fn generate_try_int_nonzero(
-    float: &FloatDefinition,
-    int_type: &str,
-    can_be_negative: bool,
-) -> proc_macro2::TokenStream {
-    let int_type: Ident = Ident::new(int_type, Span::call_site());
-
-    let float_type = &float.float_type_ident();
-    let full_type = &float.full_type_ident();
-    let call_tokens = &float.call_tokens();
-
-    if can_be_negative && !float.s.accept_negative {
-        quote! {
-            impl TryFrom<#int_type> for #full_type {
-                type Error = InvalidNumber;
-
-                #[inline]
-                #[must_use]
-                fn try_from(value: #int_type) -> Result<Self, Self::Error> {
-                    unsafe { Ok(#call_tokens::new_unchecked(value.get() as #float_type)) }
-                }
-            }
-        }
-    } else {
-        quote! {
-            impl From<#int_type> for #full_type {
-                #[inline]
-                #[must_use]
-                fn from(value: #int_type) -> Self {
-                    unsafe {#call_tokens::new_unchecked(value.get() as #float_type )}
-                }
-            }
-        }
-    }
 }
