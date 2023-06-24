@@ -49,3 +49,76 @@ impl FloatSpecifications {
             && (!self.accept_negative || into.accept_negative)
     }
 }
+
+fn compute_similarity(float_a: &FloatSpecifications, float_b: &FloatSpecifications) -> usize {
+    let mut score = 0;
+
+    if float_a.accept_inf == float_b.accept_inf {
+        score += 1;
+    }
+    if float_a.accept_zero == float_b.accept_zero {
+        score += 1;
+    }
+    if float_a.accept_positive == float_b.accept_positive {
+        score += 1;
+    }
+    if float_a.accept_negative == float_b.accept_negative {
+        score += 1;
+    }
+
+    score
+}
+
+pub(crate) fn find_float(
+    float: &FloatSpecifications,
+    floats: &[FloatDefinition],
+) -> Option<FloatDefinition> {
+    //filter incompatibles
+    let mut floats = floats
+        .iter()
+        .filter(|f| {
+            if float.accept_inf && !f.s.accept_inf {
+                return false;
+            }
+            if float.accept_zero && !f.s.accept_zero {
+                return false;
+            }
+            if float.accept_positive && !f.s.accept_positive {
+                return false;
+            }
+            if float.accept_negative && !f.s.accept_negative {
+                return false;
+            }
+            true
+        })
+        .collect::<Vec<&FloatDefinition>>();
+
+    let highest_score = floats
+        .iter()
+        .map(|f| compute_similarity(float, &f.s))
+        .max()
+        .unwrap();
+
+    //keep only the highest score
+    floats.retain(|f| compute_similarity(float, &f.s) == highest_score);
+
+    if floats.len() > 1 {
+        panic!("Ambiguous float type");
+    }
+
+    floats.first().map(|float| (*float).clone())
+}
+
+pub(crate) fn output_name(
+    output: &Option<FloatDefinition>,
+    float_type: &Ident,
+) -> proc_macro2::TokenStream {
+    match output {
+        Some(output) => {
+            let full_type = output.full_type_ident();
+
+            quote! { #full_type }
+        }
+        None => quote! { #float_type },
+    }
+}
