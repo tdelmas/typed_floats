@@ -6,7 +6,6 @@ jobs:
     steps:
       - checkout
       - run: cargo test
-      - run: cargo test --features serde
   build_and_test_arm:
     machine:
       image: ubuntu-2004:current 
@@ -15,7 +14,6 @@ jobs:
       - checkout
       - run: curl https://sh.rustup.rs -sSf | sh -s -- -y
       - run: cargo test
-      - run: cargo test --features serde
 
 workflows:
   version: 2

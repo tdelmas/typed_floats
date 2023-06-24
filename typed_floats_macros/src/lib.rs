@@ -313,7 +313,6 @@ fn do_generate_floats(floats: &[FloatDefinition], with_generic: bool) -> proc_ma
         if with_generic {
             output.extend(quote! {
                 #[derive(Debug, Copy, Clone)]
-                #[cfg_attr(feature = "serde", derive(Serialize))]
                 pub struct #name<T=#float_type>(T);
             });
         }
