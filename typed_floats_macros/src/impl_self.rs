@@ -40,23 +40,30 @@ fn impl_fn(
     }
 }
 
+pub(crate) fn neg_result(
+    float: &FloatDefinition,
+    floats: &[FloatDefinition],
+) -> Option<FloatDefinition> {
+    let mut output_spec = float.s.clone();
+
+    if !output_spec.accept_positive {
+        output_spec.accept_positive = true;
+        output_spec.accept_negative = false;
+    } else if !output_spec.accept_negative {
+        output_spec.accept_positive = false;
+        output_spec.accept_negative = true;
+    }
+
+    find_float(&output_spec, floats)
+}
+
 pub(crate) fn impl_neg(
     float: &FloatDefinition,
     floats: &[FloatDefinition],
 ) -> proc_macro2::TokenStream {
     let full_type = &float.full_type_ident();
 
-    let mut output_def = float.s.clone();
-
-    if float.s.accept_negative {
-        output_def.accept_positive = true;
-    }
-
-    if float.s.accept_positive {
-        output_def.accept_negative = true;
-    }
-
-    let output = find_float(&output_def, floats);
+    let output = neg_result(float, floats);
     let output_name = output_name(&output, &float.float_type_ident());
 
     quote! {
@@ -71,14 +78,17 @@ pub(crate) fn impl_neg(
     }
 }
 
-pub(crate) fn floor_result(float: &FloatDefinition, floats: &[FloatDefinition]) -> FloatDefinition {
+pub(crate) fn floor_result(
+    float: &FloatDefinition,
+    floats: &[FloatDefinition],
+) -> Option<FloatDefinition> {
     if float.s.accept_positive {
         let mut output_spec = float.s.clone();
         output_spec.accept_zero = true;
 
-        find_float(&output_spec, floats).unwrap()
+        find_float(&output_spec, floats)
     } else {
-        float.clone()
+        Some(float.clone())
     }
 }
 
@@ -90,17 +100,20 @@ pub(crate) fn impl_floor(
 
     let op = quote! { self.get().floor() };
 
-    impl_fn(float, &Some(output), &op, "floor")
+    impl_fn(float, &output, &op, "floor")
 }
 
-pub(crate) fn ceil_result(float: &FloatDefinition, floats: &[FloatDefinition]) -> FloatDefinition {
+pub(crate) fn ceil_result(
+    float: &FloatDefinition,
+    floats: &[FloatDefinition],
+) -> Option<FloatDefinition> {
     if float.s.accept_negative {
         let mut output_spec = float.s.clone();
         output_spec.accept_zero = true;
 
-        find_float(&output_spec, floats).unwrap()
+        find_float(&output_spec, floats)
     } else {
-        float.clone()
+        Some(float.clone())
     }
 }
 
@@ -112,14 +125,17 @@ pub(crate) fn impl_ceil(
 
     let op = quote! { self.get().ceil() };
 
-    impl_fn(float, &Some(output), &op, "ceil")
+    impl_fn(float, &output, &op, "ceil")
 }
 
-pub(crate) fn round_result(float: &FloatDefinition, floats: &[FloatDefinition]) -> FloatDefinition {
+pub(crate) fn round_result(
+    float: &FloatDefinition,
+    floats: &[FloatDefinition],
+) -> Option<FloatDefinition> {
     let mut output_spec = float.s.clone();
     output_spec.accept_zero = true;
 
-    find_float(&output_spec, floats).unwrap()
+    find_float(&output_spec, floats)
 }
 
 pub(crate) fn impl_round(
@@ -130,7 +146,19 @@ pub(crate) fn impl_round(
 
     let op = quote! { self.get().round() };
 
-    impl_fn(float, &Some(output), &op, "round")
+    impl_fn(float, &output, &op, "round")
+}
+
+pub(crate) fn abs_result(
+    float: &FloatDefinition,
+    floats: &[FloatDefinition],
+) -> Option<FloatDefinition> {
+    let mut output_spec = float.s.clone();
+
+    output_spec.accept_positive = true;
+    output_spec.accept_negative = false;
+
+    find_float(&output_spec, floats)
 }
 
 pub(crate) fn impl_abs(
@@ -138,6 +166,10 @@ pub(crate) fn impl_abs(
     floats: &[FloatDefinition],
 ) -> proc_macro2::TokenStream {
     let full_type = &float.full_type_ident();
+
+    let output = abs_result(&float, floats).unwrap();
+    let output_call = output.call_tokens();
+    let output_type = output.full_type_ident();
 
     if !float.s.accept_negative {
         // no-op
@@ -150,19 +182,9 @@ pub(crate) fn impl_abs(
             }
         }
     } else if !float.s.accept_positive {
-        let mut output_spec = float.s.clone();
-        output_spec.accept_negative = false;
-        output_spec.accept_positive = true;
-
-        let output = find_float(&output_spec, floats).unwrap();
-
-        let output_type = output.full_type_ident();
-        let output_call = output.call_tokens();
-
         // inv
         quote! {
             impl #full_type {
-
                 #[inline]
                 pub fn abs(self) -> #output_type {
                     unsafe { #output_call::new_unchecked(-self.get()) }
@@ -170,14 +192,6 @@ pub(crate) fn impl_abs(
             }
         }
     } else {
-        let mut output_spec = float.s.clone();
-        output_spec.accept_negative = false;
-
-        let output = find_float(&output_spec, floats).unwrap();
-
-        let output_type = output.full_type_ident();
-        let output_call = output.call_tokens();
-
         quote! {
             impl #full_type {
                 #[inline]
