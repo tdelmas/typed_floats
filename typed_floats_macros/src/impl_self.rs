@@ -1,4 +1,6 @@
+use proc_macro2::Span;
 use quote::quote;
+use syn::Ident;
 
 use crate::types::*;
 
@@ -48,22 +50,11 @@ pub(crate) fn impl_floor(
     float: &FloatDefinition,
     floats: &[FloatDefinition],
 ) -> proc_macro2::TokenStream {
-    let full_type = &float.full_type_ident();
+    let output = floor_result(&float, floats);
 
-    let output = floor_result(float, floats);
+    let op = quote! { self.get().floor() };
 
-    let output_type = output.full_type_ident();
-    let output_call = &output.call_tokens();
-
-    quote! {
-        impl #full_type {
-
-            #[inline]
-            pub fn floor(self) -> #output_type {
-                unsafe { #output_call::new_unchecked(self.get().floor()) }
-            }
-        }
-    }
+    impl_fn(float, &Some(output), &op, "floor")
 }
 
 pub(crate) fn ceil_result(float: &FloatDefinition, floats: &[FloatDefinition]) -> FloatDefinition {
@@ -81,22 +72,29 @@ pub(crate) fn impl_ceil(
     float: &FloatDefinition,
     floats: &[FloatDefinition],
 ) -> proc_macro2::TokenStream {
-    let full_type = &float.full_type_ident();
+    let output = ceil_result(&float, floats);
 
-    let output = ceil_result(float, floats);
+    let op = quote! { self.get().ceil() };
 
-    let output_type = output.full_type_ident();
-    let output_call = &output.call_tokens();
+    impl_fn(float, &Some(output), &op, "ceil")
+}
 
-    quote! {
-        impl #full_type {
+pub(crate) fn round_result(float: &FloatDefinition, floats: &[FloatDefinition]) -> FloatDefinition {
+    let mut output_spec = float.s.clone();
+    output_spec.accept_zero = true;
 
-            #[inline]
-            pub fn ceil(self) -> #output_type {
-                unsafe { #output_call::new_unchecked(self.get().ceil()) }
-            }
-        }
-    }
+    find_float(&output_spec, floats).unwrap()
+}
+
+pub(crate) fn impl_round(
+    float: &FloatDefinition,
+    floats: &[FloatDefinition],
+) -> proc_macro2::TokenStream {
+    let output = round_result(&float, floats);
+
+    let op = quote! { self.get().round() };
+
+    impl_fn(float, &Some(output), &op, "round")
 }
 
 pub(crate) fn impl_abs(
@@ -150,6 +148,42 @@ pub(crate) fn impl_abs(
                 pub fn abs(self) -> #output_type {
                     unsafe { #output_call::new_unchecked(self.get().abs()) }
                 }
+            }
+        }
+    }
+}
+
+fn impl_fn(
+    float: &FloatDefinition,
+    output: &Option<FloatDefinition>,
+    op: &proc_macro2::TokenStream,
+    fn_name: &str,
+) -> proc_macro2::TokenStream {
+    let float_full_type = &float.full_type_ident();
+
+    let return_value = match output {
+        Some(d) => {
+            let output_call = &d.call_tokens();
+
+            quote! {
+                unsafe { #output_call::new_unchecked(#op) }
+            }
+        }
+        None => {
+            quote! { #op }
+        }
+    };
+
+    let output_name = output_name(output, &float.float_type_ident());
+
+    let fn_ident = Ident::new(fn_name, Span::call_site());
+
+    quote! {
+        impl #float_full_type {
+            #[inline]
+            #[must_use]
+            fn #fn_ident(self) -> #output_name {
+                #return_value
             }
         }
     }

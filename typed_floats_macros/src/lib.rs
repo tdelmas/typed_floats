@@ -185,6 +185,7 @@ pub fn generate_tests(_input: proc_macro::TokenStream) -> proc_macro::TokenStrea
                         println!("neg={:?}", -num_a);
                         println!("floor={:?}", num_a.floor());
                         println!("ceil={:?}", num_a.ceil());
+                        println!("round={:?}", num_a.round());
                         println!("abs={:?}", num_a.abs());
                     }
                     Err(_) => {}
@@ -352,6 +353,7 @@ fn do_generate_floats(floats: &[FloatDefinition], with_generic: bool) -> proc_ma
         output.extend(impl_neg(float_a, floats));
         output.extend(impl_floor(float_a, floats));
         output.extend(impl_ceil(float_a, floats));
+        output.extend(impl_round(float_a, floats));
         output.extend(impl_abs(float_a, floats));
 
         for float_b in floats {
