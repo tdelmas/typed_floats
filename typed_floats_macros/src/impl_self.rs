@@ -66,6 +66,39 @@ pub(crate) fn impl_floor(
     }
 }
 
+pub(crate) fn ceil_result(float: &FloatDefinition, floats: &[FloatDefinition]) -> FloatDefinition {
+    if float.s.accept_negative {
+        let mut output_spec = float.s.clone();
+        output_spec.accept_zero = true;
+
+        find_float(&output_spec, floats).unwrap()
+    } else {
+        float.clone()
+    }
+}
+
+pub(crate) fn impl_ceil(
+    float: &FloatDefinition,
+    floats: &[FloatDefinition],
+) -> proc_macro2::TokenStream {
+    let full_type = &float.full_type_ident();
+
+    let output = ceil_result(float, floats);
+
+    let output_type = output.full_type_ident();
+    let output_call = &output.call_tokens();
+
+    quote! {
+        impl #full_type {
+
+            #[inline]
+            pub fn ceil(self) -> #output_type {
+                unsafe { #output_call::new_unchecked(self.get().ceil()) }
+            }
+        }
+    }
+}
+
 pub(crate) fn impl_abs(
     float: &FloatDefinition,
     floats: &[FloatDefinition],
