@@ -4,6 +4,42 @@ use syn::Ident;
 
 use crate::types::*;
 
+fn impl_fn(
+    float: &FloatDefinition,
+    output: &Option<FloatDefinition>,
+    op: &proc_macro2::TokenStream,
+    fn_name: &str,
+) -> proc_macro2::TokenStream {
+    let float_full_type = &float.full_type_ident();
+
+    let return_value = match output {
+        Some(d) => {
+            let output_call = &d.call_tokens();
+
+            quote! {
+                unsafe { #output_call::new_unchecked(#op) }
+            }
+        }
+        None => {
+            quote! { #op }
+        }
+    };
+
+    let output_name = output_name(output, &float.float_type_ident());
+
+    let fn_ident = Ident::new(fn_name, Span::call_site());
+
+    quote! {
+        impl #float_full_type {
+            #[inline]
+            #[must_use]
+            fn #fn_ident(self) -> #output_name {
+                #return_value
+            }
+        }
+    }
+}
+
 pub(crate) fn impl_neg(
     float: &FloatDefinition,
     floats: &[FloatDefinition],
@@ -148,42 +184,6 @@ pub(crate) fn impl_abs(
                 pub fn abs(self) -> #output_type {
                     unsafe { #output_call::new_unchecked(self.get().abs()) }
                 }
-            }
-        }
-    }
-}
-
-fn impl_fn(
-    float: &FloatDefinition,
-    output: &Option<FloatDefinition>,
-    op: &proc_macro2::TokenStream,
-    fn_name: &str,
-) -> proc_macro2::TokenStream {
-    let float_full_type = &float.full_type_ident();
-
-    let return_value = match output {
-        Some(d) => {
-            let output_call = &d.call_tokens();
-
-            quote! {
-                unsafe { #output_call::new_unchecked(#op) }
-            }
-        }
-        None => {
-            quote! { #op }
-        }
-    };
-
-    let output_name = output_name(output, &float.float_type_ident());
-
-    let fn_ident = Ident::new(fn_name, Span::call_site());
-
-    quote! {
-        impl #float_full_type {
-            #[inline]
-            #[must_use]
-            fn #fn_ident(self) -> #output_name {
-                #return_value
             }
         }
     }
