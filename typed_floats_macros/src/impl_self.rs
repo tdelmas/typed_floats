@@ -36,7 +36,7 @@ pub(crate) fn impl_neg(
 pub(crate) fn floor_result(float: &FloatDefinition, floats: &[FloatDefinition]) -> FloatDefinition {
     if float.s.accept_positive {
         let mut output_spec = float.s.clone();
-        output_spec.accept_zero = true;
+        //output_spec.accept_zero = true;
 
         find_float(&output_spec, floats).unwrap()
     } else {
