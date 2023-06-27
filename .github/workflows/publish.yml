@@ -1,0 +1,24 @@
+on:
+  push:
+    tags:
+      - "*"
+  workflow_dispatch:
+
+name: Publish
+
+jobs:
+  publish:
+    name: Publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: cargo test
+      - name: cargo publish
+        run: cd typed_floats_macros && cargo publish --token ${CRATES_TOKEN}
+        env:
+          CRATES_TOKEN: ${{ secrets.CRATES_TOKEN }}
+      - name: cargo publish
+        run: cd typed_floats && cargo publish --token ${CRATES_TOKEN}
+        env:
+          CRATES_TOKEN: ${{ secrets.CRATES_TOKEN }}
+  
