@@ -18,5 +18,5 @@ By default all types are `f64` but you can use the `f32` like `Positive<f32>`.
 The following conversions are implemented:
 - Between all the types of this crate
 - From `f64`
-- From integers types (expect `u128` and `i128`)
+- From integers types (exept `u128` and `i128`)
 - From `NonZero*`

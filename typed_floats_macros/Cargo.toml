@@ -1,11 +1,11 @@
 [package]
 name = "typed_floats_macros"
-version = "0.1.4"
+version = "0.1.5"
 edition = "2021"
 license = "MIT OR Apache-2.0"
 description = "Crate only used to generate the `typed_floats` crate."
 repository = "https://github.com/tdelmas/floats"
-readme = "../README.md"
+readme = "./README.md"
 
 [lib]
 proc-macro = true
