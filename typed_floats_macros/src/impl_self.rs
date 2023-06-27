@@ -96,7 +96,7 @@ pub(crate) fn impl_floor(
     float: &FloatDefinition,
     floats: &[FloatDefinition],
 ) -> proc_macro2::TokenStream {
-    let output = floor_result(&float, floats);
+    let output = floor_result(float, floats);
 
     let op = quote! { self.get().floor() };
 
@@ -121,7 +121,7 @@ pub(crate) fn impl_ceil(
     float: &FloatDefinition,
     floats: &[FloatDefinition],
 ) -> proc_macro2::TokenStream {
-    let output = ceil_result(&float, floats);
+    let output = ceil_result(float, floats);
 
     let op = quote! { self.get().ceil() };
 
@@ -142,7 +142,7 @@ pub(crate) fn impl_round(
     float: &FloatDefinition,
     floats: &[FloatDefinition],
 ) -> proc_macro2::TokenStream {
-    let output = round_result(&float, floats);
+    let output = round_result(float, floats);
 
     let op = quote! { self.get().round() };
 
@@ -167,7 +167,7 @@ pub(crate) fn impl_abs(
 ) -> proc_macro2::TokenStream {
     let full_type = &float.full_type_ident();
 
-    let output = abs_result(&float, floats).unwrap();
+    let output = abs_result(float, floats).unwrap();
     let output_call = output.call_tokens();
     let output_type = output.full_type_ident();
 

@@ -153,9 +153,6 @@ pub fn generate_floats(_input: proc_macro::TokenStream) -> proc_macro::TokenStre
     let mut output = proc_macro2::TokenStream::new();
 
     output.extend(generate_main_description(&floats_f64));
-    output.extend(quote! {
-        pub trait Float {}
-    });
 
     output.extend(do_generate_floats(&floats_f64, true));
     output.extend(do_generate_floats(&floats_f32, false));
@@ -259,7 +256,7 @@ fn do_generate_floats(floats: &[FloatDefinition], with_generic: bool) -> proc_ma
         if with_generic {
             output.extend(quote! {
                 #[derive(Debug, Copy, Clone)]
-                pub struct #name<T=#float_type>(T);
+                pub struct #name<T: Sized=#float_type>(T);
             });
         }
 
@@ -293,6 +290,10 @@ fn do_generate_floats(floats: &[FloatDefinition], with_generic: bool) -> proc_ma
                 pub const fn get(self) -> #float_type {
                     self.0
                 }
+            }
+            
+            impl Float for #full_type {
+                type Content = #float_type;
             }
 
             impl PartialEq for #full_type {
