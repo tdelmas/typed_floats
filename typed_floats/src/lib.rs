@@ -1,4 +1,4 @@
-#![doc = include_str!("../../README.md")]
+#![doc = include_str!("../README.md")]
 //! # Rules
 //!
 //! Conversions rules for operations are summarized in [`Float`].
