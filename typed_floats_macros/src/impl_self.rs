@@ -33,7 +33,7 @@ fn impl_fn(
         impl #float_full_type {
             #[inline]
             #[must_use]
-            fn #fn_ident(self) -> #output_name {
+            pub fn #fn_ident(self) -> #output_name {
                 #return_value
             }
         }

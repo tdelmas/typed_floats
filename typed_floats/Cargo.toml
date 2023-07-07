@@ -7,7 +7,14 @@ description = "Types for handling floats with type checking at compile time."
 repository = "https://github.com/tdelmas/floats"
 readme = "./README.md"
 
+[profile.dev]
+incremental = false
+
+[profile.test]
+incremental = false
+
 [dependencies]
 serde_json = { version = "1.0"}
 thiserror = "1.0"
 typed_floats_macros = { version = "0.1.6" }
+

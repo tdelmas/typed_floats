@@ -164,7 +164,7 @@ pub(crate) fn rem_result(
         true => None,
         false => {
             let output_def = FloatSpecifications {
-                accept_inf: spec_a.accept_inf || spec_b.accept_zero,
+                accept_inf: false,
                 accept_zero: true,
                 accept_positive: spec_a.accept_positive,
                 accept_negative: spec_a.accept_negative,

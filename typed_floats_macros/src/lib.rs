@@ -19,6 +19,13 @@ use impl_self_rhs::*;
 mod add_doc;
 use add_doc::*;
 
+mod gen_tests;
+
+#[proc_macro]
+pub fn generate_tests(_input: proc_macro::TokenStream) -> proc_macro::TokenStream {
+    gen_tests::generate_tests()
+}
+
 fn get_specifications() -> Vec<(&'static str, FloatSpecifications)> {
     vec![
         (
@@ -158,153 +165,6 @@ pub fn generate_floats(_input: proc_macro::TokenStream) -> proc_macro::TokenStre
     output.extend(do_generate_floats(&floats_f32, false));
 
     output.into()
-}
-
-fn test_op(
-    float: &FloatDefinition,
-    op_name: &str,
-    result_type: Option<FloatDefinition>,
-    op: proc_macro2::TokenStream,
-) -> proc_macro2::TokenStream {
-    let float_type = float.float_type_ident();
-    let full_type = float.full_type_ident();
-
-    let (accept_inf, accept_zero, accept_positive, accept_negative) = match result_type {
-        None => (true, true, true, true),
-        Some(result_type) => (
-            result_type.s.accept_inf,
-            result_type.s.accept_zero,
-            result_type.s.accept_positive,
-            result_type.s.accept_negative,
-        ),
-    };
-
-    let mut res = proc_macro2::TokenStream::new();
-
-    res.extend(quote! {
-        let mut all_res = Vec::<#float_type>::new();
-        for a in values.iter() {
-            let a = <#full_type>::try_from(*a);
-
-            if let Ok(num_a) = a {
-                println!("compute {} with a = {:?}", #op_name, a);
-                let res = #op; // with panic if the result is not valid
-                all_res.push(res.get());
-            }
-        }
-
-    });
-
-    if accept_inf {
-        res.extend(quote! {
-            let has_inf = all_res.iter().any(|x| x.is_infinite());
-            assert!(has_inf, "No inf generated with {} but the output type {} accept it", #op_name, stringify!(#full_type));
-        });
-    }
-
-    if accept_zero {
-        res.extend(quote! {
-            let has_zero = all_res.iter().any(|x| x == &0.0);
-            assert!(has_zero, "No zero generated with {} but the output type {} accept it", #op_name, stringify!(#full_type));
-        });
-    }
-
-    if accept_positive {
-        res.extend(quote! {
-            let has_positive = all_res.iter().any(|x| x.is_sign_positive());
-            assert!(has_positive, "No positive generated with {} but the output type {} accept it", #op_name, stringify!(#full_type));
-        });
-    }
-
-    if accept_negative {
-        res.extend(quote! {
-            let has_negative = all_res.iter().any(|x| x.is_sign_negative());
-            assert!(has_negative, "No negative generated with {} but the output type {} accept it", #op_name, stringify!(#full_type));
-        });
-    }
-
-    res
-}
-
-#[proc_macro]
-pub fn generate_tests(_input: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    let floats_f64 = get_definitions("f64");
-
-    let mut output = proc_macro2::TokenStream::new();
-
-    let float_type = floats_f64[0].float_type_ident();
-
-    for float_a in &floats_f64 {
-        let full_type_a = float_a.full_type_ident();
-
-        let neg_result_type = neg_result(float_a, &floats_f64);
-        output.extend(test_op(float_a, "neg", neg_result_type, quote! { -num_a }));
-        
-        let floor_result_type = floor_result(float_a, &floats_f64);
-        output.extend(test_op(float_a, "floor", floor_result_type, quote! { num_a.floor() }));
-
-        let ceil_result_type = ceil_result(float_a, &floats_f64);
-        output.extend(test_op(float_a, "ceil", ceil_result_type, quote! { num_a.ceil() }));
-
-        let round_result_type = round_result(float_a, &floats_f64);
-        output.extend(test_op(float_a, "round", round_result_type, quote! { num_a.round() }));
-
-        let abs_result_type = abs_result(float_a, &floats_f64);
-        output.extend(test_op(float_a, "abs", abs_result_type, quote! { num_a.abs() }));
-
-        for float_b in &floats_f64 {
-            let full_type_b = float_b.full_type_ident();
-
-            output.extend(quote! {
-                for a in values.iter() {
-
-                    for b in values.iter() {
-                        println!("a = {:?} b = {:?}", a, b);
-                        let a = <#full_type_a>::try_from(*a);
-                        let b = <#full_type_b>::try_from(*b);
-                        println!("a = {:?} b = {:?}", a, b);
-
-
-                        match (a, b) {
-                            (Ok(num_a), Ok(num_b)) => {
-                                println!("{:?} + {:?} = {:?}", num_a, num_b, num_a + num_b);
-                                println!("{:?} - {:?} = {:?}", num_a, num_b, num_a - num_b);
-                                println!("{:?} * {:?} = {:?}", num_a, num_b, num_a * num_b);
-                                println!("{:?} / {:?} = {:?}", num_a, num_b, num_a / num_b);
-                                println!("{:?} % {:?} = {:?}", num_a, num_b, num_a % num_b);
-                            }
-                            _ => {}
-                        }
-                    }
-                }
-            });
-        }
-    }
-
-    quote! {
-        #[test]
-        fn test_floats() {
-
-            let values = [
-                #float_type::NAN,
-                #float_type::INFINITY,
-                #float_type::NEG_INFINITY,
-                #float_type::MAX,
-                #float_type::MIN,
-                #float_type::MIN_POSITIVE,
-                -#float_type::MIN_POSITIVE,
-                0.0,
-                -0.0,
-                1.0,
-                2.0,
-                -1.0,
-                -2.0,
-            ];
-
-            #output
-        }
-    }
-    .into()
 }
 
 fn do_generate_floats(floats: &[FloatDefinition], with_generic: bool) -> proc_macro2::TokenStream {

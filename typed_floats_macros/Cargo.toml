@@ -7,6 +7,12 @@ description = "Crate only used to generate the `typed_floats` crate."
 repository = "https://github.com/tdelmas/floats"
 readme = "./README.md"
 
+[profile.dev]
+incremental = false
+
+[profile.test]
+incremental = false
+
 [lib]
 proc-macro = true
 
