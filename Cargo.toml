@@ -5,5 +5,11 @@ members = [
     "typed_floats_macros",
 ]
 
+[profile.dev]
+incremental = false
+
+[profile.test]
+incremental = false
+
 [profile.release]
 panic = "abort"

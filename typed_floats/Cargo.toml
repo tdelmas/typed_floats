@@ -1,20 +1,14 @@
 [package]
 name = "typed_floats"
-version = "0.1.7"
+version = "0.1.8"
 edition = "2021"
 license = "MIT OR Apache-2.0"
 description = "Types for handling floats with type checking at compile time."
 repository = "https://github.com/tdelmas/floats"
 readme = "./README.md"
 
-[profile.dev]
-incremental = false
-
-[profile.test]
-incremental = false
-
 [dependencies]
 serde_json = { version = "1.0"}
 thiserror = "1.0"
-typed_floats_macros = { version = "0.1.7" }
+typed_floats_macros = { version = "0.1.8" }
 

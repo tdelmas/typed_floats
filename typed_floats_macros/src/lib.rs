@@ -21,9 +21,17 @@ use add_doc::*;
 
 mod gen_tests;
 
+static F32: &'static str = "f32";
+static F64: &'static str = "f64";
+
 #[proc_macro]
 pub fn generate_tests(_input: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    gen_tests::generate_tests()
+    let mut output = proc_macro2::TokenStream::new();
+
+    output.extend(gen_tests::generate_tests(F32));
+    output.extend(gen_tests::generate_tests(F64));
+
+    output.into()
 }
 
 fn get_specifications() -> Vec<(&'static str, FloatSpecifications)> {

@@ -71,12 +71,14 @@ fn test_op_checks(
     res
 }
 
-pub(crate) fn generate_tests() -> proc_macro::TokenStream {
-    let floats_f64 = get_definitions("f64");
+pub(crate) fn generate_tests(float_type: &'static str) -> proc_macro2::TokenStream {
+    let floats_f64 = get_definitions(float_type);
 
     let mut output = proc_macro2::TokenStream::new();
 
     let float_type = floats_f64[0].float_type_ident();
+
+    let test_fn_name = quote::format_ident!("test_{}", float_type);
 
     for float in &floats_f64 {
         let float_type = float.float_type_ident();
@@ -261,7 +263,7 @@ pub(crate) fn generate_tests() -> proc_macro::TokenStream {
 
     quote! {
         #[test]
-        fn test_floats() {
+        fn #test_fn_name() {
 
             let values = [
                 #float_type::NAN,
@@ -282,5 +284,4 @@ pub(crate) fn generate_tests() -> proc_macro::TokenStream {
             #output
         }
     }
-    .into()
 }
