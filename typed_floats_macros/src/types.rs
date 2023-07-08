@@ -123,7 +123,6 @@ pub(crate) fn output_name(
     }
 }
 
-
 pub(crate) struct Op {
     pub(crate) fn_name: String,
     pub(crate) trait_name: Option<String>,
@@ -157,13 +156,13 @@ impl Op {
     pub(crate) fn get_op(&self, float: &FloatDefinition) -> proc_macro2::TokenStream {
         (self.op)(float)
     }
-    
+
     pub(crate) fn get_impl(
         &self,
         float: &FloatDefinition,
         floats: &[FloatDefinition],
     ) -> proc_macro2::TokenStream {
-        let output = self.get_result(float, &floats);
+        let output = self.get_result(float, floats);
 
         let float_full_type = &float.full_type_ident();
 
@@ -211,5 +210,115 @@ impl Op {
                 }
             }
         }
+    }
+}
+
+pub(crate) struct OpRhs {
+    pub(crate) fn_name: String,
+    pub(crate) trait_name: String,
+    op: Box<dyn Fn(&FloatDefinition, &FloatDefinition) -> proc_macro2::TokenStream>,
+    result: Box<
+        dyn Fn(&FloatDefinition, &FloatDefinition, &[FloatDefinition]) -> Option<FloatDefinition>,
+    >,
+}
+
+impl OpRhs {
+    pub(crate) fn new(
+        fn_name: &str,
+        trait_name: &str,
+        op: Box<dyn Fn(&FloatDefinition, &FloatDefinition) -> proc_macro2::TokenStream>,
+        result: Box<
+            dyn Fn(
+                &FloatDefinition,
+                &FloatDefinition,
+                &[FloatDefinition],
+            ) -> Option<FloatDefinition>,
+        >,
+    ) -> Self {
+        Self {
+            fn_name: fn_name.to_string(),
+            trait_name: trait_name.to_string(),
+            op,
+            result,
+        }
+    }
+
+    pub(crate) fn get_result(
+        &self,
+        float: &FloatDefinition,
+        rhs: &FloatDefinition,
+        floats: &[FloatDefinition],
+    ) -> Option<FloatDefinition> {
+        (self.result)(float, rhs, floats)
+    }
+
+    pub(crate) fn get_op(
+        &self,
+        float: &FloatDefinition,
+        rhs: &FloatDefinition,
+    ) -> proc_macro2::TokenStream {
+        (self.op)(float, rhs)
+    }
+
+    pub(crate) fn get_impl(
+        &self,
+        float: &FloatDefinition,
+        rhs: &FloatDefinition,
+        floats: &[FloatDefinition],
+    ) -> proc_macro2::TokenStream {
+        let output = self.get_result(float, rhs, floats);
+
+        let float_full_type = &float.full_type_ident();
+        let rhs_full_type = &rhs.full_type_ident();
+
+        let op = &self.get_op(float, rhs);
+
+        let return_value = match output {
+            Some(_) => {
+                quote! {
+                    unsafe { Self::Output::new_unchecked(#op) }
+                }
+            }
+            None => {
+                quote! { #op }
+            }
+        };
+
+        let output_name = output_name(&output, &float.float_type_ident());
+
+        let trait_ident = Ident::new(self.trait_name.as_str(), Span::call_site());
+        let fn_ident = Ident::new(self.fn_name.as_str(), Span::call_site());
+
+        let trait_assign_ident =
+            Ident::new(&format!("{}Assign", self.trait_name), Span::call_site());
+        let fn_assign_ident = Ident::new(&format!("{}_assign", self.fn_name), Span::call_site());
+
+        let mut res = quote! {
+            impl core::ops::#trait_ident<#rhs_full_type> for #float_full_type {
+                type Output = #output_name;
+
+                #[inline]
+                fn #fn_ident(self, rhs: #rhs_full_type) -> Self::Output {
+                    #return_value
+                }
+            }
+        };
+
+        if let Some(output) = output {
+            if output.s.can_fit_into(&float.s) {
+                res.extend(quote! {
+                    impl core::ops::#trait_assign_ident<#rhs_full_type> for #float_full_type {
+                        #[inline]
+                        fn #fn_assign_ident(&mut self, rhs: #rhs_full_type) {
+                            unsafe {
+                                *self = Self::new_unchecked(#op);
+                            }
+                        }
+                    }
+                })
+            }
+        }
+
+        res
     }
 }

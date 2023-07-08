@@ -27,6 +27,12 @@ fn comment_line(str: &str) -> proc_macro2::TokenStream {
 fn generate_op_table(floats: &[FloatDefinition], op: &str) -> proc_macro2::TokenStream {
     let mut output = proc_macro2::TokenStream::new();
 
+    let add = get_add();
+    let sub = get_sub();
+    let mul = get_mul();
+    let rem = get_rem();
+    let div = get_div();
+
     let mut str: String = format!("/// |  {op}  |");
     for rhs in floats {
         str += format!(" {rhs_name} |", rhs_name = rhs.name).as_str();
@@ -51,10 +57,11 @@ fn generate_op_table(floats: &[FloatDefinition], op: &str) -> proc_macro2::Token
 
         for rhs in floats {
             let result = match op {
-                "+" => add_result(&float.s, &rhs.s, floats),
-                "-" => sub_result(&float.s, &rhs.s, floats),
-                "%" => rem_result(&float.s, &rhs.s, floats),
-                "/" => div_result(&float.s, &rhs.s, floats),
+                "+" => add.get_result(float, rhs, floats),
+                "-" => sub.get_result(float, rhs, floats),
+                "*" => mul.get_result(float, rhs, floats),
+                "%" => rem.get_result(float, rhs, floats),
+                "/" => div.get_result(float, rhs, floats),
                 _ => panic!("Unknown op {}", op),
             };
 

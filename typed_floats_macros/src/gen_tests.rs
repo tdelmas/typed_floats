@@ -86,6 +86,12 @@ pub(crate) fn generate_tests(float_type: &'static str) -> proc_macro2::TokenStre
     let floor = get_floor();
     let round = get_round();
 
+    let add = get_add();
+    let sub = get_sub();
+    let mul = get_mul();
+    let rem = get_rem();
+    let div = get_div();
+
     for float in &floats_f64 {
         let float_type = float.float_type_ident();
         let full_type = float.full_type_ident();
@@ -163,7 +169,7 @@ pub(crate) fn generate_tests(float_type: &'static str) -> proc_macro2::TokenStre
         for float_rhs in &floats_f64 {
             let full_type_rhs = float_rhs.full_type_ident();
 
-            let add_result_type = add_result(&float.s, &float_rhs.s, &floats_f64);
+            let add_result_type = add.get_result(float, float_rhs, &floats_f64);
             let checks_add = test_op_checks(float, "add", &add_result_type);
             let add_get = match &add_result_type {
                 None => quote! { res },
@@ -172,7 +178,7 @@ pub(crate) fn generate_tests(float_type: &'static str) -> proc_macro2::TokenStre
                 }
             };
 
-            let sub_result_type = sub_result(&float.s, &float_rhs.s, &floats_f64);
+            let sub_result_type = sub.get_result(float, float_rhs, &floats_f64);
             let checks_sub = test_op_checks(float, "sub", &sub_result_type);
             let sub_get = match &sub_result_type {
                 None => quote! { res },
@@ -181,7 +187,7 @@ pub(crate) fn generate_tests(float_type: &'static str) -> proc_macro2::TokenStre
                 }
             };
 
-            let mul_result_type = mul_result(&float.s, &float_rhs.s, &floats_f64);
+            let mul_result_type = mul.get_result(float, float_rhs, &floats_f64);
             let checks_mul = test_op_checks(float, "mul", &mul_result_type);
             let mul_get = match &mul_result_type {
                 None => quote! { res },
@@ -190,7 +196,7 @@ pub(crate) fn generate_tests(float_type: &'static str) -> proc_macro2::TokenStre
                 }
             };
 
-            let div_result_type = div_result(&float.s, &float_rhs.s, &floats_f64);
+            let div_result_type = div.get_result(float, float_rhs, &floats_f64);
             let checks_div = test_op_checks(float, "div", &div_result_type);
             let div_get = match &div_result_type {
                 None => quote! { res },
@@ -199,7 +205,7 @@ pub(crate) fn generate_tests(float_type: &'static str) -> proc_macro2::TokenStre
                 }
             };
 
-            let rem_result_type = rem_result(&float.s, &float_rhs.s, &floats_f64);
+            let rem_result_type = rem.get_result(float, float_rhs, &floats_f64);
             let checks_rem = test_op_checks(float, "rem", &rem_result_type);
             let rem_get = match &rem_result_type {
                 None => quote! { res },

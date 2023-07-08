@@ -1,6 +1,4 @@
-use proc_macro2::Span;
 use quote::quote;
-use syn::Ident;
 
 use crate::types::*;
 
@@ -44,10 +42,10 @@ pub(crate) fn get_abs() -> Op {
         }),
         Box::new(|float, floats| {
             let mut output_spec = float.s.clone();
-        
+
             output_spec.accept_positive = true;
             output_spec.accept_negative = false;
-        
+
             find_float(&output_spec, floats)
         }),
     )
@@ -62,7 +60,7 @@ pub(crate) fn get_ceil() -> Op {
             if float.s.accept_negative {
                 let mut output_spec = float.s.clone();
                 output_spec.accept_zero = true;
-        
+
                 find_float(&output_spec, floats)
             } else {
                 Some(float.clone())
@@ -97,7 +95,7 @@ pub(crate) fn get_round() -> Op {
         Box::new(|float, floats| {
             let mut output_spec = float.s.clone();
             output_spec.accept_zero = true;
-        
+
             find_float(&output_spec, floats)
         }),
     )

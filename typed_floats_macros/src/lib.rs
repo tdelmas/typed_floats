@@ -184,6 +184,11 @@ fn do_generate_floats(floats: &[FloatDefinition], with_generic: bool) -> proc_ma
     let round = get_round();
     let abs = get_abs();
 
+    let add = get_add();
+    let sub = get_sub();
+    let mul = get_mul();
+    let rem = get_rem();
+    let div = get_div();
 
     for float in floats {
         let name = float.name_ident();
@@ -295,11 +300,11 @@ fn do_generate_floats(floats: &[FloatDefinition], with_generic: bool) -> proc_ma
         output.extend(abs.get_impl(float_a, floats));
 
         for float_b in floats {
-            output.extend(impl_add(float_a, float_b, floats));
-            output.extend(impl_sub(float_a, float_b, floats));
-            output.extend(impl_mul(float_a, float_b, floats));
-            output.extend(impl_div(float_a, float_b, floats));
-            output.extend(impl_rem(float_a, float_b, floats));
+            output.extend(add.get_impl(float_a, float_b, floats));
+            output.extend(sub.get_impl(float_a, float_b, floats));
+            output.extend(mul.get_impl(float_a, float_b, floats));
+            output.extend(div.get_impl(float_a, float_b, floats));
+            output.extend(rem.get_impl(float_a, float_b, floats));
         }
     }
 
