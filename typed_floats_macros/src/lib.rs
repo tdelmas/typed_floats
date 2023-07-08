@@ -21,8 +21,8 @@ use add_doc::*;
 
 mod gen_tests;
 
-static F32: &'static str = "f32";
-static F64: &'static str = "f64";
+static F32: &str = "f32";
+static F64: &str = "f64";
 
 #[proc_macro]
 pub fn generate_tests(_input: proc_macro::TokenStream) -> proc_macro::TokenStream {
