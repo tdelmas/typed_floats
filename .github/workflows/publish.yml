@@ -12,12 +12,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: cargo publish
+      - name: cargo publish typed_floats_macros
         run: cd typed_floats_macros && cargo publish --token ${CRATES_TOKEN}
         env:
           CRATES_TOKEN: ${{ secrets.CRATES_TOKEN }}
-      - name: cargo publish
-        run: cd typed_floats && cargo publish --token ${CRATES_TOKEN}
+      - name: cargo publish typed_floats
+        run: |
+          cd typed_floats
+          sed -i 's/, path = "..\/typed_floats_macros"//' Cargo.toml
+          cargo publish --token ${CRATES_TOKEN}
         env:
           CRATES_TOKEN: ${{ secrets.CRATES_TOKEN }}
   

@@ -1,7 +1,5 @@
 This crate helps you to ensure the kind of floats you are using.
 
-# NOT PRODUCTION READY YET
-
 zero overhead: everything is checked at compile time.
 (only `try_from` adds a little overhead at runtime)
 
@@ -9,11 +7,12 @@ zero overhead: everything is checked at compile time.
 
 The types provided by this crate are:
 - `NonNaN`,`NonNaNFinite`, `NonZeroNonNaN`, `NonZeroNonNaNFinite`
-Their positive and negative counterparts:
+
+And their positive and negative counterparts:
 - `Positive`,`PositiveFinite`, `StrictlyPositive`, `StrictlyPositiveFinite`
 - `Negative`,`NegativeFinite`, `StrictlyNegative`, `StrictlyNegativeFinite`
 
-By default all types are `f64` but you can use the `f32` like `Positive<f32>`.
+By default all types are `f64` but all can use `f32` (e.g. like `Positive<f32>`).
 
 The following conversions are implemented:
 - Between all the types of this crate
