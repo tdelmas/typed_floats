@@ -94,6 +94,12 @@ fn generate_fn_table(floats: &[FloatDefinition]) -> proc_macro2::TokenStream {
 
     output.extend(comment_line(&str));
 
+    let neg = get_neg();
+    let abs = get_abs();
+    let ceil = get_ceil();
+    let floor = get_floor();
+    let round = get_round();
+
     for func in fns {
         let mut str: String = format!("/// {func} | ").to_string();
 
@@ -101,11 +107,11 @@ fn generate_fn_table(floats: &[FloatDefinition]) -> proc_macro2::TokenStream {
             let float_type = float.float_type;
 
             let result = match func {
-                "neg" => neg_result(float, floats),
-                "abs" => abs_result(float, floats),
-                "ceil" => ceil_result(float, floats),
-                "floor" => floor_result(float, floats),
-                "round" => round_result(float, floats),
+                "neg" => neg.get_result(float, floats),
+                "abs" => abs.get_result(float, floats),
+                "ceil" => ceil.get_result(float, floats),
+                "floor" => floor.get_result(float, floats),
+                "round" => round.get_result(float, floats),
                 _ => panic!("Unknown fn {}", func),
             };
 

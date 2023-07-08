@@ -80,23 +80,29 @@ pub(crate) fn generate_tests(float_type: &'static str) -> proc_macro2::TokenStre
 
     let test_fn_name = quote::format_ident!("test_{}", float_type);
 
+    let neg = get_neg();
+    let abs = get_abs();
+    let ceil = get_ceil();
+    let floor = get_floor();
+    let round = get_round();
+
     for float in &floats_f64 {
         let float_type = float.float_type_ident();
         let full_type = float.full_type_ident();
 
-        let neg_result_type = neg_result(float, &floats_f64);
+        let neg_result_type = neg.get_result(float, &floats_f64);
         let checks_neg = test_op_checks(float, "neg", &neg_result_type);
 
-        let floor_result_type = floor_result(float, &floats_f64);
+        let floor_result_type = floor.get_result(float, &floats_f64);
         let checks_floor = test_op_checks(float, "floor", &floor_result_type);
 
-        let ceil_result_type = ceil_result(float, &floats_f64);
+        let ceil_result_type = ceil.get_result(float, &floats_f64);
         let checks_ceil = test_op_checks(float, "ceil", &ceil_result_type);
 
-        let round_result_type = round_result(float, &floats_f64);
+        let round_result_type = round.get_result(float, &floats_f64);
         let checks_round = test_op_checks(float, "round", &round_result_type);
 
-        let abs_result_type = abs_result(float, &floats_f64);
+        let abs_result_type = abs.get_result(float, &floats_f64);
         let checks_abs = test_op_checks(float, "abs", &abs_result_type);
 
         output.extend(quote! {

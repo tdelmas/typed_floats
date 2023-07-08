@@ -178,6 +178,13 @@ pub fn generate_floats(_input: proc_macro::TokenStream) -> proc_macro::TokenStre
 fn do_generate_floats(floats: &[FloatDefinition], with_generic: bool) -> proc_macro2::TokenStream {
     let mut output = proc_macro2::TokenStream::new();
 
+    let neg = get_neg();
+    let floor = get_floor();
+    let ceil = get_ceil();
+    let round = get_round();
+    let abs = get_abs();
+
+
     for float in floats {
         let name = float.name_ident();
         let float_type = float.float_type_ident();
@@ -281,11 +288,11 @@ fn do_generate_floats(floats: &[FloatDefinition], with_generic: bool) -> proc_ma
     }
 
     for float_a in floats {
-        output.extend(impl_neg(float_a, floats));
-        output.extend(impl_floor(float_a, floats));
-        output.extend(impl_ceil(float_a, floats));
-        output.extend(impl_round(float_a, floats));
-        output.extend(impl_abs(float_a, floats));
+        output.extend(neg.get_impl(float_a, floats));
+        output.extend(floor.get_impl(float_a, floats));
+        output.extend(ceil.get_impl(float_a, floats));
+        output.extend(round.get_impl(float_a, floats));
+        output.extend(abs.get_impl(float_a, floats));
 
         for float_b in floats {
             output.extend(impl_add(float_a, float_b, floats));

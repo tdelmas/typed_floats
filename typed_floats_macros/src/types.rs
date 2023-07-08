@@ -122,3 +122,94 @@ pub(crate) fn output_name(
         None => quote! { #float_type },
     }
 }
+
+
+pub(crate) struct Op {
+    pub(crate) fn_name: String,
+    pub(crate) trait_name: Option<String>,
+    op: Box<dyn Fn(&FloatDefinition) -> proc_macro2::TokenStream>,
+    result: Box<dyn Fn(&FloatDefinition, &[FloatDefinition]) -> Option<FloatDefinition>>,
+}
+
+impl Op {
+    pub(crate) fn new(
+        fn_name: &str,
+        trait_name: Option<&str>,
+        op: Box<dyn Fn(&FloatDefinition) -> proc_macro2::TokenStream>,
+        result: Box<dyn Fn(&FloatDefinition, &[FloatDefinition]) -> Option<FloatDefinition>>,
+    ) -> Self {
+        Self {
+            fn_name: fn_name.to_string(),
+            trait_name: trait_name.map(|s| s.to_string()),
+            op,
+            result,
+        }
+    }
+
+    pub(crate) fn get_result(
+        &self,
+        float: &FloatDefinition,
+        floats: &[FloatDefinition],
+    ) -> Option<FloatDefinition> {
+        (self.result)(float, floats)
+    }
+
+    pub(crate) fn get_op(&self, float: &FloatDefinition) -> proc_macro2::TokenStream {
+        (self.op)(float)
+    }
+    
+    pub(crate) fn get_impl(
+        &self,
+        float: &FloatDefinition,
+        floats: &[FloatDefinition],
+    ) -> proc_macro2::TokenStream {
+        let output = self.get_result(float, &floats);
+
+        let float_full_type = &float.full_type_ident();
+
+        let op = &self.get_op(float);
+
+        let return_value = match &output {
+            Some(d) => {
+                let output_call = &d.call_tokens();
+
+                quote! {
+                    unsafe { #output_call::new_unchecked(#op) }
+                }
+            }
+            None => {
+                quote! { #op }
+            }
+        };
+
+        let output_name = output_name(&output, &float.float_type_ident());
+
+        let fn_ident = Ident::new(self.fn_name.as_str(), Span::call_site());
+
+        if let Some(trait_name) = &self.trait_name {
+            let trait_name: proc_macro2::TokenStream = trait_name.parse().unwrap();
+
+            quote! {
+                impl #trait_name for #float_full_type {
+                    type Output = #output_name;
+
+                    #[inline]
+                    #[must_use]
+                    fn #fn_ident(self) -> Self::Output {
+                        #return_value
+                    }
+                }
+            }
+        } else {
+            quote! {
+                impl #float_full_type {
+                    #[inline]
+                    #[must_use]
+                    pub fn #fn_ident(self) -> #output_name {
+                        #return_value
+                    }
+                }
+            }
+        }
+    }
+}
