@@ -85,6 +85,7 @@ pub(crate) fn generate_tests(float_type: &'static str) -> proc_macro2::TokenStre
     let ceil = get_ceil();
     let floor = get_floor();
     let round = get_round();
+    let trunc = get_trunc();
 
     let add = get_add();
     let sub = get_sub();
@@ -111,12 +112,16 @@ pub(crate) fn generate_tests(float_type: &'static str) -> proc_macro2::TokenStre
         let abs_result_type = abs.get_result(float, &floats_f64);
         let checks_abs = test_op_checks(float, "abs", &abs_result_type);
 
+        let trunc_result_type = trunc.get_result(float, &floats_f64);   
+        let checks_trunc = test_op_checks(float, "trunc", &trunc_result_type);
+
         output.extend(quote! {
             let mut all_neg = Vec::<#float_type>::new();
             let mut all_floor = Vec::<#float_type>::new();
             let mut all_ceil = Vec::<#float_type>::new();
             let mut all_round = Vec::<#float_type>::new();
             let mut all_abs = Vec::<#float_type>::new();
+            let mut all_trunc = Vec::<#float_type>::new();
 
             for a in values.iter() {
                 let a = <#full_type>::try_from(*a);
@@ -143,6 +148,10 @@ pub(crate) fn generate_tests(float_type: &'static str) -> proc_macro2::TokenStre
                     let abs = num_a.abs();
                     println!("abs = {:?}", abs);
                     all_abs.push(abs.get());
+
+                    let trunc = num_a.trunc();
+                    println!("trunc = {:?}", trunc);
+                    all_trunc.push(trunc.get());
                 }
             }
 
@@ -160,6 +169,9 @@ pub(crate) fn generate_tests(float_type: &'static str) -> proc_macro2::TokenStre
 
             let all_res = all_abs;
             #checks_abs
+
+            let all_res = all_trunc;
+            #checks_trunc
         });
 
         for float_rhs in &floats_f64 {

@@ -111,6 +111,61 @@ pub(crate) fn get_round() -> Op {
     )
 }
 
+pub(crate) fn get_trunc() -> Op {
+    Op::new(
+        "trunc",
+        "trunc",
+        "trunc",
+        None,
+        Box::new(|_| quote! { self.get().trunc() }),
+        Box::new(|float, floats| {
+            let mut output_spec = float.s.clone();
+            output_spec.accept_zero = true;
+
+            find_float(&output_spec, floats)
+        }),
+    )
+}
+
+pub(crate) fn get_fract() -> Op {
+    Op::new(
+        "fract",
+        "fract",
+        "fract",
+        None,
+        Box::new(|_| quote! { self.get().fract() }),
+        Box::new(|float, _| Some(float.clone())),
+    )
+}
+
+pub(crate) fn get_signum() -> Op {
+    Op::new(
+        "signum",
+        "signum",
+        "signum",
+        None,
+        Box::new(|float| {
+            if !float.s.accept_negative {
+                quote! { 1.0 }
+            } else if !float.s.accept_positive {
+                quote! { -1.0 }
+            } else {
+                quote! { self.get().signum() }
+            }
+        }),
+        Box::new(|float, _| Some(float.clone())),
+    )
+}
+
 pub(crate) fn get_impl_self() -> Vec<Op> {
-    vec![get_neg(), get_abs(), get_ceil(), get_floor(), get_round()]
+    vec![
+        get_neg(),
+        get_abs(),
+        get_ceil(),
+        get_floor(),
+        get_round(),
+        get_trunc(),
+        get_fract(),
+        get_signum(),
+    ]
 }
