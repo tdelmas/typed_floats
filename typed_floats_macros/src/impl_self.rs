@@ -157,6 +157,36 @@ pub(crate) fn get_signum() -> Op {
     )
 }
 
+pub(crate) fn get_sqrt() -> Op {
+    Op::new(
+        "sqrt",
+        "sqrt",
+        "sqrt",
+        None,
+        Box::new(|float| {
+            // sqrt(-0.0) = -0.0
+            if !float.s.accept_positive && !float.s.accept_zero {
+                let float_type = float.float_type_ident();
+
+                quote! { #float_type::NAN }
+            } else {
+                quote! { self.get().signum() }
+            }
+        }),
+        Box::new(|float, floats| {
+            let mut output_spec = float.s.clone();
+
+            if output_spec.accept_negative {
+                return None;
+            }
+
+            output_spec.accept_zero = true;
+
+            find_float(&output_spec, floats)
+        }),
+    )
+}
+
 pub(crate) fn get_impl_self() -> Vec<Op> {
     vec![
         get_neg(),
@@ -167,5 +197,6 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
         get_trunc(),
         get_fract(),
         get_signum(),
+        get_sqrt(),
     ]
 }

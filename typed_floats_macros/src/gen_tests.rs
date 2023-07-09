@@ -112,7 +112,7 @@ pub(crate) fn generate_tests(float_type: &'static str) -> proc_macro2::TokenStre
         let abs_result_type = abs.get_result(float, &floats_f64);
         let checks_abs = test_op_checks(float, "abs", &abs_result_type);
 
-        let trunc_result_type = trunc.get_result(float, &floats_f64);   
+        let trunc_result_type = trunc.get_result(float, &floats_f64);
         let checks_trunc = test_op_checks(float, "trunc", &trunc_result_type);
 
         output.extend(quote! {

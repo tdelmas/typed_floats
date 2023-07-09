@@ -169,7 +169,7 @@ pub fn generate_floats(_input: proc_macro::TokenStream) -> proc_macro::TokenStre
 
     output.extend(generate_main_description(&floats_f64));
     output.extend(quote! {
-        pub trait Float: Eq + Copy + Ord + core::fmt::Debug {    
+        pub trait Float: Eq + Copy + Ord + core::fmt::Debug {
             type Content: Sized + Copy + PartialOrd + PartialEq + core::fmt::Debug;
         }
     });
