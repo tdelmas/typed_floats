@@ -160,10 +160,6 @@ pub(crate) fn generate_tests(float_type: &'static str) -> proc_macro2::TokenStre
 
             let all_res = all_abs;
             #checks_abs
-
-
-
-
         });
 
         for float_rhs in &floats_f64 {

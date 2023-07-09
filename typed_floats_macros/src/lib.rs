@@ -168,6 +168,11 @@ pub fn generate_floats(_input: proc_macro::TokenStream) -> proc_macro::TokenStre
     let mut output = proc_macro2::TokenStream::new();
 
     output.extend(generate_main_description(&floats_f64));
+    output.extend(quote! {
+        pub trait Float: Eq + Copy + Ord + core::fmt::Debug {    
+            type Content: Sized + Copy + PartialOrd + PartialEq + core::fmt::Debug;
+        }
+    });
 
     output.extend(do_generate_floats(&floats_f64, true));
     output.extend(do_generate_floats(&floats_f32, false));
@@ -178,17 +183,8 @@ pub fn generate_floats(_input: proc_macro::TokenStream) -> proc_macro::TokenStre
 fn do_generate_floats(floats: &[FloatDefinition], with_generic: bool) -> proc_macro2::TokenStream {
     let mut output = proc_macro2::TokenStream::new();
 
-    let neg = get_neg();
-    let floor = get_floor();
-    let ceil = get_ceil();
-    let round = get_round();
-    let abs = get_abs();
-
-    let add = get_add();
-    let sub = get_sub();
-    let mul = get_mul();
-    let rem = get_rem();
-    let div = get_div();
+    let ops = get_impl_self();
+    let ops_rhs = get_impl_self_rhs();
 
     for float in floats {
         let name = float.name_ident();
@@ -293,18 +289,14 @@ fn do_generate_floats(floats: &[FloatDefinition], with_generic: bool) -> proc_ma
     }
 
     for float_a in floats {
-        output.extend(neg.get_impl(float_a, floats));
-        output.extend(floor.get_impl(float_a, floats));
-        output.extend(ceil.get_impl(float_a, floats));
-        output.extend(round.get_impl(float_a, floats));
-        output.extend(abs.get_impl(float_a, floats));
+        for op in &ops {
+            output.extend(op.get_impl(float_a, floats));
+        }
 
         for float_b in floats {
-            output.extend(add.get_impl(float_a, float_b, floats));
-            output.extend(sub.get_impl(float_a, float_b, floats));
-            output.extend(mul.get_impl(float_a, float_b, floats));
-            output.extend(div.get_impl(float_a, float_b, floats));
-            output.extend(rem.get_impl(float_a, float_b, floats));
+            for op in &ops_rhs {
+                output.extend(op.get_impl(float_a, float_b, floats));
+            }
         }
     }
 

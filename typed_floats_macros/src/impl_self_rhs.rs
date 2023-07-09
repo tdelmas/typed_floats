@@ -5,6 +5,8 @@ use crate::types::*;
 pub(crate) fn get_add() -> OpRhs {
     OpRhs::new(
         "add",
+        "+",
+        "add",
         "Add",
         Box::new(|_, _| quote! { self.get() + rhs.get() }),
         Box::new(|float, rhs, floats| {
@@ -48,6 +50,8 @@ pub(crate) fn get_add() -> OpRhs {
 pub(crate) fn get_sub() -> OpRhs {
     OpRhs::new(
         "sub",
+        "-",
+        "sub",
         "Sub",
         Box::new(|_, _| quote! { self.get() - rhs.get() }),
         Box::new(|float, rhs, floats| {
@@ -84,6 +88,8 @@ pub(crate) fn get_sub() -> OpRhs {
 pub(crate) fn get_rem() -> OpRhs {
     OpRhs::new(
         "rem",
+        "%",
+        "rem",
         "Rem",
         Box::new(|_, _| quote! { self.get() % rhs.get() }),
         Box::new(|float, rhs, floats| {
@@ -111,6 +117,8 @@ pub(crate) fn get_rem() -> OpRhs {
 
 pub(crate) fn get_div() -> OpRhs {
     OpRhs::new(
+        "div",
+        "/",
         "div",
         "Div",
         Box::new(|_, _| quote! { self.get() / rhs.get() }),
@@ -148,6 +156,8 @@ pub(crate) fn get_div() -> OpRhs {
 pub(crate) fn get_mul() -> OpRhs {
     OpRhs::new(
         "mul",
+        "*",
+        "mul",
         "Mul",
         Box::new(|_, _| quote! { self.get() * rhs.get() }),
         Box::new(|float, rhs, floats| {
@@ -179,4 +189,8 @@ pub(crate) fn get_mul() -> OpRhs {
             }
         }),
     )
+}
+
+pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
+    vec![get_add(), get_sub(), get_rem(), get_div(), get_mul()]
 }

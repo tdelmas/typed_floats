@@ -5,6 +5,8 @@ use crate::types::*;
 pub(crate) fn get_neg() -> Op {
     Op::new(
         "neg",
+        "-",
+        "neg",
         Some("core::ops::Neg"),
         Box::new(|_| {
             quote! { -self.get() }
@@ -27,6 +29,8 @@ pub(crate) fn get_neg() -> Op {
 
 pub(crate) fn get_abs() -> Op {
     Op::new(
+        "abs",
+        "abs",
         "abs",
         None,
         Box::new(|float| {
@@ -54,6 +58,8 @@ pub(crate) fn get_abs() -> Op {
 pub(crate) fn get_ceil() -> Op {
     Op::new(
         "ceil",
+        "ceil",
+        "ceil",
         None,
         Box::new(|_| quote! { self.get().ceil() }),
         Box::new(|float, floats| {
@@ -71,6 +77,8 @@ pub(crate) fn get_ceil() -> Op {
 
 pub(crate) fn get_floor() -> Op {
     Op::new(
+        "floor",
+        "floor",
         "floor",
         None,
         Box::new(|_| quote! { self.get().floor() }),
@@ -90,6 +98,8 @@ pub(crate) fn get_floor() -> Op {
 pub(crate) fn get_round() -> Op {
     Op::new(
         "round",
+        "round",
+        "round",
         None,
         Box::new(|_| quote! { self.get().round() }),
         Box::new(|float, floats| {
@@ -99,4 +109,8 @@ pub(crate) fn get_round() -> Op {
             find_float(&output_spec, floats)
         }),
     )
+}
+
+pub(crate) fn get_impl_self() -> Vec<Op> {
+    vec![get_neg(), get_abs(), get_ceil(), get_floor(), get_round()]
 }

@@ -124,6 +124,8 @@ pub(crate) fn output_name(
 }
 
 pub(crate) struct Op {
+    pub(crate) key: String,
+    pub(crate) display: String,
     pub(crate) fn_name: String,
     pub(crate) trait_name: Option<String>,
     op: Box<dyn Fn(&FloatDefinition) -> proc_macro2::TokenStream>,
@@ -132,12 +134,16 @@ pub(crate) struct Op {
 
 impl Op {
     pub(crate) fn new(
+        key: &str,
+        display: &str,
         fn_name: &str,
         trait_name: Option<&str>,
         op: Box<dyn Fn(&FloatDefinition) -> proc_macro2::TokenStream>,
         result: Box<dyn Fn(&FloatDefinition, &[FloatDefinition]) -> Option<FloatDefinition>>,
     ) -> Self {
         Self {
+            key: key.to_string(),
+            display: display.to_string(),
             fn_name: fn_name.to_string(),
             trait_name: trait_name.map(|s| s.to_string()),
             op,
@@ -214,6 +220,8 @@ impl Op {
 }
 
 pub(crate) struct OpRhs {
+    pub(crate) key: String,
+    pub(crate) display: String,
     pub(crate) fn_name: String,
     pub(crate) trait_name: String,
     op: Box<dyn Fn(&FloatDefinition, &FloatDefinition) -> proc_macro2::TokenStream>,
@@ -224,6 +232,8 @@ pub(crate) struct OpRhs {
 
 impl OpRhs {
     pub(crate) fn new(
+        key: &str,
+        display: &str,
         fn_name: &str,
         trait_name: &str,
         op: Box<dyn Fn(&FloatDefinition, &FloatDefinition) -> proc_macro2::TokenStream>,
@@ -236,6 +246,8 @@ impl OpRhs {
         >,
     ) -> Self {
         Self {
+            key: key.to_string(),
+            display: display.to_string(),
             fn_name: fn_name.to_string(),
             trait_name: trait_name.to_string(),
             op,

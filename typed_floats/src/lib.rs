@@ -67,10 +67,6 @@
 #![warn(clippy::indexing_slicing)]
 typed_floats_macros::generate_floats!();
 
-pub trait Float {
-    type Content: Sized + Copy + PartialOrd + PartialEq + core::fmt::Debug;
-}
-
 use core::num::{NonZeroI16, NonZeroI32, NonZeroI64, NonZeroI8};
 use core::num::{NonZeroU16, NonZeroU32, NonZeroU64, NonZeroU8};
 

@@ -1,20 +1,24 @@
 use crate::impl_self::*;
 use crate::impl_self_rhs::*;
+use crate::types::*;
 
 use crate::types::FloatDefinition;
 
 pub(crate) fn generate_main_description(floats: &[FloatDefinition]) -> proc_macro2::TokenStream {
     let mut output: proc_macro2::TokenStream = proc_macro2::TokenStream::new();
 
+    let ops = get_impl_self_rhs();
+
     output.extend(comment_line(
         "/// When the result is [`f64`], it may be `NaN`.",
     ));
     output.extend(comment_line("///"));
     output.extend(generate_fn_table(floats));
-    output.extend(generate_op_table(floats, "+"));
-    output.extend(generate_op_table(floats, "-"));
-    output.extend(generate_op_table(floats, "%"));
-    output.extend(generate_op_table(floats, "/"));
+
+    for op in ops {
+        output.extend(generate_op_table(floats, &op));
+    }
+
     output.extend(comment_line("///"));
 
     output
@@ -24,16 +28,12 @@ fn comment_line(str: &str) -> proc_macro2::TokenStream {
     str.parse().unwrap()
 }
 
-fn generate_op_table(floats: &[FloatDefinition], op: &str) -> proc_macro2::TokenStream {
+fn generate_op_table(floats: &[FloatDefinition], op: &OpRhs) -> proc_macro2::TokenStream {
     let mut output = proc_macro2::TokenStream::new();
 
-    let add = get_add();
-    let sub = get_sub();
-    let mul = get_mul();
-    let rem = get_rem();
-    let div = get_div();
+    let op_name = &op.display;
+    let mut str: String = format!("/// |  {op_name}  |");
 
-    let mut str: String = format!("/// |  {op}  |");
     for rhs in floats {
         str += format!(" {rhs_name} |", rhs_name = rhs.name).as_str();
     }
@@ -56,14 +56,7 @@ fn generate_op_table(floats: &[FloatDefinition], op: &str) -> proc_macro2::Token
         let mut str: String = format!("/// {name} | ").to_string();
 
         for rhs in floats {
-            let result = match op {
-                "+" => add.get_result(float, rhs, floats),
-                "-" => sub.get_result(float, rhs, floats),
-                "*" => mul.get_result(float, rhs, floats),
-                "%" => rem.get_result(float, rhs, floats),
-                "/" => div.get_result(float, rhs, floats),
-                _ => panic!("Unknown op {}", op),
-            };
+            let result = op.get_result(float, rhs, floats);
 
             let result_str = match result {
                 Some(result) => result.name,
@@ -83,8 +76,6 @@ fn generate_op_table(floats: &[FloatDefinition], op: &str) -> proc_macro2::Token
 fn generate_fn_table(floats: &[FloatDefinition]) -> proc_macro2::TokenStream {
     let mut output = proc_macro2::TokenStream::new();
 
-    let fns = vec!["neg", "abs", "ceil", "floor", "round"];
-
     let mut str: String = "/// |   |".to_string();
     for rhs in floats {
         str += format!(" {rhs_name} |", rhs_name = rhs.name).as_str();
@@ -101,26 +92,16 @@ fn generate_fn_table(floats: &[FloatDefinition]) -> proc_macro2::TokenStream {
 
     output.extend(comment_line(&str));
 
-    let neg = get_neg();
-    let abs = get_abs();
-    let ceil = get_ceil();
-    let floor = get_floor();
-    let round = get_round();
+    let ops = get_impl_self();
 
-    for func in fns {
-        let mut str: String = format!("/// {func} | ").to_string();
+    for op in ops {
+        let name = &op.display;
+        let mut str: String = format!("/// | {name} | ").to_string();
 
         for float in floats {
             let float_type = float.float_type;
 
-            let result = match func {
-                "neg" => neg.get_result(float, floats),
-                "abs" => abs.get_result(float, floats),
-                "ceil" => ceil.get_result(float, floats),
-                "floor" => floor.get_result(float, floats),
-                "round" => round.get_result(float, floats),
-                _ => panic!("Unknown fn {}", func),
-            };
+            let result = op.get_result(float, floats);
 
             let result_str = match result {
                 Some(result) => result.name,
