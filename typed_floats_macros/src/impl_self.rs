@@ -224,5 +224,49 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 Some(float.clone())
             }),
         ),
+        Op::new(
+            "exp",
+            "exp",
+            "exp",
+            None,
+            Box::new(|float| {
+                quote! { self.get().exp() }
+            }),
+            Box::new(|var| {
+                quote! { #var.exp() }
+            }),
+            Box::new(|float, floats| {
+                let spec = FloatSpecifications {
+                    accept_negative: false,
+                    accept_positive: true,
+                    accept_zero: float.s.accept_negative,
+                    accept_inf: float.s.accept_positive,
+                };
+
+                find_float(&spec, floats)
+            }),
+        ),
+        Op::new(
+            "exp2",
+            "exp2",
+            "exp2",
+            None,
+            Box::new(|float| {
+                quote! { self.get().exp2() }
+            }),
+            Box::new(|var| {
+                quote! { #var.exp2() }
+            }),
+            Box::new(|float, floats| {
+                let spec = FloatSpecifications {
+                    accept_negative: false,
+                    accept_positive: true,
+                    accept_zero: float.s.accept_negative,
+                    accept_inf: float.s.accept_positive,
+                };
+
+                find_float(&spec, floats)
+            }),
+        ),
     ]
 }
