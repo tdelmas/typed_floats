@@ -130,6 +130,7 @@ pub(crate) struct Op {
     pub(crate) trait_name: Option<String>,
     op: Box<dyn Fn(&FloatDefinition) -> proc_macro2::TokenStream>,
     result: Box<dyn Fn(&FloatDefinition, &[FloatDefinition]) -> Option<FloatDefinition>>,
+    test: Box<dyn Fn(&Ident) -> proc_macro2::TokenStream>,
 }
 
 impl Op {
@@ -139,6 +140,7 @@ impl Op {
         fn_name: &str,
         trait_name: Option<&str>,
         op: Box<dyn Fn(&FloatDefinition) -> proc_macro2::TokenStream>,
+        test: Box<dyn Fn(&Ident) -> proc_macro2::TokenStream>,
         result: Box<dyn Fn(&FloatDefinition, &[FloatDefinition]) -> Option<FloatDefinition>>,
     ) -> Self {
         Self {
@@ -148,6 +150,7 @@ impl Op {
             trait_name: trait_name.map(|s| s.to_string()),
             op,
             result,
+            test,
         }
     }
 
@@ -161,6 +164,11 @@ impl Op {
 
     pub(crate) fn get_op(&self, float: &FloatDefinition) -> proc_macro2::TokenStream {
         (self.op)(float)
+    }
+
+    pub(crate) fn get_test(&self, var: &str) -> proc_macro2::TokenStream {
+        let var = Ident::new(var, Span::call_site());
+        (self.test)(&var)
     }
 
     pub(crate) fn get_impl(
@@ -228,6 +236,7 @@ pub(crate) struct OpRhs {
     result: Box<
         dyn Fn(&FloatDefinition, &FloatDefinition, &[FloatDefinition]) -> Option<FloatDefinition>,
     >,
+    test: Box<dyn Fn(&Ident, &Ident) -> proc_macro2::TokenStream>,
 }
 
 impl OpRhs {
@@ -237,6 +246,7 @@ impl OpRhs {
         fn_name: &str,
         trait_name: &str,
         op: Box<dyn Fn(&FloatDefinition, &FloatDefinition) -> proc_macro2::TokenStream>,
+        test: Box<dyn Fn(&Ident, &Ident) -> proc_macro2::TokenStream>,
         result: Box<
             dyn Fn(
                 &FloatDefinition,
@@ -245,6 +255,10 @@ impl OpRhs {
             ) -> Option<FloatDefinition>,
         >,
     ) -> Self {
+        if !key.chars().all(|c| c.is_ascii_lowercase()) {
+            panic!("key must be only a-z lowercase");
+        }
+
         Self {
             key: key.to_string(),
             display: display.to_string(),
@@ -252,6 +266,7 @@ impl OpRhs {
             trait_name: trait_name.to_string(),
             op,
             result,
+            test,
         }
     }
 
@@ -270,6 +285,12 @@ impl OpRhs {
         rhs: &FloatDefinition,
     ) -> proc_macro2::TokenStream {
         (self.op)(float, rhs)
+    }
+
+    pub(crate) fn get_test(&self, var1: &str, var2: &str) -> proc_macro2::TokenStream {
+        let var1 = Ident::new(var1, Span::call_site());
+        let var2 = Ident::new(var2, Span::call_site());
+        (self.test)(&var1, &var2)
     }
 
     pub(crate) fn get_impl(
