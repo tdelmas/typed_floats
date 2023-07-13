@@ -229,7 +229,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
             "exp",
             "exp",
             None,
-            Box::new(|float| {
+            Box::new(|_| {
                 quote! { self.get().exp() }
             }),
             Box::new(|var| {
@@ -263,6 +263,92 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                     accept_positive: true,
                     accept_zero: float.s.accept_negative,
                     accept_inf: float.s.accept_positive,
+                };
+
+                find_float(&spec, floats)
+            }),
+        ),
+        Op::new(
+            "ln",
+            "ln",
+            "ln",
+            None,
+            Box::new(|float| {
+                let is_strictly_negative = !float.s.accept_positive && !float.s.accept_zero;
+
+                if is_strictly_negative {
+                    let float_type = float.float_type_ident();
+
+                    quote! { #float_type::NAN }
+                } else {
+                    quote! { self.get().ln() }
+                }
+            }),
+            Box::new(|var| {
+                quote! { #var.ln() }
+            }),
+            Box::new(|float, floats| {
+                if float.s.accept_negative {
+                    return None;
+                }
+
+                let spec = FloatSpecifications {
+                    accept_negative: true,
+                    accept_positive: true,
+                    accept_zero: true,
+                    accept_inf: float.s.accept_inf || float.s.accept_zero,
+                };
+
+                find_float(&spec, floats)
+            }),
+        ),
+        Op::new(
+            "log2",
+            "log2",
+            "log2",
+            None,
+            Box::new(|float| {
+                quote! { self.get().log2() }
+            }),
+            Box::new(|var| {
+                quote! { #var.log2() }
+            }),
+            Box::new(|float, floats| {
+                if float.s.accept_negative {
+                    return None;
+                }
+
+                let spec = FloatSpecifications {
+                    accept_negative: true,
+                    accept_positive: true,
+                    accept_zero: true,
+                    accept_inf: float.s.accept_inf || float.s.accept_zero,
+                };
+
+                find_float(&spec, floats)
+            }),
+        ),
+        Op::new(
+            "log10",
+            "log10",
+            "log10",
+            None,
+            Box::new(|float| {
+                quote! { self.get().log10() }
+            }),
+            Box::new(|var| {
+                quote! { #var.log10() }
+            }),
+            Box::new(|float, floats| {
+                if float.s.accept_negative {
+                    return None;
+                }
+
+                let spec = FloatSpecifications {
+                    accept_negative: true,
+                    accept_positive: true,
+                    accept_zero: true,
+                    accept_inf: float.s.accept_inf || float.s.accept_zero,
                 };
 
                 find_float(&spec, floats)

@@ -232,6 +232,7 @@ pub(crate) struct OpRhs {
     pub(crate) display: String,
     pub(crate) fn_name: String,
     pub(crate) trait_name: String,
+    pub(crate) assign: Option<(String, String)>,
     op: Box<dyn Fn(&FloatDefinition, &FloatDefinition) -> proc_macro2::TokenStream>,
     result: Box<
         dyn Fn(&FloatDefinition, &FloatDefinition, &[FloatDefinition]) -> Option<FloatDefinition>,
@@ -243,8 +244,8 @@ impl OpRhs {
     pub(crate) fn new(
         key: &str,
         display: &str,
-        fn_name: &str,
-        trait_name: &str,
+        (trait_name, fn_name): (&str, &str),
+        assign: Option<(&str, &str)>,
         op: Box<dyn Fn(&FloatDefinition, &FloatDefinition) -> proc_macro2::TokenStream>,
         test: Box<dyn Fn(&Ident, &Ident) -> proc_macro2::TokenStream>,
         result: Box<
@@ -264,6 +265,7 @@ impl OpRhs {
             display: display.to_string(),
             fn_name: fn_name.to_string(),
             trait_name: trait_name.to_string(),
+            assign: assign.map(|(a, b)| (a.to_string(), b.to_string())),
             op,
             result,
             test,
@@ -319,15 +321,11 @@ impl OpRhs {
 
         let output_name = output_name(&output, &float.float_type_ident());
 
-        let trait_ident = Ident::new(self.trait_name.as_str(), Span::call_site());
+        let trait_ident: syn::Path = syn::parse_str(&self.trait_name).unwrap();
         let fn_ident = Ident::new(self.fn_name.as_str(), Span::call_site());
 
-        let trait_assign_ident =
-            Ident::new(&format!("{}Assign", self.trait_name), Span::call_site());
-        let fn_assign_ident = Ident::new(&format!("{}_assign", self.fn_name), Span::call_site());
-
         let mut res = quote! {
-            impl core::ops::#trait_ident<#rhs_full_type> for #float_full_type {
+            impl #trait_ident<#rhs_full_type> for #float_full_type {
                 type Output = #output_name;
 
                 #[inline]
@@ -337,18 +335,24 @@ impl OpRhs {
             }
         };
 
-        if let Some(output) = output {
-            if output.s.can_fit_into(&float.s) {
-                res.extend(quote! {
-                    impl core::ops::#trait_assign_ident<#rhs_full_type> for #float_full_type {
-                        #[inline]
-                        fn #fn_assign_ident(&mut self, rhs: #rhs_full_type) {
-                            unsafe {
-                                *self = Self::new_unchecked(#op);
+        if let Some((assign_trait, assign_fn)) = &self.assign {
+            if let Some(output) = output {
+                if output.s.can_fit_into(&float.s) {
+                    let trait_assign_ident: syn::Path =
+                        syn::parse_str(assign_trait.as_str()).unwrap();
+                    let fn_assign_ident = Ident::new(assign_fn.as_str(), Span::call_site());
+
+                    res.extend(quote! {
+                        impl #trait_assign_ident<#rhs_full_type> for #float_full_type {
+                            #[inline]
+                            fn #fn_assign_ident(&mut self, rhs: #rhs_full_type) {
+                                unsafe {
+                                    *self = Self::new_unchecked(#op);
+                                }
                             }
                         }
-                    }
-                })
+                    })
+                }
             }
         }
 

@@ -98,6 +98,7 @@ pub(crate) fn generate_tests(float_type: &'static str) -> proc_macro2::TokenStre
             });
 
             let test = &op.get_test("num_a");
+            let test_float = &op.get_test("a");
 
             let get = match &op.get_result(float, &floats_f64) {
                 None => quote! { res },
@@ -108,9 +109,24 @@ pub(crate) fn generate_tests(float_type: &'static str) -> proc_macro2::TokenStre
 
             test_ops.extend(quote! {
                 println!("{:?} = ...",#op_name);
+
+                // Execute the operation, will throw if the result type is too strict
                 let res = #test;
                 println!("{:?} = {:?}",#op_name, res);
-                #vals.push(#get);
+
+                // Get the result as a float
+                let as_float = #get;
+
+                // Check that the result is the same as if done with the float directly
+                let original = #test_float;
+                if original.is_nan() {
+                    assert_eq!(original.is_nan(), as_float.is_nan());
+                } else {
+                    assert_eq!(as_float, original);
+                }
+
+                // Add the result to the list of values to check is the result type is as strict as possible
+                #vals.push(as_float);
             });
 
             let result_type = op.get_result(float, &floats_f64);
@@ -127,9 +143,9 @@ pub(crate) fn generate_tests(float_type: &'static str) -> proc_macro2::TokenStre
             #init_test_ops
 
             for a in values.iter() {
-                let a = <#full_type>::try_from(*a);
+                let a_float = <#full_type>::try_from(*a);
 
-                if let Ok(num_a) = a {
+                if let Ok(num_a) = a_float {
                     println!("compute with a = {:?}", num_a);
 
                     #test_ops

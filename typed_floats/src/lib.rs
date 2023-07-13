@@ -65,6 +65,25 @@
 #![warn(clippy::unwrap_used)]
 #![warn(clippy::unwrap_in_result)]
 #![warn(clippy::indexing_slicing)]
+
+pub trait Hypot<T> {
+    type Output;
+
+    fn hypot(self, rhs: T) -> Self::Output;
+}
+
+pub trait Min<T> {
+    type Output;
+
+    fn min(self, rhs: T) -> Self::Output;
+}
+
+pub trait Max<T> {
+    type Output;
+
+    fn max(self, rhs: T) -> Self::Output;
+}
+
 typed_floats_macros::generate_floats!();
 
 use core::num::{NonZeroI16, NonZeroI32, NonZeroI64, NonZeroI8};
