@@ -1,4 +1,5 @@
 use quote::quote;
+use syn::Ident;
 
 use crate::impl_self::*;
 use crate::*;
@@ -72,7 +73,40 @@ fn test_op_checks(
     res
 }
 
-pub(crate) fn generate_tests(float_type: &'static str) -> proc_macro2::TokenStream {
+fn get_test_values(float_type: Ident) -> proc_macro2::TokenStream {
+    quote! {
+        const MAX_NEGATIVE: #float_type = -#float_type::MIN_POSITIVE;
+
+        assert!(MAX_NEGATIVE.is_sign_negative());
+        assert!(MAX_NEGATIVE > -0.1);
+        assert!(MAX_NEGATIVE < -0.0);
+
+        let values = [
+            #float_type::NAN,
+            #float_type::NEG_INFINITY,
+            #float_type::MIN,
+            -2.0,
+            -1.0,
+            MAX_NEGATIVE,
+            -0.0,
+            0.0,
+            #float_type::MIN_POSITIVE,
+            1.0,
+            2.0,
+            #float_type::MAX,
+            #float_type::INFINITY,
+        ];
+
+        const SKIP_NAN:usize = 2;
+        for i in SKIP_NAN..values.len() {
+            if values[i] != 0.0 {
+                assert!(values[i] > values[i-1], "values[{}] = {} <= values[{}] = {}", i-1, values[i-1], i, values[i]);
+            }
+        }
+    }
+}
+
+pub(crate) fn generate_tests_self(float_type: &'static str) -> proc_macro2::TokenStream {
     let floats_f64 = get_definitions(float_type);
 
     let mut output = proc_macro2::TokenStream::new();
@@ -82,7 +116,6 @@ pub(crate) fn generate_tests(float_type: &'static str) -> proc_macro2::TokenStre
     let test_fn_name = quote::format_ident!("test_{}", float_type);
 
     let ops = get_impl_self();
-    let ops_rhs = get_impl_self_rhs();
 
     for float in &floats_f64 {
         let mut init_test_ops = proc_macro2::TokenStream::new();
@@ -90,7 +123,7 @@ pub(crate) fn generate_tests(float_type: &'static str) -> proc_macro2::TokenStre
         let mut check_ops = proc_macro2::TokenStream::new();
 
         for op in &ops {
-            let op_name = &op.key;
+            let op_name = op.key;
             let vals = quote::format_ident!("all_{}", op_name);
 
             init_test_ops.extend(quote! {
@@ -130,7 +163,7 @@ pub(crate) fn generate_tests(float_type: &'static str) -> proc_macro2::TokenStre
             });
 
             let result_type = op.get_result(float, &floats_f64);
-            let checks = test_op_checks(float, op.display.as_str(), &result_type, &vals);
+            let checks = test_op_checks(float, &op.display, &result_type, &vals);
 
             check_ops.extend(quote! {
                 #checks
@@ -154,6 +187,33 @@ pub(crate) fn generate_tests(float_type: &'static str) -> proc_macro2::TokenStre
 
             #check_ops
         });
+    }
+
+    let values = get_test_values(float_type);
+
+    quote! {
+        #[test]
+        fn #test_fn_name() {
+            #values
+
+            #output
+        }
+    }
+}
+
+pub(crate) fn generate_tests_self_rhs(float_type: &'static str) -> proc_macro2::TokenStream {
+    let floats_f64 = get_definitions(float_type);
+
+    let mut output = proc_macro2::TokenStream::new();
+
+    let float_type = floats_f64[0].float_type_ident();
+
+    let test_fn_name = quote::format_ident!("test_{}", float_type);
+
+    let ops_rhs = get_impl_self_rhs();
+
+    for float in &floats_f64 {
+        let full_type = float.full_type_ident();
 
         let float_type = float.float_type_ident();
 
@@ -163,7 +223,7 @@ pub(crate) fn generate_tests(float_type: &'static str) -> proc_macro2::TokenStre
             let mut check_ops = proc_macro2::TokenStream::new();
 
             for op in &ops_rhs {
-                let op_name = &op.key;
+                let op_name = op.key;
                 let vals = quote::format_ident!("all_{}", op_name);
 
                 init_test_ops.extend(quote! {
@@ -187,7 +247,7 @@ pub(crate) fn generate_tests(float_type: &'static str) -> proc_macro2::TokenStre
                 });
 
                 let result_type = op.get_result(float, float_rhs, &floats_f64);
-                let checks = test_op_checks(float, op.display.as_str(), &result_type, &vals);
+                let checks = test_op_checks(float, &op.display, &result_type, &vals);
 
                 check_ops.extend(quote! {
                     #checks
@@ -216,43 +276,16 @@ pub(crate) fn generate_tests(float_type: &'static str) -> proc_macro2::TokenStre
                 }
 
                 #check_ops
-
             });
         }
     }
 
+    let values = get_test_values(float_type);
+
     quote! {
         #[test]
         fn #test_fn_name() {
-
-            const MAX_NEGATIVE: #float_type = -#float_type::MIN_POSITIVE;
-
-            assert!(MAX_NEGATIVE.is_sign_negative());
-            assert!(MAX_NEGATIVE > -0.1);
-            assert!(MAX_NEGATIVE < -0.0);
-
-            let values = [
-                #float_type::NAN,
-                #float_type::NEG_INFINITY,
-                #float_type::MIN,
-                -2.0,
-                -1.0,
-                MAX_NEGATIVE,
-                -0.0,
-                0.0,
-                #float_type::MIN_POSITIVE,
-                1.0,
-                2.0,
-                #float_type::MAX,
-                #float_type::INFINITY,
-            ];
-
-            const SKIP_NAN:usize = 2;
-            for i in SKIP_NAN..values.len() {
-                if values[i] != 0.0 {
-                    assert!(values[i] > values[i-1], "values[{}] = {} <= values[{}] = {}", i-1, values[i-1], i, values[i]);
-                }
-            }
+            #values
 
             #output
         }

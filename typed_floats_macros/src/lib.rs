@@ -25,11 +25,21 @@ static F32: &str = "f32";
 static F64: &str = "f64";
 
 #[proc_macro]
-pub fn generate_tests(_input: proc_macro::TokenStream) -> proc_macro::TokenStream {
+pub fn generate_tests_self(_input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let mut output = proc_macro2::TokenStream::new();
 
-    output.extend(gen_tests::generate_tests(F32));
-    output.extend(gen_tests::generate_tests(F64));
+    output.extend(gen_tests::generate_tests_self(F32));
+    output.extend(gen_tests::generate_tests_self(F64));
+
+    output.into()
+}
+
+#[proc_macro]
+pub fn generate_tests_self_rhs(_input: proc_macro::TokenStream) -> proc_macro::TokenStream {
+    let mut output = proc_macro2::TokenStream::new();
+
+    output.extend(gen_tests::generate_tests_self_rhs(F32));
+    output.extend(gen_tests::generate_tests_self_rhs(F64));
 
     output.into()
 }

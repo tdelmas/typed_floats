@@ -124,10 +124,10 @@ pub(crate) fn output_name(
 }
 
 pub(crate) struct Op {
-    pub(crate) key: String,
-    pub(crate) display: String,
-    pub(crate) fn_name: String,
-    pub(crate) trait_name: Option<String>,
+    pub(crate) key: &'static str,
+    pub(crate) display: &'static str,
+    pub(crate) fn_name: &'static str,
+    pub(crate) trait_name: Option<&'static str>,
     op: Box<dyn Fn(&FloatDefinition) -> proc_macro2::TokenStream>,
     result: Box<dyn Fn(&FloatDefinition, &[FloatDefinition]) -> Option<FloatDefinition>>,
     test: Box<dyn Fn(&Ident) -> proc_macro2::TokenStream>,
@@ -135,19 +135,19 @@ pub(crate) struct Op {
 
 impl Op {
     pub(crate) fn new(
-        key: &str,
-        display: &str,
-        fn_name: &str,
-        trait_name: Option<&str>,
+        key: &'static str,
+        display: &'static str,
+        fn_name: &'static str,
+        trait_name: Option<&'static str>,
         op: Box<dyn Fn(&FloatDefinition) -> proc_macro2::TokenStream>,
         test: Box<dyn Fn(&Ident) -> proc_macro2::TokenStream>,
         result: Box<dyn Fn(&FloatDefinition, &[FloatDefinition]) -> Option<FloatDefinition>>,
     ) -> Self {
         Self {
-            key: key.to_string(),
-            display: display.to_string(),
-            fn_name: fn_name.to_string(),
-            trait_name: trait_name.map(|s| s.to_string()),
+            key,
+            display,
+            fn_name,
+            trait_name,
             op,
             result,
             test,
@@ -197,7 +197,7 @@ impl Op {
 
         let output_name = output_name(&output, &float.float_type_ident());
 
-        let fn_ident = Ident::new(self.fn_name.as_str(), Span::call_site());
+        let fn_ident = Ident::new(self.fn_name, Span::call_site());
 
         if let Some(trait_name) = &self.trait_name {
             let trait_name: proc_macro2::TokenStream = trait_name.parse().unwrap();
@@ -228,11 +228,11 @@ impl Op {
 }
 
 pub(crate) struct OpRhs {
-    pub(crate) key: String,
-    pub(crate) display: String,
-    pub(crate) fn_name: String,
-    pub(crate) trait_name: String,
-    pub(crate) assign: Option<(String, String)>,
+    pub(crate) key: &'static str,
+    pub(crate) display: &'static str,
+    pub(crate) fn_name: &'static str,
+    pub(crate) trait_name: &'static str,
+    pub(crate) assign: Option<(&'static str, &'static str)>,
     op: Box<dyn Fn(&FloatDefinition, &FloatDefinition) -> proc_macro2::TokenStream>,
     result: Box<
         dyn Fn(&FloatDefinition, &FloatDefinition, &[FloatDefinition]) -> Option<FloatDefinition>,
@@ -242,10 +242,10 @@ pub(crate) struct OpRhs {
 
 impl OpRhs {
     pub(crate) fn new(
-        key: &str,
-        display: &str,
-        (trait_name, fn_name): (&str, &str),
-        assign: Option<(&str, &str)>,
+        key: &'static str,
+        display: &'static str,
+        (trait_name, fn_name): (&'static str, &'static str),
+        assign: Option<(&'static str, &'static str)>,
         op: Box<dyn Fn(&FloatDefinition, &FloatDefinition) -> proc_macro2::TokenStream>,
         test: Box<dyn Fn(&Ident, &Ident) -> proc_macro2::TokenStream>,
         result: Box<
@@ -261,11 +261,11 @@ impl OpRhs {
         }
 
         Self {
-            key: key.to_string(),
-            display: display.to_string(),
-            fn_name: fn_name.to_string(),
-            trait_name: trait_name.to_string(),
-            assign: assign.map(|(a, b)| (a.to_string(), b.to_string())),
+            key,
+            display,
+            fn_name,
+            trait_name,
+            assign,
             op,
             result,
             test,
@@ -322,7 +322,7 @@ impl OpRhs {
         let output_name = output_name(&output, &float.float_type_ident());
 
         let trait_ident: syn::Path = syn::parse_str(&self.trait_name).unwrap();
-        let fn_ident = Ident::new(self.fn_name.as_str(), Span::call_site());
+        let fn_ident = Ident::new(self.fn_name, Span::call_site());
 
         let mut res = quote! {
             impl #trait_ident<#rhs_full_type> for #float_full_type {
@@ -338,9 +338,8 @@ impl OpRhs {
         if let Some((assign_trait, assign_fn)) = &self.assign {
             if let Some(output) = output {
                 if output.s.can_fit_into(&float.s) {
-                    let trait_assign_ident: syn::Path =
-                        syn::parse_str(assign_trait.as_str()).unwrap();
-                    let fn_assign_ident = Ident::new(assign_fn.as_str(), Span::call_site());
+                    let trait_assign_ident: syn::Path = syn::parse_str(assign_trait).unwrap();
+                    let fn_assign_ident = Ident::new(assign_fn, Span::call_site());
 
                     res.extend(quote! {
                         impl #trait_assign_ident<#rhs_full_type> for #float_full_type {

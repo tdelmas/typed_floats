@@ -1,8 +1,6 @@
 #[cfg(test)]
 use typed_floats::*;
 
-typed_floats_macros::generate_tests!();
-
 #[test]
 fn test_others_f64() {
     let values_f64 = [
