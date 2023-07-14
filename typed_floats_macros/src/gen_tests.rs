@@ -164,13 +164,11 @@ pub(crate) fn generate_tests_self(float_type: &'static str) -> proc_macro2::Toke
 
             let result_type = op.get_result(float, &floats_f64);
 
-            if op.key != "min" {
-                let checks = test_op_checks(float, op.display, &result_type, &vals);
+            let checks = test_op_checks(float, op.display, &result_type, &vals);
 
-                check_ops.extend(quote! {
-                    #checks
-                });
-            }
+            check_ops.extend(quote! {
+                #checks
+            });
         }
 
         let full_type = float.full_type_ident();
@@ -251,8 +249,12 @@ pub(crate) fn generate_tests_self_rhs(float_type: &'static str) -> proc_macro2::
                     #vals.push(#get);
                 });
 
+                if op.key == "min" {
+                    continue;
+                }
+
                 let result_type = op.get_result(float, float_rhs, &floats_f64);
-                let checks = test_op_checks(float, &op.display, &result_type, &vals);
+                let checks = test_op_checks(float, op.display, &result_type, &vals);
 
                 check_ops.extend(quote! {
                     #checks

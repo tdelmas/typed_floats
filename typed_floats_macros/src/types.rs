@@ -321,7 +321,7 @@ impl OpRhs {
 
         let output_name = output_name(&output, &float.float_type_ident());
 
-        let trait_ident: syn::Path = syn::parse_str(&self.trait_name).unwrap();
+        let trait_ident: syn::Path = syn::parse_str(self.trait_name).unwrap();
         let fn_ident = Ident::new(self.fn_name, Span::call_site());
 
         let mut res = quote! {
