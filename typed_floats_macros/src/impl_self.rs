@@ -251,7 +251,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
             "exp2",
             "exp2",
             None,
-            Box::new(|float| {
+            Box::new(|_| {
                 quote! { self.get().exp2() }
             }),
             Box::new(|var| {
@@ -307,7 +307,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
             "log2",
             "log2",
             None,
-            Box::new(|float| {
+            Box::new(|_| {
                 quote! { self.get().log2() }
             }),
             Box::new(|var| {
@@ -333,7 +333,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
             "log10",
             "log10",
             None,
-            Box::new(|float| {
+            Box::new(|_| {
                 quote! { self.get().log10() }
             }),
             Box::new(|var| {

@@ -123,14 +123,18 @@ pub(crate) fn output_name(
     }
 }
 
+type OpCallback = Box<dyn Fn(&FloatDefinition) -> proc_macro2::TokenStream>;
+type ResultCallback = Box<dyn Fn(&FloatDefinition, &[FloatDefinition]) -> Option<FloatDefinition>>;
+type TestCallback = Box<dyn Fn(&Ident) -> proc_macro2::TokenStream>;
+
 pub(crate) struct Op {
     pub(crate) key: &'static str,
     pub(crate) display: &'static str,
     pub(crate) fn_name: &'static str,
     pub(crate) trait_name: Option<&'static str>,
-    op: Box<dyn Fn(&FloatDefinition) -> proc_macro2::TokenStream>,
-    result: Box<dyn Fn(&FloatDefinition, &[FloatDefinition]) -> Option<FloatDefinition>>,
-    test: Box<dyn Fn(&Ident) -> proc_macro2::TokenStream>,
+    op: OpCallback,
+    result: ResultCallback,
+    test: TestCallback,
 }
 
 impl Op {
@@ -139,9 +143,9 @@ impl Op {
         display: &'static str,
         fn_name: &'static str,
         trait_name: Option<&'static str>,
-        op: Box<dyn Fn(&FloatDefinition) -> proc_macro2::TokenStream>,
-        test: Box<dyn Fn(&Ident) -> proc_macro2::TokenStream>,
-        result: Box<dyn Fn(&FloatDefinition, &[FloatDefinition]) -> Option<FloatDefinition>>,
+        op: OpCallback,
+        test: TestCallback,
+        result: ResultCallback,
     ) -> Self {
         Self {
             key,
@@ -227,17 +231,20 @@ impl Op {
     }
 }
 
+type TestRhsCallback = Box<dyn Fn(&Ident, &Ident) -> proc_macro2::TokenStream>;
+type OpRhsCallback = Box<dyn Fn(&FloatDefinition, &FloatDefinition) -> proc_macro2::TokenStream>;
+type ResultRhsCallback =
+    Box<dyn Fn(&FloatDefinition, &FloatDefinition, &[FloatDefinition]) -> Option<FloatDefinition>>;
+
 pub(crate) struct OpRhs {
     pub(crate) key: &'static str,
     pub(crate) display: &'static str,
     pub(crate) fn_name: &'static str,
     pub(crate) trait_name: &'static str,
     pub(crate) assign: Option<(&'static str, &'static str)>,
-    op: Box<dyn Fn(&FloatDefinition, &FloatDefinition) -> proc_macro2::TokenStream>,
-    result: Box<
-        dyn Fn(&FloatDefinition, &FloatDefinition, &[FloatDefinition]) -> Option<FloatDefinition>,
-    >,
-    test: Box<dyn Fn(&Ident, &Ident) -> proc_macro2::TokenStream>,
+    op: OpRhsCallback,
+    result: ResultRhsCallback,
+    test: TestRhsCallback,
 }
 
 impl OpRhs {
@@ -246,15 +253,9 @@ impl OpRhs {
         display: &'static str,
         (trait_name, fn_name): (&'static str, &'static str),
         assign: Option<(&'static str, &'static str)>,
-        op: Box<dyn Fn(&FloatDefinition, &FloatDefinition) -> proc_macro2::TokenStream>,
-        test: Box<dyn Fn(&Ident, &Ident) -> proc_macro2::TokenStream>,
-        result: Box<
-            dyn Fn(
-                &FloatDefinition,
-                &FloatDefinition,
-                &[FloatDefinition],
-            ) -> Option<FloatDefinition>,
-        >,
+        op: OpRhsCallback,
+        test: TestRhsCallback,
+        result: ResultRhsCallback,
     ) -> Self {
         if !key.chars().all(|c| c.is_ascii_lowercase()) {
             panic!("key must be only a-z lowercase");
