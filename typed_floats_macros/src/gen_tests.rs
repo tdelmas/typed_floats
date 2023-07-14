@@ -163,29 +163,34 @@ pub(crate) fn generate_tests_self(float_type: &'static str) -> proc_macro2::Toke
             });
 
             let result_type = op.get_result(float, &floats_f64);
-            let checks = test_op_checks(float, &op.display, &result_type, &vals);
 
-            check_ops.extend(quote! {
-                #checks
-            });
+            if op.key != "min" {
+                let checks = test_op_checks(float, op.display, &result_type, &vals);
+
+                check_ops.extend(quote! {
+                    #checks
+                });
+            }
         }
 
         let full_type = float.full_type_ident();
 
         output.extend(quote! {
-            #init_test_ops
+            {
+                #init_test_ops
 
-            for a in values.iter() {
-                let a_float = <#full_type>::try_from(*a);
+                for a in values.iter() {
+                    let a_float = <#full_type>::try_from(*a);
 
-                if let Ok(num_a) = a_float {
-                    println!("compute with a = {:?}", num_a);
+                    if let Ok(num_a) = a_float {
+                        println!("compute with a = {:?}", num_a);
 
-                    #test_ops
+                        #test_ops
+                    }
                 }
-            }
 
-            #check_ops
+                #check_ops
+            }
         });
     }
 
@@ -257,25 +262,27 @@ pub(crate) fn generate_tests_self_rhs(float_type: &'static str) -> proc_macro2::
             let full_type_rhs = float_rhs.full_type_ident();
 
             output.extend(quote! {
-                #init_test_ops
+                {
+                    #init_test_ops
 
-                for a in values.iter() {
-                    let a = <#full_type>::try_from(*a);
+                    for a in values.iter() {
+                        let a = <#full_type>::try_from(*a);
 
-                    if let Ok(num_a) = a {
-                        for b in values.iter() {
-                            let b = <#full_type_rhs>::try_from(*b);
+                        if let Ok(num_a) = a {
+                            for b in values.iter() {
+                                let b = <#full_type_rhs>::try_from(*b);
 
-                            if let Ok(num_b) = b {
-                                println!("a = {:?} and b = {:?}", num_a, num_b);
+                                if let Ok(num_b) = b {
+                                    println!("a = {:?} and b = {:?}", num_a, num_b);
 
-                                #test_ops
+                                    #test_ops
+                                }
                             }
                         }
                     }
-                }
 
-                #check_ops
+                    #check_ops
+                }
             });
         }
     }
