@@ -249,7 +249,9 @@ pub(crate) fn generate_tests_self_rhs(float_type: &'static str) -> proc_macro2::
                     #vals.push(#get);
                 });
 
-                if op.key == "min" {
+                if op.key == "min" || op.key == "max" {
+                    // Because min(0.0,-0.0) and max(0.0,-0.0) may return either 0.0 or -0.0,
+                    // depending on the architecture, we can't check the strinctness of the result type
                     continue;
                 }
 
