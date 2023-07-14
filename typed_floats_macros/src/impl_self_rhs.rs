@@ -278,5 +278,68 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
                 find_float(&output_def, floats)
             }),
         ),
+        OpRhs::new(
+            "max",
+            "max",
+            ("Max", "max"),
+            None,
+            Box::new(|_, _| quote! { self.get().max(rhs.get()) }),
+            Box::new(|var1, var2| {
+                quote! { Max::max(#var1,#var2) }
+            }),
+            Box::new(|float, rhs, floats| {
+                let output_def;
+                // https://llvm.org/docs/LangRef.html#llvm-maxnum-intrinsic
+                // fmin(+0.0, -0.0) returns either -0.0 or 0.0
+                let can_confuse_zero = float.s.accept_zero
+                    && rhs.s.accept_zero
+                    && (float.s.accept_negative || rhs.s.accept_negative);
+
+                let can_be_neg_inf = (float.s.accept_negative && float.s.accept_inf)
+                    && (rhs.s.accept_negative && rhs.s.accept_inf);
+                let can_be_pos_inf = (float.s.accept_positive
+                    && float.s.accept_inf)
+                    || (rhs.s.accept_positive
+                    && rhs.s.accept_inf);
+
+                let accept_inf = can_be_neg_inf || can_be_pos_inf;
+
+                if !float.s.accept_negative {
+                    output_def = FloatSpecifications {
+                        accept_inf,
+                        accept_zero: float.s.accept_zero
+                            && (rhs.s.accept_zero || rhs.s.accept_negative),
+                        accept_positive: true,
+                        accept_negative: false,
+                    };
+                } else if !rhs.s.accept_negative {
+                    let accept_zero =
+                        rhs.s.accept_zero && (float.s.accept_zero || float.s.accept_negative);
+
+                    output_def = FloatSpecifications {
+                        accept_inf,
+                        accept_zero,
+                        accept_positive: true,
+                        accept_negative: accept_zero && can_confuse_zero,
+                    };
+                } else if !float.s.accept_positive && !rhs.s.accept_positive {
+                    output_def = FloatSpecifications {
+                        accept_inf,
+                        accept_zero: float.s.accept_zero || rhs.s.accept_zero,
+                        accept_positive: false,
+                        accept_negative: true,
+                    };
+                } else {
+                    output_def = FloatSpecifications {
+                        accept_inf: can_be_neg_inf || can_be_pos_inf,
+                        accept_zero: float.s.accept_zero || rhs.s.accept_zero,
+                        accept_positive: true,
+                        accept_negative: true,
+                    };
+                }
+
+                find_float(&output_def, floats)
+            }),
+        ),
     ]
 }
