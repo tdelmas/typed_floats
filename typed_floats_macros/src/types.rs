@@ -122,3 +122,240 @@ pub(crate) fn output_name(
         None => quote! { #float_type },
     }
 }
+
+type OpCallback = Box<dyn Fn(&FloatDefinition) -> proc_macro2::TokenStream>;
+type ResultCallback = Box<dyn Fn(&FloatDefinition, &[FloatDefinition]) -> Option<FloatDefinition>>;
+type TestCallback = Box<dyn Fn(&Ident) -> proc_macro2::TokenStream>;
+
+pub(crate) struct Op {
+    pub(crate) key: &'static str,
+    pub(crate) display: &'static str,
+    pub(crate) fn_name: &'static str,
+    pub(crate) trait_name: Option<&'static str>,
+    op: OpCallback,
+    result: ResultCallback,
+    test: TestCallback,
+}
+
+impl Op {
+    pub(crate) fn new(
+        key: &'static str,
+        display: &'static str,
+        fn_name: &'static str,
+        trait_name: Option<&'static str>,
+        op: OpCallback,
+        test: TestCallback,
+        result: ResultCallback,
+    ) -> Self {
+        Self {
+            key,
+            display,
+            fn_name,
+            trait_name,
+            op,
+            result,
+            test,
+        }
+    }
+
+    pub(crate) fn get_result(
+        &self,
+        float: &FloatDefinition,
+        floats: &[FloatDefinition],
+    ) -> Option<FloatDefinition> {
+        (self.result)(float, floats)
+    }
+
+    pub(crate) fn get_op(&self, float: &FloatDefinition) -> proc_macro2::TokenStream {
+        (self.op)(float)
+    }
+
+    pub(crate) fn get_test(&self, var: &str) -> proc_macro2::TokenStream {
+        let var = Ident::new(var, Span::call_site());
+        (self.test)(&var)
+    }
+
+    pub(crate) fn get_impl(
+        &self,
+        float: &FloatDefinition,
+        floats: &[FloatDefinition],
+    ) -> proc_macro2::TokenStream {
+        let output = self.get_result(float, floats);
+
+        let float_full_type = &float.full_type_ident();
+
+        let op = &self.get_op(float);
+
+        let return_value = match &output {
+            Some(d) => {
+                let output_call = &d.call_tokens();
+
+                quote! {
+                    unsafe { #output_call::new_unchecked(#op) }
+                }
+            }
+            None => {
+                quote! { #op }
+            }
+        };
+
+        let output_name = output_name(&output, &float.float_type_ident());
+
+        let fn_ident = Ident::new(self.fn_name, Span::call_site());
+
+        if let Some(trait_name) = &self.trait_name {
+            let trait_name: proc_macro2::TokenStream = trait_name.parse().unwrap();
+
+            quote! {
+                impl #trait_name for #float_full_type {
+                    type Output = #output_name;
+
+                    #[inline]
+                    #[must_use]
+                    fn #fn_ident(self) -> Self::Output {
+                        #return_value
+                    }
+                }
+            }
+        } else {
+            quote! {
+                impl #float_full_type {
+                    #[inline]
+                    #[must_use]
+                    pub fn #fn_ident(self) -> #output_name {
+                        #return_value
+                    }
+                }
+            }
+        }
+    }
+}
+
+type TestRhsCallback = Box<dyn Fn(&Ident, &Ident) -> proc_macro2::TokenStream>;
+type OpRhsCallback = Box<dyn Fn(&FloatDefinition, &FloatDefinition) -> proc_macro2::TokenStream>;
+type ResultRhsCallback =
+    Box<dyn Fn(&FloatDefinition, &FloatDefinition, &[FloatDefinition]) -> Option<FloatDefinition>>;
+
+pub(crate) struct OpRhs {
+    pub(crate) key: &'static str,
+    pub(crate) display: &'static str,
+    pub(crate) fn_name: &'static str,
+    pub(crate) trait_name: &'static str,
+    pub(crate) assign: Option<(&'static str, &'static str)>,
+    op: OpRhsCallback,
+    result: ResultRhsCallback,
+    test: TestRhsCallback,
+}
+
+impl OpRhs {
+    pub(crate) fn new(
+        key: &'static str,
+        display: &'static str,
+        (trait_name, fn_name): (&'static str, &'static str),
+        assign: Option<(&'static str, &'static str)>,
+        op: OpRhsCallback,
+        test: TestRhsCallback,
+        result: ResultRhsCallback,
+    ) -> Self {
+        if !key.chars().all(|c| c.is_ascii_lowercase()) {
+            panic!("key must be only a-z lowercase");
+        }
+
+        Self {
+            key,
+            display,
+            fn_name,
+            trait_name,
+            assign,
+            op,
+            result,
+            test,
+        }
+    }
+
+    pub(crate) fn get_result(
+        &self,
+        float: &FloatDefinition,
+        rhs: &FloatDefinition,
+        floats: &[FloatDefinition],
+    ) -> Option<FloatDefinition> {
+        (self.result)(float, rhs, floats)
+    }
+
+    pub(crate) fn get_op(
+        &self,
+        float: &FloatDefinition,
+        rhs: &FloatDefinition,
+    ) -> proc_macro2::TokenStream {
+        (self.op)(float, rhs)
+    }
+
+    pub(crate) fn get_test(&self, var1: &str, var2: &str) -> proc_macro2::TokenStream {
+        let var1 = Ident::new(var1, Span::call_site());
+        let var2 = Ident::new(var2, Span::call_site());
+        (self.test)(&var1, &var2)
+    }
+
+    pub(crate) fn get_impl(
+        &self,
+        float: &FloatDefinition,
+        rhs: &FloatDefinition,
+        floats: &[FloatDefinition],
+    ) -> proc_macro2::TokenStream {
+        let output = self.get_result(float, rhs, floats);
+
+        let float_full_type = &float.full_type_ident();
+        let rhs_full_type = &rhs.full_type_ident();
+
+        let op = &self.get_op(float, rhs);
+
+        let return_value = match output {
+            Some(_) => {
+                quote! {
+                    unsafe { Self::Output::new_unchecked(#op) }
+                }
+            }
+            None => {
+                quote! { #op }
+            }
+        };
+
+        let output_name = output_name(&output, &float.float_type_ident());
+
+        let trait_ident: syn::Path = syn::parse_str(self.trait_name).unwrap();
+        let fn_ident = Ident::new(self.fn_name, Span::call_site());
+
+        let mut res = quote! {
+            impl #trait_ident<#rhs_full_type> for #float_full_type {
+                type Output = #output_name;
+
+                #[inline]
+                fn #fn_ident(self, rhs: #rhs_full_type) -> Self::Output {
+                    #return_value
+                }
+            }
+        };
+
+        if let Some((assign_trait, assign_fn)) = &self.assign {
+            if let Some(output) = output {
+                if output.s.can_fit_into(&float.s) {
+                    let trait_assign_ident: syn::Path = syn::parse_str(assign_trait).unwrap();
+                    let fn_assign_ident = Ident::new(assign_fn, Span::call_site());
+
+                    res.extend(quote! {
+                        impl #trait_assign_ident<#rhs_full_type> for #float_full_type {
+                            #[inline]
+                            fn #fn_assign_ident(&mut self, rhs: #rhs_full_type) {
+                                unsafe {
+                                    *self = Self::new_unchecked(#op);
+                                }
+                            }
+                        }
+                    })
+                }
+            }
+        }
+
+        res
+    }
+}

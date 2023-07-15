@@ -1,272 +1,345 @@
-use proc_macro2::Span;
 use quote::quote;
-use syn::Ident;
 
 use crate::types::*;
 
-fn impl_op_rhs(
-    float: &FloatDefinition,
-    rhs: &FloatDefinition,
-    output: &Option<FloatDefinition>,
-    op: &proc_macro2::TokenStream,
-    trait_name: &str,
-    fn_name: &str,
-) -> proc_macro2::TokenStream {
-    let float_full_type = &float.full_type_ident();
-    let rhs_full_type = &rhs.full_type_ident();
+pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
+    vec![
+        OpRhs::new(
+            "add",
+            "+",
+            ("core::ops::Add", "add"),
+            Some(("core::ops::AddAssign", "add_assign")),
+            Box::new(|_, _| quote! { self.get() + rhs.get() }),
+            Box::new(|var1, var2| {
+                quote! { #var1 + #var2 }
+            }),
+            Box::new(|float, rhs, floats| {
+                let spec_a = &float.s;
+                let spec_b = &rhs.s;
 
-    let return_value = match output {
-        Some(_) => {
-            quote! {
-                unsafe { Self::Output::new_unchecked(#op) }
-            }
-        }
-        None => {
-            quote! { #op }
-        }
-    };
+                let can_sign_be_different = (spec_a.accept_negative && spec_b.accept_positive)
+                    || (spec_a.accept_positive && spec_b.accept_negative);
+                let can_sign_be_same = (spec_a.accept_negative && spec_b.accept_negative)
+                    || (spec_a.accept_positive && spec_b.accept_positive);
 
-    let output_name = output_name(output, &float.float_type_ident());
+                let can_add_inf_and_negative_inf = (spec_a.accept_inf
+                    && spec_a.accept_negative
+                    && spec_b.accept_inf
+                    && spec_b.accept_positive)
+                    || (spec_b.accept_inf
+                        && spec_b.accept_negative
+                        && spec_a.accept_inf
+                        && spec_a.accept_positive);
 
-    let trait_ident = Ident::new(trait_name, Span::call_site());
-    let fn_ident = Ident::new(fn_name, Span::call_site());
+                let can_be_nan = can_add_inf_and_negative_inf;
 
-    let trait_assign_ident = Ident::new(&format!("{}Assign", trait_name), Span::call_site());
-    let fn_assign_ident = Ident::new(&format!("{}_assign", fn_name), Span::call_site());
+                match can_be_nan {
+                    true => None,
+                    false => {
+                        let spec = FloatSpecifications {
+                            accept_inf: spec_a.accept_inf || spec_b.accept_inf || can_sign_be_same,
+                            accept_zero: can_sign_be_different
+                                || (spec_a.accept_zero && spec_b.accept_zero),
+                            accept_positive: spec_a.accept_positive || spec_b.accept_positive,
+                            accept_negative: spec_a.accept_negative || spec_b.accept_negative,
+                        };
 
-    let mut res = quote! {
-        impl core::ops::#trait_ident<#rhs_full_type> for #float_full_type {
-            type Output = #output_name;
-
-            #[inline]
-            fn #fn_ident(self, rhs: #rhs_full_type) -> Self::Output {
-                #return_value
-            }
-        }
-    };
-
-    if let Some(output) = output {
-        if output.s.can_fit_into(&float.s) {
-            res.extend(quote! {
-                impl core::ops::#trait_assign_ident<#rhs_full_type> for #float_full_type {
-                    #[inline]
-                    fn #fn_assign_ident(&mut self, rhs: #rhs_full_type) {
-                        unsafe {
-                            *self = Self::new_unchecked(#op);
-                        }
+                        find_float(&spec, floats)
                     }
                 }
-            })
-        }
-    }
+            }),
+        ),
+        OpRhs::new(
+            "sub",
+            "-",
+            ("core::ops::Sub", "sub"),
+            Some(("core::ops::SubAssign", "sub_assign")),
+            Box::new(|_, _| quote! { self.get() - rhs.get() }),
+            Box::new(|var1, var2| {
+                quote! { #var1 - #var2 }
+            }),
+            Box::new(|float, rhs, floats| {
+                let spec_a = &float.s;
+                let spec_b = &rhs.s;
 
-    res
-}
+                let can_sign_be_different = (spec_a.accept_negative && spec_b.accept_positive)
+                    || (spec_a.accept_positive && spec_b.accept_negative);
+                let can_sign_be_same = (spec_a.accept_negative && spec_b.accept_negative)
+                    || (spec_a.accept_positive && spec_b.accept_positive);
 
-pub(crate) fn add_result(
-    spec_a: &FloatSpecifications,
-    spec_b: &FloatSpecifications,
-    floats: &[FloatDefinition],
-) -> Option<FloatDefinition> {
-    let can_sign_be_different = (spec_a.accept_negative && spec_b.accept_positive)
-        || (spec_a.accept_positive && spec_b.accept_negative);
-    let can_sign_be_same = (spec_a.accept_negative && spec_b.accept_negative)
-        || (spec_a.accept_positive && spec_b.accept_positive);
+                let can_overflow = can_sign_be_different;
 
-    let can_add_inf_and_negative_inf = (spec_a.accept_inf
-        && spec_a.accept_negative
-        && spec_b.accept_inf
-        && spec_b.accept_positive)
-        || (spec_b.accept_inf
-            && spec_b.accept_negative
-            && spec_a.accept_inf
-            && spec_a.accept_positive);
+                let can_sub_inf_and_inf =
+                    spec_a.accept_inf && spec_b.accept_inf && can_sign_be_same;
 
-    let can_be_nan = can_add_inf_and_negative_inf;
+                let can_be_nan = can_sub_inf_and_inf;
 
-    match can_be_nan {
-        true => None,
-        false => {
-            let spec = FloatSpecifications {
-                accept_inf: spec_a.accept_inf || spec_b.accept_inf || can_sign_be_same,
-                accept_zero: can_sign_be_different || (spec_a.accept_zero && spec_b.accept_zero),
-                accept_positive: spec_a.accept_positive || spec_b.accept_positive,
-                accept_negative: spec_a.accept_negative || spec_b.accept_negative,
-            };
+                match can_be_nan {
+                    true => None,
+                    false => {
+                        let spec = FloatSpecifications {
+                            accept_inf: spec_a.accept_inf || spec_b.accept_inf || can_overflow,
+                            accept_zero: can_sign_be_same
+                                || (spec_a.accept_zero && spec_b.accept_zero),
+                            accept_positive: spec_a.accept_positive || spec_b.accept_negative,
+                            accept_negative: spec_a.accept_negative || spec_b.accept_positive,
+                        };
+                        find_float(&spec, floats)
+                    }
+                }
+            }),
+        ),
+        OpRhs::new(
+            "rem",
+            "%",
+            ("core::ops::Rem", "rem"),
+            Some(("core::ops::RemAssign", "rem_assign")),
+            Box::new(|_, _| quote! { self.get() % rhs.get() }),
+            Box::new(|var1, var2| {
+                quote! { #var1 % #var2 }
+            }),
+            Box::new(|float, rhs, floats| {
+                let spec_a = &float.s;
+                let spec_b = &rhs.s;
 
-            find_float(&spec, floats)
-        }
-    }
-}
+                let can_be_nan = spec_b.accept_zero || spec_a.accept_inf;
 
-pub(crate) fn impl_add(
-    float_a: &FloatDefinition,
-    float_b: &FloatDefinition,
-    floats: &[FloatDefinition],
-) -> proc_macro2::TokenStream {
-    let output = add_result(&float_a.s, &float_b.s, floats);
+                match can_be_nan {
+                    true => None,
+                    false => {
+                        let output_def = FloatSpecifications {
+                            accept_inf: false,
+                            accept_zero: true,
+                            accept_positive: spec_a.accept_positive,
+                            accept_negative: spec_a.accept_negative,
+                        };
 
-    let op = quote! { self.get() + rhs.get() };
+                        find_float(&output_def, floats)
+                    }
+                }
+            }),
+        ),
+        OpRhs::new(
+            "div",
+            "/",
+            ("core::ops::Div", "div"),
+            Some(("core::ops::DivAssign", "div_assign")),
+            Box::new(|_, _| quote! { self.get() / rhs.get() }),
+            Box::new(|var1, var2| {
+                quote! { #var1 / #var2 }
+            }),
+            Box::new(|float, rhs, floats| {
+                let spec_a = &float.s;
+                let spec_b = &rhs.s;
 
-    impl_op_rhs(float_a, float_b, &output, &op, "Add", "add")
-}
+                let can_zero_divide_zero = spec_a.accept_zero && spec_b.accept_zero;
+                let can_inf_divide_inf = spec_a.accept_inf && spec_b.accept_inf;
 
-pub(crate) fn sub_result(
-    spec_a: &FloatSpecifications,
-    spec_b: &FloatSpecifications,
-    floats: &[FloatDefinition],
-) -> Option<FloatDefinition> {
-    let can_sign_be_different = (spec_a.accept_negative && spec_b.accept_positive)
-        || (spec_a.accept_positive && spec_b.accept_negative);
-    let can_sign_be_same = (spec_a.accept_negative && spec_b.accept_negative)
-        || (spec_a.accept_positive && spec_b.accept_positive);
+                let can_sign_be_different = (spec_a.accept_negative && spec_b.accept_positive)
+                    || (spec_a.accept_positive && spec_b.accept_negative);
+                let can_sign_be_same = (spec_a.accept_negative && spec_b.accept_negative)
+                    || (spec_a.accept_positive && spec_b.accept_positive);
 
-    let can_overflow = can_sign_be_different;
+                let can_be_nan = can_zero_divide_zero || can_inf_divide_inf;
 
-    let can_sub_inf_and_inf = spec_a.accept_inf && spec_b.accept_inf && can_sign_be_same;
+                match can_be_nan {
+                    true => None,
+                    false => {
+                        let output_def = FloatSpecifications {
+                            accept_inf: true,
+                            accept_zero: true,
+                            accept_positive: can_sign_be_same,
+                            accept_negative: can_sign_be_different,
+                        };
 
-    let can_be_nan = can_sub_inf_and_inf;
+                        find_float(&output_def, floats)
+                    }
+                }
+            }),
+        ),
+        OpRhs::new(
+            "mul",
+            "*",
+            ("core::ops::Mul", "mul"),
+            Some(("core::ops::MulAssign", "mul_assign")),
+            Box::new(|_, _| quote! { self.get() * rhs.get() }),
+            Box::new(|var1, var2| {
+                quote! { #var1 * #var2 }
+            }),
+            Box::new(|float, rhs, floats| {
+                let spec_a = &float.s;
+                let spec_b = &rhs.s;
 
-    match can_be_nan {
-        true => None,
-        false => {
-            let spec = FloatSpecifications {
-                accept_inf: spec_a.accept_inf || spec_b.accept_inf || can_overflow,
-                accept_zero: can_sign_be_same || (spec_a.accept_zero && spec_b.accept_zero),
-                accept_positive: spec_a.accept_positive || spec_b.accept_negative,
-                accept_negative: spec_a.accept_negative || spec_b.accept_positive,
-            };
-            find_float(&spec, floats)
-        }
-    }
-}
+                let can_sign_be_different = (spec_a.accept_negative && spec_b.accept_positive)
+                    || (spec_a.accept_positive && spec_b.accept_negative);
+                let can_sign_be_same = (spec_a.accept_negative && spec_b.accept_negative)
+                    || (spec_a.accept_positive && spec_b.accept_positive);
 
-pub(crate) fn impl_sub(
-    float_a: &FloatDefinition,
-    float_b: &FloatDefinition,
-    floats: &[FloatDefinition],
-) -> proc_macro2::TokenStream {
-    let output = sub_result(&float_a.s, &float_b.s, floats);
+                let can_zero_multiply_inf = spec_a.accept_zero && spec_b.accept_inf
+                    || spec_a.accept_inf && spec_b.accept_zero;
 
-    let op = quote! { self.get() - rhs.get() };
+                let can_be_nan = can_zero_multiply_inf;
 
-    impl_op_rhs(float_a, float_b, &output, &op, "Sub", "sub")
-}
+                match can_be_nan {
+                    true => None,
+                    false => {
+                        let output_def = FloatSpecifications {
+                            accept_inf: true,  // it can always overflow
+                            accept_zero: true, // it can always round to zero
+                            accept_positive: can_sign_be_same,
+                            accept_negative: can_sign_be_different,
+                        };
 
-pub(crate) fn rem_result(
-    spec_a: &FloatSpecifications,
-    spec_b: &FloatSpecifications,
-    floats: &[FloatDefinition],
-) -> Option<FloatDefinition> {
-    let can_be_nan = spec_b.accept_zero || spec_a.accept_inf;
+                        find_float(&output_def, floats)
+                    }
+                }
+            }),
+        ),
+        OpRhs::new(
+            "hypot",
+            "hypot",
+            ("Hypot", "hypot"),
+            None,
+            Box::new(|_, _| quote! { self.get().hypot(rhs.get()) }),
+            Box::new(|var1, var2| {
+                quote! { #var1.hypot(#var2) }
+            }),
+            Box::new(|float, rhs, floats| {
+                let output_def = FloatSpecifications {
+                    accept_inf: true, // it can always overflow
+                    accept_zero: float.s.accept_zero && rhs.s.accept_zero,
+                    accept_positive: true,
+                    accept_negative: false,
+                };
 
-    match can_be_nan {
-        true => None,
-        false => {
-            let output_def = FloatSpecifications {
-                accept_inf: false,
-                accept_zero: true,
-                accept_positive: spec_a.accept_positive,
-                accept_negative: spec_a.accept_negative,
-            };
+                find_float(&output_def, floats)
+            }),
+        ),
+        OpRhs::new(
+            "min",
+            "min",
+            ("Min", "min"),
+            None,
+            Box::new(|_, _| quote! { self.get().min(rhs.get()) }),
+            Box::new(|var1, var2| {
+                quote! { Min::min(#var1,#var2) }
+            }),
+            Box::new(|float, rhs, floats| {
+                let output_def;
+                // https://llvm.org/docs/LangRef.html#llvm-minnum-intrinsic
+                // fmin(+0.0, -0.0) returns either operand.
+                // (0.0_f64).min(-0.0_f64) == 0.0_f64
+                let can_confuse_zero = float.s.accept_zero
+                    && rhs.s.accept_zero
+                    && (float.s.accept_positive || rhs.s.accept_positive);
 
-            find_float(&output_def, floats)
-        }
-    }
-}
+                let can_be_neg_inf = (float.s.accept_negative && float.s.accept_inf)
+                    || (rhs.s.accept_negative && rhs.s.accept_inf);
+                let can_be_pos_inf = float.s.accept_positive
+                    && float.s.accept_inf
+                    && rhs.s.accept_positive
+                    && rhs.s.accept_inf;
+                let accept_inf = can_be_neg_inf || can_be_pos_inf;
 
-pub(crate) fn impl_rem(
-    float_a: &FloatDefinition,
-    float_b: &FloatDefinition,
-    floats: &[FloatDefinition],
-) -> proc_macro2::TokenStream {
-    let output = rem_result(&float_a.s, &float_b.s, floats);
+                if !float.s.accept_positive {
+                    output_def = FloatSpecifications {
+                        accept_inf,
+                        accept_zero: float.s.accept_zero
+                            && (rhs.s.accept_zero || rhs.s.accept_positive),
+                        accept_positive: false,
+                        accept_negative: true,
+                    };
+                } else if !rhs.s.accept_positive {
+                    let accept_zero =
+                        rhs.s.accept_zero && (float.s.accept_zero || float.s.accept_positive);
 
-    let op = quote! { self.get() % rhs.get() };
+                    output_def = FloatSpecifications {
+                        accept_inf,
+                        accept_zero,
+                        accept_positive: accept_zero && can_confuse_zero,
+                        accept_negative: true,
+                    };
+                } else if !float.s.accept_negative && !rhs.s.accept_negative {
+                    output_def = FloatSpecifications {
+                        accept_inf,
+                        accept_zero: float.s.accept_zero || rhs.s.accept_zero,
+                        accept_positive: true,
+                        accept_negative: false,
+                    };
+                } else {
+                    output_def = FloatSpecifications {
+                        accept_inf: can_be_neg_inf || can_be_pos_inf,
+                        accept_zero: float.s.accept_zero || rhs.s.accept_zero,
+                        accept_positive: true,
+                        accept_negative: true,
+                    };
+                }
 
-    impl_op_rhs(float_a, float_b, &output, &op, "Rem", "rem")
-}
+                find_float(&output_def, floats)
+            }),
+        ),
+        OpRhs::new(
+            "max",
+            "max",
+            ("Max", "max"),
+            None,
+            Box::new(|_, _| quote! { self.get().max(rhs.get()) }),
+            Box::new(|var1, var2| {
+                quote! { Max::max(#var1,#var2) }
+            }),
+            Box::new(|float, rhs, floats| {
+                let output_def;
+                // https://llvm.org/docs/LangRef.html#llvm-maxnum-intrinsic
+                // fmin(+0.0, -0.0) returns either -0.0 or 0.0
+                let can_confuse_zero = float.s.accept_zero
+                    && rhs.s.accept_zero
+                    && (float.s.accept_negative || rhs.s.accept_negative);
 
-pub(crate) fn div_result(
-    spec_a: &FloatSpecifications,
-    spec_b: &FloatSpecifications,
-    floats: &[FloatDefinition],
-) -> Option<FloatDefinition> {
-    let can_zero_divide_zero = spec_a.accept_zero && spec_b.accept_zero;
-    let can_inf_divide_inf = spec_a.accept_inf && spec_b.accept_inf;
+                let can_be_neg_inf = (float.s.accept_negative && float.s.accept_inf)
+                    && (rhs.s.accept_negative && rhs.s.accept_inf);
+                let can_be_pos_inf = (float.s.accept_positive
+                    && float.s.accept_inf)
+                    || (rhs.s.accept_positive
+                    && rhs.s.accept_inf);
 
-    let can_sign_be_different = (spec_a.accept_negative && spec_b.accept_positive)
-        || (spec_a.accept_positive && spec_b.accept_negative);
-    let can_sign_be_same = (spec_a.accept_negative && spec_b.accept_negative)
-        || (spec_a.accept_positive && spec_b.accept_positive);
+                let accept_inf = can_be_neg_inf || can_be_pos_inf;
 
-    let can_be_nan = can_zero_divide_zero || can_inf_divide_inf;
+                if !float.s.accept_negative {
+                    output_def = FloatSpecifications {
+                        accept_inf,
+                        accept_zero: float.s.accept_zero
+                            && (rhs.s.accept_zero || rhs.s.accept_negative),
+                        accept_positive: true,
+                        accept_negative: false,
+                    };
+                } else if !rhs.s.accept_negative {
+                    let accept_zero =
+                        rhs.s.accept_zero && (float.s.accept_zero || float.s.accept_negative);
 
-    match can_be_nan {
-        true => None,
-        false => {
-            let output_def = FloatSpecifications {
-                accept_inf: true,
-                accept_zero: true,
-                accept_positive: can_sign_be_same,
-                accept_negative: can_sign_be_different,
-            };
+                    output_def = FloatSpecifications {
+                        accept_inf,
+                        accept_zero,
+                        accept_positive: true,
+                        accept_negative: accept_zero && can_confuse_zero,
+                    };
+                } else if !float.s.accept_positive && !rhs.s.accept_positive {
+                    output_def = FloatSpecifications {
+                        accept_inf,
+                        accept_zero: float.s.accept_zero || rhs.s.accept_zero,
+                        accept_positive: false,
+                        accept_negative: true,
+                    };
+                } else {
+                    output_def = FloatSpecifications {
+                        accept_inf: can_be_neg_inf || can_be_pos_inf,
+                        accept_zero: float.s.accept_zero || rhs.s.accept_zero,
+                        accept_positive: true,
+                        accept_negative: true,
+                    };
+                }
 
-            find_float(&output_def, floats)
-        }
-    }
-}
-
-pub(crate) fn impl_div(
-    float_a: &FloatDefinition,
-    float_b: &FloatDefinition,
-    floats: &[FloatDefinition],
-) -> proc_macro2::TokenStream {
-    let output = div_result(&float_a.s, &float_b.s, floats);
-
-    let op = quote! { self.get() / rhs.get() };
-
-    impl_op_rhs(float_a, float_b, &output, &op, "Div", "div")
-}
-
-pub(crate) fn mul_result(
-    spec_a: &FloatSpecifications,
-    spec_b: &FloatSpecifications,
-    floats: &[FloatDefinition],
-) -> Option<FloatDefinition> {
-    let can_sign_be_different = (spec_a.accept_negative && spec_b.accept_positive)
-        || (spec_a.accept_positive && spec_b.accept_negative);
-    let can_sign_be_same = (spec_a.accept_negative && spec_b.accept_negative)
-        || (spec_a.accept_positive && spec_b.accept_positive);
-
-    let can_zero_multiply_inf =
-        spec_a.accept_zero && spec_b.accept_inf || spec_a.accept_inf && spec_b.accept_zero;
-
-    let can_be_nan = can_zero_multiply_inf;
-
-    match can_be_nan {
-        true => None,
-        false => {
-            let output_def = FloatSpecifications {
-                accept_inf: true,  // it can always overflow
-                accept_zero: true, // it can always round to zero
-                accept_positive: can_sign_be_same,
-                accept_negative: can_sign_be_different,
-            };
-
-            find_float(&output_def, floats)
-        }
-    }
-}
-
-pub(crate) fn impl_mul(
-    float: &FloatDefinition,
-    rhs: &FloatDefinition,
-    floats: &[FloatDefinition],
-) -> proc_macro2::TokenStream {
-    let output = mul_result(&float.s, &rhs.s, floats);
-
-    let op = quote! { self.get() * rhs.get() };
-
-    impl_op_rhs(float, rhs, &output, &op, "Mul", "mul")
+                find_float(&output_def, floats)
+            }),
+        ),
+    ]
 }

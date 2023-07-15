@@ -3,6 +3,7 @@
 members = [
     "typed_floats",
     "typed_floats_macros",
+    "typed_floats_tests",
 ]
 
 [profile.dev]

@@ -25,11 +25,21 @@ static F32: &str = "f32";
 static F64: &str = "f64";
 
 #[proc_macro]
-pub fn generate_tests(_input: proc_macro::TokenStream) -> proc_macro::TokenStream {
+pub fn generate_tests_self(_input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let mut output = proc_macro2::TokenStream::new();
 
-    output.extend(gen_tests::generate_tests(F32));
-    output.extend(gen_tests::generate_tests(F64));
+    output.extend(gen_tests::generate_tests_self(F32));
+    output.extend(gen_tests::generate_tests_self(F64));
+
+    output.into()
+}
+
+#[proc_macro]
+pub fn generate_tests_self_rhs(_input: proc_macro::TokenStream) -> proc_macro::TokenStream {
+    let mut output = proc_macro2::TokenStream::new();
+
+    output.extend(gen_tests::generate_tests_self_rhs(F32));
+    output.extend(gen_tests::generate_tests_self_rhs(F64));
 
     output.into()
 }
@@ -168,6 +178,11 @@ pub fn generate_floats(_input: proc_macro::TokenStream) -> proc_macro::TokenStre
     let mut output = proc_macro2::TokenStream::new();
 
     output.extend(generate_main_description(&floats_f64));
+    output.extend(quote! {
+        pub trait Float: Eq + Copy + Ord + core::fmt::Debug {
+            type Content: Sized + Copy + PartialOrd + PartialEq + core::fmt::Debug;
+        }
+    });
 
     output.extend(do_generate_floats(&floats_f64, true));
     output.extend(do_generate_floats(&floats_f32, false));
@@ -177,6 +192,9 @@ pub fn generate_floats(_input: proc_macro::TokenStream) -> proc_macro::TokenStre
 
 fn do_generate_floats(floats: &[FloatDefinition], with_generic: bool) -> proc_macro2::TokenStream {
     let mut output = proc_macro2::TokenStream::new();
+
+    let ops = get_impl_self();
+    let ops_rhs = get_impl_self_rhs();
 
     for float in floats {
         let name = float.name_ident();
@@ -281,18 +299,14 @@ fn do_generate_floats(floats: &[FloatDefinition], with_generic: bool) -> proc_ma
     }
 
     for float_a in floats {
-        output.extend(impl_neg(float_a, floats));
-        output.extend(impl_floor(float_a, floats));
-        output.extend(impl_ceil(float_a, floats));
-        output.extend(impl_round(float_a, floats));
-        output.extend(impl_abs(float_a, floats));
+        for op in &ops {
+            output.extend(op.get_impl(float_a, floats));
+        }
 
         for float_b in floats {
-            output.extend(impl_add(float_a, float_b, floats));
-            output.extend(impl_sub(float_a, float_b, floats));
-            output.extend(impl_mul(float_a, float_b, floats));
-            output.extend(impl_div(float_a, float_b, floats));
-            output.extend(impl_rem(float_a, float_b, floats));
+            for op in &ops_rhs {
+                output.extend(op.get_impl(float_a, float_b, floats));
+            }
         }
     }
 
