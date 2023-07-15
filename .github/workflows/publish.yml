@@ -20,7 +20,7 @@ jobs:
         run: |
           cd typed_floats
           sed -i 's/, path = "..\/typed_floats_macros"//' Cargo.toml
-          cargo publish --token ${CRATES_TOKEN}
+          cargo publish --allow-dirty --token ${CRATES_TOKEN}
         env:
           CRATES_TOKEN: ${{ secrets.CRATES_TOKEN }}
   
