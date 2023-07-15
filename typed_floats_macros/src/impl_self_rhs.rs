@@ -4,16 +4,11 @@ use crate::types::*;
 
 pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
     vec![
-        OpRhs::new(
-            "add",
-            "+",
-            ("core::ops::Add", "add"),
-            Some(("core::ops::AddAssign", "add_assign")),
-            Box::new(|_, _| quote! { self.get() + rhs.get() }),
-            Box::new(|var1, var2| {
-                quote! { #var1 + #var2 }
-            }),
-            Box::new(|float, rhs, floats| {
+        OpRhsBuilder::new("core::ops::Add", "add")
+            .with_assign("core::ops::AddAssign", "add_assign")
+            .op_fn(Box::new(|_, _| quote! { self.get() + rhs.get() }))
+            .op_test(Box::new(|var1, var2| quote! { #var1 + #var2 }))
+            .result(Box::new(|float, rhs| {
                 let spec_a = &float.s;
                 let spec_b = &rhs.s;
 
@@ -35,30 +30,21 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
 
                 match can_be_nan {
                     true => None,
-                    false => {
-                        let spec = FloatSpecifications {
-                            accept_inf: spec_a.accept_inf || spec_b.accept_inf || can_sign_be_same,
-                            accept_zero: can_sign_be_different
-                                || (spec_a.accept_zero && spec_b.accept_zero),
-                            accept_positive: spec_a.accept_positive || spec_b.accept_positive,
-                            accept_negative: spec_a.accept_negative || spec_b.accept_negative,
-                        };
-
-                        find_float(&spec, floats)
-                    }
+                    false => Some(FloatSpecifications {
+                        accept_inf: spec_a.accept_inf || spec_b.accept_inf || can_sign_be_same,
+                        accept_zero: can_sign_be_different
+                            || (spec_a.accept_zero && spec_b.accept_zero),
+                        accept_positive: spec_a.accept_positive || spec_b.accept_positive,
+                        accept_negative: spec_a.accept_negative || spec_b.accept_negative,
+                    }),
                 }
-            }),
-        ),
-        OpRhs::new(
-            "sub",
-            "-",
-            ("core::ops::Sub", "sub"),
-            Some(("core::ops::SubAssign", "sub_assign")),
-            Box::new(|_, _| quote! { self.get() - rhs.get() }),
-            Box::new(|var1, var2| {
-                quote! { #var1 - #var2 }
-            }),
-            Box::new(|float, rhs, floats| {
+            }))
+            .build(),
+        OpRhsBuilder::new("core::ops::Sub", "sub")
+            .with_assign("core::ops::SubAssign", "sub_assign")
+            .op_fn(Box::new(|_, _| quote! { self.get() - rhs.get() }))
+            .op_test(Box::new(|var1, var2| quote! { #var1 - #var2 }))
+            .result(Box::new(|float, rhs| {
                 let spec_a = &float.s;
                 let spec_b = &rhs.s;
 
@@ -76,29 +62,20 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
 
                 match can_be_nan {
                     true => None,
-                    false => {
-                        let spec = FloatSpecifications {
-                            accept_inf: spec_a.accept_inf || spec_b.accept_inf || can_overflow,
-                            accept_zero: can_sign_be_same
-                                || (spec_a.accept_zero && spec_b.accept_zero),
-                            accept_positive: spec_a.accept_positive || spec_b.accept_negative,
-                            accept_negative: spec_a.accept_negative || spec_b.accept_positive,
-                        };
-                        find_float(&spec, floats)
-                    }
+                    false => Some(FloatSpecifications {
+                        accept_inf: spec_a.accept_inf || spec_b.accept_inf || can_overflow,
+                        accept_zero: can_sign_be_same || (spec_a.accept_zero && spec_b.accept_zero),
+                        accept_positive: spec_a.accept_positive || spec_b.accept_negative,
+                        accept_negative: spec_a.accept_negative || spec_b.accept_positive,
+                    }),
                 }
-            }),
-        ),
-        OpRhs::new(
-            "rem",
-            "%",
-            ("core::ops::Rem", "rem"),
-            Some(("core::ops::RemAssign", "rem_assign")),
-            Box::new(|_, _| quote! { self.get() % rhs.get() }),
-            Box::new(|var1, var2| {
-                quote! { #var1 % #var2 }
-            }),
-            Box::new(|float, rhs, floats| {
+            }))
+            .build(),
+        OpRhsBuilder::new("core::ops::Rem", "rem")
+            .with_assign("core::ops::RemAssign", "rem_assign")
+            .op_fn(Box::new(|_, _| quote! { self.get() % rhs.get() }))
+            .op_test(Box::new(|var1, var2| quote! { #var1 % #var2 }))
+            .result(Box::new(|float, rhs| {
                 let spec_a = &float.s;
                 let spec_b = &rhs.s;
 
@@ -106,29 +83,20 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
 
                 match can_be_nan {
                     true => None,
-                    false => {
-                        let output_def = FloatSpecifications {
-                            accept_inf: false,
-                            accept_zero: true,
-                            accept_positive: spec_a.accept_positive,
-                            accept_negative: spec_a.accept_negative,
-                        };
-
-                        find_float(&output_def, floats)
-                    }
+                    false => Some(FloatSpecifications {
+                        accept_inf: false,
+                        accept_zero: true,
+                        accept_positive: spec_a.accept_positive,
+                        accept_negative: spec_a.accept_negative,
+                    }),
                 }
-            }),
-        ),
-        OpRhs::new(
-            "div",
-            "/",
-            ("core::ops::Div", "div"),
-            Some(("core::ops::DivAssign", "div_assign")),
-            Box::new(|_, _| quote! { self.get() / rhs.get() }),
-            Box::new(|var1, var2| {
-                quote! { #var1 / #var2 }
-            }),
-            Box::new(|float, rhs, floats| {
+            }))
+            .build(),
+        OpRhsBuilder::new("core::ops::Div", "div")
+            .with_assign("core::ops::DivAssign", "div_assign")
+            .op_fn(Box::new(|_, _| quote! { self.get() / rhs.get() }))
+            .op_test(Box::new(|var1, var2| quote! { #var1 / #var2 }))
+            .result(Box::new(|float, rhs| {
                 let spec_a = &float.s;
                 let spec_b = &rhs.s;
 
@@ -144,29 +112,20 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
 
                 match can_be_nan {
                     true => None,
-                    false => {
-                        let output_def = FloatSpecifications {
-                            accept_inf: true,
-                            accept_zero: true,
-                            accept_positive: can_sign_be_same,
-                            accept_negative: can_sign_be_different,
-                        };
-
-                        find_float(&output_def, floats)
-                    }
+                    false => Some(FloatSpecifications {
+                        accept_inf: true,
+                        accept_zero: true,
+                        accept_positive: can_sign_be_same,
+                        accept_negative: can_sign_be_different,
+                    }),
                 }
-            }),
-        ),
-        OpRhs::new(
-            "mul",
-            "*",
-            ("core::ops::Mul", "mul"),
-            Some(("core::ops::MulAssign", "mul_assign")),
-            Box::new(|_, _| quote! { self.get() * rhs.get() }),
-            Box::new(|var1, var2| {
-                quote! { #var1 * #var2 }
-            }),
-            Box::new(|float, rhs, floats| {
+            }))
+            .build(),
+        OpRhsBuilder::new("core::ops::Mul", "mul")
+            .with_assign("core::ops::MulAssign", "mul_assign")
+            .op_fn(Box::new(|_, _| quote! { self.get() * rhs.get() }))
+            .op_test(Box::new(|var1, var2| quote! { #var1 * #var2 }))
+            .result(Box::new(|float, rhs| {
                 let spec_a = &float.s;
                 let spec_b = &rhs.s;
 
@@ -183,48 +142,28 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
                 match can_be_nan {
                     true => None,
                     false => {
-                        let output_def = FloatSpecifications {
+                        Some(FloatSpecifications {
                             accept_inf: true,  // it can always overflow
                             accept_zero: true, // it can always round to zero
                             accept_positive: can_sign_be_same,
                             accept_negative: can_sign_be_different,
-                        };
-
-                        find_float(&output_def, floats)
+                        })
                     }
                 }
-            }),
-        ),
-        OpRhs::new(
-            "hypot",
-            "hypot",
-            ("Hypot", "hypot"),
-            None,
-            Box::new(|_, _| quote! { self.get().hypot(rhs.get()) }),
-            Box::new(|var1, var2| {
-                quote! { #var1.hypot(#var2) }
-            }),
-            Box::new(|float, rhs, floats| {
-                let output_def = FloatSpecifications {
+            }))
+            .build(),
+        OpRhsBuilder::new("Hypot", "hypot")
+            .result(Box::new(|float, rhs| {
+                Some(FloatSpecifications {
                     accept_inf: true, // it can always overflow
                     accept_zero: float.s.accept_zero && rhs.s.accept_zero,
                     accept_positive: true,
                     accept_negative: false,
-                };
-
-                find_float(&output_def, floats)
-            }),
-        ),
-        OpRhs::new(
-            "min",
-            "min",
-            ("Min", "min"),
-            None,
-            Box::new(|_, _| quote! { self.get().min(rhs.get()) }),
-            Box::new(|var1, var2| {
-                quote! { Min::min(#var1,#var2) }
-            }),
-            Box::new(|float, rhs, floats| {
+                })
+            }))
+            .build(),
+        OpRhsBuilder::new("Min", "min")
+            .result(Box::new(|float, rhs| {
                 let output_def;
                 // https://llvm.org/docs/LangRef.html#llvm-minnum-intrinsic
                 // fmin(+0.0, -0.0) returns either operand.
@@ -275,19 +214,11 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
                     };
                 }
 
-                find_float(&output_def, floats)
-            }),
-        ),
-        OpRhs::new(
-            "max",
-            "max",
-            ("Max", "max"),
-            None,
-            Box::new(|_, _| quote! { self.get().max(rhs.get()) }),
-            Box::new(|var1, var2| {
-                quote! { Max::max(#var1,#var2) }
-            }),
-            Box::new(|float, rhs, floats| {
+                Some(output_def)
+            }))
+            .build(),
+        OpRhsBuilder::new("Max", "max")
+            .result(Box::new(|float, rhs| {
                 let output_def;
                 // https://llvm.org/docs/LangRef.html#llvm-maxnum-intrinsic
                 // fmin(+0.0, -0.0) returns either -0.0 or 0.0
@@ -297,10 +228,8 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
 
                 let can_be_neg_inf = (float.s.accept_negative && float.s.accept_inf)
                     && (rhs.s.accept_negative && rhs.s.accept_inf);
-                let can_be_pos_inf = (float.s.accept_positive
-                    && float.s.accept_inf)
-                    || (rhs.s.accept_positive
-                    && rhs.s.accept_inf);
+                let can_be_pos_inf = (float.s.accept_positive && float.s.accept_inf)
+                    || (rhs.s.accept_positive && rhs.s.accept_inf);
 
                 let accept_inf = can_be_neg_inf || can_be_pos_inf;
 
@@ -338,8 +267,8 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
                     };
                 }
 
-                find_float(&output_def, floats)
-            }),
-        ),
+                Some(output_def)
+            }))
+            .build(),
     ]
 }

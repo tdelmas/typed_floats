@@ -124,6 +124,7 @@ pub(crate) fn output_name(
 }
 
 type OpCallback = Box<dyn Fn(&FloatDefinition) -> proc_macro2::TokenStream>;
+type SimpleResultCallback = Box<dyn Fn(&FloatDefinition) -> Option<FloatSpecifications>>;
 type ResultCallback = Box<dyn Fn(&FloatDefinition, &[FloatDefinition]) -> Option<FloatDefinition>>;
 type TestCallback = Box<dyn Fn(&Ident) -> proc_macro2::TokenStream>;
 
@@ -137,27 +138,66 @@ pub(crate) struct Op {
     test: TestCallback,
 }
 
-impl Op {
-    pub(crate) fn new(
-        key: &'static str,
-        display: &'static str,
-        fn_name: &'static str,
-        trait_name: Option<&'static str>,
-        op: OpCallback,
-        test: TestCallback,
-        result: ResultCallback,
-    ) -> Self {
+pub(crate) struct OpBuilder {
+    op: Op,
+}
+
+impl OpBuilder {
+    pub(crate) fn new(fn_name: &'static str) -> Self {
+        let fn_op = Ident::new(fn_name, Span::call_site());
+        let fn_test = Ident::new(fn_name, Span::call_site());
         Self {
-            key,
-            display,
-            fn_name,
-            trait_name,
-            op,
-            result,
-            test,
+            op: Op {
+                key: fn_name,
+                display: fn_name,
+                fn_name,
+                trait_name: None,
+                op: Box::new(move |_| quote! { self.get().#fn_op() }),
+                result: Box::new(|_, _| panic!("No result defined")),
+                test: Box::new(move |var| quote! { #var.#fn_test() }),
+            },
         }
     }
 
+    pub fn display(mut self, display: &'static str) -> Self {
+        self.op.display = display;
+        self
+    }
+
+    pub fn trait_name(mut self, trait_name: &'static str) -> Self {
+        self.op.trait_name = Some(trait_name);
+        self
+    }
+
+    pub fn op_fn(mut self, op: OpCallback) -> Self {
+        self.op.op = op;
+        self
+    }
+
+    pub fn op_test(mut self, op: TestCallback) -> Self {
+        self.op.test = op;
+        self
+    }
+
+    pub fn result(mut self, result: SimpleResultCallback) -> Self {
+        self.op.result = Box::new(move |float, floats| {
+            let output_spec = (result)(float);
+
+            match output_spec {
+                Some(output_spec) => find_float(&output_spec, floats),
+                None => None,
+            }
+        });
+
+        self
+    }
+
+    pub fn build(self) -> Op {
+        self.op
+    }
+}
+
+impl Op {
     pub(crate) fn get_result(
         &self,
         float: &FloatDefinition,
@@ -235,6 +275,69 @@ type TestRhsCallback = Box<dyn Fn(&Ident, &Ident) -> proc_macro2::TokenStream>;
 type OpRhsCallback = Box<dyn Fn(&FloatDefinition, &FloatDefinition) -> proc_macro2::TokenStream>;
 type ResultRhsCallback =
     Box<dyn Fn(&FloatDefinition, &FloatDefinition, &[FloatDefinition]) -> Option<FloatDefinition>>;
+type SimpleResultRhsCallback =
+    Box<dyn Fn(&FloatDefinition, &FloatDefinition) -> Option<FloatSpecifications>>;
+
+pub(crate) struct OpRhsBuilder {
+    op: OpRhs,
+}
+
+impl OpRhsBuilder {
+    pub(crate) fn new(trait_name: &'static str, fn_name: &'static str) -> Self {
+        let fn_op = Ident::new(fn_name, Span::call_site());
+        let fn_test = Ident::new(fn_name, Span::call_site());
+        let trait_ident: syn::Path = syn::parse_str(trait_name).unwrap();
+
+        Self {
+            op: OpRhs {
+                key: fn_name,
+                display: fn_name,
+                fn_name,
+                trait_name,
+                assign: None,
+                op: Box::new(move |_, _| quote! { self.get().#fn_op(rhs.get()) }),
+                result: Box::new(|_, _, _| panic!("No result defined")),
+                test: Box::new(move |var1, var2| quote! { #trait_ident::#fn_test(#var1,#var2) }),
+            },
+        }
+    }
+
+    pub(crate) fn with_assign(
+        mut self,
+        assign_trait: &'static str,
+        assign_fn: &'static str,
+    ) -> Self {
+        self.op.assign = Some((assign_trait, assign_fn));
+        self
+    }
+
+    pub(crate) fn op_fn(mut self, op: OpRhsCallback) -> Self {
+        self.op.op = op;
+        self
+    }
+
+    pub(crate) fn op_test(mut self, op: TestRhsCallback) -> Self {
+        self.op.test = op;
+        self
+    }
+
+    pub(crate) fn result(mut self, result: SimpleResultRhsCallback) -> Self {
+        self.op.result = Box::new(move |float, rhs, floats| {
+            let output_spec = (result)(float, rhs);
+
+            match output_spec {
+                Some(output_spec) => find_float(&output_spec, floats),
+                None => None,
+            }
+        });
+
+        self
+    }
+
+    pub(crate) fn build(self) -> OpRhs {
+        self.op
+    }
+}
 
 pub(crate) struct OpRhs {
     pub(crate) key: &'static str,
@@ -248,31 +351,6 @@ pub(crate) struct OpRhs {
 }
 
 impl OpRhs {
-    pub(crate) fn new(
-        key: &'static str,
-        display: &'static str,
-        (trait_name, fn_name): (&'static str, &'static str),
-        assign: Option<(&'static str, &'static str)>,
-        op: OpRhsCallback,
-        test: TestRhsCallback,
-        result: ResultRhsCallback,
-    ) -> Self {
-        if !key.chars().all(|c| c.is_ascii_lowercase()) {
-            panic!("key must be only a-z lowercase");
-        }
-
-        Self {
-            key,
-            display,
-            fn_name,
-            trait_name,
-            assign,
-            op,
-            result,
-            test,
-        }
-    }
-
     pub(crate) fn get_result(
         &self,
         float: &FloatDefinition,
