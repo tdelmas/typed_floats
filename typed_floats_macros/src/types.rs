@@ -323,12 +323,12 @@ impl OpRhsBuilder {
         let op_token: syn::BinOp = syn::parse_str(bin_op).unwrap();
         let op_token2 = op_token.clone();
 
-        self.op.op = Box::new(move |_,_| quote! { self.get() #op_token rhs.get() });
+        self.op.op = Box::new(move |_, _| quote! { self.get() #op_token rhs.get() });
 
         self.op.test = Box::new(move |var1, var2| {
             quote! { #var1 #op_token2 #var2 }
         });
-        
+
         self
     }
 
