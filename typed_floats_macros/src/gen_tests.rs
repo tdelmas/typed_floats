@@ -249,9 +249,23 @@ pub(crate) fn generate_tests_self_rhs(float_type: &'static str) -> proc_macro2::
                     #vals.push(#get);
                 });
 
-                if op.key == "min" || op.key == "max" {
-                    // Because min(0.0,-0.0) and max(0.0,-0.0) may return either 0.0 or -0.0,
-                    // depending on the architecture, we can't check the strinctness of the result type
+                if op.is_commutative {
+                    let test2 = &op.get_test("num_b", "num_a");
+
+                    test_ops.extend(quote! {
+                        {
+                            let res2 = #test2;
+
+                            if res == res  {
+                                assert_eq!(res, #test2, "commutative property of {}", #op_name);
+                            } else if res2 == res2 {
+                                panic!("{} is not commutative. res={:?}, res2={:?}", #op_name, res, res2);
+                            }
+                        }
+                    });
+                }
+
+                if !op.is_as_strict_as_possible {
                     continue;
                 }
 

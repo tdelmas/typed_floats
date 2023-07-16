@@ -2,12 +2,26 @@ use quote::quote;
 
 use crate::types::*;
 
+fn can_one_be_zero_neg_and_the_other_zero_pos(
+    spec_a: &FloatSpecifications,
+    spec_b: &FloatSpecifications,
+) -> bool {
+    let can_a_be_zero_neg = spec_a.accept_zero && spec_a.accept_negative;
+    let can_a_be_zero_pos = spec_a.accept_zero && spec_a.accept_positive;
+    let can_b_be_zero_neg = spec_b.accept_zero && spec_b.accept_negative;
+    let can_b_be_zero_pos = spec_b.accept_zero && spec_b.accept_positive;
+
+    (can_a_be_zero_neg && can_b_be_zero_pos) || (can_a_be_zero_pos && can_b_be_zero_neg)
+}
+
 pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
     vec![
         OpRhsBuilder::new("core::ops::Add", "add")
             .with_assign("core::ops::AddAssign", "add_assign")
+            .bin_op("+")
             .op_fn(Box::new(|_, _| quote! { self.get() + rhs.get() }))
             .op_test(Box::new(|var1, var2| quote! { #var1 + #var2 }))
+            .is_commutative()
             .result(Box::new(|float, rhs| {
                 let spec_a = &float.s;
                 let spec_b = &rhs.s;
@@ -42,8 +56,7 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
             .build(),
         OpRhsBuilder::new("core::ops::Sub", "sub")
             .with_assign("core::ops::SubAssign", "sub_assign")
-            .op_fn(Box::new(|_, _| quote! { self.get() - rhs.get() }))
-            .op_test(Box::new(|var1, var2| quote! { #var1 - #var2 }))
+            .bin_op("-")
             .result(Box::new(|float, rhs| {
                 let spec_a = &float.s;
                 let spec_b = &rhs.s;
@@ -73,8 +86,7 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
             .build(),
         OpRhsBuilder::new("core::ops::Rem", "rem")
             .with_assign("core::ops::RemAssign", "rem_assign")
-            .op_fn(Box::new(|_, _| quote! { self.get() % rhs.get() }))
-            .op_test(Box::new(|var1, var2| quote! { #var1 % #var2 }))
+            .bin_op("%")
             .result(Box::new(|float, rhs| {
                 let spec_a = &float.s;
                 let spec_b = &rhs.s;
@@ -94,8 +106,7 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
             .build(),
         OpRhsBuilder::new("core::ops::Div", "div")
             .with_assign("core::ops::DivAssign", "div_assign")
-            .op_fn(Box::new(|_, _| quote! { self.get() / rhs.get() }))
-            .op_test(Box::new(|var1, var2| quote! { #var1 / #var2 }))
+            .bin_op("/")
             .result(Box::new(|float, rhs| {
                 let spec_a = &float.s;
                 let spec_b = &rhs.s;
@@ -123,8 +134,8 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
             .build(),
         OpRhsBuilder::new("core::ops::Mul", "mul")
             .with_assign("core::ops::MulAssign", "mul_assign")
-            .op_fn(Box::new(|_, _| quote! { self.get() * rhs.get() }))
-            .op_test(Box::new(|var1, var2| quote! { #var1 * #var2 }))
+            .bin_op("*")
+            .is_commutative()
             .result(Box::new(|float, rhs| {
                 let spec_a = &float.s;
                 let spec_b = &rhs.s;
@@ -153,6 +164,7 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
             }))
             .build(),
         OpRhsBuilder::new("Hypot", "hypot")
+            .is_commutative()
             .result(Box::new(|float, rhs| {
                 Some(FloatSpecifications {
                     accept_inf: true, // it can always overflow
@@ -163,14 +175,14 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
             }))
             .build(),
         OpRhsBuilder::new("Min", "min")
+            .is_commutative()
+            .is_not_as_strict_as_possible()
+            .comment("min(-0.0,0.0) may return either.")
             .result(Box::new(|float, rhs| {
-                let output_def;
                 // https://llvm.org/docs/LangRef.html#llvm-minnum-intrinsic
                 // fmin(+0.0, -0.0) returns either operand.
                 // (0.0_f64).min(-0.0_f64) == 0.0_f64
-                let can_confuse_zero = float.s.accept_zero
-                    && rhs.s.accept_zero
-                    && (float.s.accept_positive || rhs.s.accept_positive);
+                let can_confuse_zero = can_one_be_zero_neg_and_the_other_zero_pos(&float.s, &rhs.s);
 
                 let can_be_neg_inf = (float.s.accept_negative && float.s.accept_inf)
                     || (rhs.s.accept_negative && rhs.s.accept_inf);
@@ -180,51 +192,53 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
                     && rhs.s.accept_inf;
                 let accept_inf = can_be_neg_inf || can_be_pos_inf;
 
-                if !float.s.accept_positive {
-                    output_def = FloatSpecifications {
+                let output_def = if !float.s.accept_positive {
+                    let accept_zero =
+                        float.s.accept_zero && (rhs.s.accept_zero || rhs.s.accept_positive);
+
+                    FloatSpecifications {
                         accept_inf,
-                        accept_zero: float.s.accept_zero
-                            && (rhs.s.accept_zero || rhs.s.accept_positive),
-                        accept_positive: false,
+                        accept_zero,
+                        accept_positive: accept_zero || can_confuse_zero,
                         accept_negative: true,
-                    };
+                    }
                 } else if !rhs.s.accept_positive {
                     let accept_zero =
                         rhs.s.accept_zero && (float.s.accept_zero || float.s.accept_positive);
 
-                    output_def = FloatSpecifications {
+                    FloatSpecifications {
                         accept_inf,
                         accept_zero,
-                        accept_positive: accept_zero && can_confuse_zero,
+                        accept_positive: accept_zero || can_confuse_zero,
                         accept_negative: true,
-                    };
+                    }
                 } else if !float.s.accept_negative && !rhs.s.accept_negative {
-                    output_def = FloatSpecifications {
+                    FloatSpecifications {
                         accept_inf,
                         accept_zero: float.s.accept_zero || rhs.s.accept_zero,
                         accept_positive: true,
                         accept_negative: false,
-                    };
+                    }
                 } else {
-                    output_def = FloatSpecifications {
+                    FloatSpecifications {
                         accept_inf: can_be_neg_inf || can_be_pos_inf,
                         accept_zero: float.s.accept_zero || rhs.s.accept_zero,
                         accept_positive: true,
                         accept_negative: true,
-                    };
-                }
+                    }
+                };
 
                 Some(output_def)
             }))
             .build(),
         OpRhsBuilder::new("Max", "max")
+            .is_commutative()
+            .is_not_as_strict_as_possible()
+            .comment("max(-0.0,0.0) may return either.")
             .result(Box::new(|float, rhs| {
-                let output_def;
                 // https://llvm.org/docs/LangRef.html#llvm-maxnum-intrinsic
                 // fmin(+0.0, -0.0) returns either -0.0 or 0.0
-                let can_confuse_zero = float.s.accept_zero
-                    && rhs.s.accept_zero
-                    && (float.s.accept_negative || rhs.s.accept_negative);
+                let can_confuse_zero = can_one_be_zero_neg_and_the_other_zero_pos(&float.s, &rhs.s);
 
                 let can_be_neg_inf = (float.s.accept_negative && float.s.accept_inf)
                     && (rhs.s.accept_negative && rhs.s.accept_inf);
@@ -233,39 +247,41 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
 
                 let accept_inf = can_be_neg_inf || can_be_pos_inf;
 
-                if !float.s.accept_negative {
-                    output_def = FloatSpecifications {
-                        accept_inf,
-                        accept_zero: float.s.accept_zero
-                            && (rhs.s.accept_zero || rhs.s.accept_negative),
-                        accept_positive: true,
-                        accept_negative: false,
-                    };
-                } else if !rhs.s.accept_negative {
+                let output_def = if !float.s.accept_negative {
                     let accept_zero =
-                        rhs.s.accept_zero && (float.s.accept_zero || float.s.accept_negative);
+                        float.s.accept_zero && (rhs.s.accept_zero || rhs.s.accept_negative);
 
-                    output_def = FloatSpecifications {
+                    FloatSpecifications {
                         accept_inf,
                         accept_zero,
                         accept_positive: true,
                         accept_negative: accept_zero && can_confuse_zero,
-                    };
+                    }
+                } else if !rhs.s.accept_negative {
+                    let accept_zero =
+                        rhs.s.accept_zero && (float.s.accept_zero || float.s.accept_negative);
+
+                    FloatSpecifications {
+                        accept_inf,
+                        accept_zero,
+                        accept_positive: true,
+                        accept_negative: accept_zero && can_confuse_zero,
+                    }
                 } else if !float.s.accept_positive && !rhs.s.accept_positive {
-                    output_def = FloatSpecifications {
+                    FloatSpecifications {
                         accept_inf,
                         accept_zero: float.s.accept_zero || rhs.s.accept_zero,
                         accept_positive: false,
                         accept_negative: true,
-                    };
+                    }
                 } else {
-                    output_def = FloatSpecifications {
+                    FloatSpecifications {
                         accept_inf: can_be_neg_inf || can_be_pos_inf,
                         accept_zero: float.s.accept_zero || rhs.s.accept_zero,
                         accept_positive: true,
                         accept_negative: true,
-                    };
-                }
+                    }
+                };
 
                 Some(output_def)
             }))

@@ -133,6 +133,7 @@ pub(crate) struct Op {
     pub(crate) display: &'static str,
     pub(crate) fn_name: &'static str,
     pub(crate) trait_name: Option<&'static str>,
+    pub(crate) comment: Option<&'static str>,
     op: OpCallback,
     result: ResultCallback,
     test: TestCallback,
@@ -152,6 +153,7 @@ impl OpBuilder {
                 display: fn_name,
                 fn_name,
                 trait_name: None,
+                comment: None,
                 op: Box::new(move |_| quote! { self.get().#fn_op() }),
                 result: Box::new(|_, _| panic!("No result defined")),
                 test: Box::new(move |var| quote! { #var.#fn_test() }),
@@ -176,6 +178,11 @@ impl OpBuilder {
 
     pub fn op_test(mut self, op: TestCallback) -> Self {
         self.op.test = op;
+        self
+    }
+
+    pub fn comment(mut self, comment: &'static str) -> Self {
+        self.op.comment = Some(comment);
         self
     }
 
@@ -295,11 +302,44 @@ impl OpRhsBuilder {
                 fn_name,
                 trait_name,
                 assign: None,
+                is_commutative: false,
+                is_as_strict_as_possible: false,
+                comment: None,
                 op: Box::new(move |_, _| quote! { self.get().#fn_op(rhs.get()) }),
                 result: Box::new(|_, _, _| panic!("No result defined")),
                 test: Box::new(move |var1, var2| quote! { #trait_ident::#fn_test(#var1,#var2) }),
             },
         }
+    }
+
+    pub(crate) fn is_not_as_strict_as_possible(mut self) -> Self {
+        self.op.is_as_strict_as_possible = false;
+        self
+    }
+
+    pub(crate) fn bin_op(mut self, bin_op: &'static str) -> Self {
+        self.op.display = bin_op;
+
+        let op_token: syn::BinOp = syn::parse_str(bin_op).unwrap();
+        let op_token2 = op_token.clone();
+
+        self.op.op = Box::new(move |_,_| quote! { self.get() #op_token rhs.get() });
+
+        self.op.test = Box::new(move |var1, var2| {
+            quote! { #var1 #op_token2 #var2 }
+        });
+        
+        self
+    }
+
+    pub(crate) fn is_commutative(mut self) -> Self {
+        self.op.is_commutative = true;
+        self
+    }
+
+    pub(crate) fn comment(mut self, comment: &'static str) -> Self {
+        self.op.comment = Some(comment);
+        self
     }
 
     pub(crate) fn with_assign(
@@ -345,6 +385,9 @@ pub(crate) struct OpRhs {
     pub(crate) fn_name: &'static str,
     pub(crate) trait_name: &'static str,
     pub(crate) assign: Option<(&'static str, &'static str)>,
+    pub(crate) is_commutative: bool,
+    pub(crate) is_as_strict_as_possible: bool,
+    pub(crate) comment: Option<&'static str>,
     op: OpRhsCallback,
     result: ResultRhsCallback,
     test: TestRhsCallback,
