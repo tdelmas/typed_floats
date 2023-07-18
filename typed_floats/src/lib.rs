@@ -86,6 +86,29 @@ pub trait Max<T> {
 
 typed_floats_macros::generate_floats!();
 
+pub trait Float: Eq + Copy + Ord + core::fmt::Debug + core::str::FromStr {
+    type Content: Sized
+        + Clone
+        + Copy
+        + PartialOrd
+        + PartialEq
+        + core::fmt::Debug
+        + core::fmt::Display;
+
+    fn new(value: Self::Content) -> Result<Self, InvalidNumber>;
+
+    fn get(&self) -> Self::Content;
+
+    fn is_infinite(&self) -> bool;
+    fn is_sign_positive(&self) -> bool;
+    fn is_sign_negative(&self) -> bool;
+}
+
+pub enum FromStrError {
+    ParseFloatError(core::num::ParseFloatError),
+    InvalidNumber(InvalidNumber),
+}
+
 use core::num::{NonZeroI16, NonZeroI32, NonZeroI64, NonZeroI8};
 use core::num::{NonZeroU16, NonZeroU32, NonZeroU64, NonZeroU8};
 

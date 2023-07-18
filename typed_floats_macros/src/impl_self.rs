@@ -89,7 +89,9 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
             }))
             .build(),
         OpBuilder::new("fract")
-            .comment("Returns +0.0 if the factional part is zero")
+            .comment(
+                "`fract` returns `+0.0` if the factional part is zero, even for negative numbers.",
+            )
             .result(Box::new(|float| {
                 if float.s.accept_inf {
                     return None;
@@ -141,7 +143,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
             }))
             .build(),
         OpBuilder::new("sqrt")
-            .comment("sqrt(-0.0) = -0.0")
+            .comment("`sqrt(-0.0) = -0.0`")
             .op_fn(Box::new(|float| {
                 // sqrt(-0.0) = -0.0
                 if !float.s.accept_positive && !float.s.accept_zero {

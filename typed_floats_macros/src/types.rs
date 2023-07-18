@@ -321,7 +321,7 @@ impl OpRhsBuilder {
         self.op.display = bin_op;
 
         let op_token: syn::BinOp = syn::parse_str(bin_op).unwrap();
-        let op_token2 = op_token.clone();
+        let op_token2 = op_token;
 
         self.op.op = Box::new(move |_, _| quote! { self.get() #op_token rhs.get() });
 

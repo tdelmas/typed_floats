@@ -172,25 +172,42 @@ fn get_definitions(float_type: &'static str) -> Vec<FloatDefinition> {
 
 #[proc_macro]
 pub fn generate_floats(_input: proc_macro::TokenStream) -> proc_macro::TokenStream {
+    let specifications = get_specifications();
     let floats_f64 = get_definitions("f64");
     let floats_f32 = get_definitions("f32");
 
     let mut output = proc_macro2::TokenStream::new();
 
     output.extend(generate_main_description(&floats_f64));
-    output.extend(quote! {
-        pub trait Float: Eq + Copy + Ord + core::fmt::Debug {
-            type Content: Sized + Copy + PartialOrd + PartialEq + core::fmt::Debug;
-        }
-    });
 
-    output.extend(do_generate_floats(&floats_f64, true));
-    output.extend(do_generate_floats(&floats_f32, false));
+    output.extend(do_generate_genereic_floats(&specifications, "f64"));
+    output.extend(do_generate_floats(&floats_f64));
+    output.extend(do_generate_floats(&floats_f32));
 
     output.into()
 }
 
-fn do_generate_floats(floats: &[FloatDefinition], with_generic: bool) -> proc_macro2::TokenStream {
+fn do_generate_genereic_floats(
+    specifications: &[(&'static str, FloatSpecifications)],
+    default_float_type: &str,
+) -> proc_macro2::TokenStream {
+    let mut output = proc_macro2::TokenStream::new();
+
+    let default_float_type = syn::Ident::new(default_float_type, proc_macro2::Span::call_site());
+
+    for (name, _) in specifications {
+        let name = syn::Ident::new(name, proc_macro2::Span::call_site());
+
+        output.extend(quote! {
+            #[derive(Debug, Copy, Clone)]
+            pub struct #name<T: Sized=#default_float_type>(T);
+        });
+    }
+
+    output
+}
+
+fn do_generate_floats(floats: &[FloatDefinition]) -> proc_macro2::TokenStream {
     let mut output = proc_macro2::TokenStream::new();
 
     let ops = get_impl_self();
@@ -200,13 +217,6 @@ fn do_generate_floats(floats: &[FloatDefinition], with_generic: bool) -> proc_ma
         let name = float.name_ident();
         let float_type = float.float_type_ident();
         let full_type = float.full_type_ident();
-
-        if with_generic {
-            output.extend(quote! {
-                #[derive(Debug, Copy, Clone)]
-                pub struct #name<T: Sized=#float_type>(T);
-            });
-        }
 
         output.extend(quote! {
             impl #full_type {
@@ -227,21 +237,40 @@ fn do_generate_floats(floats: &[FloatDefinition], with_generic: bool) -> proc_ma
                     Self(value)
                 }
 
+            }
+
+            impl Float for #full_type {
+                type Content = #float_type;
+
                 #[inline]
                 #[must_use]
-                pub fn new(value: #float_type) -> Result<Self, InvalidNumber> {
+                fn new(value: #float_type) -> Result<Self, InvalidNumber> {
                     Self::try_from(value)
                 }
 
                 #[inline]
                 #[must_use]
-                pub const fn get(self) -> #float_type {
+                fn get(&self) -> #float_type {
                     self.0
                 }
-            }
 
-            impl Float for #full_type {
-                type Content = #float_type;
+                #[inline]
+                #[must_use]
+                fn is_infinite(&self) -> bool {
+                    self.0.is_infinite()
+                }
+
+                #[inline]
+                #[must_use]
+                fn is_sign_positive(&self) -> bool {
+                    self.0.is_sign_positive()
+                }
+
+                #[inline]
+                #[must_use]
+                fn is_sign_negative(&self) -> bool {
+                    self.0.is_sign_negative()
+                }
             }
 
             impl PartialEq for #full_type {
@@ -282,6 +311,18 @@ fn do_generate_floats(floats: &[FloatDefinition], with_generic: bool) -> proc_ma
                 #[must_use]
                 fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
                     write!(f, "{}", self.0)
+                }
+            }
+
+            impl core::str::FromStr for #full_type {
+                type Err = FromStrError;
+
+                #[inline]
+                #[must_use]
+                fn from_str(s: &str) -> Result<Self, Self::Err> {
+                    let f = #float_type::from_str(s).map_err(FromStrError::ParseFloatError)?;
+
+                    Self::try_from(f).map_err(FromStrError::InvalidNumber)
                 }
             }
         });

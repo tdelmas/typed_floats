@@ -10,50 +10,88 @@ pub(crate) fn generate_main_description(floats: &[FloatDefinition]) -> proc_macr
     let ops = get_impl_self_rhs();
 
     output.extend(comment_line(
-        "/// When the result is [`f64`], it may be `NaN`.",
+        "When the result may be `Nan`, the result type is [`f64`].",
     ));
-    output.extend(comment_line("///"));
+
     output.extend(generate_fn_table(floats));
 
     for op in ops {
         output.extend(generate_op_table(floats, &op));
     }
 
-    output.extend(comment_line("///"));
+    output.extend(comment_line(""));
 
     output
 }
 
 fn comment_line(str: &str) -> proc_macro2::TokenStream {
-    str.parse().unwrap()
+    let comment: String = "/// ".to_owned() + str + "\n";
+    comment.parse().unwrap()
+}
+
+fn print_table(content: Vec<Vec<String>>) -> proc_macro2::TokenStream {
+    let mut output = proc_macro2::TokenStream::new();
+
+    output.extend(comment_line(""));
+
+    let first_line = content[0].clone();
+    let lines = content[1..].to_vec();
+
+    fn line_to_string(line: Vec<String>) -> String {
+        let mut str = "|".to_string();
+        for cell in line {
+            str += cell.as_str();
+            str += "|";
+        }
+        str
+    }
+
+    let sep: Vec<String> = first_line.iter().map(|_| "---".to_string()).collect();
+
+    output.extend(comment_line(&line_to_string(first_line)));
+    output.extend(comment_line(&line_to_string(sep)));
+    lines.iter().for_each(|line| {
+        output.extend(comment_line(&line_to_string(line.clone())));
+    });
+
+    output.extend(comment_line(""));
+
+    output
 }
 
 fn generate_op_table(floats: &[FloatDefinition], op: &OpRhs) -> proc_macro2::TokenStream {
     let mut output = proc_macro2::TokenStream::new();
 
-    let op_name = &op.display;
-    let mut str: String = format!("/// |  {op_name}  |");
+    let mut table: Vec<Vec<String>> = Vec::new();
 
-    for rhs in floats {
-        str += format!(" {rhs_name} |", rhs_name = rhs.name).as_str();
+    let mut header: Vec<String> = Vec::new();
+
+    let mut title: String = op.display.to_string();
+
+    if let Some(comment) = op.comment {
+        let footnote = format!("[^{}]", op.key);
+        title += &footnote;
+        output.extend(comment_line(""));
+        output.extend(comment_line(&(footnote + ": " + comment)));
     }
-    str += "\n";
 
-    output.extend(comment_line(&str));
+    header.push(title);
+    header.extend(
+        floats
+            .iter()
+            .map(|float| float.name.to_string())
+            .collect::<Vec<String>>(),
+    );
 
-    let mut str: String = "/// |-|".to_string();
-    for _ in floats {
-        str += "-|";
-    }
-    str += "\n";
-
-    output.extend(comment_line(&str));
+    table.push(header);
 
     for float in floats {
         let name = float.name;
         let float_type = float.float_type;
 
-        let mut str: String = format!("/// {name} | ").to_string();
+        let mut line: Vec<String> = Vec::new();
+
+        line.push(name.to_string());
 
         for rhs in floats {
             let result = op.get_result(float, rhs, floats);
@@ -62,13 +100,13 @@ fn generate_op_table(floats: &[FloatDefinition], op: &OpRhs) -> proc_macro2::Tok
                 Some(result) => result.name,
                 None => float_type,
             };
-            str += format!(" {result_str} |").as_str();
+            line.push(result_str.to_string());
         }
 
-        output.extend(comment_line(&str));
+        table.push(line);
     }
 
-    output.extend(comment_line("///\n"));
+    output.extend(print_table(table));
 
     output
 }
@@ -76,44 +114,48 @@ fn generate_op_table(floats: &[FloatDefinition], op: &OpRhs) -> proc_macro2::Tok
 fn generate_fn_table(floats: &[FloatDefinition]) -> proc_macro2::TokenStream {
     let mut output = proc_macro2::TokenStream::new();
 
-    let mut str: String = "/// |   |".to_string();
+    let mut table: Vec<Vec<String>> = Vec::new();
+
+    let mut header: Vec<String> = Vec::new();
+    header.push(" ".to_string());
+
     for rhs in floats {
-        str += format!(" {rhs_name} |", rhs_name = rhs.name).as_str();
+        header.push(rhs.name.to_string());
     }
-    str += "\n";
-
-    output.extend(comment_line(&str));
-
-    let mut str: String = "/// | - |".to_string();
-    for _ in floats {
-        str += "-|";
-    }
-    str += "\n";
-
-    output.extend(comment_line(&str));
 
     let ops = get_impl_self();
 
+    table.push(header);
+
     for op in ops {
-        let name = &op.display;
-        let mut str: String = format!("/// | {name} | ").to_string();
+        let mut line: Vec<String> = Vec::new();
+
+        let mut title = op.display.to_string();
+
+        if let Some(comment) = op.comment {
+            let footnote = format!("[^{}]", op.key);
+            title += &footnote;
+            output.extend(comment_line(""));
+            output.extend(comment_line(&(footnote + ": " + comment)));
+        }
+
+        line.push(title);
 
         for float in floats {
             let float_type = float.float_type;
 
             let result = op.get_result(float, floats);
 
-            let result_str = match result {
-                Some(result) => result.name,
-                None => float_type,
+            match result {
+                Some(result) => line.push(result.name.to_string()),
+                None => line.push(float_type.to_string()),
             };
-            str += format!(" {result_str} |").as_str();
         }
 
-        output.extend(comment_line(&str));
+        table.push(line);
     }
 
-    output.extend(comment_line("///\n"));
+    output.extend(print_table(table));
 
     output
 }
