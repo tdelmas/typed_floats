@@ -303,7 +303,7 @@ impl OpRhsBuilder {
                 trait_name,
                 assign: None,
                 is_commutative: false,
-                is_as_strict_as_possible: false,
+                is_as_strict_as_possible: true,
                 comment: None,
                 op: Box::new(move |_, _| quote! { self.get().#fn_op(rhs.get()) }),
                 result: Box::new(|_, _, _| panic!("No result defined")),
