@@ -200,7 +200,7 @@ fn do_generate_genereic_floats(
 
         output.extend(quote! {
             #[derive(Debug, Copy, Clone)]
-            pub struct #name<T: Sized=#default_float_type>(T);
+            pub struct #name<T=#default_float_type>(T);
         });
     }
 
@@ -219,14 +219,11 @@ fn do_generate_floats(floats: &[FloatDefinition]) -> proc_macro2::TokenStream {
         let full_type = float.full_type_ident();
 
         output.extend(quote! {
-            impl #full_type {
-                /// # Safety
-                /// The caller must ensure that the value is valid
-                /// It will panic in debug mode if the value is not valid
-                /// but in release mode the behavior is undefined
+            impl Float for #full_type {
+                type Content = #float_type;
                 #[inline]
                 #[must_use]
-                pub unsafe fn new_unchecked(value: #float_type) -> Self {
+                unsafe fn new_unchecked(value: #float_type) -> Self {
                     debug_assert!(
                         Self::try_from(value).is_ok(),
                         "{value} is not a valid {name}",
@@ -236,11 +233,6 @@ fn do_generate_floats(floats: &[FloatDefinition]) -> proc_macro2::TokenStream {
 
                     Self(value)
                 }
-
-            }
-
-            impl Float for #full_type {
-                type Content = #float_type;
 
                 #[inline]
                 #[must_use]

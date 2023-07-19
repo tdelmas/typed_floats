@@ -86,16 +86,60 @@ pub trait Max<T> {
 
 typed_floats_macros::generate_floats!();
 
-pub trait Float: Eq + Copy + Ord + core::fmt::Debug + core::str::FromStr {
+pub trait Float:
+    Eq
+    + Copy
+    + Ord
+    + core::fmt::Debug
+    + core::str::FromStr
+    + TryFrom<Self::Content, Error = InvalidNumber>
+    + TryFrom<u8>
+    + TryFrom<u16>
+    + TryFrom<u32>
+    + TryFrom<u64>
+    + TryFrom<i8>
+    + TryFrom<i16>
+    + TryFrom<i32>
+    + TryFrom<i64>
+    + TryFrom<NonZeroU8>
+    + TryFrom<NonZeroU16>
+    + TryFrom<NonZeroU32>
+    + TryFrom<NonZeroU64>
+    + TryFrom<NonZeroI8>
+    + TryFrom<NonZeroI16>
+    + TryFrom<NonZeroI32>
+    + TryFrom<NonZeroI64>
+    + std::ops::Add
+    + std::ops::Sub
+    + std::ops::Mul
+    + std::ops::Div
+    + std::ops::Rem
+{
     type Content: Sized
         + Clone
         + Copy
         + PartialOrd
         + PartialEq
         + core::fmt::Debug
-        + core::fmt::Display;
+        + core::fmt::Display
+        + std::ops::Add<Output = Self::Content>
+        + std::ops::Sub<Output = Self::Content>
+        + std::ops::Mul<Output = Self::Content>
+        + std::ops::Div<Output = Self::Content>
+        + std::ops::Rem<Output = Self::Content>
+        + std::ops::AddAssign
+        + std::ops::SubAssign
+        + std::ops::MulAssign
+        + std::ops::DivAssign
+        + std::ops::RemAssign;
 
     fn new(value: Self::Content) -> Result<Self, InvalidNumber>;
+
+    /// # Safety
+    /// The caller must ensure that the value is valid
+    /// It will panic in debug mode if the value is not valid
+    /// but in release mode the behavior is undefined
+    unsafe fn new_unchecked(value: Self::Content) -> Self;
 
     fn get(&self) -> Self::Content;
 
