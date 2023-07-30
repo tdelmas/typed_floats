@@ -134,7 +134,11 @@ typed_floats_macros::generate_docs!(
 
         /// # Errors
         /// Returns an error if the value is not valid
-        fn new(value: Self::Content) -> Result<Self, InvalidNumber>;
+        #[inline]
+        #[must_use]
+        fn new(value: Self::Content) -> Result<Self, InvalidNumber> {
+            Self::try_from(value)
+        }
 
         /// # Safety
         /// The caller must ensure that the value is valid

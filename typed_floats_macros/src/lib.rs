@@ -246,14 +246,6 @@ fn do_generate_floats(floats: &[FloatDefinition]) -> proc_macro2::TokenStream {
                     Self(value)
                 }
 
-                /// # Errors
-                /// Returns an error if the value is not valid
-                #[inline]
-                #[must_use]
-                fn new(value: #float_type) -> Result<Self, InvalidNumber> {
-                    Self::try_from(value)
-                }
-
                 #[inline]
                 #[must_use]
                 fn get(&self) -> #float_type {
