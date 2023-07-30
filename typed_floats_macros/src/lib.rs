@@ -191,7 +191,6 @@ pub fn generate_floats(_input: proc_macro::TokenStream) -> proc_macro::TokenStre
 
     let mut output = proc_macro2::TokenStream::new();
 
-
     output.extend(do_generate_generic_floats(&specifications, "f64"));
     output.extend(do_generate_floats(&floats_f64));
     output.extend(do_generate_floats(&floats_f32));

@@ -1,4 +1,4 @@
-#![doc = include_str!("../README.md")]
+#![doc = include_str!("../README.truncated.md")]
 //! # Rules
 //!
 //! Conversions rules for operations are summarized in [`Float`].
@@ -135,7 +135,6 @@ typed_floats_macros::generate_docs!(
         /// # Errors
         /// Returns an error if the value is not valid
         #[inline]
-        #[must_use]
         fn new(value: Self::Content) -> Result<Self, InvalidNumber> {
             Self::try_from(value)
         }
