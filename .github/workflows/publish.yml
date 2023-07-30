@@ -17,7 +17,10 @@ jobs:
         env:
           CRATES_TOKEN: ${{ secrets.CRATES_TOKEN }}
       - name: cargo publish typed_floats
-        run: cd typed_floats && cargo build && cargo publish --allow-dirty --token ${CRATES_TOKEN}
+        run: |
+          cargo +nightly -Zscript .\pre-publish.rs 
+          cd typed_floats
+          cargo publish --allow-dirty --token ${CRATES_TOKEN}
         env:
           CRATES_TOKEN: ${{ secrets.CRATES_TOKEN }}
   
