@@ -234,6 +234,8 @@ fn do_generate_floats(floats: &[FloatDefinition]) -> proc_macro2::TokenStream {
                     Self(value)
                 }
 
+                /// # Errors
+                /// Returns an error if the value is not valid
                 #[inline]
                 #[must_use]
                 fn new(value: #float_type) -> Result<Self, InvalidNumber> {
@@ -248,8 +250,38 @@ fn do_generate_floats(floats: &[FloatDefinition]) -> proc_macro2::TokenStream {
 
                 #[inline]
                 #[must_use]
+                fn is_nan(&self) -> bool {
+                    return false;
+                }
+
+                #[inline]
+                #[must_use]
                 fn is_infinite(&self) -> bool {
                     self.0.is_infinite()
+                }
+
+                #[inline]
+                #[must_use]
+                fn is_finite(&self) -> bool {
+                    self.0.is_finite()
+                }
+
+                #[inline]
+                #[must_use]
+                fn is_subnormal(&self) -> bool {
+                    self.0.is_subnormal()
+                }
+
+                #[inline]
+                #[must_use]
+                fn is_normal(&self) -> bool {
+                    self.0.is_normal()
+                }
+
+                #[inline]
+                #[must_use]
+                fn classify(&self) -> core::num::FpCategory {
+                    self.0.classify()
                 }
 
                 #[inline]
@@ -263,6 +295,7 @@ fn do_generate_floats(floats: &[FloatDefinition]) -> proc_macro2::TokenStream {
                 fn is_sign_negative(&self) -> bool {
                     self.0.is_sign_negative()
                 }
+
             }
 
             impl PartialEq for #full_type {
@@ -312,7 +345,7 @@ fn do_generate_floats(floats: &[FloatDefinition]) -> proc_macro2::TokenStream {
                 #[inline]
                 #[must_use]
                 fn from_str(s: &str) -> Result<Self, Self::Err> {
-                    let f = #float_type::from_str(s).map_err(FromStrError::ParseFloatError)?;
+                    let f: #float_type = s.parse::<#float_type>().map_err(FromStrError::ParseFloatError)?;
 
                     Self::try_from(f).map_err(FromStrError::InvalidNumber)
                 }

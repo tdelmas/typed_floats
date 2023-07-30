@@ -149,7 +149,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 if !float.s.accept_positive && !float.s.accept_zero {
                     let float_type = float.float_type_ident();
 
-                    quote! { #float_type::NAN }
+                    quote! { core::#float_type::NAN }
                 } else {
                     quote! { self.get().sqrt() }
                 }
@@ -189,7 +189,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 if is_strictly_negative {
                     let float_type = float.float_type_ident();
 
-                    quote! { #float_type::NAN }
+                    quote! { core::#float_type::NAN }
                 } else {
                     quote! { self.get().ln() }
                 }
@@ -234,6 +234,18 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                     accept_inf: float.s.accept_inf || float.s.accept_zero,
                 })
             }))
+            .build(),
+        OpBuilder::new("to_degrees")
+            .result(Box::new(|float| {
+                let mut output_spec = float.s.clone();
+
+                output_spec.accept_inf = true;
+
+                Some(output_spec)
+            }))
+            .build(),
+        OpBuilder::new("to_radians")
+            .result(Box::new(|float| Some(float.s.clone())))
             .build(),
     ]
 }

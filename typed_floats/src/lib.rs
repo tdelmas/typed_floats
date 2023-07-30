@@ -37,12 +37,12 @@
 //! ```
 //! use typed_floats::*;
 //!
-//! let mut a: StrictlyPositive = MAX.try_into().unwrap();
-//! let b: StrictlyPositive = MAX.try_into().unwrap();
+//! let mut a: StrictlyPositive = core::f64::MAX.try_into().unwrap();
+//! let b: StrictlyPositive = core::f64::MAX.try_into().unwrap();
 //!
 //! a += b;// Would not compile with StrictlyPositiveFinite
 //!
-//! assert_eq!(a.get(), INFINITY.get());
+//! assert_eq!(a.get(), core::f64::INFINITY);
 //! ```
 //!
 //!
@@ -133,6 +133,8 @@ pub trait Float:
         + std::ops::DivAssign
         + std::ops::RemAssign;
 
+    /// # Errors
+    /// Returns an error if the value is not valid
     fn new(value: Self::Content) -> Result<Self, InvalidNumber>;
 
     /// # Safety
@@ -143,7 +145,12 @@ pub trait Float:
 
     fn get(&self) -> Self::Content;
 
+    fn is_nan(&self) -> bool;
     fn is_infinite(&self) -> bool;
+    fn is_finite(&self) -> bool;
+    fn is_subnormal(&self) -> bool;
+    fn is_normal(&self) -> bool;
+    fn classify(&self) -> core::num::FpCategory;
     fn is_sign_positive(&self) -> bool;
     fn is_sign_negative(&self) -> bool;
 }
@@ -172,10 +179,39 @@ pub enum InvalidNumber {
     Infinite,
 }
 
-pub const INFINITY: StrictlyPositive = StrictlyPositive(f64::INFINITY);
-pub const NEG_INFINITY: StrictlyNegative = StrictlyNegative(f64::NEG_INFINITY);
-pub const MAX: StrictlyPositiveFinite = StrictlyPositiveFinite(f64::MAX);
-pub const MIN: StrictlyNegativeFinite = StrictlyNegativeFinite(f64::MIN);
-pub const MIN_POSITIVE: StrictlyPositiveFinite = StrictlyPositiveFinite(f64::MIN_POSITIVE);
-pub const ZERO: PositiveFinite = PositiveFinite(0.0f64);
-pub const NEGATIVE_ZERO: NegativeFinite = NegativeFinite(-0.0f64);
+pub mod f64 {
+    pub const INFINITY: crate::StrictlyPositive = crate::StrictlyPositive(core::f64::INFINITY);
+    pub const NEG_INFINITY: crate::StrictlyNegative =
+        crate::StrictlyNegative(core::f64::NEG_INFINITY);
+    pub const MAX: crate::StrictlyPositiveFinite = crate::StrictlyPositiveFinite(core::f64::MAX);
+    pub const MIN: crate::StrictlyNegativeFinite = crate::StrictlyNegativeFinite(core::f64::MIN);
+    pub const MIN_POSITIVE: crate::StrictlyPositiveFinite =
+        crate::StrictlyPositiveFinite(core::f64::MIN_POSITIVE);
+    pub const ZERO: crate::PositiveFinite = crate::PositiveFinite(0.0f64);
+    pub const NEGATIVE_ZERO: crate::NegativeFinite = crate::NegativeFinite(-0.0f64);
+
+    pub mod consts {
+        pub const PI: crate::PositiveFinite = crate::PositiveFinite(core::f64::consts::PI);
+    }
+}
+
+pub mod f32 {
+    pub const INFINITY: crate::StrictlyPositive<f32> =
+        crate::StrictlyPositive::<f32>(core::f32::INFINITY);
+    pub const NEG_INFINITY: crate::StrictlyNegative<f32> =
+        crate::StrictlyNegative::<f32>(core::f32::NEG_INFINITY);
+    pub const MAX: crate::StrictlyPositiveFinite<f32> =
+        crate::StrictlyPositiveFinite::<f32>(core::f32::MAX);
+    pub const MIN: crate::StrictlyNegativeFinite<f32> =
+        crate::StrictlyNegativeFinite::<f32>(core::f32::MIN);
+    pub const MIN_POSITIVE: crate::StrictlyPositiveFinite<f32> =
+        crate::StrictlyPositiveFinite::<f32>(core::f32::MIN_POSITIVE);
+    pub const ZERO: crate::PositiveFinite<f32> = crate::PositiveFinite::<f32>(0.0f32);
+    pub const NEGATIVE_ZERO: crate::NegativeFinite<f32> = crate::NegativeFinite::<f32>(-0.0f32);
+
+    pub mod consts {
+
+        pub const PI: crate::PositiveFinite<f32> =
+            crate::PositiveFinite::<f32>(core::f32::consts::PI);
+    }
+}

@@ -21,7 +21,7 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
             .bin_op("+")
             .op_fn(Box::new(|_, _| quote! { self.get() + rhs.get() }))
             .op_test(Box::new(|var1, var2| quote! { #var1 + #var2 }))
-            .is_commutative()
+            .op_is_commutative()
             .comment("The addition of two opposite infinity is `NaN`.")
             .result(Box::new(|float, rhs| {
                 let spec_a = &float.s;
@@ -138,7 +138,7 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
         OpRhsBuilder::new("core::ops::Mul", "mul")
             .with_assign("core::ops::MulAssign", "mul_assign")
             .bin_op("*")
-            .is_commutative()
+            .op_is_commutative()
             .comment("The result of zero multiplied by infinity is `NaN`. Rounding errors may generate zero from non-zero values.")
             .result(Box::new(|float, rhs| {
                 let spec_a = &float.s;
@@ -168,7 +168,7 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
             }))
             .build(),
         OpRhsBuilder::new("Hypot", "hypot")
-            .is_commutative()
+            .op_is_commutative()
             .result(Box::new(|float, rhs| {
                 Some(FloatSpecifications {
                     accept_inf: true, // it can always overflow
@@ -179,8 +179,8 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
             }))
             .build(),
         OpRhsBuilder::new("Min", "min")
-            .is_commutative()
-            .is_not_as_strict_as_possible()
+            .op_is_commutative()
+            .return_type_is_not_as_strict_as_possible()
             .comment("The result type is not always as strict as possible because `min(-0.0,0.0)` may return either.")
             .result(Box::new(|float, rhs| {
                 // https://llvm.org/docs/LangRef.html#llvm-minnum-intrinsic
@@ -236,8 +236,8 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
             }))
             .build(),
         OpRhsBuilder::new("Max", "max")
-            .is_commutative()
-            .is_not_as_strict_as_possible()
+            .op_is_commutative()
+            .return_type_is_not_as_strict_as_possible()
             .comment("The result type is not always as strict as possible because `max(-0.0,0.0)` may return either.")
             .result(Box::new(|float, rhs| {
                 // https://llvm.org/docs/LangRef.html#llvm-maxnum-intrinsic

@@ -302,7 +302,7 @@ impl OpRhsBuilder {
                 fn_name,
                 trait_name,
                 assign: None,
-                is_commutative: false,
+                op_is_commutative: false,
                 is_as_strict_as_possible: true,
                 comment: None,
                 op: Box::new(move |_, _| quote! { self.get().#fn_op(rhs.get()) }),
@@ -312,7 +312,7 @@ impl OpRhsBuilder {
         }
     }
 
-    pub(crate) fn is_not_as_strict_as_possible(mut self) -> Self {
+    pub(crate) fn return_type_is_not_as_strict_as_possible(mut self) -> Self {
         self.op.is_as_strict_as_possible = false;
         self
     }
@@ -332,8 +332,8 @@ impl OpRhsBuilder {
         self
     }
 
-    pub(crate) fn is_commutative(mut self) -> Self {
-        self.op.is_commutative = true;
+    pub(crate) fn op_is_commutative(mut self) -> Self {
+        self.op.op_is_commutative = true;
         self
     }
 
@@ -385,7 +385,7 @@ pub(crate) struct OpRhs {
     pub(crate) fn_name: &'static str,
     pub(crate) trait_name: &'static str,
     pub(crate) assign: Option<(&'static str, &'static str)>,
-    pub(crate) is_commutative: bool,
+    pub(crate) op_is_commutative: bool,
     pub(crate) is_as_strict_as_possible: bool,
     pub(crate) comment: Option<&'static str>,
     op: OpRhsCallback,

@@ -75,32 +75,38 @@ fn test_op_checks(
 
 fn get_test_values(float_type: Ident) -> proc_macro2::TokenStream {
     quote! {
-        const MAX_NEGATIVE: #float_type = -#float_type::MIN_POSITIVE;
-
-        assert!(MAX_NEGATIVE.is_sign_negative());
-        assert!(MAX_NEGATIVE > -0.1);
-        assert!(MAX_NEGATIVE < -0.0);
+        const MAX_NEGATIVE: #float_type = -core::#float_type::MIN_POSITIVE;
+        const SUBNORMAL : #float_type = 1.0e-308;
+        const NEG_SUBNORMAL : #float_type = -1.0e-308;
 
         let values = [
-            #float_type::NAN,
-            #float_type::NEG_INFINITY,
-            #float_type::MIN,
+            core::#float_type::NAN,
+            core::#float_type::NEG_INFINITY,
+            core::#float_type::MIN,
             -2.0,
             -1.0,
             MAX_NEGATIVE,
+            NEG_SUBNORMAL,
             -0.0,
             0.0,
-            #float_type::MIN_POSITIVE,
+            SUBNORMAL,
+            core::#float_type::MIN_POSITIVE,
             1.0,
             2.0,
-            #float_type::MAX,
-            #float_type::INFINITY,
+            core::#float_type::MAX,
+            core::#float_type::INFINITY,
         ];
 
-        const SKIP_NAN:usize = 2;
-        for i in SKIP_NAN..values.len() {
-            if values[i] != 0.0 {
-                assert!(values[i] > values[i-1], "values[{}] = {} <= values[{}] = {}", i-1, values[i-1], i, values[i]);
+        for i in 1..values.len() {
+            let value = values[i];
+            let prev_value = values[i-1];
+
+            if(value.is_nan() || prev_value.is_nan()) {
+                continue;
+            }
+
+            if value != 0.0 && prev_value != 0.0 {
+                assert!(value >prev_value, "values[{}] = {} <= values[{}] = {}", i, value, i-1, prev_value);
             }
         }
     }
@@ -249,7 +255,7 @@ pub(crate) fn generate_tests_self_rhs(float_type: &'static str) -> proc_macro2::
                     #vals.push(#get);
                 });
 
-                if op.is_commutative {
+                if op.op_is_commutative {
                     let test2 = &op.get_test("num_b", "num_a");
 
                     test_ops.extend(quote! {
