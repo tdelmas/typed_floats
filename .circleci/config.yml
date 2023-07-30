@@ -6,7 +6,7 @@ jobs:
     steps:
       - checkout
       - run: rustup toolchain install nightly
-      - run: cargo +nightly -Zscript .\pre-publish.rs
+      - run: cargo +nightly -Zscript ./pre-publish.rs
       - run: cargo test
   build_and_test_arm:
     machine:
@@ -16,7 +16,7 @@ jobs:
       - checkout
       - run: curl https://sh.rustup.rs -sSf | sh -s -- -y
       - run: rustup toolchain install nightly
-      - run: cargo +nightly -Zscript .\pre-publish.rs
+      - run: cargo +nightly -Zscript ./pre-publish.rs
       - run: cargo test
 
 workflows:

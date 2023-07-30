@@ -19,14 +19,14 @@ jobs:
         run: |
           du -sh
           rustup toolchain install nightly
-          cargo +nightly -Zscript .\pre-publish.rs
+          cargo +nightly -Zscript ./pre-publish.rs
           cargo build --verbose
           du -sh
       - name: Run tests
         run: |
           du -sh
           rustup toolchain install nightly
-          cargo +nightly -Zscript .\pre-publish.rs
+          cargo +nightly -Zscript ./pre-publish.rs
           cargo test --verbose
           du -sh
       - name: Run clippy
