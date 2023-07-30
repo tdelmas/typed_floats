@@ -17,14 +17,7 @@ jobs:
         env:
           CRATES_TOKEN: ${{ secrets.CRATES_TOKEN }}
       - name: cargo publish typed_floats
-        run: |
-          cp README.md typed_floats/README.md
-          cd typed_floats
-          line_number=$(grep -n "# Full documentation" README.md | cut -d: -f1)
-          line_number=`expr $line_number - 1`
-          head -n "$line_number" README.md > README.truncated.md
-          sed -i 's/, path = "..\/typed_floats_macros"//' Cargo.toml
-          cargo publish --allow-dirty --token ${CRATES_TOKEN}
+        run: cd typed_floats && cargo publish --allow-dirty --token ${CRATES_TOKEN}
         env:
           CRATES_TOKEN: ${{ secrets.CRATES_TOKEN }}
   
