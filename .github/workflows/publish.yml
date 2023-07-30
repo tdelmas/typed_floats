@@ -19,15 +19,8 @@ jobs:
       - name: cargo publish typed_floats
         run: |
           rustup toolchain install nightly
-          echo "Running pre-publish.rs..."
           cargo +nightly -Zscript ./pre-publish.rs 
           cd typed_floats
-          ls -la
-          echo "Running cargo build..."
-          cargo build
-          echo "Running cargo doc..."
-          cargo doc
-          echo "Running cargo publish..."
           cargo publish --allow-dirty --token ${CRATES_TOKEN}
         env:
           CRATES_TOKEN: ${{ secrets.CRATES_TOKEN }}
