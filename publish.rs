@@ -89,6 +89,8 @@ fn main() {
     println!("Current version: {:?}", crate_version);
     println!("New version: {:?}", new_version);
 
+    println!("Updating version in Cargo.toml files...");
+
     update_version(&crate_version, &new_version, "./typed_floats/Cargo.toml");
     update_version(
         &crate_version,
@@ -101,20 +103,28 @@ fn main() {
         "./typed_floats_tests/Cargo.toml",
     );
 
+    println!("Commiting Cargo.toml files...");
+
     std::process::Command::new("git")
         .args(&["commit", "-am", &new_version])
         .output()
         .unwrap();
+
+    println!("Push to remote...");
 
     std::process::Command::new("git")
         .args(&["push"])
         .output()
         .unwrap();
 
+    println!("Tagging...");
+
     std::process::Command::new("git")
         .args(&["tag", "-a", &new_version, "-m", &new_version])
         .output()
         .unwrap();
+
+    println!("Pushing tag to trigger publish...");
 
     std::process::Command::new("git")
         .args(&["push", "origin", &new_version])
