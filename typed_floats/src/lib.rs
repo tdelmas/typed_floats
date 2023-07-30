@@ -84,76 +84,76 @@ pub trait Max<T> {
     fn max(self, rhs: T) -> Self::Output;
 }
 
-typed_floats_macros::generate_floats!();
-
-pub trait Float:
-    Eq
-    + Copy
-    + Ord
-    + core::fmt::Debug
-    + core::str::FromStr
-    + TryFrom<Self::Content, Error = InvalidNumber>
-    + TryFrom<u8>
-    + TryFrom<u16>
-    + TryFrom<u32>
-    + TryFrom<u64>
-    + TryFrom<i8>
-    + TryFrom<i16>
-    + TryFrom<i32>
-    + TryFrom<i64>
-    + TryFrom<NonZeroU8>
-    + TryFrom<NonZeroU16>
-    + TryFrom<NonZeroU32>
-    + TryFrom<NonZeroU64>
-    + TryFrom<NonZeroI8>
-    + TryFrom<NonZeroI16>
-    + TryFrom<NonZeroI32>
-    + TryFrom<NonZeroI64>
-    + std::ops::Add
-    + std::ops::Sub
-    + std::ops::Mul
-    + std::ops::Div
-    + std::ops::Rem
-{
-    type Content: Sized
-        + Clone
+typed_floats_macros::generate_docs!(
+    pub trait Float:
+        Eq
         + Copy
-        + PartialOrd
-        + PartialEq
+        + Ord
         + core::fmt::Debug
-        + core::fmt::Display
-        + std::ops::Add<Output = Self::Content>
-        + std::ops::Sub<Output = Self::Content>
-        + std::ops::Mul<Output = Self::Content>
-        + std::ops::Div<Output = Self::Content>
-        + std::ops::Rem<Output = Self::Content>
-        + std::ops::AddAssign
-        + std::ops::SubAssign
-        + std::ops::MulAssign
-        + std::ops::DivAssign
-        + std::ops::RemAssign;
+        + core::str::FromStr
+        + TryFrom<Self::Content, Error = InvalidNumber>
+        + TryFrom<u8>
+        + TryFrom<u16>
+        + TryFrom<u32>
+        + TryFrom<u64>
+        + TryFrom<i8>
+        + TryFrom<i16>
+        + TryFrom<i32>
+        + TryFrom<i64>
+        + TryFrom<NonZeroU8>
+        + TryFrom<NonZeroU16>
+        + TryFrom<NonZeroU32>
+        + TryFrom<NonZeroU64>
+        + TryFrom<NonZeroI8>
+        + TryFrom<NonZeroI16>
+        + TryFrom<NonZeroI32>
+        + TryFrom<NonZeroI64>
+        + std::ops::Add
+        + std::ops::Sub
+        + std::ops::Mul
+        + std::ops::Div
+        + std::ops::Rem
+    {
+        type Content: Sized
+            + Clone
+            + Copy
+            + PartialOrd
+            + PartialEq
+            + core::fmt::Debug
+            + core::fmt::Display
+            + std::ops::Add<Output = Self::Content>
+            + std::ops::Sub<Output = Self::Content>
+            + std::ops::Mul<Output = Self::Content>
+            + std::ops::Div<Output = Self::Content>
+            + std::ops::Rem<Output = Self::Content>
+            + std::ops::AddAssign
+            + std::ops::SubAssign
+            + std::ops::MulAssign
+            + std::ops::DivAssign
+            + std::ops::RemAssign;
 
-    /// # Errors
-    /// Returns an error if the value is not valid
-    fn new(value: Self::Content) -> Result<Self, InvalidNumber>;
+        /// # Errors
+        /// Returns an error if the value is not valid
+        fn new(value: Self::Content) -> Result<Self, InvalidNumber>;
 
-    /// # Safety
-    /// The caller must ensure that the value is valid
-    /// It will panic in debug mode if the value is not valid
-    /// but in release mode the behavior is undefined
-    unsafe fn new_unchecked(value: Self::Content) -> Self;
+        /// # Safety
+        /// The caller must ensure that the value is valid
+        /// It will panic in debug mode if the value is not valid
+        /// but in release mode the behavior is undefined
+        unsafe fn new_unchecked(value: Self::Content) -> Self;
 
-    fn get(&self) -> Self::Content;
+        fn get(&self) -> Self::Content;
 
-    fn is_nan(&self) -> bool;
-    fn is_infinite(&self) -> bool;
-    fn is_finite(&self) -> bool;
-    fn is_subnormal(&self) -> bool;
-    fn is_normal(&self) -> bool;
-    fn classify(&self) -> core::num::FpCategory;
-    fn is_sign_positive(&self) -> bool;
-    fn is_sign_negative(&self) -> bool;
-}
+        fn is_nan(&self) -> bool;
+        fn is_infinite(&self) -> bool;
+        fn is_finite(&self) -> bool;
+        fn is_subnormal(&self) -> bool;
+        fn is_normal(&self) -> bool;
+        fn classify(&self) -> core::num::FpCategory;
+        fn is_sign_positive(&self) -> bool;
+        fn is_sign_negative(&self) -> bool;
+    }
+);
 
 pub enum FromStrError {
     ParseFloatError(core::num::ParseFloatError),
@@ -178,6 +178,8 @@ pub enum InvalidNumber {
     #[error("Number is infinite")]
     Infinite,
 }
+
+typed_floats_macros::generate_floats!();
 
 macro_rules! add_const {
     ($name:ident, $type:ident, $typed:ident, $value:expr) => {

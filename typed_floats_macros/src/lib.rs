@@ -171,6 +171,19 @@ fn get_definitions(float_type: &'static str) -> Vec<FloatDefinition> {
 }
 
 #[proc_macro]
+pub fn generate_docs(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
+    let floats_f64 = get_definitions("f64");
+    let doc = generate_main_description(&floats_f64);
+    let input = proc_macro2::TokenStream::from(input);
+
+    let mut output = proc_macro2::TokenStream::new();
+    output.extend(doc);
+    output.extend(input);
+
+    output.into()
+}
+
+#[proc_macro]
 pub fn generate_floats(_input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let specifications = get_specifications();
     let floats_f64 = get_definitions("f64");
@@ -178,16 +191,15 @@ pub fn generate_floats(_input: proc_macro::TokenStream) -> proc_macro::TokenStre
 
     let mut output = proc_macro2::TokenStream::new();
 
-    output.extend(generate_main_description(&floats_f64));
 
-    output.extend(do_generate_genereic_floats(&specifications, "f64"));
+    output.extend(do_generate_generic_floats(&specifications, "f64"));
     output.extend(do_generate_floats(&floats_f64));
     output.extend(do_generate_floats(&floats_f32));
 
     output.into()
 }
 
-fn do_generate_genereic_floats(
+fn do_generate_generic_floats(
     specifications: &[(&'static str, FloatSpecifications)],
     default_float_type: &str,
 ) -> proc_macro2::TokenStream {
