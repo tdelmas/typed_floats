@@ -5,6 +5,7 @@ jobs:
       - image: cimg/rust:1.70.0
     steps:
       - checkout
+      - run: rustup toolchain install nightly
       - run: cargo +nightly -Zscript .\pre-publish.rs
       - run: cargo test
   build_and_test_arm:
