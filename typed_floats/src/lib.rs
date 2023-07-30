@@ -179,39 +179,85 @@ pub enum InvalidNumber {
     Infinite,
 }
 
+macro_rules! add_const {
+    ($name:ident, $type:ident, $typed:ident, $value:expr) => {
+        pub const $name: crate::$typed<$type> = crate::$typed::<$type>($value);
+    };
+    ($name:ident, $type:ident, $typed:ident) => {
+        add_const!($name, $type, $typed, core::$type::consts::$name);
+    };
+}
+
 pub mod f64 {
-    pub const INFINITY: crate::StrictlyPositive = crate::StrictlyPositive(core::f64::INFINITY);
-    pub const NEG_INFINITY: crate::StrictlyNegative =
-        crate::StrictlyNegative(core::f64::NEG_INFINITY);
-    pub const MAX: crate::StrictlyPositiveFinite = crate::StrictlyPositiveFinite(core::f64::MAX);
-    pub const MIN: crate::StrictlyNegativeFinite = crate::StrictlyNegativeFinite(core::f64::MIN);
-    pub const MIN_POSITIVE: crate::StrictlyPositiveFinite =
-        crate::StrictlyPositiveFinite(core::f64::MIN_POSITIVE);
-    pub const ZERO: crate::PositiveFinite = crate::PositiveFinite(0.0f64);
-    pub const NEGATIVE_ZERO: crate::NegativeFinite = crate::NegativeFinite(-0.0f64);
+    add_const!(INFINITY, f64, StrictlyPositive, core::f64::INFINITY);
+    add_const!(NEG_INFINITY, f64, StrictlyNegative, core::f64::NEG_INFINITY);
+    add_const!(MAX, f64, StrictlyPositiveFinite, core::f64::MAX);
+    add_const!(MIN, f64, StrictlyNegativeFinite, core::f64::MIN);
+    add_const!(
+        MIN_POSITIVE,
+        f64,
+        StrictlyPositiveFinite,
+        core::f64::MIN_POSITIVE
+    );
+    add_const!(ZERO, f64, PositiveFinite, 0.0f64);
+    add_const!(NEGATIVE_ZERO, f64, NegativeFinite, -0.0f64);
 
     pub mod consts {
-        pub const PI: crate::PositiveFinite = crate::PositiveFinite(core::f64::consts::PI);
+        add_const!(PI, f64, PositiveFinite);
+        add_const!(TAU, f64, PositiveFinite);
+        add_const!(FRAC_PI_2, f64, PositiveFinite);
+        add_const!(FRAC_PI_3, f64, PositiveFinite);
+        add_const!(FRAC_PI_4, f64, PositiveFinite);
+        add_const!(FRAC_PI_6, f64, PositiveFinite);
+        add_const!(FRAC_PI_8, f64, PositiveFinite);
+        add_const!(FRAC_1_PI, f64, PositiveFinite);
+        add_const!(FRAC_2_PI, f64, PositiveFinite);
+        add_const!(FRAC_2_SQRT_PI, f64, PositiveFinite);
+        add_const!(SQRT_2, f64, PositiveFinite);
+        add_const!(FRAC_1_SQRT_2, f64, PositiveFinite);
+        add_const!(E, f64, PositiveFinite);
+        add_const!(LOG2_10, f64, PositiveFinite);
+        add_const!(LOG2_E, f64, PositiveFinite);
+        add_const!(LOG10_2, f64, PositiveFinite);
+        add_const!(LOG10_E, f64, PositiveFinite);
+        add_const!(LN_2, f64, PositiveFinite);
+        add_const!(LN_10, f64, PositiveFinite);
     }
 }
 
 pub mod f32 {
-    pub const INFINITY: crate::StrictlyPositive<f32> =
-        crate::StrictlyPositive::<f32>(core::f32::INFINITY);
-    pub const NEG_INFINITY: crate::StrictlyNegative<f32> =
-        crate::StrictlyNegative::<f32>(core::f32::NEG_INFINITY);
-    pub const MAX: crate::StrictlyPositiveFinite<f32> =
-        crate::StrictlyPositiveFinite::<f32>(core::f32::MAX);
-    pub const MIN: crate::StrictlyNegativeFinite<f32> =
-        crate::StrictlyNegativeFinite::<f32>(core::f32::MIN);
-    pub const MIN_POSITIVE: crate::StrictlyPositiveFinite<f32> =
-        crate::StrictlyPositiveFinite::<f32>(core::f32::MIN_POSITIVE);
-    pub const ZERO: crate::PositiveFinite<f32> = crate::PositiveFinite::<f32>(0.0f32);
-    pub const NEGATIVE_ZERO: crate::NegativeFinite<f32> = crate::NegativeFinite::<f32>(-0.0f32);
+    add_const!(INFINITY, f32, StrictlyPositive, core::f32::INFINITY);
+    add_const!(NEG_INFINITY, f32, StrictlyNegative, core::f32::NEG_INFINITY);
+    add_const!(MAX, f32, StrictlyPositiveFinite, core::f32::MAX);
+    add_const!(MIN, f32, StrictlyNegativeFinite, core::f32::MIN);
+    add_const!(
+        MIN_POSITIVE,
+        f32,
+        StrictlyPositiveFinite,
+        core::f32::MIN_POSITIVE
+    );
+    add_const!(ZERO, f32, PositiveFinite, 0.0f32);
+    add_const!(NEGATIVE_ZERO, f32, NegativeFinite, -0.0f32);
 
     pub mod consts {
-
-        pub const PI: crate::PositiveFinite<f32> =
-            crate::PositiveFinite::<f32>(core::f32::consts::PI);
+        add_const!(PI, f32, PositiveFinite);
+        add_const!(TAU, f32, PositiveFinite);
+        add_const!(FRAC_PI_2, f32, PositiveFinite);
+        add_const!(FRAC_PI_3, f32, PositiveFinite);
+        add_const!(FRAC_PI_4, f32, PositiveFinite);
+        add_const!(FRAC_PI_6, f32, PositiveFinite);
+        add_const!(FRAC_PI_8, f32, PositiveFinite);
+        add_const!(FRAC_1_PI, f32, PositiveFinite);
+        add_const!(FRAC_2_PI, f32, PositiveFinite);
+        add_const!(FRAC_2_SQRT_PI, f32, PositiveFinite);
+        add_const!(SQRT_2, f32, PositiveFinite);
+        add_const!(FRAC_1_SQRT_2, f32, PositiveFinite);
+        add_const!(E, f32, PositiveFinite);
+        add_const!(LOG2_10, f32, PositiveFinite);
+        add_const!(LOG2_E, f32, PositiveFinite);
+        add_const!(LOG10_2, f32, PositiveFinite);
+        add_const!(LOG10_E, f32, PositiveFinite);
+        add_const!(LN_2, f32, PositiveFinite);
+        add_const!(LN_10, f32, PositiveFinite);
     }
 }
