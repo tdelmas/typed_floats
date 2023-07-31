@@ -1,7 +1,11 @@
 [package]
 description = "Types for handling floats with type checking at compile time."
 edition = "2021"
-include = ["*.md"]
+include = [
+  "Cargo.toml",
+  "src/*.rs",
+  "*.md",
+]
 keywords = ["float"]
 license = "MIT OR Apache-2.0"
 name = "typed_floats"
