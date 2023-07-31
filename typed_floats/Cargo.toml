@@ -7,9 +7,9 @@ license = "MIT OR Apache-2.0"
 name = "typed_floats"
 readme = "./README.md"
 repository = "https://github.com/tdelmas/floats"
-version = "0.1.21"
+version = "0.1.22"
 
 [dependencies]
 serde_json = {version = "1.0"}
 thiserror = "1.0"
-typed_floats_macros = {version = "=0.1.21", path = "../typed_floats_macros"}
+typed_floats_macros = {version = "=0.1.22", path = "../typed_floats_macros"}
