@@ -134,6 +134,7 @@ pub(crate) struct Op {
     pub(crate) fn_name: &'static str,
     pub(crate) trait_name: Option<&'static str>,
     pub(crate) comment: Option<&'static str>,
+    pub(crate) description: proc_macro2::TokenStream,
     op: OpCallback,
     result: ResultCallback,
     test: TestCallback,
@@ -153,6 +154,7 @@ impl OpBuilder {
                 display: fn_name,
                 fn_name,
                 trait_name: None,
+                description: proc_macro2::TokenStream::new(),
                 comment: None,
                 op: Box::new(move |_| quote! { self.get().#fn_op() }),
                 result: Box::new(|_, _| panic!("No result defined")),
@@ -178,6 +180,11 @@ impl OpBuilder {
 
     pub fn op_test(mut self, op: TestCallback) -> Self {
         self.op.test = op;
+        self
+    }
+
+    pub fn description(mut self, description: proc_macro2::TokenStream) -> Self {
+        self.op.description = description;
         self
     }
 
@@ -250,6 +257,8 @@ impl Op {
 
         let fn_ident = Ident::new(self.fn_name, Span::call_site());
 
+        let description = &self.description;
+
         if let Some(trait_name) = &self.trait_name {
             let trait_name: proc_macro2::TokenStream = trait_name.parse().unwrap();
 
@@ -257,6 +266,7 @@ impl Op {
                 impl #trait_name for #float_full_type {
                     type Output = #output_name;
 
+                    #description
                     #[inline]
                     #[must_use]
                     fn #fn_ident(self) -> Self::Output {
@@ -267,6 +277,7 @@ impl Op {
         } else {
             quote! {
                 impl #float_full_type {
+                    #description
                     #[inline]
                     #[must_use]
                     pub fn #fn_ident(self) -> #output_name {

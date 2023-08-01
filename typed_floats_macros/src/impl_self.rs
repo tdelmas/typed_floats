@@ -28,6 +28,9 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
             }))
             .build(),
         OpBuilder::new("abs")
+            .description(quote! {
+                /// Computes the absolute value of `self`.
+            })
             .op_fn(Box::new(|float| {
                 if !float.s.accept_negative {
                     // no-op
@@ -49,6 +52,9 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
             }))
             .build(),
         OpBuilder::new("ceil")
+            .description(quote! {
+                /// Returns the smallest integer greater than or equal to `self`.
+            })
             .result(Box::new(|float| {
                 let mut output_spec = float.s.clone();
 
@@ -60,6 +66,9 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
             }))
             .build(),
         OpBuilder::new("floor")
+            .description(quote! {
+                /// Returns the largest integer less than or equal to `self`.
+            })
             .result(Box::new(|float| {
                 let mut output_spec = float.s.clone();
 
@@ -71,6 +80,10 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
             }))
             .build(),
         OpBuilder::new("round")
+            .description(quote! {
+                /// Returns the nearest integer to `self`. If a value is half-way between two
+                /// integers, round away from `0.0`.
+            })
             .result(Box::new(|float| {
                 let mut output_spec = float.s.clone();
 
@@ -80,6 +93,10 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
             }))
             .build(),
         OpBuilder::new("trunc")
+            .description(quote! {
+                /// Returns the integer part of `self`.
+                /// This means that non-integer numbers are always truncated towards zero.
+            })
             .result(Box::new(|float| {
                 let mut output_spec = float.s.clone();
 
@@ -89,6 +106,10 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
             }))
             .build(),
         OpBuilder::new("fract")
+            .description(quote! {
+                /// Returns the fractional part of `self`.
+                /// For negative numbers, the result is negative except when the fractional part is zero.
+            })
             .comment(
                 "`fract` returns `+0.0` if the factional part is zero, even for negative numbers.",
             )
@@ -106,6 +127,12 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
             }))
             .build(),
         OpBuilder::new("signum")
+            .description(quote! {
+                /// Returns a number that represents the sign of `self`.
+                ///
+                /// - `1.0` if the number is positive, `+0.0` or `INFINITY`
+                /// - `-1.0` if the number is negative, `-0.0` or `NEG_INFINITY`
+            })
             .op_fn(Box::new(|float| {
                 if !float.s.accept_negative {
                     quote! { 1.0 }
@@ -143,6 +170,12 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
             }))
             .build(),
         OpBuilder::new("sqrt")
+            .description(quote! {
+                /// Returns the square root of a number.
+                ///
+                /// Returns NaN if `self` is a negative number other than `-0.0`.
+                /// (It returns `-0.0` if `self` is `-0.0`.)
+            })
             .comment("`sqrt(-0.0) = -0.0`")
             .op_fn(Box::new(|float| {
                 // sqrt(-0.0) = -0.0
@@ -163,6 +196,9 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
             }))
             .build(),
         OpBuilder::new("exp")
+            .description(quote! {
+                /// Returns `e^(self)`, (the exponential function).
+            })
             .result(Box::new(|float| {
                 Some(FloatSpecifications {
                     accept_negative: false,
@@ -173,6 +209,9 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
             }))
             .build(),
         OpBuilder::new("exp2")
+            .description(quote! {
+                /// Returns `2^(self)`.
+            })
             .result(Box::new(|float| {
                 Some(FloatSpecifications {
                     accept_negative: false,
@@ -183,6 +222,9 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
             }))
             .build(),
         OpBuilder::new("ln")
+            .description(quote! {
+                /// Returns the natural logarithm of the number.
+            })
             .op_fn(Box::new(|float| {
                 let is_strictly_negative = !float.s.accept_positive && !float.s.accept_zero;
 
@@ -208,6 +250,9 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
             }))
             .build(),
         OpBuilder::new("log2")
+            .description(quote! {
+                /// Returns the base 2 logarithm of the number.
+            })
             .result(Box::new(|float| {
                 if float.s.accept_negative {
                     return None;
@@ -222,6 +267,9 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
             }))
             .build(),
         OpBuilder::new("log10")
+            .description(quote! {
+                /// Returns the base 10 logarithm of the number.
+            })
             .result(Box::new(|float| {
                 if float.s.accept_negative {
                     return None;

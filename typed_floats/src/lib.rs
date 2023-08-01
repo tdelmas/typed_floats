@@ -75,12 +75,26 @@ pub trait Hypot<T> {
 pub trait Min<T> {
     type Output;
 
+    /// Returns the minimum of the two numbers.
+    ///
+    /// This follows the IEEE 754-2008 semantics for minNum.
+    /// This also matches the behavior of libm’s fmin.
+    ///
+    /// The min of `+0.0` and `-0.0` may return either operand.
+    /// <https://llvm.org/docs/LangRef.html#llvm-minnum-intrinsic>
     fn min(self, rhs: T) -> Self::Output;
 }
 
 pub trait Max<T> {
     type Output;
 
+    /// Returns the maximum of the two numbers.
+    ///
+    /// This follows the IEEE 754-2008 semantics for maxNum;
+    /// This also matches the behavior of libm’s fmax.
+    ///
+    /// The max of `+0.0` and `-0.0` may return either operand.
+    /// <https://llvm.org/docs/LangRef.html#llvm-maxnum-intrinsic>
     fn max(self, rhs: T) -> Self::Output;
 }
 
@@ -145,15 +159,44 @@ typed_floats_macros::generate_docs!(
         /// but in release mode the behavior is undefined
         unsafe fn new_unchecked(value: Self::Content) -> Self;
 
+        /// Returns the value as a primitive type
         fn get(&self) -> Self::Content;
 
-        fn is_nan(&self) -> bool;
+        /// Returns `true` if this value is NaN.
+        /// This is never the case for the provided types
+        #[must_use]
+        fn is_nan(&self) -> bool {
+            false
+        }
+
+        /// Returns `true` if this value is positive infinity or negative infinity.
+        #[must_use]
         fn is_infinite(&self) -> bool;
+
+        /// Returns `true` if this number is positive infinity nor negative infinity.
+        #[must_use]
         fn is_finite(&self) -> bool;
+
+        /// Returns `true` if the number is [subnormal](https://en.wikipedia.org/wiki/Denormal_number).
+        #[must_use]
         fn is_subnormal(&self) -> bool;
+
+        /// Returns `true` if the number is neither zero, infinite or [subnormal](https://en.wikipedia.org/wiki/Denormal_number).
+        #[must_use]
         fn is_normal(&self) -> bool;
+
+        /// Returns the floating point category of the number. If only one property
+        /// is going to be tested, it is generally faster to use the specific
+        /// predicate instead.
+        #[must_use]
         fn classify(&self) -> core::num::FpCategory;
+
+        /// Returns `true` if `self` has a positive sign, including `+0.0` and positive infinity.
+        #[must_use]
         fn is_sign_positive(&self) -> bool;
+
+        /// Returns `true` if `self` has a negative sign, including `-0.0` and negative infinity.
+        #[must_use]
         fn is_sign_negative(&self) -> bool;
     }
 );
