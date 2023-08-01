@@ -250,9 +250,12 @@ pub(crate) fn generate_tests_self_rhs(float_type: &'static str) -> proc_macro2::
 
                 test_ops.extend(quote! {
                     println!("{:?} = ...",#op_name);
+                    // This will panic if the result isn't compatible with the return type
                     let res = #test;
                     println!("{:?} = {:?}",#op_name, res);
-                    #vals.push(#get);
+                    // TODO check if normal op is the same as the implemented op
+                    let f: #float_type = #get;
+                    #vals.push(f);
                 });
 
                 if op.op_is_commutative {

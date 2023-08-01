@@ -44,11 +44,11 @@ fn fast_inv_sqrt(x: StrictlyPositiveFinite) -> StrictlyPositive;
 ```
 
 Ensures:
-- For the implementer: the parameter `x` is neither `NaN` nor `Infinity`, and is strictly positive
+- For the person implementing the API: the parameter `x` is neither `NaN` nor `Infinity`, and is strictly positive
 - For the user: the result is not `NaN` and is strictly positive but may be `Infinity`
 
 It that example:
-- the implementer doesn't have to check for `NaN`, `Infinity`, or `<= 0` for the parameter `x`
+- the person implementing the API doesn't have to check for `NaN`, `Infinity`, or `<= 0` for the parameter `x`
 - the user only have to check the result for `Infinity` if they want to handle it differently and can't call the function with an invalid parameter.
 
 # Full documentation
