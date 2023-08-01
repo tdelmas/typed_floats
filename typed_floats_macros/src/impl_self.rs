@@ -30,6 +30,8 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
         OpBuilder::new("abs")
             .description(quote! {
                 /// Computes the absolute value of `self`.
+                ///
+                /// See [`f64::abs()`] for more details.
             })
             .op_fn(Box::new(|float| {
                 if !float.s.accept_negative {
@@ -54,6 +56,8 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
         OpBuilder::new("ceil")
             .description(quote! {
                 /// Returns the smallest integer greater than or equal to `self`.
+                ///
+                /// See [`f64::ceil()`] for more details.
             })
             .result(Box::new(|float| {
                 let mut output_spec = float.s.clone();
@@ -68,6 +72,8 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
         OpBuilder::new("floor")
             .description(quote! {
                 /// Returns the largest integer less than or equal to `self`.
+                ///
+                /// See [`f64::floor()`] for more details.
             })
             .result(Box::new(|float| {
                 let mut output_spec = float.s.clone();
@@ -83,6 +89,8 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
             .description(quote! {
                 /// Returns the nearest integer to `self`. If a value is half-way between two
                 /// integers, round away from `0.0`.
+                ///
+                /// See [`f64::round()`] for more details.
             })
             .result(Box::new(|float| {
                 let mut output_spec = float.s.clone();
@@ -96,6 +104,8 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
             .description(quote! {
                 /// Returns the integer part of `self`.
                 /// This means that non-integer numbers are always truncated towards zero.
+                ///
+                /// See [`f64::trunc()`] for more details.
             })
             .result(Box::new(|float| {
                 let mut output_spec = float.s.clone();
@@ -109,6 +119,8 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
             .description(quote! {
                 /// Returns the fractional part of `self`.
                 /// For negative numbers, the result is negative except when the fractional part is zero.
+                ///
+                /// See [`f64::fract()`] for more details.
             })
             .comment(
                 "`fract` returns `+0.0` if the factional part is zero, even for negative numbers.",
@@ -175,6 +187,8 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 ///
                 /// Returns NaN if `self` is a negative number other than `-0.0`.
                 /// (It returns `-0.0` if `self` is `-0.0`.)
+                ///
+                /// See [`f64::sqrt()`] for more details.
             })
             .comment("`sqrt(-0.0) = -0.0`")
             .op_fn(Box::new(|float| {
@@ -198,6 +212,8 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
         OpBuilder::new("exp")
             .description(quote! {
                 /// Returns `e^(self)`, (the exponential function).
+                ///
+                /// See [`f64::exp()`] for more details.
             })
             .result(Box::new(|float| {
                 Some(FloatSpecifications {
@@ -211,6 +227,8 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
         OpBuilder::new("exp2")
             .description(quote! {
                 /// Returns `2^(self)`.
+                ///
+                /// See [`f64::exp2()`] for more details.
             })
             .result(Box::new(|float| {
                 Some(FloatSpecifications {
@@ -224,6 +242,8 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
         OpBuilder::new("ln")
             .description(quote! {
                 /// Returns the natural logarithm of the number.
+                ///
+                /// See [`f64::ln()`] for more details.
             })
             .op_fn(Box::new(|float| {
                 let is_strictly_negative = !float.s.accept_positive && !float.s.accept_zero;
@@ -252,6 +272,8 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
         OpBuilder::new("log2")
             .description(quote! {
                 /// Returns the base 2 logarithm of the number.
+                ///
+                /// See [`f64::log2()`] for more details.
             })
             .result(Box::new(|float| {
                 if float.s.accept_negative {
@@ -269,6 +291,8 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
         OpBuilder::new("log10")
             .description(quote! {
                 /// Returns the base 10 logarithm of the number.
+                ///
+                /// See [`f64::log10()`] for more details.
             })
             .result(Box::new(|float| {
                 if float.s.accept_negative {
@@ -284,6 +308,11 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
             }))
             .build(),
         OpBuilder::new("to_degrees")
+            .description(quote! {
+                /// Converts degrees to radians.
+                ///
+                /// See [`f64::to_degrees()`] for more details.
+            })
             .result(Box::new(|float| {
                 let mut output_spec = float.s.clone();
 
@@ -293,6 +322,11 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
             }))
             .build(),
         OpBuilder::new("to_radians")
+            .description(quote! {
+                /// Converts degrees to radians.
+                ///
+                /// See [`f64::to_radians()`] for more details.
+            })
             .result(Box::new(|float| Some(float.s.clone())))
             .build(),
     ]

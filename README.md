@@ -51,6 +51,16 @@ It that example:
 - the person implementing the API doesn't have to check for `NaN`, `Infinity`, or `<= 0` for the parameter `x`
 - the user only have to check the result for `Infinity` if they want to handle it differently and can't call the function with an invalid parameter.
 
+# API
+
+Most methods and traits available on the underlying type are available on the types of this crate.
+
+Most constants are also available, with the most appropriate `Float` type (except `NAN` for obvious reasons).
+
+As none of the types of this crate can be `NaN`, the traits [`core::cmp::Ord`] [`core::cmp::Eq`] are implemented for all of them.
+
+⚠️  `-0.0 == +0.0` is `true` for all types of this crate, like for primitives [`core::f32`] and [`core::f64`]. For that reason, [`std::hash::Hash`] is not implemented.
+
 # Full documentation
 
 Is on [docs.rs](https://docs.rs/typed_floats).

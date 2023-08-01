@@ -67,12 +67,20 @@
 #![warn(clippy::indexing_slicing)]
 
 pub trait Hypot<T> {
+    /// The resulting type after applying [`Hypot::hypot()`].
     type Output;
 
+    /// Compute the distance between the origin and a point (`x`, `y`) on the
+    /// Euclidean plane. Equivalently, compute the length of the hypotenuse of a
+    /// right-angle triangle with other sides having length `x.abs()` and
+    /// `y.abs()`.
+    ///
+    /// See [`f64::hypot()`] for more details.
     fn hypot(self, rhs: T) -> Self::Output;
 }
 
 pub trait Min<T> {
+    /// The resulting type after applying [`Min::min()`].
     type Output;
 
     /// Returns the minimum of the two numbers.
@@ -82,10 +90,13 @@ pub trait Min<T> {
     ///
     /// The min of `+0.0` and `-0.0` may return either operand.
     /// <https://llvm.org/docs/LangRef.html#llvm-minnum-intrinsic>
+    ///
+    /// See [`f64::min()`] for more details.
     fn min(self, rhs: T) -> Self::Output;
 }
 
 pub trait Max<T> {
+    /// The resulting type after applying [`Max::max()`].
     type Output;
 
     /// Returns the maximum of the two numbers.
@@ -95,6 +106,8 @@ pub trait Max<T> {
     ///
     /// The max of `+0.0` and `-0.0` may return either operand.
     /// <https://llvm.org/docs/LangRef.html#llvm-maxnum-intrinsic>
+    ///
+    /// See [`f64::max()`] for more details.
     fn max(self, rhs: T) -> Self::Output;
 }
 
@@ -128,6 +141,7 @@ typed_floats_macros::generate_docs!(
         + std::ops::Div
         + std::ops::Rem
     {
+        /// The primitive float type (f32 or f64)
         type Content: Sized
             + Clone
             + Copy
@@ -146,6 +160,10 @@ typed_floats_macros::generate_docs!(
             + std::ops::DivAssign
             + std::ops::RemAssign;
 
+        /// Creates a new value from a primitive type
+        /// It adds a little overhead compared to `new_unchecked`
+        /// because it checks that the value is valid
+        ///
         /// # Errors
         /// Returns an error if the value is not valid
         #[inline]
@@ -153,6 +171,9 @@ typed_floats_macros::generate_docs!(
             Self::try_from(value)
         }
 
+        /// Creates a new value from a primitive type with zero overhead (in release mode).
+        /// It is up to the caller to ensure that the value is valid
+        ///
         /// # Safety
         /// The caller must ensure that the value is valid
         /// It will panic in debug mode if the value is not valid
@@ -164,38 +185,54 @@ typed_floats_macros::generate_docs!(
 
         /// Returns `true` if this value is NaN.
         /// This is never the case for the provided types
+        /// 
+        /// See [`f64::is_nan()`] for more details.
         #[must_use]
         fn is_nan(&self) -> bool {
             false
         }
 
         /// Returns `true` if this value is positive infinity or negative infinity.
+        ///
+        /// See [`f64::is_infinite()`] for more details.
         #[must_use]
         fn is_infinite(&self) -> bool;
 
         /// Returns `true` if this number is positive infinity nor negative infinity.
+        ///
+        /// See [`f64::is_finite()`] for more details.
         #[must_use]
         fn is_finite(&self) -> bool;
 
         /// Returns `true` if the number is [subnormal](https://en.wikipedia.org/wiki/Denormal_number).
+        /// 
+        /// See [`f64::is_subnormal()`] for more details.
         #[must_use]
         fn is_subnormal(&self) -> bool;
 
         /// Returns `true` if the number is neither zero, infinite or [subnormal](https://en.wikipedia.org/wiki/Denormal_number).
+        /// 
+        /// See [`f64::is_normal()`] for more details.
         #[must_use]
         fn is_normal(&self) -> bool;
 
         /// Returns the floating point category of the number. If only one property
         /// is going to be tested, it is generally faster to use the specific
         /// predicate instead.
+        /// 
+        /// See [`f64::classify()`] for more details.
         #[must_use]
         fn classify(&self) -> core::num::FpCategory;
 
         /// Returns `true` if `self` has a positive sign, including `+0.0` and positive infinity.
+        /// 
+        /// See [`f64::is_sign_positive()`] for more details.
         #[must_use]
         fn is_sign_positive(&self) -> bool;
 
         /// Returns `true` if `self` has a negative sign, including `-0.0` and negative infinity.
+        /// 
+        /// See [`f64::is_sign_negative()`] for more details.
         #[must_use]
         fn is_sign_negative(&self) -> bool;
     }
