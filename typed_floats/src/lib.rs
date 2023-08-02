@@ -185,7 +185,7 @@ typed_floats_macros::generate_docs!(
 
         /// Returns `true` if this value is NaN.
         /// This is never the case for the provided types
-        /// 
+        ///
         /// See [`f64::is_nan()`] for more details.
         #[must_use]
         fn is_nan(&self) -> bool {
@@ -205,13 +205,13 @@ typed_floats_macros::generate_docs!(
         fn is_finite(&self) -> bool;
 
         /// Returns `true` if the number is [subnormal](https://en.wikipedia.org/wiki/Denormal_number).
-        /// 
+        ///
         /// See [`f64::is_subnormal()`] for more details.
         #[must_use]
         fn is_subnormal(&self) -> bool;
 
         /// Returns `true` if the number is neither zero, infinite or [subnormal](https://en.wikipedia.org/wiki/Denormal_number).
-        /// 
+        ///
         /// See [`f64::is_normal()`] for more details.
         #[must_use]
         fn is_normal(&self) -> bool;
@@ -219,27 +219,30 @@ typed_floats_macros::generate_docs!(
         /// Returns the floating point category of the number. If only one property
         /// is going to be tested, it is generally faster to use the specific
         /// predicate instead.
-        /// 
+        ///
         /// See [`f64::classify()`] for more details.
         #[must_use]
         fn classify(&self) -> core::num::FpCategory;
 
         /// Returns `true` if `self` has a positive sign, including `+0.0` and positive infinity.
-        /// 
+        ///
         /// See [`f64::is_sign_positive()`] for more details.
         #[must_use]
         fn is_sign_positive(&self) -> bool;
 
         /// Returns `true` if `self` has a negative sign, including `-0.0` and negative infinity.
-        /// 
+        ///
         /// See [`f64::is_sign_negative()`] for more details.
         #[must_use]
         fn is_sign_negative(&self) -> bool;
     }
 );
 
+#[derive(Error, Debug)]
 pub enum FromStrError {
+    #[error("{0:?}")]
     ParseFloatError(core::num::ParseFloatError),
+    #[error("{0:?}")]
     InvalidNumber(InvalidNumber),
 }
 
@@ -265,84 +268,159 @@ pub enum InvalidNumber {
 typed_floats_macros::generate_floats!();
 
 macro_rules! add_const {
-    ($name:ident, $type:ident, $typed:ident, $value:expr) => {
+    ($name:ident, $type:ident, $typed:ident, $value:expr, $doc:expr) => {
+        #[doc = $doc]
         pub const $name: crate::$typed<$type> = crate::$typed::<$type>($value);
     };
-    ($name:ident, $type:ident, $typed:ident) => {
-        add_const!($name, $type, $typed, core::$type::consts::$name);
+    ($name:ident, $type:ident, $typed:ident, $doc:expr) => {
+        add_const!($name, $type, $typed, core::$type::consts::$name, $doc);
     };
 }
 
 pub mod f64 {
-    add_const!(INFINITY, f64, StrictlyPositive, core::f64::INFINITY);
-    add_const!(NEG_INFINITY, f64, StrictlyNegative, core::f64::NEG_INFINITY);
-    add_const!(MAX, f64, StrictlyPositiveFinite, core::f64::MAX);
-    add_const!(MIN, f64, StrictlyNegativeFinite, core::f64::MIN);
+    add_const!(
+        INFINITY,
+        f64,
+        StrictlyPositive,
+        core::f64::INFINITY,
+        "Infinity (∞)."
+    );
+    add_const!(
+        NEG_INFINITY,
+        f64,
+        StrictlyNegative,
+        core::f64::NEG_INFINITY,
+        "Negative infinity (−∞)."
+    );
+
+    add_const!(
+        MAX,
+        f64,
+        StrictlyPositiveFinite,
+        core::f64::MAX,
+        "Largest finite `f64` value."
+    );
+    add_const!(
+        MIN,
+        f64,
+        StrictlyNegativeFinite,
+        core::f64::MIN,
+        "Smallest finite `f64` value."
+    );
     add_const!(
         MIN_POSITIVE,
         f64,
         StrictlyPositiveFinite,
-        core::f64::MIN_POSITIVE
+        core::f64::MIN_POSITIVE,
+        "Smallest positive normal `f64` value."
     );
-    add_const!(ZERO, f64, PositiveFinite, 0.0f64);
-    add_const!(NEGATIVE_ZERO, f64, NegativeFinite, -0.0f64);
+    add_const!(ZERO, f64, PositiveFinite, 0.0f64, "Positive zero (+0.0).");
+    add_const!(
+        NEGATIVE_ZERO,
+        f64,
+        NegativeFinite,
+        -0.0f64,
+        "Negative zero (−0.0)."
+    );
 
     pub mod consts {
-        add_const!(PI, f64, PositiveFinite);
-        add_const!(TAU, f64, PositiveFinite);
-        add_const!(FRAC_PI_2, f64, PositiveFinite);
-        add_const!(FRAC_PI_3, f64, PositiveFinite);
-        add_const!(FRAC_PI_4, f64, PositiveFinite);
-        add_const!(FRAC_PI_6, f64, PositiveFinite);
-        add_const!(FRAC_PI_8, f64, PositiveFinite);
-        add_const!(FRAC_1_PI, f64, PositiveFinite);
-        add_const!(FRAC_2_PI, f64, PositiveFinite);
-        add_const!(FRAC_2_SQRT_PI, f64, PositiveFinite);
-        add_const!(SQRT_2, f64, PositiveFinite);
-        add_const!(FRAC_1_SQRT_2, f64, PositiveFinite);
-        add_const!(E, f64, PositiveFinite);
-        add_const!(LOG2_10, f64, PositiveFinite);
-        add_const!(LOG2_E, f64, PositiveFinite);
-        add_const!(LOG10_2, f64, PositiveFinite);
-        add_const!(LOG10_E, f64, PositiveFinite);
-        add_const!(LN_2, f64, PositiveFinite);
-        add_const!(LN_10, f64, PositiveFinite);
+        add_const!(PI, f64, PositiveFinite, "Archimedes' constant (π)");
+        add_const!(
+            TAU,
+            f64,
+            PositiveFinite,
+            "The full circle constant (τ). Equal to 2π."
+        );
+        add_const!(FRAC_PI_2, f64, PositiveFinite, "π/2");
+        add_const!(FRAC_PI_3, f64, PositiveFinite, "π/3");
+        add_const!(FRAC_PI_4, f64, PositiveFinite, "π/4");
+        add_const!(FRAC_PI_6, f64, PositiveFinite, "π/6");
+        add_const!(FRAC_PI_8, f64, PositiveFinite, "π/8");
+        add_const!(FRAC_1_PI, f64, PositiveFinite, "1/π");
+        add_const!(FRAC_2_PI, f64, PositiveFinite, "2/π");
+        add_const!(FRAC_2_SQRT_PI, f64, PositiveFinite, "2/sqrt(π)");
+        add_const!(SQRT_2, f64, PositiveFinite, "sqrt(2)");
+        add_const!(FRAC_1_SQRT_2, f64, PositiveFinite, "1/sqrt(2)");
+        add_const!(E, f64, PositiveFinite, "Euler's number (e)");
+        add_const!(LOG2_10, f64, PositiveFinite, "log<sub>2</sub>(10)");
+        add_const!(LOG2_E, f64, PositiveFinite, "log<sub>2</sub>(e)");
+        add_const!(LOG10_2, f64, PositiveFinite, "log<sub>10</sub>(2)");
+        add_const!(LOG10_E, f64, PositiveFinite, "log<sub>10</sub>(e)");
+        add_const!(LN_2, f64, PositiveFinite, "ln(2)");
+        add_const!(LN_10, f64, PositiveFinite, "ln(10)");
     }
 }
 
 pub mod f32 {
-    add_const!(INFINITY, f32, StrictlyPositive, core::f32::INFINITY);
-    add_const!(NEG_INFINITY, f32, StrictlyNegative, core::f32::NEG_INFINITY);
-    add_const!(MAX, f32, StrictlyPositiveFinite, core::f32::MAX);
-    add_const!(MIN, f32, StrictlyNegativeFinite, core::f32::MIN);
+    add_const!(
+        INFINITY,
+        f32,
+        StrictlyPositive,
+        core::f32::INFINITY,
+        "Infinity (∞)."
+    );
+    add_const!(
+        NEG_INFINITY,
+        f32,
+        StrictlyNegative,
+        core::f32::NEG_INFINITY,
+        "Negative infinity (−∞)."
+    );
+
+    add_const!(
+        MAX,
+        f32,
+        StrictlyPositiveFinite,
+        core::f32::MAX,
+        "Largest finite `f32` value."
+    );
+    add_const!(
+        MIN,
+        f32,
+        StrictlyNegativeFinite,
+        core::f32::MIN,
+        "Smallest finite `f32` value."
+    );
     add_const!(
         MIN_POSITIVE,
         f32,
         StrictlyPositiveFinite,
-        core::f32::MIN_POSITIVE
+        core::f32::MIN_POSITIVE,
+        "Smallest positive normal `f32` value."
     );
-    add_const!(ZERO, f32, PositiveFinite, 0.0f32);
-    add_const!(NEGATIVE_ZERO, f32, NegativeFinite, -0.0f32);
+    add_const!(ZERO, f32, PositiveFinite, 0.0f32, "Positive zero (+0.0).");
+    add_const!(
+        NEGATIVE_ZERO,
+        f32,
+        NegativeFinite,
+        -0.0f32,
+        "Negative zero (-0.0)."
+    );
 
     pub mod consts {
-        add_const!(PI, f32, PositiveFinite);
-        add_const!(TAU, f32, PositiveFinite);
-        add_const!(FRAC_PI_2, f32, PositiveFinite);
-        add_const!(FRAC_PI_3, f32, PositiveFinite);
-        add_const!(FRAC_PI_4, f32, PositiveFinite);
-        add_const!(FRAC_PI_6, f32, PositiveFinite);
-        add_const!(FRAC_PI_8, f32, PositiveFinite);
-        add_const!(FRAC_1_PI, f32, PositiveFinite);
-        add_const!(FRAC_2_PI, f32, PositiveFinite);
-        add_const!(FRAC_2_SQRT_PI, f32, PositiveFinite);
-        add_const!(SQRT_2, f32, PositiveFinite);
-        add_const!(FRAC_1_SQRT_2, f32, PositiveFinite);
-        add_const!(E, f32, PositiveFinite);
-        add_const!(LOG2_10, f32, PositiveFinite);
-        add_const!(LOG2_E, f32, PositiveFinite);
-        add_const!(LOG10_2, f32, PositiveFinite);
-        add_const!(LOG10_E, f32, PositiveFinite);
-        add_const!(LN_2, f32, PositiveFinite);
-        add_const!(LN_10, f32, PositiveFinite);
+        add_const!(PI, f32, PositiveFinite, "Archimedes' constant (π)");
+        add_const!(
+            TAU,
+            f32,
+            PositiveFinite,
+            "The full circle constant (τ). Equal to 2π."
+        );
+        add_const!(FRAC_PI_2, f32, PositiveFinite, "π/2");
+        add_const!(FRAC_PI_3, f32, PositiveFinite, "π/3");
+        add_const!(FRAC_PI_4, f32, PositiveFinite, "π/4");
+        add_const!(FRAC_PI_6, f32, PositiveFinite, "π/6");
+        add_const!(FRAC_PI_8, f32, PositiveFinite, "π/8");
+        add_const!(FRAC_1_PI, f32, PositiveFinite, "1/π");
+        add_const!(FRAC_2_PI, f32, PositiveFinite, "2/π");
+        add_const!(FRAC_2_SQRT_PI, f32, PositiveFinite, "2/sqrt(π)");
+        add_const!(SQRT_2, f32, PositiveFinite, "sqrt(2)");
+        add_const!(FRAC_1_SQRT_2, f32, PositiveFinite, "1/sqrt(2)");
+        add_const!(E, f32, PositiveFinite, "Euler's number (e)");
+        add_const!(LOG2_10, f32, PositiveFinite, "log<sub>2</sub>(10)");
+        add_const!(LOG2_E, f32, PositiveFinite, "log<sub>2</sub>(e)");
+        add_const!(LOG10_2, f32, PositiveFinite, "log<sub>10</sub>(2)");
+        add_const!(LOG10_E, f32, PositiveFinite, "log<sub>10</sub>(e)");
+        add_const!(LN_2, f32, PositiveFinite, "ln(2)");
+        add_const!(LN_10, f32, PositiveFinite, "ln(10)");
     }
 }
