@@ -65,7 +65,9 @@
 #![warn(clippy::unwrap_used)]
 #![warn(clippy::unwrap_in_result)]
 #![warn(clippy::indexing_slicing)]
+#![warn(missing_docs)]
 
+/// This trait is used to specify the return type of the [`Hypot::hypot()`] function.
 pub trait Hypot<T> {
     /// The resulting type after applying [`Hypot::hypot()`].
     type Output;
@@ -79,6 +81,7 @@ pub trait Hypot<T> {
     fn hypot(self, rhs: T) -> Self::Output;
 }
 
+/// This trait is used to specify the return type of the [`Min::min()`] function.
 pub trait Min<T> {
     /// The resulting type after applying [`Min::min()`].
     type Output;
@@ -95,6 +98,7 @@ pub trait Min<T> {
     fn min(self, rhs: T) -> Self::Output;
 }
 
+/// This trait is used to specify the return type of the [`Max::max()`] function.
 pub trait Max<T> {
     /// The resulting type after applying [`Max::max()`].
     type Output;
@@ -238,10 +242,13 @@ typed_floats_macros::generate_docs!(
     }
 );
 
+/// An error that can occur when converting from a string into a typed `Float`
 #[derive(Error, Debug)]
 pub enum FromStrError {
+    /// The string did not contain a valid float number
     #[error("{0:?}")]
     ParseFloatError(core::num::ParseFloatError),
+    /// The string contained a valid float number but it didn't fit in the target type
     #[error("{0:?}")]
     InvalidNumber(InvalidNumber),
 }
@@ -251,16 +258,22 @@ use core::num::{NonZeroU16, NonZeroU32, NonZeroU64, NonZeroU8};
 
 use thiserror::Error;
 
+/// An error that can occur when converting into a typed float
 #[derive(Error, Debug)]
 pub enum InvalidNumber {
+    /// Any variant of `Nan`
     #[error("Number is NaN")]
     NaN,
+    /// `+0.0` or `-0.0`
     #[error("Number is zero")]
     Zero,
+    /// Any negative number, including `-0.0` and `-inf`
     #[error("Number is negative")]
     Negative,
+    /// Any positive number, including `+0.0` and `+inf`
     #[error("Number is positive")]
     Positive,
+    /// `+inf` or `-inf`
     #[error("Number is infinite")]
     Infinite,
 }
@@ -277,6 +290,7 @@ macro_rules! add_const {
     };
 }
 
+/// This module contains constants from [`core::f64`], casted to the corresponding type
 pub mod f64 {
     add_const!(
         INFINITY,
@@ -323,6 +337,7 @@ pub mod f64 {
         "Negative zero (−0.0)."
     );
 
+    /// This module contains constants from [`core::f64::consts`], casted to the corresponding type
     pub mod consts {
         add_const!(PI, f64, PositiveFinite, "Archimedes' constant (π)");
         add_const!(
@@ -351,6 +366,7 @@ pub mod f64 {
     }
 }
 
+/// This module contains constants from [`core::f32`], casted to the corresponding type
 pub mod f32 {
     add_const!(
         INFINITY,
@@ -397,6 +413,7 @@ pub mod f32 {
         "Negative zero (-0.0)."
     );
 
+    /// This module contains constants from [`core::f32::consts`], casted to the corresponding type
     pub mod consts {
         add_const!(PI, f32, PositiveFinite, "Archimedes' constant (π)");
         add_const!(

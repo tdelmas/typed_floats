@@ -210,6 +210,7 @@ fn do_generate_generic_floats(
         let name = syn::Ident::new(name, proc_macro2::Span::call_site());
 
         output.extend(quote! {
+            /// A floating point number that satisfies the `{name}` constraints.
             #[derive(Debug, Copy, Clone)]
             pub struct #name<T=#default_float_type>(T);
         });

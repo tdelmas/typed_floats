@@ -57,7 +57,7 @@ Most methods and traits available on the underlying type are available on the ty
 
 Most constants are also available, with the most appropriate `Float` type (except `NAN` for obvious reasons).
 
-As none of the types of this crate can be `NaN`, the traits [`core::cmp::Ord`] [`core::cmp::Eq`] are implemented for all of them.
+As none of the types of this crate can be `NaN`, the traits [`core::cmp::Ord`] and [`core::cmp::Eq`] are implemented for all of them.
 
 ⚠️  `-0.0 == +0.0` is `true` for all types of this crate, like for primitives [`core::f32`] and [`core::f64`]. For that reason, [`std::hash::Hash`] is not implemented.
 
@@ -69,6 +69,9 @@ Is on [docs.rs](https://docs.rs/typed_floats).
 [`core::f64`]: https://doc.rust-lang.org/core/primitive.f64.html "`f64`"
 [`core::u128`]: https://doc.rust-lang.org/core/primitive.u128.html "`u128`"
 [`core::i128`]: https://doc.rust-lang.org/core/primitive.i128.html "`i128`"
+[`core::cmp::Ord`]: https://doc.rust-lang.org/core/cmp/trait.Ord.html "`Ord`"
+[`core::cmp::Eq`]: https://doc.rust-lang.org/core/cmp/trait.Eq.html "`Eq`"
+[`std::hash::Hash`]: https://doc.rust-lang.org/std/hash/trait.Hash.html "`Hash`"
 [`NonNaN`]: https://docs.rs/typed_floats/latest/typed_floats/struct.NonNaN.html
 [`NonNaNFinite`]: https://docs.rs/typed_floats/latest/typed_floats/struct.NonNaNFinite.html
 [`NonZeroNonNaN`]: https://docs.rs/typed_floats/latest/typed_floats/struct.NonZeroNonNaN.html
