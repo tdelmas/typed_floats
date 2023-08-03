@@ -12,6 +12,7 @@ name = "typed_floats"
 readme = "./README.md"
 repository = "https://github.com/tdelmas/floats"
 version = "0.1.27"
+categories = ["mathematics", "data-structures"]
 
 [dependencies]
 serde_json = {version = "1.0"}

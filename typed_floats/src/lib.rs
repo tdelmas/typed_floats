@@ -77,6 +77,16 @@ pub trait Hypot<T> {
     /// right-angle triangle with other sides having length `x.abs()` and
     /// `y.abs()`.
     ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use typed_floats::*;
+    /// let x: NonNaN = 3.0.try_into().unwrap();
+    /// let y: NonNaN = 4.0.try_into().unwrap();
+    ///
+    /// assert_eq!(x.hypot(y).get(), 5.0);
+    /// ```
+    ///
     /// See [`f64::hypot()`] for more details.
     fn hypot(self, rhs: T) -> Self::Output;
 }
@@ -94,6 +104,16 @@ pub trait Min<T> {
     /// The min of `+0.0` and `-0.0` may return either operand.
     /// <https://llvm.org/docs/LangRef.html#llvm-minnum-intrinsic>
     ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use typed_floats::*;
+    /// let x: NonNaN = 3.0.try_into().unwrap();
+    /// let y: NonNaN = 4.0.try_into().unwrap();
+    ///
+    /// assert_eq!(Min::min(x, y).get(), 3.0);
+    /// ```
+    ///
     /// See [`f64::min()`] for more details.
     fn min(self, rhs: T) -> Self::Output;
 }
@@ -110,6 +130,16 @@ pub trait Max<T> {
     ///
     /// The max of `+0.0` and `-0.0` may return either operand.
     /// <https://llvm.org/docs/LangRef.html#llvm-maxnum-intrinsic>
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use typed_floats::*;
+    /// let x: NonNaN = 3.0.try_into().unwrap();
+    /// let y: NonNaN = 4.0.try_into().unwrap();
+    ///
+    /// assert_eq!(Max::max(x, y).get(), 4.0);
+    /// ```
     ///
     /// See [`f64::max()`] for more details.
     fn max(self, rhs: T) -> Self::Output;
@@ -168,6 +198,15 @@ typed_floats_macros::generate_docs!(
         /// It adds a little overhead compared to `new_unchecked`
         /// because it checks that the value is valid
         ///
+        /// # Examples
+        ///
+        /// ```
+        /// # use typed_floats::*;
+        /// let x: NonNaN = NonNaN::new(3.0).unwrap();
+        ///
+        /// assert_eq!(x.get(), 3.0);
+        /// ```
+        ///
         /// # Errors
         /// Returns an error if the value is not valid
         #[inline]
@@ -178,6 +217,14 @@ typed_floats_macros::generate_docs!(
         /// Creates a new value from a primitive type with zero overhead (in release mode).
         /// It is up to the caller to ensure that the value is valid
         ///
+        /// # Examples
+        ///
+        /// ```
+        /// # use typed_floats::*;
+        /// let x: NonNaN = unsafe { NonNaN::new_unchecked(3.0) };
+        ///
+        /// assert_eq!(x.get(), 3.0);
+        /// ```
         /// # Safety
         /// The caller must ensure that the value is valid
         /// It will panic in debug mode if the value is not valid
@@ -190,6 +237,15 @@ typed_floats_macros::generate_docs!(
         /// Returns `true` if this value is NaN.
         /// This is never the case for the provided types
         ///
+        /// # Examples
+        ///
+        /// ```
+        /// # use typed_floats::*;
+        /// let x: NonNaN = 3.0.try_into().unwrap();
+        ///
+        /// assert_eq!(x.is_nan(), false);
+        /// ```
+        ///
         /// See [`f64::is_nan()`] for more details.
         #[must_use]
         fn is_nan(&self) -> bool {
@@ -198,11 +254,29 @@ typed_floats_macros::generate_docs!(
 
         /// Returns `true` if this value is positive infinity or negative infinity.
         ///
+        /// # Examples
+        ///
+        /// ```
+        /// # use typed_floats::*;
+        /// let x: NonNaN = 3.0.try_into().unwrap();
+        ///
+        /// assert_eq!(x.is_infinite(), false);
+        /// ```
+        ///
         /// See [`f64::is_infinite()`] for more details.
         #[must_use]
         fn is_infinite(&self) -> bool;
 
         /// Returns `true` if this number is positive infinity nor negative infinity.
+        ///
+        /// # Examples
+        ///
+        /// ```
+        /// # use typed_floats::*;
+        /// let x: NonNaN = 3.0.try_into().unwrap();
+        ///
+        /// assert_eq!(x.is_finite(), true);
+        /// ```
         ///
         /// See [`f64::is_finite()`] for more details.
         #[must_use]
@@ -210,11 +284,29 @@ typed_floats_macros::generate_docs!(
 
         /// Returns `true` if the number is [subnormal](https://en.wikipedia.org/wiki/Denormal_number).
         ///
+        /// # Examples
+        ///
+        /// ```
+        /// # use typed_floats::*;
+        /// let x: NonNaN = 3.0.try_into().unwrap();
+        ///
+        /// assert_eq!(x.is_subnormal(), false);
+        /// ```
+        ///
         /// See [`f64::is_subnormal()`] for more details.
         #[must_use]
         fn is_subnormal(&self) -> bool;
 
         /// Returns `true` if the number is neither zero, infinite or [subnormal](https://en.wikipedia.org/wiki/Denormal_number).
+        ///
+        /// # Examples
+        ///
+        /// ```
+        /// # use typed_floats::*;
+        /// let x: NonNaN = 3.0.try_into().unwrap();
+        ///
+        /// assert_eq!(x.is_normal(), true);
+        /// ```
         ///
         /// See [`f64::is_normal()`] for more details.
         #[must_use]
@@ -224,17 +316,44 @@ typed_floats_macros::generate_docs!(
         /// is going to be tested, it is generally faster to use the specific
         /// predicate instead.
         ///
+        /// # Examples
+        ///
+        /// ```
+        /// # use typed_floats::*;
+        /// let x: NonNaN = 3.0.try_into().unwrap();
+        ///
+        /// assert_eq!(x.classify(), core::num::FpCategory::Normal);
+        /// ```
+        ///
         /// See [`f64::classify()`] for more details.
         #[must_use]
         fn classify(&self) -> core::num::FpCategory;
 
         /// Returns `true` if `self` has a positive sign, including `+0.0` and positive infinity.
         ///
+        /// # Examples
+        ///
+        /// ```
+        /// # use typed_floats::*;
+        /// let x: NonNaN = 3.0.try_into().unwrap();
+        ///
+        /// assert_eq!(x.is_sign_positive(), true);
+        /// ```
+        ///
         /// See [`f64::is_sign_positive()`] for more details.
         #[must_use]
         fn is_sign_positive(&self) -> bool;
 
         /// Returns `true` if `self` has a negative sign, including `-0.0` and negative infinity.
+        ///
+        /// # Examples
+        ///
+        /// ```
+        /// # use typed_floats::*;
+        /// let x: NonNaN = 3.0.try_into().unwrap();
+        ///
+        /// assert_eq!(x.is_sign_negative(), false);
+        /// ```
         ///
         /// See [`f64::is_sign_negative()`] for more details.
         #[must_use]

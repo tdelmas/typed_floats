@@ -31,6 +31,19 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
             .description(quote! {
                 /// Computes the absolute value of `self`.
                 ///
+                /// # Examples
+                ///
+                /// ```
+                /// # use typed_floats::*;
+                /// let x: NonNaN = 3.0.try_into().unwrap();
+                /// let y: NonNaN = (-4.0).try_into().unwrap();
+                /// let z: NonNaN = (-0.0).try_into().unwrap();
+                ///
+                /// assert_eq!(x.abs().get(), 3.0);
+                /// assert_eq!(y.abs().get(), 4.0);
+                /// assert!(z.abs().is_sign_positive());
+                /// ```
+                ///
                 /// See [`f64::abs()`] for more details.
             })
             .op_fn(Box::new(|float| {
@@ -57,6 +70,17 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
             .description(quote! {
                 /// Returns the smallest integer greater than or equal to `self`.
                 ///
+                /// # Examples
+                ///
+                /// ```
+                /// # use typed_floats::*;
+                /// let x: NonNaN = 3.5.try_into().unwrap();
+                /// let y: NonNaN = (-3.5).try_into().unwrap();
+                ///
+                /// assert_eq!(x.ceil().get(), 4.0);
+                /// assert_eq!(y.ceil().get(), -3.0);
+                /// ```
+                ///
                 /// See [`f64::ceil()`] for more details.
             })
             .result(Box::new(|float| {
@@ -72,6 +96,17 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
         OpBuilder::new("floor")
             .description(quote! {
                 /// Returns the largest integer less than or equal to `self`.
+                ///
+                /// # Examples
+                ///
+                /// ```
+                /// # use typed_floats::*;
+                /// let x: NonNaN = 3.5.try_into().unwrap();
+                /// let y: NonNaN = (-3.5).try_into().unwrap();
+                ///
+                /// assert_eq!(x.floor().get(), 3.0);
+                /// assert_eq!(y.floor().get(), -4.0);
+                /// ```
                 ///
                 /// See [`f64::floor()`] for more details.
             })
@@ -90,6 +125,17 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 /// Returns the nearest integer to `self`. If a value is half-way between two
                 /// integers, round away from `0.0`.
                 ///
+                /// # Examples
+                ///
+                /// ```
+                /// # use typed_floats::*;
+                /// let x: NonNaN = 3.5.try_into().unwrap();
+                /// let y: NonNaN = (-3.5).try_into().unwrap();
+                ///
+                /// assert_eq!(x.round().get(), 4.0);
+                /// assert_eq!(y.round().get(), -4.0);
+                /// ```
+                ///
                 /// See [`f64::round()`] for more details.
             })
             .result(Box::new(|float| {
@@ -105,6 +151,17 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 /// Returns the integer part of `self`.
                 /// This means that non-integer numbers are always truncated towards zero.
                 ///
+                /// # Examples
+                ///
+                /// ```
+                /// # use typed_floats::*;
+                /// let x: NonNaN = 3.5.try_into().unwrap();
+                /// let y: NonNaN = (-3.5).try_into().unwrap();
+                ///
+                /// assert_eq!(x.trunc().get(), 3.0);
+                /// assert_eq!(y.trunc().get(), -3.0);
+                /// ```
+                ///
                 /// See [`f64::trunc()`] for more details.
             })
             .result(Box::new(|float| {
@@ -119,6 +176,20 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
             .description(quote! {
                 /// Returns the fractional part of `self`.
                 /// For negative numbers, the result is negative except when the fractional part is zero.
+                ///
+                /// # Examples
+                ///
+                /// ```
+                /// # use typed_floats::*;
+                /// let x: NonNaN = 3.5.try_into().unwrap();
+                /// let y: NonNaN = (-3.5).try_into().unwrap();
+                /// let z: NonNaN = (-3.0).try_into().unwrap();
+                ///
+                /// assert_eq!(x.fract(), 0.5);
+                /// assert_eq!(y.fract(), -0.5);
+                /// assert_eq!(z.fract(), 0.0);
+                /// assert_eq!(z.fract().is_sign_positive(), true);
+                /// ```
                 ///
                 /// See [`f64::fract()`] for more details.
             })
@@ -144,6 +215,23 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 ///
                 /// - `1.0` if the number is positive, `+0.0` or `INFINITY`
                 /// - `-1.0` if the number is negative, `-0.0` or `NEG_INFINITY`
+                ///
+                /// # Examples
+                ///
+                /// ```
+                /// # use typed_floats::*;
+                /// let a: NonNaN = 3.5.try_into().unwrap();
+                /// let b: NonNaN = (-3.5).try_into().unwrap();
+                /// let c: NonNaN = 0.0.try_into().unwrap();
+                /// let d: NonNaN = (-0.0).try_into().unwrap();
+                ///
+                /// assert_eq!(a.signum().get(), 1.0);
+                /// assert_eq!(b.signum().get(), -1.0);
+                /// assert_eq!(c.signum().get(), 1.0);
+                /// assert_eq!(d.signum().get(), -1.0);
+                /// ```
+                ///
+                /// See [`f64::signum()`] for more details.
             })
             .op_fn(Box::new(|float| {
                 if !float.s.accept_negative {
@@ -188,6 +276,22 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 /// Returns NaN if `self` is a negative number other than `-0.0`.
                 /// (It returns `-0.0` if `self` is `-0.0`.)
                 ///
+                /// # Examples
+                ///
+                /// ```
+                /// # use typed_floats::*;
+                /// let a: NonNaN = 25.0.try_into().unwrap();
+                /// let b: NonNaN = (-1).try_into().unwrap();
+                /// let c: NonNaN = 0.0.try_into().unwrap();
+                /// let d: NonNaN = (-0.0).try_into().unwrap();
+                ///
+                /// assert_eq!(a.sqrt(), 5.0);
+                /// assert_eq!(b.sqrt().is_nan(), true);
+                /// assert_eq!(c.sqrt(), 0.0);
+                /// assert_eq!(d.sqrt(), -0.0);
+                /// assert_eq!(d.sqrt().is_sign_negative(), true);
+                /// ```
+                ///
                 /// See [`f64::sqrt()`] for more details.
             })
             .comment("`sqrt(-0.0) = -0.0`")
@@ -213,6 +317,21 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
             .description(quote! {
                 /// Returns `e^(self)`, (the exponential function).
                 ///
+                /// # Examples
+                ///
+                /// ```
+                /// # use typed_floats::*;
+                /// let a: NonNaN = 1.0.try_into().unwrap();
+                /// let b: NonNaN = 0.0.try_into().unwrap();
+                /// let c: NonNaN = (-0.0).try_into().unwrap();
+                /// let d: NonNaN = (-1.0).try_into().unwrap();
+                ///
+                /// assert_eq!(a.exp().get(), core::f64::consts::E);
+                /// assert_eq!(b.exp().get(), 1.0);
+                /// assert_eq!(c.exp().get(), 1.0);
+                /// assert_eq!(d.exp().get(), 1.0 / core::f64::consts::E);
+                /// ```
+                ///
                 /// See [`f64::exp()`] for more details.
             })
             .result(Box::new(|float| {
@@ -228,6 +347,21 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
             .description(quote! {
                 /// Returns `2^(self)`.
                 ///
+                /// # Examples
+                ///
+                /// ```
+                /// # use typed_floats::*;
+                /// let a: NonNaN = 2.0.try_into().unwrap();
+                /// let b: NonNaN = 0.0.try_into().unwrap();
+                /// let c: NonNaN = (-0.0).try_into().unwrap();
+                /// let d: NonNaN = (-2.0).try_into().unwrap();
+                ///
+                /// assert_eq!(a.exp2().get(), 4.0);
+                /// assert_eq!(b.exp2().get(), 1.0);
+                /// assert_eq!(c.exp2().get(), 1.0);
+                /// assert_eq!(d.exp2().get(), 0.25);
+                /// ```
+                ///
                 /// See [`f64::exp2()`] for more details.
             })
             .result(Box::new(|float| {
@@ -242,6 +376,23 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
         OpBuilder::new("ln")
             .description(quote! {
                 /// Returns the natural logarithm of the number.
+                ///
+                /// Returns NaN if `self` is a negative number other than `-0.0`.
+                ///
+                /// # Examples
+                ///
+                /// ```
+                /// # use typed_floats::*;
+                /// let a: NonNaN = 1.0.try_into().unwrap();
+                /// let b: NonNaN = 0.0.try_into().unwrap();
+                /// let c: NonNaN = (-0.0).try_into().unwrap();
+                /// let d: NonNaN = (-1.0).try_into().unwrap();
+                ///
+                /// assert_eq!(a.ln(), 0.0);
+                /// assert_eq!(b.ln(), core::f64::NEG_INFINITY);
+                /// assert_eq!(c.ln(), core::f64::NEG_INFINITY);
+                /// assert_eq!(d.ln().is_nan(), true);
+                /// ```
                 ///
                 /// See [`f64::ln()`] for more details.
             })
@@ -272,6 +423,25 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
         OpBuilder::new("log2")
             .description(quote! {
                 /// Returns the base 2 logarithm of the number.
+                /// 
+                /// Returns NaN if `self` is a negative number other than `-0.0`.
+                ///
+                /// # Examples
+                ///
+                /// ```
+                /// # use typed_floats::*;
+                /// let a: NonNaN = 2.0.try_into().unwrap();
+                /// let b: NonNaN = 1.0.try_into().unwrap();
+                /// let c: NonNaN = 0.0.try_into().unwrap();
+                /// let d: NonNaN = (-0.0).try_into().unwrap();
+                /// let e: NonNaN = (-1.0).try_into().unwrap();
+                ///
+                /// assert_eq!(a.log2(), 1.0);
+                /// assert_eq!(b.log2(), 0.0);
+                /// assert_eq!(c.log2(), core::f64::NEG_INFINITY);
+                /// assert_eq!(d.log2(), core::f64::NEG_INFINITY);
+                /// assert_eq!(e.log2().is_nan(), true);
+                /// ```
                 ///
                 /// See [`f64::log2()`] for more details.
             })
@@ -291,6 +461,25 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
         OpBuilder::new("log10")
             .description(quote! {
                 /// Returns the base 10 logarithm of the number.
+                /// 
+                /// Returns NaN if `self` is a negative number other than `-0.0`.
+                ///
+                /// # Examples
+                ///
+                /// ```
+                /// # use typed_floats::*;
+                /// let a: NonNaN = 100.0.try_into().unwrap();
+                /// let b: NonNaN = 1.0.try_into().unwrap();
+                /// let c: NonNaN = 0.0.try_into().unwrap();
+                /// let d: NonNaN = (-0.0).try_into().unwrap();
+                /// let e: NonNaN = (-1.0).try_into().unwrap();
+                ///
+                /// assert_eq!(a.log10(), 2.0);
+                /// assert_eq!(b.log10(), 0.0);
+                /// assert_eq!(c.log10(), core::f64::NEG_INFINITY);
+                /// assert_eq!(d.log10(), core::f64::NEG_INFINITY);
+                /// assert_eq!(e.log10().is_nan(), true);
+                /// ```
                 ///
                 /// See [`f64::log10()`] for more details.
             })
@@ -311,6 +500,21 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
             .description(quote! {
                 /// Converts degrees to radians.
                 ///
+                /// # Examples
+                ///
+                /// ```
+                /// # use typed_floats::*;
+                /// let a: NonNaN = core::f64::consts::PI.try_into().unwrap();
+                /// let b: NonNaN = 0.0.try_into().unwrap();
+                /// let c: NonNaN = (-core::f64::consts::PI).try_into().unwrap();
+                /// let d: NonNaN = (2.0 * core::f64::consts::PI).try_into().unwrap();
+                ///
+                /// assert_eq!(a.to_degrees().get(), 180.0);
+                /// assert_eq!(b.to_degrees().get(), 0.0);
+                /// assert_eq!(c.to_degrees().get(), -180.0);
+                /// assert_eq!(d.to_degrees().get(), 360.0);
+                /// ```
+                ///
                 /// See [`f64::to_degrees()`] for more details.
             })
             .result(Box::new(|float| {
@@ -324,6 +528,21 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
         OpBuilder::new("to_radians")
             .description(quote! {
                 /// Converts degrees to radians.
+                ///
+                /// # Examples
+                ///
+                /// ```
+                /// # use typed_floats::*;
+                /// let a: NonNaN = 180.0.try_into().unwrap();
+                /// let b: NonNaN = 0.0.try_into().unwrap();
+                /// let c: NonNaN = (-180.0).try_into().unwrap();
+                /// let d: NonNaN = 360.0.try_into().unwrap();
+                ///
+                /// assert_eq!(a.to_radians().get(), core::f64::consts::PI);
+                /// assert_eq!(b.to_radians().get(), 0.0);
+                /// assert_eq!(c.to_radians().get(), -core::f64::consts::PI);
+                /// assert_eq!(d.to_radians().get(), 2.0 * core::f64::consts::PI);
+                /// ```
                 ///
                 /// See [`f64::to_radians()`] for more details.
             })
