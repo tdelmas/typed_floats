@@ -206,11 +206,40 @@ fn do_generate_generic_floats(
 
     let default_float_type = syn::Ident::new(default_float_type, proc_macro2::Span::call_site());
 
-    for (name, _) in specifications {
+    for (name, s) in specifications {
         let name = syn::Ident::new(name, proc_macro2::Span::call_site());
 
+        let mut constraints = quote! {
+            /// - It is not NaN.
+        };
+
+        if !s.accept_inf {
+            constraints.extend(quote! {
+                /// - It is not infinite.
+            });
+        }
+
+        if !s.accept_zero {
+            constraints.extend(quote! {
+                /// - It is not zero.
+            });
+        }
+
+        if !s.accept_positive {
+            constraints.extend(quote! {
+                /// - It is not positive.
+            });
+        }
+
+        if !s.accept_negative {
+            constraints.extend(quote! {
+                /// - It is not negative.
+            });
+        }
+
         output.extend(quote! {
-            /// A floating point number that satisfies the `{name}` constraints.
+            /// A floating point number that satisfies the following constraints:
+            #constraints
             #[derive(Debug, Copy, Clone)]
             pub struct #name<T=#default_float_type>(T);
         });

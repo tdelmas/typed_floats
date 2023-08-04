@@ -423,7 +423,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
         OpBuilder::new("log2")
             .description(quote! {
                 /// Returns the base 2 logarithm of the number.
-                /// 
+                ///
                 /// Returns NaN if `self` is a negative number other than `-0.0`.
                 ///
                 /// # Examples
@@ -461,7 +461,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
         OpBuilder::new("log10")
             .description(quote! {
                 /// Returns the base 10 logarithm of the number.
-                /// 
+                ///
                 /// Returns NaN if `self` is a negative number other than `-0.0`.
                 ///
                 /// # Examples
