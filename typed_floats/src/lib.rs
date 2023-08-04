@@ -145,6 +145,40 @@ pub trait Max<T> {
     fn max(self, rhs: T) -> Self::Output;
 }
 
+/// This trait is used to specify the return type of the [`Copysign::copysign()`] function.
+pub trait Copysign<T> {
+    /// The resulting type after applying [`Copysign::copysign()`].
+    type Output;
+
+    /// Returns a number composed of the magnitude of self and the sign of sign.
+    /// Equal to self if the sign of self and sign are the same, otherwise equal to -self. 
+    /// 
+    /// # Examples
+    ///
+    /// ```
+    /// # use typed_floats::*;
+    /// let x: NonNaN = 3.5.try_into().unwrap();
+    /// let y: NonNaN = (-3.5).try_into().unwrap();
+    /// let a: NonNaN = 1.0.try_into().unwrap();
+    /// let b: NonNaN = 0.0.try_into().unwrap();
+    /// let c: NonNaN = (-0.0).try_into().unwrap();
+    /// let d: NonNaN = (-1.0).try_into().unwrap();
+    ///
+    /// assert_eq!(x.copysign(a).get(), 3.5);
+    /// assert_eq!(x.copysign(b).get(), 3.5);
+    /// assert_eq!(x.copysign(c).get(), -3.5);
+    /// assert_eq!(x.copysign(d).get(), -3.5);
+    /// 
+    /// assert_eq!(y.copysign(a).get(), 3.5);
+    /// assert_eq!(y.copysign(b).get(), 3.5);
+    /// assert_eq!(y.copysign(c).get(), -3.5);
+    /// assert_eq!(y.copysign(d).get(), -3.5);
+    /// ```
+    ///
+    /// See [`f64::copysign()`] for more details.
+    fn copysign(self, rhs: T) -> Self::Output;
+}
+
 typed_floats_macros::generate_docs!(
     pub trait Float:
         Eq

@@ -290,5 +290,15 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
                 Some(output_def)
             }))
             .build(),
+        OpRhsBuilder::new("Copysign", "copysign")
+            .result(Box::new(|float, rhs| {
+                Some(FloatSpecifications {
+                    accept_inf: float.s.accept_inf,
+                    accept_zero: float.s.accept_zero,
+                    accept_positive: rhs.s.accept_positive,
+                    accept_negative: rhs.s.accept_negative,
+                })
+            }))
+            .build(),
     ]
 }
