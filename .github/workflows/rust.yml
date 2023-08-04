@@ -15,12 +15,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: Build tests
+      - name: Build
         run: |
           rustup toolchain install nightly
           cargo +nightly -Zscript ./pre-publish.rs
-          cargo build --no-run
-          cargo test --verbose
+          cargo build
+      - name: Build tests
+        run: cargo test --no-run
       - name: Run tests
         run: cargo test --verbose
       - name: Run clippy
