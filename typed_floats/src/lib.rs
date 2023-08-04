@@ -453,7 +453,7 @@ pub mod f64 {
         f64,
         NegativeFinite,
         -0.0f64,
-        "Negative zero (−0.0)."
+        "Negative zero (-0.0)."
     );
 
     /// This module contains constants from [`core::f64::consts`], casted to the corresponding type
