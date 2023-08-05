@@ -44,6 +44,26 @@ fn update_version(previous: &str, next: &str, path: &str) {
 fn main() {
     let args = Args::parse();
 
+    let test_output = std::process::Command::new("cargo")
+        .args(&["fmt"])
+        .output()
+        .unwrap();
+
+    if !test_output.status.success() {
+        println!("The code must be formatted before tagging");
+        std::process::exit(1);
+    }
+
+    let test_output = std::process::Command::new("cargo")
+        .args(&["test"])
+        .output()
+        .unwrap();
+
+    if !test_output.status.success() {
+        println!("The tests must pass before tagging");
+        std::process::exit(1);
+    }
+
     let is_clean = std::process::Command::new("git")
         .args(&["status", "--porcelain"])
         .output()
