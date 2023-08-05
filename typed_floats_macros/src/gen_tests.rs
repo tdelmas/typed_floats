@@ -10,65 +10,46 @@ fn test_op_checks(
     result_type: &Option<FloatDefinition>,
     var: &proc_macro2::Ident,
 ) -> proc_macro2::TokenStream {
-    let (full_type, accept_inf, accept_zero, accept_positive, accept_negative) = match result_type {
-        None => (float.float_type, true, true, true, true),
-        Some(result_type) => (
-            result_type.name,
-            result_type.s.accept_inf,
-            result_type.s.accept_zero,
-            result_type.s.accept_positive,
-            result_type.s.accept_negative,
-        ),
-    };
-
     let mut res = proc_macro2::TokenStream::new();
 
-    let check_inf = if accept_inf {
-        quote! {
-            let has_inf = #var.iter().any(|x| x.is_infinite());
-            assert!(has_inf, "No inf generated with {} but the output type {} accept it", #op_name, stringify!(#full_type));
-        }
+    if let Some(def) = result_type {
+        let full_type = def.name;
+
+        if def.s.accept_inf {
+            res.extend(quote! {
+                let has_inf = #var.iter().any(|x| x.is_infinite());
+                assert!(has_inf, "No inf generated with {} but the output type {} accept it", #op_name, stringify!(#full_type));
+            });
+        };
+
+        if def.s.accept_zero {
+            res.extend(quote! {
+                let has_zero = #var.iter().any(|x| x == &0.0);
+                assert!(has_zero, "No zero generated with {} but the output type {} accept it", #op_name, stringify!(#full_type));
+            });
+        };
+
+        if def.s.accept_positive {
+            res.extend(quote! {
+                let has_positive = #var.iter().any(|x| x.is_sign_positive());
+                assert!(has_positive, "No positive generated with {} but the output type {} accept it", #op_name, stringify!(#full_type));
+            });
+        };
+
+        if def.s.accept_negative {
+            res.extend(quote! {
+                let has_negative = #var.iter().any(|x| x.is_sign_negative());
+                assert!(has_negative, "No negative generated with {} but the output type {} accept it", #op_name, stringify!(#full_type));
+            });
+        };
     } else {
-        quote! {}
-    };
+        let full_type = float.float_type;
 
-    let check_zero = if accept_zero {
-        quote! {
-            let has_zero = #var.iter().any(|x| x == &0.0);
-            assert!(has_zero, "No zero generated with {} but the output type {} accept it", #op_name, stringify!(#full_type));
-        }
-    } else {
-        quote! {}
-    };
-
-    let check_positive = if accept_positive {
-        quote! {
-            let has_positive = #var.iter().any(|x| x.is_sign_positive());
-            assert!(has_positive, "No positive generated with {} but the output type {} accept it", #op_name, stringify!(#full_type));
-        }
-    } else {
-        quote! {}
-    };
-
-    let check_negative = if accept_negative {
-        quote! {
-            let has_negative = #var.iter().any(|x| x.is_sign_negative());
-            assert!(has_negative, "No negative generated with {} but the output type {} accept it", #op_name, stringify!(#full_type));
-        }
-    } else {
-        quote! {}
-    };
-
-    res.extend(quote! {
-        let has_nan = #var.iter().any(|x| x.is_nan());
-
-        if !has_nan {
-            #check_inf
-            #check_zero
-            #check_positive
-            #check_negative
-        }
-    });
+        res.extend(quote! {
+            let has_nan = #var.iter().any(|x| x.is_nan());
+            assert!(has_nan, "No NaN generated with {} but the output type {} accept it", #op_name, stringify!(#full_type));
+        });
+    }
 
     res
 }

@@ -103,7 +103,7 @@ pub(crate) fn find_float(
     floats.retain(|f| compute_similarity(float, &f.s) == highest_score);
 
     if floats.len() > 1 {
-        panic!("Ambiguous float type");
+        panic!("Ambiguous float type: {:?} => {:?}", float, floats);
     }
 
     floats.first().map(|float| (*float).clone())

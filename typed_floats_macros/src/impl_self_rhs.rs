@@ -300,5 +300,31 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
                 })
             }))
             .build(),
+        OpRhsBuilder::new("DivEuclid", "div_euclid")
+            .return_type_is_not_as_strict_as_possible()
+            .result(Box::new(|float, rhs| {
+                let spec_a = &float.s;
+                let spec_b = &rhs.s;
+
+                let can_be_nan = (spec_a.accept_inf && spec_b.accept_inf)
+                    || (spec_a.accept_zero && spec_b.accept_zero);
+
+                let sign_can_be_different = (spec_a.accept_negative && spec_b.accept_positive)
+                    || (spec_a.accept_positive && spec_b.accept_negative);
+
+                let sign_can_be_same = (spec_a.accept_negative && spec_b.accept_negative)
+                    || (spec_a.accept_positive && spec_b.accept_positive);
+
+                match can_be_nan {
+                    true => None,
+                    false => Some(FloatSpecifications {
+                        accept_inf: true,
+                        accept_zero: true, // Rounding errors can happen
+                        accept_positive: sign_can_be_same,
+                        accept_negative: sign_can_be_different,
+                    }),
+                }
+            }))
+            .build(),
     ]
 }

@@ -151,8 +151,8 @@ pub trait Copysign<T> {
     type Output;
 
     /// Returns a number composed of the magnitude of self and the sign of sign.
-    /// Equal to self if the sign of self and sign are the same, otherwise equal to -self. 
-    /// 
+    /// Equal to self if the sign of self and sign are the same, otherwise equal to -self.
+    ///
     /// # Examples
     ///
     /// ```
@@ -168,7 +168,7 @@ pub trait Copysign<T> {
     /// assert_eq!(x.copysign(b).get(), 3.5);
     /// assert_eq!(x.copysign(c).get(), -3.5);
     /// assert_eq!(x.copysign(d).get(), -3.5);
-    /// 
+    ///
     /// assert_eq!(y.copysign(a).get(), 3.5);
     /// assert_eq!(y.copysign(b).get(), 3.5);
     /// assert_eq!(y.copysign(c).get(), -3.5);
@@ -177,6 +177,36 @@ pub trait Copysign<T> {
     ///
     /// See [`f64::copysign()`] for more details.
     fn copysign(self, rhs: T) -> Self::Output;
+}
+
+/// This trait is used to specify the return type of the [`DivEuclid::div_euclid()`] function.
+pub trait DivEuclid<T> {
+    /// The resulting type after applying [`DivEuclid::div_euclid()`].
+    type Output;
+
+    /// Calculates Euclidean division, the matching method for `rem_euclid`.
+    /// Equal to self if the sign of self and sign are the same, otherwise equal to -self.
+    ///
+    /// This computes the integer `n` such that
+    /// `self = n * rhs + self.rem_euclid(rhs)`.
+    /// In other words, the result is `self / rhs` rounded to the integer `n`
+    /// such that `self >= n * rhs`.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use typed_floats::*;
+    /// let a: NonNaN = 7.0.try_into().unwrap();
+    /// let b: NonNaN = 4.0.try_into().unwrap();
+    ///
+    /// assert_eq!(a.div_euclid(b), 1.0);
+    /// assert_eq!((-a).div_euclid(b), -2.0);
+    /// assert_eq!(a.div_euclid(-b), -1.0);
+    /// assert_eq!((-a).div_euclid(-b), 2.0);
+    /// ```
+    ///
+    /// See [`f64::div_euclid()`] for more details.
+    fn div_euclid(self, rhs: T) -> Self::Output;
 }
 
 typed_floats_macros::generate_docs!(
