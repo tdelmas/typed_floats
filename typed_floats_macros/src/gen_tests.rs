@@ -18,28 +18,28 @@ fn test_op_checks(
         if def.s.accept_inf {
             res.extend(quote! {
                 let has_inf = #var.iter().any(|x| x.is_infinite());
-                assert!(has_inf, "No inf generated with {} but the output type {} accept it", #op_name, stringify!(#full_type));
+                assert!(has_inf, "No inf generated with {} but the output type {} accept it. Generated: {:?}", #op_name, stringify!(#full_type), #var);
             });
         };
 
         if def.s.accept_zero {
             res.extend(quote! {
                 let has_zero = #var.iter().any(|x| x == &0.0);
-                assert!(has_zero, "No zero generated with {} but the output type {} accept it", #op_name, stringify!(#full_type));
+                assert!(has_zero, "No zero generated with {} but the output type {} accept it. Generated: {:?}", #op_name, stringify!(#full_type), #var);
             });
         };
 
         if def.s.accept_positive {
             res.extend(quote! {
                 let has_positive = #var.iter().any(|x| x.is_sign_positive());
-                assert!(has_positive, "No positive generated with {} but the output type {} accept it", #op_name, stringify!(#full_type));
+                assert!(has_positive, "No positive generated with {} but the output type {} accept it. Generated: {:?}", #op_name, stringify!(#full_type), #var);
             });
         };
 
         if def.s.accept_negative {
             res.extend(quote! {
                 let has_negative = #var.iter().any(|x| x.is_sign_negative());
-                assert!(has_negative, "No negative generated with {} but the output type {} accept it", #op_name, stringify!(#full_type));
+                assert!(has_negative, "No negative generated with {} but the output type {} accept it. Generated: {:?}", #op_name, stringify!(#full_type), #var);
             });
         };
     } else {
@@ -47,7 +47,7 @@ fn test_op_checks(
 
         res.extend(quote! {
             let has_nan = #var.iter().any(|x| x.is_nan());
-            assert!(has_nan, "No NaN generated with {} but the output type {} accept it", #op_name, stringify!(#full_type));
+            assert!(has_nan, "No NaN generated with {} but the output type {} accept it. Generated: {:?}", #op_name, stringify!(#full_type), #var);
         });
     }
 
@@ -60,11 +60,18 @@ fn get_test_values(float_type: Ident) -> proc_macro2::TokenStream {
         const SUBNORMAL : #float_type = 1.0e-308;
         const NEG_SUBNORMAL : #float_type = -1.0e-308;
 
+        const PI : #float_type = core::#float_type::consts::PI; // 3.14...
+        const FRAC_PI_2 : #float_type = core::#float_type::consts::FRAC_PI_2; // 1.57...
+        const E : #float_type = core::#float_type::consts::E; // 2.71...
+
         let values = [
             core::#float_type::NAN,
             core::#float_type::NEG_INFINITY,
             core::#float_type::MIN,
+            -PI,
+            -E,
             -2.0,
+            -FRAC_PI_2,
             -1.0,
             MAX_NEGATIVE,
             NEG_SUBNORMAL,
@@ -73,7 +80,10 @@ fn get_test_values(float_type: Ident) -> proc_macro2::TokenStream {
             SUBNORMAL,
             core::#float_type::MIN_POSITIVE,
             1.0,
+            FRAC_PI_2,
             2.0,
+            E,
+            PI,
             core::#float_type::MAX,
             core::#float_type::INFINITY,
         ];
@@ -148,9 +158,12 @@ pub(crate) fn generate_tests_self(float_type: &'static str) -> proc_macro2::Toke
                 // Add the result to the list of values to check is the result type is as strict as possible
                 #vals.push(as_float);
             });
+            
+            if op.skip_check_return_type_strictness {
+                continue;
+            }
 
             let result_type = op.get_result(float, &floats_f64);
-
             let checks = test_op_checks(float, op.display, &result_type, &vals);
 
             check_ops.extend(quote! {
@@ -255,7 +268,7 @@ pub(crate) fn generate_tests_self_rhs(float_type: &'static str) -> proc_macro2::
                     });
                 }
 
-                if !op.is_as_strict_as_possible {
+                if op.skip_check_return_type_strictness {
                     continue;
                 }
 

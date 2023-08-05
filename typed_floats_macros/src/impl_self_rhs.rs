@@ -180,7 +180,7 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
             .build(),
         OpRhsBuilder::new("Min", "min")
             .op_is_commutative()
-            .return_type_is_not_as_strict_as_possible()
+            .skip_check_return_type_strictness()
             .comment("The result type is not always as strict as possible because `min(-0.0,0.0)` may return either.")
             .result(Box::new(|float, rhs| {
                 // https://llvm.org/docs/LangRef.html#llvm-minnum-intrinsic
@@ -237,7 +237,7 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
             .build(),
         OpRhsBuilder::new("Max", "max")
             .op_is_commutative()
-            .return_type_is_not_as_strict_as_possible()
+            .skip_check_return_type_strictness()
             .comment("The result type is not always as strict as possible because `max(-0.0,0.0)` may return either.")
             .result(Box::new(|float, rhs| {
                 // https://llvm.org/docs/LangRef.html#llvm-maxnum-intrinsic
@@ -301,7 +301,7 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
             }))
             .build(),
         OpRhsBuilder::new("DivEuclid", "div_euclid")
-            .return_type_is_not_as_strict_as_possible()
+            .skip_check_return_type_strictness()
             .result(Box::new(|float, rhs| {
                 let spec_a = &float.s;
                 let spec_b = &rhs.s;

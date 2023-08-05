@@ -548,5 +548,68 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
             })
             .result(Box::new(|float| Some(float.s.clone())))
             .build(),
+        OpBuilder::new("cbrt")
+            .description(quote! {
+                /// Returns the cube root of a number.
+                ///
+                /// # Examples
+                ///
+                /// ```
+                /// # use typed_floats::*;
+                /// let a: NonNaN = 8.0.try_into().unwrap();
+                /// let b: NonNaN = 0.0.try_into().unwrap();
+                /// let c: NonNaN = (-0.0).try_into().unwrap();
+                /// let d: NonNaN = (-1.0).try_into().unwrap();
+                ///
+                /// assert_eq!(a.cbrt().get(), 2.0);
+                /// assert_eq!(b.cbrt().get(), 0.0);
+                /// assert_eq!(c.cbrt().get(), -0.0);
+                /// assert_eq!(d.cbrt().get(), -1.0);
+                /// ```
+                ///
+                /// See [`f64::cbrt()`] for more details.
+            })
+            .result(Box::new(|float| Some(float.s.clone())))
+            .build(),
+        OpBuilder::new("sin")
+            .skip_check_return_type_strictness()
+            .description(quote! {
+                /// Computes the sine of a number (in radians).
+                ///
+                /// # Examples
+                ///
+                /// ```
+                /// # use typed_floats::*;
+                /// let a: NonNaNFinite = core::f64::consts::PI.try_into().unwrap();
+                /// let b: NonNaNFinite = 0.0.try_into().unwrap();
+                /// let c: NonNaNFinite = (-0.0).try_into().unwrap();
+                /// let d: NonNaNFinite = (-core::f64::consts::PI).try_into().unwrap();
+                /// let e: NonNaNFinite = core::f64::consts::FRAC_PI_2.try_into().unwrap();
+                /// let f: NonNaNFinite = (-core::f64::consts::FRAC_PI_2).try_into().unwrap();
+                ///
+                /// assert!(a.sin().get().abs() < 1.0e-10);
+                /// assert!(b.sin().get().abs() < 1.0e-10);
+                /// assert!(c.sin().get().abs() < 1.0e-10);
+                /// assert!(d.sin().get().abs() < 1.0e-10);
+                /// assert!((e.sin().get() - 1.0).abs() < 1.0e-10);
+                /// assert!((f.sin().get() + 1.0).abs() < 1.0e-10);
+                /// 
+                /// ```
+                ///
+                /// See [`f64::sin()`] for more details.
+            })
+            .result(Box::new(|float| {
+                if float.s.accept_inf {
+                    return None;
+                }
+
+                Some(FloatSpecifications {
+                    accept_negative: true,
+                    accept_positive: true,
+                    accept_zero: true,
+                    accept_inf: false,
+                })
+            }))
+            .build(),
     ]
 }

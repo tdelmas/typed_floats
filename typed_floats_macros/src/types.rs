@@ -135,6 +135,7 @@ pub(crate) struct Op {
     pub(crate) trait_name: Option<&'static str>,
     pub(crate) comment: Option<&'static str>,
     pub(crate) description: proc_macro2::TokenStream,
+    pub(crate) skip_check_return_type_strictness: bool,
     op: OpCallback,
     result: ResultCallback,
     test: TestCallback,
@@ -156,11 +157,17 @@ impl OpBuilder {
                 trait_name: None,
                 description: proc_macro2::TokenStream::new(),
                 comment: None,
+                skip_check_return_type_strictness: false,
                 op: Box::new(move |_| quote! { self.get().#fn_op() }),
                 result: Box::new(|_, _| panic!("No result defined")),
                 test: Box::new(move |var| quote! { #var.#fn_test() }),
             },
         }
+    }
+
+    pub(crate) fn skip_check_return_type_strictness(mut self) -> Self {
+        self.op.skip_check_return_type_strictness = true;
+        self
     }
 
     pub fn display(mut self, display: &'static str) -> Self {
@@ -314,7 +321,7 @@ impl OpRhsBuilder {
                 trait_name,
                 assign: None,
                 op_is_commutative: false,
-                is_as_strict_as_possible: true,
+                skip_check_return_type_strictness: false,
                 comment: None,
                 op: Box::new(move |_, _| quote! { self.get().#fn_op(rhs.get()) }),
                 result: Box::new(|_, _, _| panic!("No result defined")),
@@ -323,8 +330,8 @@ impl OpRhsBuilder {
         }
     }
 
-    pub(crate) fn return_type_is_not_as_strict_as_possible(mut self) -> Self {
-        self.op.is_as_strict_as_possible = false;
+    pub(crate) fn skip_check_return_type_strictness(mut self) -> Self {
+        self.op.skip_check_return_type_strictness = true;
         self
     }
 
@@ -397,7 +404,7 @@ pub(crate) struct OpRhs {
     pub(crate) trait_name: &'static str,
     pub(crate) assign: Option<(&'static str, &'static str)>,
     pub(crate) op_is_commutative: bool,
-    pub(crate) is_as_strict_as_possible: bool,
+    pub(crate) skip_check_return_type_strictness: bool,
     pub(crate) comment: Option<&'static str>,
     op: OpRhsCallback,
     result: ResultRhsCallback,
