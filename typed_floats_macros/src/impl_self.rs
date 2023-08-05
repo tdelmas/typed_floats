@@ -593,10 +593,50 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 /// assert!(d.sin().get().abs() < 1.0e-10);
                 /// assert!((e.sin().get() - 1.0).abs() < 1.0e-10);
                 /// assert!((f.sin().get() + 1.0).abs() < 1.0e-10);
-                /// 
+                ///
                 /// ```
                 ///
                 /// See [`f64::sin()`] for more details.
+            })
+            .result(Box::new(|float| {
+                if float.s.accept_inf {
+                    return None;
+                }
+
+                Some(FloatSpecifications {
+                    accept_negative: true,
+                    accept_positive: true,
+                    accept_zero: true,
+                    accept_inf: false,
+                })
+            }))
+            .build(),
+        OpBuilder::new("cos")
+            .skip_check_return_type_strictness()
+            .description(quote! {
+                /// Computes the cosine of a number (in radians).
+                ///
+                /// # Examples
+                ///
+                /// ```
+                /// # use typed_floats::*;
+                /// let a: NonNaNFinite = core::f64::consts::PI.try_into().unwrap();
+                /// let b: NonNaNFinite = 0.0.try_into().unwrap();
+                /// let c: NonNaNFinite = (-0.0).try_into().unwrap();
+                /// let d: NonNaNFinite = (-core::f64::consts::PI).try_into().unwrap();
+                /// let e: NonNaNFinite = core::f64::consts::FRAC_PI_2.try_into().unwrap();
+                /// let f: NonNaNFinite = (-core::f64::consts::FRAC_PI_2).try_into().unwrap();
+                ///
+                /// assert!((a.cos().get() + 1.0).abs() < 1.0e-10);
+                /// assert!((b.cos().get() - 1.0).abs() < 1.0e-10);
+                /// assert!((c.cos().get() - 1.0).abs() < 1.0e-10);
+                /// assert!((d.cos().get() + 1.0).abs() < 1.0e-10);
+                /// assert!(e.cos().get().abs() < 1.0e-10);
+                /// assert!(f.cos().get().abs() < 1.0e-10);
+                ///
+                /// ```
+                ///
+                /// See [`f64::cos()`] for more details.
             })
             .result(Box::new(|float| {
                 if float.s.accept_inf {

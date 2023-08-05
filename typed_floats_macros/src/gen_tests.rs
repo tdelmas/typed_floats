@@ -158,7 +158,7 @@ pub(crate) fn generate_tests_self(float_type: &'static str) -> proc_macro2::Toke
                 // Add the result to the list of values to check is the result type is as strict as possible
                 #vals.push(as_float);
             });
-            
+
             if op.skip_check_return_type_strictness {
                 continue;
             }
