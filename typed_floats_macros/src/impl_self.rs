@@ -551,6 +551,8 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
         OpBuilder::new("cbrt")
             .description(quote! {
                 /// Returns the cube root of a number.
+                /// 
+                /// The result will be finite unless the argument is infinite.
                 ///
                 /// # Examples
                 ///
@@ -575,6 +577,9 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
             .skip_check_return_type_strictness()
             .description(quote! {
                 /// Computes the sine of a number (in radians).
+                ///
+                /// The result will be in the range [-1, 1] if the input is finite,
+                /// and NaN if the input is infinite.
                 ///
                 /// # Examples
                 ///
@@ -616,6 +621,9 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
             .description(quote! {
                 /// Computes the cosine of a number (in radians).
                 ///
+                /// The result will be in the range [-1, 1] if the input is finite,
+                /// and NaN if the input is infinite.
+                ///
                 /// # Examples
                 ///
                 /// ```
@@ -633,7 +641,6 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 /// assert!((d.cos().get() + 1.0).abs() < 1.0e-10);
                 /// assert!(e.cos().get().abs() < 1.0e-10);
                 /// assert!(f.cos().get().abs() < 1.0e-10);
-                ///
                 /// ```
                 ///
                 /// See [`f64::cos()`] for more details.
