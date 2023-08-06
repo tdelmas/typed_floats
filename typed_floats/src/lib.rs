@@ -32,7 +32,7 @@
 //! ```
 //!
 //! Operations that assign the result to the left operand are only
-//! implemented when it is safe to do so.
+//! implemented when it is safe to do so:
 //!
 //! ```
 //! use typed_floats::*;
@@ -45,6 +45,18 @@
 //! assert_eq!(a.get(), f64::INFINITY);
 //! ```
 //!
+//! ```compile_fail
+//! use typed_floats::*;
+//!
+//! let mut a: StrictlyPositiveFinite = f64::MAX.try_into().unwrap();
+//! let b: StrictlyPositiveFinite = f64::MAX.try_into().unwrap();
+//!
+//! a += b;// Does not compile
+//!
+//! assert_eq!(a.get(), f64::INFINITY);
+//! ```
+//!
+//! Conversions from non-zero integers are available:
 //!
 //! ```
 //! use typed_floats::*;
@@ -54,6 +66,20 @@
 //! let b: StrictlyPositive = a.into(); // no need for try_into
 //!
 //! assert_eq!(b.get(), 1.0);
+//! ```
+//!
+//! Also, comparaison between types is available:
+//!
+//! ```
+//! use typed_floats::*;
+//!
+//! let a: f64 = 1.0;
+//! let b: StrictlyPositive = 1.0.try_into().unwrap();
+//! let c: StrictlyPositiveFinite = 1.0.try_into().unwrap();
+//!
+//! assert_eq!(a, b);
+//! assert_eq!(b, a);
+//! assert_eq!(b, c);
 //! ```
 //!
 //!

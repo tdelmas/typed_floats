@@ -398,6 +398,41 @@ fn do_generate_floats(floats: &[FloatDefinition]) -> proc_macro2::TokenStream {
     }
 
     for float_a in floats {
+        let float_type = float_a.float_type_ident();
+        let a_full_type = &float_a.full_type_ident();
+
+        output.extend(quote! {
+            impl PartialEq<#a_full_type> for #float_type {
+                #[inline]
+                fn eq(&self, other: &#a_full_type) -> bool {
+                    self == &other.0
+                }
+            }
+            impl PartialEq<#float_type> for #a_full_type {
+                #[inline]
+                fn eq(&self, other: &#float_type) -> bool {
+                    &self.0 == other
+                }
+            }
+        });
+
+        for float_b in floats {
+            if float_a.name != float_b.name {
+                let b_full_type = &float_b.full_type_ident();
+
+                output.extend(quote! {
+                    impl PartialEq<#a_full_type> for #b_full_type {
+                        #[inline]
+                        fn eq(&self, other: &#a_full_type) -> bool {
+                            self.0 == other.0
+                        }
+                    }
+                });
+            }
+        }
+    }
+
+    for float_a in floats {
         for op in &ops {
             output.extend(op.get_impl(float_a, floats));
         }
