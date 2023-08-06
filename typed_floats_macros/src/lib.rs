@@ -329,6 +329,17 @@ fn do_generate_floats(floats: &[FloatDefinition]) -> proc_macro2::TokenStream {
                     self.0.is_sign_negative()
                 }
 
+                #[inline]
+                #[must_use]
+                fn is_negative_zero(&self) -> bool {
+                    self.0 == 0.0 && self.0.is_sign_negative()
+                }
+
+                #[inline]
+                #[must_use]
+                fn is_positive_zero(&self) -> bool {
+                    self.0 == 0.0 && self.0.is_sign_positive()
+                }
             }
 
             impl PartialEq for #full_type {
@@ -393,6 +404,41 @@ fn do_generate_floats(floats: &[FloatDefinition]) -> proc_macro2::TokenStream {
         for float_b in floats {
             if float_a.name != float_b.name {
                 output.extend(impl_from_or_try_from(float_a, float_b));
+            }
+        }
+    }
+
+    for float_a in floats {
+        let float_type = float_a.float_type_ident();
+        let a_full_type = &float_a.full_type_ident();
+
+        output.extend(quote! {
+            impl PartialEq<#a_full_type> for #float_type {
+                #[inline]
+                fn eq(&self, other: &#a_full_type) -> bool {
+                    self == &other.0
+                }
+            }
+            impl PartialEq<#float_type> for #a_full_type {
+                #[inline]
+                fn eq(&self, other: &#float_type) -> bool {
+                    &self.0 == other
+                }
+            }
+        });
+
+        for float_b in floats {
+            if float_a.name != float_b.name {
+                let b_full_type = &float_b.full_type_ident();
+
+                output.extend(quote! {
+                    impl PartialEq<#a_full_type> for #b_full_type {
+                        #[inline]
+                        fn eq(&self, other: &#a_full_type) -> bool {
+                            self.0 == other.0
+                        }
+                    }
+                });
             }
         }
     }
