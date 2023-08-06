@@ -329,6 +329,17 @@ fn do_generate_floats(floats: &[FloatDefinition]) -> proc_macro2::TokenStream {
                     self.0.is_sign_negative()
                 }
 
+                #[inline]
+                #[must_use]
+                fn is_negative_zero(&self) -> bool {
+                    self.0 == 0.0 && self.0.is_sign_negative()
+                }
+
+                #[inline]
+                #[must_use]
+                fn is_positive_zero(&self) -> bool {
+                    self.0 == 0.0 && self.0.is_sign_positive()
+                }
             }
 
             impl PartialEq for #full_type {

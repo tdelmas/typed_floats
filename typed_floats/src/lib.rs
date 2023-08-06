@@ -16,8 +16,8 @@
 //! let c: StrictlyPositive = a - b;
 //! let d: NonNaNFinite = a + b;
 //!
-//! assert_eq!(c.get(), 2.0f64);
-//! assert_eq!(d.get(), 0.0f64);   
+//! assert_eq!(c, 2.0);
+//! assert_eq!(d, 0.0);   
 //! ```
 //!
 //! ```
@@ -42,7 +42,7 @@
 //!
 //! a += b;// Would not compile with StrictlyPositiveFinite
 //!
-//! assert_eq!(a.get(), f64::INFINITY);
+//! assert_eq!(a, f64::INFINITY);
 //! ```
 //!
 //! ```compile_fail
@@ -53,7 +53,7 @@
 //!
 //! a += b;// Does not compile
 //!
-//! assert_eq!(a.get(), f64::INFINITY);
+//! assert_eq!(a, f64::INFINITY);
 //! ```
 //!
 //! Conversions from non-zero integers are available:
@@ -65,7 +65,7 @@
 //! let a = NonZeroU64::new(1).unwrap();
 //! let b: StrictlyPositive = a.into(); // no need for try_into
 //!
-//! assert_eq!(b.get(), 1.0);
+//! assert_eq!(b, 1.0);
 //! ```
 //!
 //! Also, comparaison between types is available:
@@ -110,7 +110,7 @@ pub trait Hypot<T> {
     /// let x: NonNaN = 3.0.try_into().unwrap();
     /// let y: NonNaN = 4.0.try_into().unwrap();
     ///
-    /// assert_eq!(x.hypot(y).get(), 5.0);
+    /// assert_eq!(x.hypot(y), 5.0);
     /// ```
     ///
     /// See [`f64::hypot()`] for more details.
@@ -137,7 +137,7 @@ pub trait Min<T> {
     /// let x: NonNaN = 3.0.try_into().unwrap();
     /// let y: NonNaN = 4.0.try_into().unwrap();
     ///
-    /// assert_eq!(Min::min(x, y).get(), 3.0);
+    /// assert_eq!(Min::min(x, y), 3.0);
     /// ```
     ///
     /// See [`f64::min()`] for more details.
@@ -164,7 +164,7 @@ pub trait Max<T> {
     /// let x: NonNaN = 3.0.try_into().unwrap();
     /// let y: NonNaN = 4.0.try_into().unwrap();
     ///
-    /// assert_eq!(Max::max(x, y).get(), 4.0);
+    /// assert_eq!(Max::max(x, y), 4.0);
     /// ```
     ///
     /// See [`f64::max()`] for more details.
@@ -190,15 +190,15 @@ pub trait Copysign<T> {
     /// let c: NonNaN = (-0.0).try_into().unwrap();
     /// let d: NonNaN = (-1.0).try_into().unwrap();
     ///
-    /// assert_eq!(x.copysign(a).get(), 3.5);
-    /// assert_eq!(x.copysign(b).get(), 3.5);
-    /// assert_eq!(x.copysign(c).get(), -3.5);
-    /// assert_eq!(x.copysign(d).get(), -3.5);
+    /// assert_eq!(x.copysign(a), 3.5);
+    /// assert_eq!(x.copysign(b), 3.5);
+    /// assert_eq!(x.copysign(c), -3.5);
+    /// assert_eq!(x.copysign(d), -3.5);
     ///
-    /// assert_eq!(y.copysign(a).get(), 3.5);
-    /// assert_eq!(y.copysign(b).get(), 3.5);
-    /// assert_eq!(y.copysign(c).get(), -3.5);
-    /// assert_eq!(y.copysign(d).get(), -3.5);
+    /// assert_eq!(y.copysign(a), 3.5);
+    /// assert_eq!(y.copysign(b), 3.5);
+    /// assert_eq!(y.copysign(c), -3.5);
+    /// assert_eq!(y.copysign(d), -3.5);
     /// ```
     ///
     /// See [`f64::copysign()`] for more details.
@@ -294,7 +294,7 @@ typed_floats_macros::generate_docs!(
         /// # use typed_floats::*;
         /// let x: NonNaN = NonNaN::new(3.0).unwrap();
         ///
-        /// assert_eq!(x.get(), 3.0);
+        /// assert_eq!(x, 3.0);
         /// ```
         ///
         /// # Errors
@@ -313,7 +313,7 @@ typed_floats_macros::generate_docs!(
         /// # use typed_floats::*;
         /// let x: NonNaN = unsafe { NonNaN::new_unchecked(3.0) };
         ///
-        /// assert_eq!(x.get(), 3.0);
+        /// assert_eq!(x, 3.0);
         /// ```
         /// # Safety
         /// The caller must ensure that the value is valid
@@ -448,6 +448,38 @@ typed_floats_macros::generate_docs!(
         /// See [`f64::is_sign_negative()`] for more details.
         #[must_use]
         fn is_sign_negative(&self) -> bool;
+
+        /// Returns `true` if the number is positive zero.
+        ///
+        /// # Examples
+        ///
+        /// ```
+        /// # use typed_floats::*;
+        /// let x: NonNaN = 3.0.try_into().unwrap();
+        /// let y: NonNaN = (-0.0).try_into().unwrap();
+        /// let z: NonNaN = (0.0).try_into().unwrap();
+        ///
+        /// assert_eq!(x.is_positive_zero(), false);
+        /// assert_eq!(y.is_positive_zero(), false);
+        /// assert_eq!(z.is_positive_zero(), true);
+        /// ```
+        fn is_positive_zero(&self) -> bool;
+
+        /// Returns `true` if the number is negative zero.
+        ///     
+        /// # Examples
+        ///
+        /// ```
+        /// # use typed_floats::*;
+        /// let x: NonNaN = 3.0.try_into().unwrap();
+        /// let y: NonNaN = (-0.0).try_into().unwrap();
+        /// let z: NonNaN = (0.0).try_into().unwrap();
+        ///
+        /// assert_eq!(x.is_negative_zero(), false);
+        /// assert_eq!(y.is_negative_zero(), true);
+        /// assert_eq!(z.is_negative_zero(), false);
+        /// ```
+        fn is_negative_zero(&self) -> bool;
     }
 );
 
@@ -501,6 +533,40 @@ macro_rules! add_const {
 
 /// This module contains constants from [`core::f64`], casted to the corresponding type
 pub mod tf64 {
+    /// Returns `true` if the number is positive zero.
+    ///     
+    /// # Examples
+    ///
+    /// ```
+    /// # use typed_floats::*;
+    ///
+    /// assert_eq!(tf64::is_positive_zero(3.0), false);
+    /// assert_eq!(tf64::is_positive_zero(-0.0), false);
+    /// assert_eq!(tf64::is_positive_zero(0.0), true);
+    /// ```
+    #[inline]
+    #[must_use]
+    pub fn is_positive_zero(x: f64) -> bool {
+        x == 0.0 && x.is_sign_positive()
+    }
+
+    /// Returns `true` if the number is negative zero.
+    ///    
+    /// # Examples
+    ///
+    /// ```
+    /// # use typed_floats::*;
+    ///
+    /// assert_eq!(tf64::is_negative_zero(3.0), false);
+    /// assert_eq!(tf64::is_negative_zero(-0.0), true);
+    /// assert_eq!(tf64::is_negative_zero(0.0), false);
+    /// ```
+    #[inline]
+    #[must_use]
+    pub fn is_negative_zero(x: f64) -> bool {
+        x == 0.0 && x.is_sign_negative()
+    }
+
     add_const!(
         INFINITY,
         f64,
@@ -539,7 +605,7 @@ pub mod tf64 {
     );
     add_const!(ZERO, f64, PositiveFinite, 0.0f64, "Positive zero (+0.0).");
     add_const!(
-        NEGATIVE_ZERO,
+        NEG_ZERO,
         f64,
         NegativeFinite,
         -0.0f64,
@@ -577,6 +643,40 @@ pub mod tf64 {
 
 /// This module contains constants from [`core::f32`], casted to the corresponding type
 pub mod tf32 {
+    /// Returns `true` if the number is positive zero.
+    ///     
+    /// # Examples
+    ///
+    /// ```
+    /// # use typed_floats::*;
+    ///
+    /// assert_eq!(tf32::is_positive_zero(3.0), false);
+    /// assert_eq!(tf32::is_positive_zero(-0.0), false);
+    /// assert_eq!(tf32::is_positive_zero(0.0), true);
+    /// ```
+    #[inline]
+    #[must_use]
+    pub fn is_positive_zero(x: f32) -> bool {
+        x == 0.0 && x.is_sign_positive()
+    }
+
+    /// Returns `true` if the number is negative zero.
+    ///    
+    /// # Examples
+    ///
+    /// ```
+    /// # use typed_floats::*;
+    ///
+    /// assert_eq!(tf32::is_negative_zero(3.0), false);
+    /// assert_eq!(tf32::is_negative_zero(-0.0), true);
+    /// assert_eq!(tf32::is_negative_zero(0.0), false);
+    /// ```
+    #[inline]
+    #[must_use]
+    pub fn is_negative_zero(x: f32) -> bool {
+        x == 0.0 && x.is_sign_negative()
+    }
+
     add_const!(
         INFINITY,
         f32,
@@ -615,7 +715,7 @@ pub mod tf32 {
     );
     add_const!(ZERO, f32, PositiveFinite, 0.0f32, "Positive zero (+0.0).");
     add_const!(
-        NEGATIVE_ZERO,
+        NEG_ZERO,
         f32,
         NegativeFinite,
         -0.0f32,
