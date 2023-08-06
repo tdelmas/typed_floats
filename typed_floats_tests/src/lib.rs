@@ -4,9 +4,9 @@ use typed_floats::*;
 #[test]
 fn test_others_f64() {
     let values_f64 = [
-        (core::f64::NAN, false),
-        (core::f64::INFINITY, true),
-        (core::f64::NEG_INFINITY, true),
+        (f64::NAN, false),
+        (f64::INFINITY, true),
+        (f64::NEG_INFINITY, true),
         (0.0f64, true),
         (-0.0f64, true),
         (1.0f64, true),

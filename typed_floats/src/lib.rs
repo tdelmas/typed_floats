@@ -37,12 +37,12 @@
 //! ```
 //! use typed_floats::*;
 //!
-//! let mut a: StrictlyPositive = core::f64::MAX.try_into().unwrap();
-//! let b: StrictlyPositive = core::f64::MAX.try_into().unwrap();
+//! let mut a: StrictlyPositive = f64::MAX.try_into().unwrap();
+//! let b: StrictlyPositive = f64::MAX.try_into().unwrap();
 //!
 //! a += b;// Would not compile with StrictlyPositiveFinite
 //!
-//! assert_eq!(a.get(), core::f64::INFINITY);
+//! assert_eq!(a.get(), f64::INFINITY);
 //! ```
 //!
 //!
@@ -474,19 +474,19 @@ macro_rules! add_const {
 }
 
 /// This module contains constants from [`core::f64`], casted to the corresponding type
-pub mod f64 {
+pub mod tf64 {
     add_const!(
         INFINITY,
         f64,
         StrictlyPositive,
-        core::f64::INFINITY,
+        f64::INFINITY,
         "Infinity (∞)."
     );
     add_const!(
         NEG_INFINITY,
         f64,
         StrictlyNegative,
-        core::f64::NEG_INFINITY,
+        f64::NEG_INFINITY,
         "Negative infinity (−∞)."
     );
 
@@ -494,21 +494,21 @@ pub mod f64 {
         MAX,
         f64,
         StrictlyPositiveFinite,
-        core::f64::MAX,
+        f64::MAX,
         "Largest finite `f64` value."
     );
     add_const!(
         MIN,
         f64,
         StrictlyNegativeFinite,
-        core::f64::MIN,
+        f64::MIN,
         "Smallest finite `f64` value."
     );
     add_const!(
         MIN_POSITIVE,
         f64,
         StrictlyPositiveFinite,
-        core::f64::MIN_POSITIVE,
+        f64::MIN_POSITIVE,
         "Smallest positive normal `f64` value."
     );
     add_const!(ZERO, f64, PositiveFinite, 0.0f64, "Positive zero (+0.0).");
@@ -550,19 +550,19 @@ pub mod f64 {
 }
 
 /// This module contains constants from [`core::f32`], casted to the corresponding type
-pub mod f32 {
+pub mod tf32 {
     add_const!(
         INFINITY,
         f32,
         StrictlyPositive,
-        core::f32::INFINITY,
+        f32::INFINITY,
         "Infinity (∞)."
     );
     add_const!(
         NEG_INFINITY,
         f32,
         StrictlyNegative,
-        core::f32::NEG_INFINITY,
+        f32::NEG_INFINITY,
         "Negative infinity (−∞)."
     );
 
@@ -570,21 +570,21 @@ pub mod f32 {
         MAX,
         f32,
         StrictlyPositiveFinite,
-        core::f32::MAX,
+        f32::MAX,
         "Largest finite `f32` value."
     );
     add_const!(
         MIN,
         f32,
         StrictlyNegativeFinite,
-        core::f32::MIN,
+        f32::MIN,
         "Smallest finite `f32` value."
     );
     add_const!(
         MIN_POSITIVE,
         f32,
         StrictlyPositiveFinite,
-        core::f32::MIN_POSITIVE,
+        f32::MIN_POSITIVE,
         "Smallest positive normal `f32` value."
     );
     add_const!(ZERO, f32, PositiveFinite, 0.0f32, "Positive zero (+0.0).");

@@ -389,8 +389,8 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 /// let d: NonNaN = (-1.0).try_into().unwrap();
                 ///
                 /// assert_eq!(a.ln(), 0.0);
-                /// assert_eq!(b.ln(), core::f64::NEG_INFINITY);
-                /// assert_eq!(c.ln(), core::f64::NEG_INFINITY);
+                /// assert_eq!(b.ln(), f64::NEG_INFINITY);
+                /// assert_eq!(c.ln(), f64::NEG_INFINITY);
                 /// assert_eq!(d.ln().is_nan(), true);
                 /// ```
                 ///
@@ -438,8 +438,8 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 ///
                 /// assert_eq!(a.log2(), 1.0);
                 /// assert_eq!(b.log2(), 0.0);
-                /// assert_eq!(c.log2(), core::f64::NEG_INFINITY);
-                /// assert_eq!(d.log2(), core::f64::NEG_INFINITY);
+                /// assert_eq!(c.log2(), f64::NEG_INFINITY);
+                /// assert_eq!(d.log2(), f64::NEG_INFINITY);
                 /// assert_eq!(e.log2().is_nan(), true);
                 /// ```
                 ///
@@ -476,8 +476,8 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 ///
                 /// assert_eq!(a.log10(), 2.0);
                 /// assert_eq!(b.log10(), 0.0);
-                /// assert_eq!(c.log10(), core::f64::NEG_INFINITY);
-                /// assert_eq!(d.log10(), core::f64::NEG_INFINITY);
+                /// assert_eq!(c.log10(), f64::NEG_INFINITY);
+                /// assert_eq!(d.log10(), f64::NEG_INFINITY);
                 /// assert_eq!(e.log10().is_nan(), true);
                 /// ```
                 ///
