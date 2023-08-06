@@ -551,7 +551,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
         OpBuilder::new("cbrt")
             .description(quote! {
                 /// Returns the cube root of a number.
-                /// 
+                ///
                 /// The result will be finite unless the argument is infinite.
                 ///
                 /// # Examples
