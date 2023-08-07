@@ -7,7 +7,9 @@ jobs:
       - checkout
       - run: rustup toolchain install nightly
       - run: cargo +nightly -Zscript ./pre-publish.rs
-      - run: cargo test --no-run
+      - run: 
+          command: cargo test --no-run
+          no_output_timeout: 15m
       - run: cargo test
   build_and_test_arm:
     machine:
@@ -18,7 +20,9 @@ jobs:
       - run: curl https://sh.rustup.rs -sSf | sh -s -- -y
       - run: rustup toolchain install nightly
       - run: cargo +nightly -Zscript ./pre-publish.rs
-      - run: cargo test --no-run
+      - run: 
+          command: cargo test --no-run
+          no_output_timeout: 15m
       - run: cargo test
 
 workflows:
