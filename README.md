@@ -62,6 +62,11 @@ As none of the types of this crate can be `NaN`, the traits [`core::cmp::Ord`] a
 ⚠️ `-0.0 == +0.0` is `true` for all types of this crate, like for primitives [`f32`] and [`f64`]. For that reason, [`std::hash::Hash`] is not implemented.
 To facilitate comparisons, the methods `is_positive_zero` and `is_negative_zero` are added.
 
+# Similar crates
+
+- [unsigned-f64](https://crates.io/crates/unsigned-f64): A wrapper around f64 that guarantees that the value is always non-negative on the type level.
+- [ordered-float](https://crates.io/crates/ordered-float): Provides several wrapper types for Ord and Eq implementations on f64 and friends.
+
 # Full documentation
 
 Is on [docs.rs](https://docs.rs/typed_floats).

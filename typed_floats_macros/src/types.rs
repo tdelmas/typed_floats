@@ -310,8 +310,11 @@ pub(crate) struct OpRhsBuilder {
 impl OpRhsBuilder {
     pub(crate) fn new(trait_name: &'static str, fn_name: &'static str) -> Self {
         let fn_op = Ident::new(fn_name, Span::call_site());
-        let fn_test = Ident::new(fn_name, Span::call_site());
-        let trait_ident: syn::Path = syn::parse_str(trait_name).unwrap();
+
+        let fn_test1 = Ident::new(fn_name, Span::call_site());
+        let fn_test2 = Ident::new(fn_name, Span::call_site());
+        let trait_ident1: syn::Path = syn::parse_str(trait_name).unwrap();
+        let trait_ident2: syn::Path = syn::parse_str(trait_name).unwrap();
 
         Self {
             op: OpRhs {
@@ -325,7 +328,10 @@ impl OpRhsBuilder {
                 comment: None,
                 op: Box::new(move |_, _| quote! { self.get().#fn_op(rhs.get()) }),
                 result: Box::new(|_, _, _| panic!("No result defined")),
-                test: Box::new(move |var1, var2| quote! { #trait_ident::#fn_test(#var1,#var2) }),
+                test: Box::new(move |var1, var2| quote! { #trait_ident1::#fn_test1(#var1,#var2) }),
+                test_primitive: Box::new(
+                    move |var1, var2| quote! { #trait_ident2::#fn_test2(#var1,#var2) },
+                ),
             },
         }
     }
@@ -369,13 +375,18 @@ impl OpRhsBuilder {
         self
     }
 
-    pub(crate) fn op_fn(mut self, op: OpRhsCallback) -> Self {
-        self.op.op = op;
+    pub(crate) fn op_fn(mut self, callback: OpRhsCallback) -> Self {
+        self.op.op = callback;
         self
     }
 
-    pub(crate) fn op_test(mut self, op: TestRhsCallback) -> Self {
-        self.op.test = op;
+    pub(crate) fn op_test(mut self, callback: TestRhsCallback) -> Self {
+        self.op.test = callback;
+        self
+    }
+
+    pub(crate) fn op_test_primitive(mut self, callback: TestRhsCallback) -> Self {
+        self.op.test_primitive = callback;
         self
     }
 
@@ -409,6 +420,7 @@ pub(crate) struct OpRhs {
     op: OpRhsCallback,
     result: ResultRhsCallback,
     test: TestRhsCallback,
+    test_primitive: TestRhsCallback,
 }
 
 impl OpRhs {
@@ -432,7 +444,15 @@ impl OpRhs {
     pub(crate) fn get_test(&self, var1: &str, var2: &str) -> proc_macro2::TokenStream {
         let var1 = Ident::new(var1, Span::call_site());
         let var2 = Ident::new(var2, Span::call_site());
+
         (self.test)(&var1, &var2)
+    }
+
+    pub(crate) fn get_test_primitive(&self, var1: &str, var2: &str) -> proc_macro2::TokenStream {
+        let var1 = Ident::new(var1, Span::call_site());
+        let var2 = Ident::new(var2, Span::call_site());
+
+        (self.test_primitive)(&var1, &var2)
     }
 
     pub(crate) fn get_impl(

@@ -26,9 +26,9 @@
 //! let a: StrictlyPositiveFinite = 1.0f64.try_into().unwrap();
 //! let b: Positive = 0.0f64.try_into().unwrap();
 //!
-//! let c = a + b;
+//! let c: StrictlyPositive = a + b;
 //!
-//! assert_eq!(c, StrictlyPositive::try_from(1.0f64).unwrap());   
+//! assert_eq!(c, 1.0);   
 //! ```
 //!
 //! Operations that assign the result to the left operand are only
