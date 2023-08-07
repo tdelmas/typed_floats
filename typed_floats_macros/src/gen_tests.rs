@@ -234,6 +234,7 @@ pub(crate) fn generate_tests_self_rhs(float_type: &'static str) -> proc_macro2::
                 });
 
                 let test = &op.get_test("num_a", "num_b");
+                let test_float = &op.get_test_primitive("a", "b");
 
                 let get = match &op.get_result(float, float_rhs, &floats_f64) {
                     None => quote! { res },
@@ -247,8 +248,17 @@ pub(crate) fn generate_tests_self_rhs(float_type: &'static str) -> proc_macro2::
                     // This will panic if the result isn't compatible with the return type
                     let res = #test;
                     println!("{:?} = {:?}",#op_name, res);
-                    // TODO check if normal op is the same as the implemented op
+
                     let f: #float_type = #get;
+
+                    // Check that the result is the same as if done with the float directly
+                    let original = #test_float;
+                    if original.is_nan() {
+                        assert_eq!(original.is_nan(), f.is_nan());
+                    } else {
+                        assert_eq!(original, f, "original op result is not the same as the implemented op");
+                    }
+
                     #vals.push(f);
                 });
 
@@ -287,13 +297,15 @@ pub(crate) fn generate_tests_self_rhs(float_type: &'static str) -> proc_macro2::
                     #init_test_ops
 
                     for a in values.iter() {
-                        let a = <#full_type>::try_from(*a);
+                        let a = *a;
+                        let a_float = <#full_type>::try_from(a);
 
-                        if let Ok(num_a) = a {
+                        if let Ok(num_a) = a_float {
                             for b in values.iter() {
-                                let b = <#full_type_rhs>::try_from(*b);
+                                let b = *b;
+                                let b_float = <#full_type_rhs>::try_from(b);
 
-                                if let Ok(num_b) = b {
+                                if let Ok(num_b) = b_float {
                                     println!("a = {:?} and b = {:?}", num_a, num_b);
 
                                     #test_ops

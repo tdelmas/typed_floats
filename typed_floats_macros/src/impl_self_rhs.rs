@@ -169,6 +169,7 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
             .build(),
         OpRhsBuilder::new("Hypot", "hypot")
             .op_is_commutative()
+            .op_test_primitive(Box::new(|var1, var2| { quote! { #var1.hypot(#var2) } }))
             .result(Box::new(|float, rhs| {
                 Some(FloatSpecifications {
                     accept_inf: true, // it can always overflow
@@ -180,6 +181,7 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
             .build(),
         OpRhsBuilder::new("Min", "min")
             .op_is_commutative()
+            .op_test_primitive(Box::new(|var1, var2| quote! { #var1.min(#var2) }))
             .skip_check_return_type_strictness()
             .comment("The result type is not always as strict as possible because `min(-0.0,0.0)` may return either.")
             .result(Box::new(|float, rhs| {
@@ -237,6 +239,7 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
             .build(),
         OpRhsBuilder::new("Max", "max")
             .op_is_commutative()
+            .op_test_primitive(Box::new(|var1, var2| quote! { #var1.max(#var2) }))
             .skip_check_return_type_strictness()
             .comment("The result type is not always as strict as possible because `max(-0.0,0.0)` may return either.")
             .result(Box::new(|float, rhs| {
@@ -291,6 +294,7 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
             }))
             .build(),
         OpRhsBuilder::new("Copysign", "copysign")
+            .op_test_primitive(Box::new(|var1, var2| quote! { #var1.copysign(#var2) }))
             .result(Box::new(|float, rhs| {
                 Some(FloatSpecifications {
                     accept_inf: float.s.accept_inf,
@@ -302,6 +306,7 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
             .build(),
         OpRhsBuilder::new("DivEuclid", "div_euclid")
             .skip_check_return_type_strictness()
+            .op_test_primitive(Box::new(|var1, var2| quote! { #var1.div_euclid(#var2) }))
             .result(Box::new(|float, rhs| {
                 let spec_a = &float.s;
                 let spec_b = &rhs.s;
