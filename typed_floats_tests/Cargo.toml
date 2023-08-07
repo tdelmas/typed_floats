@@ -6,7 +6,7 @@ license = "MIT OR Apache-2.0"
 description = "Types for handling floats with type checking at compile time."
 repository = "https://github.com/tdelmas/typed_floats"
 readme = "./README.md"
-keywords = ["float"]
+keywords = ["float", "floats", "f32", "f64", "non-zero", "unsigned", "signed", "ord", "eq"]
 
 [dependencies]
 typed_floats_macros = { version = "=0.1.31", path = "../typed_floats_macros" }
