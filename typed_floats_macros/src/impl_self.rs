@@ -612,6 +612,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
             .result(Box::new(|float| Some(float.s.clone())))
             .build(),
         OpBuilder::new("sin")
+            // For Non-zero, `sin` still produces zeros but the tests can't check it
             .skip_check_return_type_strictness()
             .description(quote! {
                 /// Computes the sine of a number (in radians).
@@ -658,6 +659,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
             }))
             .build(),
         OpBuilder::new("cos")
+            // For Non-zero, `cos` still produces zeros but the tests can't check it
             .skip_check_return_type_strictness()
             .description(quote! {
                 /// Computes the cosine of a number (in radians).

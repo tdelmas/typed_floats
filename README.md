@@ -55,7 +55,7 @@ It that example:
 
 Most methods and traits available on the underlying type are available on the types of this crate.
 
-Most constants are also available, with the most appropriate `Float` type (except `NAN` for obvious reasons) in the [`tf64`] and [`tf32`] modules (in [`tf64::consts`] and [`tf32::consts`] respectively when the constant comes from [`core::f64::consts`] or [`core::f32`::consts]). Those modules are named that way to avoid conflicts or confusion with the primitives [`f32`] and [`f64`].
+Most constants are also available, with the most appropriate `Float` type (except `NAN` for obvious reasons) in the [`tf64`] and [`tf32`] modules (in [`tf64::consts`] and [`tf32::consts`] respectively when the constant comes from [`core::f64::consts`] or [`core::f32::consts`]). Those modules are named that way to avoid conflicts or confusion with the primitives [`f32`] and [`f64`].
 
 As none of the types of this crate can be `NaN`, the traits [`core::cmp::Ord`] and [`core::cmp::Eq`] are implemented for all of them.
 
@@ -75,6 +75,8 @@ Is on [docs.rs](https://docs.rs/typed_floats).
 [`f64`]: https://doc.rust-lang.org/core/primitive.f64.html
 [`u128`]: https://doc.rust-lang.org/core/primitive.u128.html
 [`i128`]: https://doc.rust-lang.org/core/primitive.i128.html
+[`core::f32::consts`] https://doc.rust-lang.org/core/f32/consts/index.html
+[`core::f64::consts`] https://doc.rust-lang.org/core/f64/consts/index.html
 [`core::cmp::Ord`]: https://doc.rust-lang.org/core/cmp/trait.Ord.html "`Ord`"
 [`core::cmp::Eq`]: https://doc.rust-lang.org/core/cmp/trait.Eq.html "`Eq`"
 [`std::hash::Hash`]: https://doc.rust-lang.org/std/hash/trait.Hash.html "`Hash`"
@@ -93,6 +95,8 @@ Is on [docs.rs](https://docs.rs/typed_floats).
 [`Positive<f32>`]: https://docs.rs/typed_floats/latest/typed_floats/type.Positive.html
 [`tf64`]: https://docs.rs/typed_floats/latest/typed_floats/tf64/index.html
 [`tf32`]: https://docs.rs/typed_floats/latest/typed_floats/tf32/index.html
+[`tf64::consts`]: https://docs.rs/typed_floats/latest/typed_floats/tf64/consts/index.html
+[`tf32::consts`]: https://docs.rs/typed_floats/latest/typed_floats/tf32/consts/index.html
 [`NonZeroU8`]: https://doc.rust-lang.org/core/num/struct.NonZeroU8.html
 [`NonZeroU16`]: https://doc.rust-lang.org/core/num/struct.NonZeroU16.html
 [`NonZeroU32`]: https://doc.rust-lang.org/core/num/struct.NonZeroU32.html
@@ -101,3 +105,5 @@ Is on [docs.rs](https://docs.rs/typed_floats).
 [`NonZeroI16`]: https://doc.rust-lang.org/core/num/struct.NonZeroI16.html
 [`NonZeroI32`]: https://doc.rust-lang.org/core/num/struct.NonZeroI32.html
 [`NonZeroI64`]: https://doc.rust-lang.org/core/num/struct.NonZeroI64.html
+
+

@@ -182,6 +182,7 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
         OpRhsBuilder::new("Min", "min")
             .op_is_commutative()
             .op_test_primitive(Box::new(|var1, var2| quote! { #var1.min(#var2) }))
+            // Because the result of `min(-0.0,0.0)` depends on the architecture, we cannot check it.
             .skip_check_return_type_strictness()
             .comment("The result type is not always as strict as possible because `min(-0.0,0.0)` may return either.")
             .result(Box::new(|float, rhs| {
@@ -240,6 +241,7 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
         OpRhsBuilder::new("Max", "max")
             .op_is_commutative()
             .op_test_primitive(Box::new(|var1, var2| quote! { #var1.max(#var2) }))
+            // Because the result of `max(-0.0,0.0)` depends on the architecture, we cannot check it.
             .skip_check_return_type_strictness()
             .comment("The result type is not always as strict as possible because `max(-0.0,0.0)` may return either.")
             .result(Box::new(|float, rhs| {
@@ -305,6 +307,7 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
             }))
             .build(),
         OpRhsBuilder::new("DivEuclid", "div_euclid")
+            // Because of rounding errors we can't check that the result is always as strict as possible.
             .skip_check_return_type_strictness()
             .op_test_primitive(Box::new(|var1, var2| quote! { #var1.div_euclid(#var2) }))
             .result(Box::new(|float, rhs| {
