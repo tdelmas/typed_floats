@@ -4,7 +4,7 @@ version = "0.1.31"
 edition = "2021"
 license = "MIT OR Apache-2.0"
 description = "Crate only used to generate the `typed_floats` crate."
-repository = "https://github.com/tdelmas/floats"
+repository = "https://github.com/tdelmas/typed_floats"
 readme = "./README.md"
 
 [lib]
