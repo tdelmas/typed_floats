@@ -704,5 +704,40 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 })
             }))
             .build(),
+        OpBuilder::new("tan")
+            // For Non-zero, `tan` still produces zeros but the tests can't check it
+            .skip_check_return_type_strictness()
+            .description(quote! {
+                /// Computes the tangent of a number (in radians).
+                ///
+                /// The result NaN if the input is infinite.
+                ///
+                /// # Examples
+                ///
+                /// ```
+                /// # use typed_floats::*;
+                ///
+                /// assert_eq!(tf64::ZERO.tan(), 0.0);
+                /// assert!((tf64::consts::FRAC_PI_4.tan().get() - 1.0).abs() < 1.0e-10);
+                ///
+                /// assert!(tf64::INFINITY.tan().is_nan());
+                /// assert!(tf64::NEG_INFINITY.tan().is_nan());
+                /// ```
+                ///
+                /// See [`f64::tan()`] for more details.
+            })
+            .result(Box::new(|float| {
+                if float.s.accept_inf {
+                    return None;
+                }
+
+                Some(FloatSpecifications {
+                    accept_negative: true,
+                    accept_positive: true,
+                    accept_zero: true,
+                    accept_inf: true,
+                })
+            }))
+            .build(),
     ]
 }
