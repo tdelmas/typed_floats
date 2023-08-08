@@ -94,20 +94,20 @@
 #![warn(missing_docs)]
 
 /// This macros assert that two values are close to each other.
-/// 
+///
 /// # Examples
-/// 
+///
 /// ```
 /// # use typed_floats::*;
 /// assert_relative_eq!(1.0_f64, 1.0);
 /// assert_relative_eq!(1.0_f64, 1.000000001, 1e-7);
 /// ```
-/// 
+///
 /// ```should_panic
 /// # use typed_floats::*;
 /// assert_relative_eq!(2.0_f64, 1.0);
 /// ```
-/// 
+///
 /// ```should_panic
 /// # use typed_floats::*;
 /// assert_relative_eq!(1.0_f64, 1.000001, 1e-7);
@@ -123,7 +123,7 @@ macro_rules! assert_relative_eq {
         let left_val = $left;
         let right_val = $right;
         let diff = (left_val - right_val).abs();
-        
+
         assert!(
             diff <= $epsilon,
             "assertion failed: `(left ~= right)` \
