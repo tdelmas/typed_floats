@@ -1,3 +1,19 @@
+
+[![Build Status][travis_badge]][travis_url]
+[![Version][version_badge]][crate_url]
+[![Documentation][docs_badge]][docs_url]
+[![License][license_badge]][license_url]
+
+[travis_badge]: https://travis-ci.org/tdelmas/typed_floats.svg?branch=main
+[docs_badge]: https://docs.rs/typed_floats/badge.svg
+[version_badge]: https://img.shields.io/crates/v/typed_floats.svg
+[license_badge]: https://img.shields.io/crates/l/typed_floats.svg
+
+[travis_url]: https://travis-ci.org/tdelmas/typed_floats
+[docs_url]: https://docs.rs/typed_floats
+[crate_url]: https://crates.io/crates/typed_floats
+[license_url]: https://github.com/tdelmas/typed_floats/blob/main/LICENSE
+
 This crate helps you to ensure the kind of floats you are using.
 
 zero overhead: everything is checked at compile time.
