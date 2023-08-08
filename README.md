@@ -81,8 +81,8 @@ Is on [docs.rs](https://docs.rs/typed_floats).
 [`f64`]: https://doc.rust-lang.org/core/primitive.f64.html
 [`u128`]: https://doc.rust-lang.org/core/primitive.u128.html
 [`i128`]: https://doc.rust-lang.org/core/primitive.i128.html
-[`core::f32::consts`] https://doc.rust-lang.org/core/f32/consts/index.html
-[`core::f64::consts`] https://doc.rust-lang.org/core/f64/consts/index.html
+[`core::f32::consts`]: https://doc.rust-lang.org/core/f32/consts/index.html
+[`core::f64::consts`]: https://doc.rust-lang.org/core/f64/consts/index.html
 [`core::cmp::Ord`]: https://doc.rust-lang.org/core/cmp/trait.Ord.html "`Ord`"
 [`core::cmp::Eq`]: https://doc.rust-lang.org/core/cmp/trait.Eq.html "`Eq`"
 [`std::hash::Hash`]: https://doc.rust-lang.org/std/hash/trait.Hash.html "`Hash`"
