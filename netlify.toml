@@ -1,0 +1,9 @@
+[build]
+
+publish = "./target/doc/"
+command = "rustup default stable && rustup toolchain install nightly && cargo +nightly -Zscript ./pre-publish.rs && cd typed_floats && cargo doc"
+
+[[redirects]]
+from = "/"
+to = "/typed_floats/"
+status = 302
