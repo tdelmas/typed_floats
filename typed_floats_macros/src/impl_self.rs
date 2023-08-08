@@ -631,12 +631,12 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 /// let e: NonNaNFinite = core::f64::consts::FRAC_PI_2.try_into().unwrap();
                 /// let f: NonNaNFinite = (-core::f64::consts::FRAC_PI_2).try_into().unwrap();
                 ///
-                /// assert!(a.sin().get().abs() < 1.0e-10);
-                /// assert!(b.sin().get().abs() < 1.0e-10);
-                /// assert!(c.sin().get().abs() < 1.0e-10);
-                /// assert!(d.sin().get().abs() < 1.0e-10);
-                /// assert!((e.sin().get() - 1.0).abs() < 1.0e-10);
-                /// assert!((f.sin().get() + 1.0).abs() < 1.0e-10);
+                /// assert_relative_eq!(a.sin().get(), 0.0);
+                /// assert_relative_eq!(b.sin().get(), 0.0);
+                /// assert_relative_eq!(c.sin().get(), 0.0);
+                /// assert_relative_eq!(d.sin().get(), 0.0);
+                /// assert_relative_eq!(e.sin().get(), 1.0);
+                /// assert_relative_eq!(f.sin().get(), -1.0);
                 ///
                 /// assert!(tf64::INFINITY.sin().is_nan());
                 /// assert!(tf64::NEG_INFINITY.sin().is_nan());
@@ -678,12 +678,12 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 /// let e: NonNaNFinite = core::f64::consts::FRAC_PI_2.try_into().unwrap();
                 /// let f: NonNaNFinite = (-core::f64::consts::FRAC_PI_2).try_into().unwrap();
                 ///
-                /// assert!((a.cos().get() + 1.0).abs() < 1.0e-10);
-                /// assert!((b.cos().get() - 1.0).abs() < 1.0e-10);
-                /// assert!((c.cos().get() - 1.0).abs() < 1.0e-10);
-                /// assert!((d.cos().get() + 1.0).abs() < 1.0e-10);
-                /// assert!(e.cos().get().abs() < 1.0e-10);
-                /// assert!(f.cos().get().abs() < 1.0e-10);
+                /// assert_relative_eq!(a.cos().get(), -1.0);
+                /// assert_relative_eq!(b.cos().get(), 1.0);
+                /// assert_relative_eq!(c.cos().get(), 1.0);
+                /// assert_relative_eq!(d.cos().get(), -1.0);
+                /// assert_relative_eq!(e.cos().get(), 0.0);
+                /// assert_relative_eq!(f.cos().get(), 0.0);
                 ///
                 /// assert!(tf64::INFINITY.cos().is_nan());
                 /// assert!(tf64::NEG_INFINITY.cos().is_nan());
@@ -718,7 +718,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 /// # use typed_floats::*;
                 ///
                 /// assert_eq!(tf64::ZERO.tan(), 0.0);
-                /// assert!((tf64::consts::FRAC_PI_4.tan().get() - 1.0).abs() < 1.0e-10);
+                /// assert_relative_eq!(tf64::consts::FRAC_PI_4.tan().get(), 1.0);
                 ///
                 /// assert!(tf64::INFINITY.tan().is_nan());
                 /// assert!(tf64::NEG_INFINITY.tan().is_nan());

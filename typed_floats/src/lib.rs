@@ -93,6 +93,49 @@
 #![warn(clippy::indexing_slicing)]
 #![warn(missing_docs)]
 
+/// This macros assert that two values are close to each other.
+/// 
+/// # Examples
+/// 
+/// ```
+/// # use typed_floats::*;
+/// assert_relative_eq!(1.0_f64, 1.0);
+/// assert_relative_eq!(1.0_f64, 1.000000001, 1e-7);
+/// ```
+/// 
+/// ```should_panic
+/// # use typed_floats::*;
+/// assert_relative_eq!(2.0_f64, 1.0);
+/// ```
+/// 
+/// ```should_panic
+/// # use typed_floats::*;
+/// assert_relative_eq!(1.0_f64, 1.000001, 1e-7);
+/// ```
+#[macro_export]
+macro_rules! assert_relative_eq {
+    ($left:expr, $right:expr) => {{
+        let epsilon = 1e-7;
+
+        assert_relative_eq!($left, $right, epsilon);
+    }};
+    ($left:expr, $right:expr, $epsilon:expr) => {{
+        let left_val = $left;
+        let right_val = $right;
+        let diff = (left_val - right_val).abs();
+        
+        assert!(
+            diff <= $epsilon,
+            "assertion failed: `(left ~= right)` \
+             (left: `{:?}`, right: `{:?}`, (left - right): `{:?}`, epsilon: `{:?}`)",
+            left_val,
+            right_val,
+            diff,
+            $epsilon
+        );
+    }};
+}
+
 /// This trait is used to specify the return type of the [`Hypot::hypot()`] function.
 pub trait Hypot<T> {
     /// The resulting type after applying [`Hypot::hypot()`].
