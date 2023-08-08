@@ -4,7 +4,7 @@
 [![Documentation][docs_badge]][docs_url]
 [![License][license_badge]][license_url]
 
-[circleci_badge]: https://circleci.com/gh/tdelmas/typed_floats.svg?style=svg
+[circleci_badge]: https://circleci.com/gh/tdelmas/typed_floats.svg?style=shield
 [docs_badge]: https://docs.rs/typed_floats/badge.svg
 [version_badge]: https://img.shields.io/crates/v/typed_floats.svg
 [license_badge]: https://img.shields.io/crates/l/typed_floats.svg
