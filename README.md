@@ -1,18 +1,8 @@
 
-[![Build Status][circleci_badge]][circleci_url]
-[![Version][version_badge]][crate_url]
-[![Documentation][docs_badge]][docs_url]
-[![License][license_badge]][license_url]
-
-[circleci_badge]: https://circleci.com/gh/tdelmas/typed_floats.svg?style=shield
-[docs_badge]: https://docs.rs/typed_floats/badge.svg
-[version_badge]: https://img.shields.io/crates/v/typed_floats.svg
-[license_badge]: https://img.shields.io/crates/l/typed_floats.svg
-
-[circleci_url]: https://circleci.com/gh/tdelmas/typed_floats
-[docs_url]: https://docs.rs/typed_floats
-[crate_url]: https://crates.io/crates/typed_floats
-[license_url]: https://github.com/tdelmas/typed_floats/blob/main/LICENSE
+[![Build Status](https://circleci.com/gh/tdelmas/typed_floats.svg?style=shield)](https://circleci.com/gh/tdelmas/typed_floats)
+[![Version](https://img.shields.io/crates/v/typed_floats.svg)](https://crates.io/crates/typed_floats)
+[![Documentation](https://docs.rs/typed_floats/badge.svg)](https://docs.rs/typed_floats)
+[![License](https://img.shields.io/crates/l/typed_floats.svg)](https://github.com/tdelmas/typed_floats/blob/main/LICENSE)
 
 This crate helps you to ensure the kind of floats you are using.
 
@@ -121,5 +111,3 @@ Is on [docs.rs](https://docs.rs/typed_floats).
 [`NonZeroI16`]: https://doc.rust-lang.org/core/num/struct.NonZeroI16.html
 [`NonZeroI32`]: https://doc.rust-lang.org/core/num/struct.NonZeroI32.html
 [`NonZeroI64`]: https://doc.rust-lang.org/core/num/struct.NonZeroI64.html
-
-
