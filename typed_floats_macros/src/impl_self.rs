@@ -739,5 +739,24 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 })
             }))
             .build(),
-    ]
+        OpBuilder::new("asin")
+            .description(quote! {
+                /// Computes the arcsine of a number.
+                ///
+                /// Return value is in radians in the range [-pi/2, pi/2] or NaN if the number is outside the range [-1, 1].
+                ///
+                /// See [`f64::asin()`] for more details.
+            })
+            .result(Box::new(|_| None))
+            .build(),
+        OpBuilder::new("acos")
+            .description(quote! {
+                /// Computes the arccosine of a number.
+                /// 
+                /// Return value is in radians in the range [0, pi] or NaN if the number is outside the range [-1, 1].
+                ///
+                /// See [`acos::asin()`] for more details.
+            })
+            .result(Box::new(|_| None))
+            .build(),    ]
 }
