@@ -827,7 +827,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
             .build(),
         OpBuilder::new("cosh")
             .description(quote! {
-                /// Hyperbolic cosine  function.
+                /// Hyperbolic cosine function.
                 ///
                 /// See [`f64::cosh()`] for more details.
             })
@@ -837,6 +837,21 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                     accept_positive: true,
                     accept_zero: false,
                     accept_inf: true,
+                })
+            }))
+            .build(),
+        OpBuilder::new("tanh")
+            .description(quote! {
+                /// Hyperbolic tangent function.
+                ///
+                /// See [`f64::tanh()`] for more details.
+            })
+            .result(Box::new(|float| {
+                Some(FloatSpecifications {
+                    accept_negative: float.s.accept_negative,
+                    accept_positive: float.s.accept_positive,
+                    accept_zero: float.s.accept_zero,
+                    accept_inf: false,
                 })
             }))
             .build(),
