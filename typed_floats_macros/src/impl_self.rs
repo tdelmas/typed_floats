@@ -202,9 +202,9 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 ///
                 /// assert_eq!(a.fract(), 0.5);
                 /// assert_eq!(b.fract(), -0.5);
-                /// assert_eq!(c.fract().is_positive_zero(), true);
+                /// assert_is_positive_zero!(c.fract());
                 ///
-                /// assert_eq!(tf64::INFINITY.fract().is_nan(), true);
+                /// assert_is_nan!(tf64::INFINITY.fract());
                 /// ```
                 ///
                 /// See [`f64::fract()`] for more details.
@@ -302,13 +302,13 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 /// let b: NonNaN = (-1).try_into().unwrap();
                 ///
                 /// assert_eq!(a.sqrt(), 5.0);
-                /// assert!(b.sqrt().is_nan());
+                /// assert_is_nan!(b.sqrt());
                 ///
                 /// assert!(tf64::is_positive_zero(tf64::ZERO.sqrt().into()));
                 /// assert!(tf64::is_negative_zero(tf64::NEG_ZERO.sqrt()));
                 ///
                 /// assert_eq!(tf64::INFINITY.sqrt(), tf64::INFINITY);
-                /// assert!(tf64::NEG_INFINITY.sqrt().is_nan());
+                /// assert_is_nan!(tf64::NEG_INFINITY.sqrt());
                 /// ```
                 ///
                 /// See [`f64::sqrt()`] for more details.
@@ -410,13 +410,13 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 /// let b: NonNaN = (-1.0).try_into().unwrap();
                 ///
                 /// assert_eq!(a.ln(), 0.0);
-                /// assert!(b.ln().is_nan());
+                /// assert_is_nan!(b.ln());
                 ///
                 /// assert_eq!(tf64::ZERO.ln(), f64::NEG_INFINITY);
                 /// assert_eq!(tf64::NEG_ZERO.ln(), f64::NEG_INFINITY);
                 ///
                 /// assert_eq!(tf64::INFINITY.ln(), tf64::INFINITY);
-                /// assert!(tf64::NEG_INFINITY.ln().is_nan());
+                /// assert_is_nan!(tf64::NEG_INFINITY.ln());
                 /// ```
                 ///
                 /// See [`f64::ln()`] for more details.
@@ -461,13 +461,13 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 ///
                 /// assert_eq!(a.log2(), 1.0);
                 /// assert!(tf64::is_positive_zero(b.log2()));
-                /// assert!(c.log2().is_nan());
+                /// assert_is_nan!(c.log2());
                 ///
                 /// assert_eq!(tf64::ZERO.log2(), f64::NEG_INFINITY);
                 /// assert_eq!(tf64::NEG_ZERO.log2(), f64::NEG_INFINITY);
                 ///
                 /// assert_eq!(tf64::INFINITY.log2(), tf64::INFINITY);
-                /// assert!(tf64::NEG_INFINITY.log2().is_nan());
+                /// assert_is_nan!(tf64::NEG_INFINITY.log2());
                 /// ```
                 ///
                 /// See [`f64::log2()`] for more details.
@@ -501,13 +501,13 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 ///
                 /// assert_eq!(a.log10(), 2.0);
                 /// assert_eq!(b.log10(), 0.0);
-                /// assert!(c.log10().is_nan());
+                /// assert_is_nan!(c.log10());
                 ///
                 /// assert_eq!(tf64::ZERO.log10(), f64::NEG_INFINITY);
                 /// assert_eq!(tf64::NEG_ZERO.log10(), f64::NEG_INFINITY);
                 ///
                 /// assert_eq!(tf64::INFINITY.log10(), tf64::INFINITY);
-                /// assert!(tf64::NEG_INFINITY.log10().is_nan());
+                /// assert_is_nan!(tf64::NEG_INFINITY.log10());
                 /// ```
                 ///
                 /// See [`f64::log10()`] for more details.
@@ -541,8 +541,8 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 /// assert_eq!(b.to_degrees(), -180.0);
                 /// assert_eq!(c.to_degrees(), 360.0);
                 ///
-                /// assert!(tf64::ZERO.to_degrees().is_positive_zero());
-                /// assert!(tf64::NEG_ZERO.to_degrees().is_negative_zero());
+                /// assert_is_positive_zero!(tf64::ZERO.to_degrees());
+                /// assert_is_negative_zero!(tf64::NEG_ZERO.to_degrees());
                 ///
                 /// assert_eq!(tf64::INFINITY.to_degrees(), tf64::INFINITY);
                 /// assert_eq!(tf64::NEG_INFINITY.to_degrees(), tf64::NEG_INFINITY);
@@ -638,8 +638,8 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 /// assert_relative_eq!(e.sin().get(), 1.0);
                 /// assert_relative_eq!(f.sin().get(), -1.0);
                 ///
-                /// assert!(tf64::INFINITY.sin().is_nan());
-                /// assert!(tf64::NEG_INFINITY.sin().is_nan());
+                /// assert_is_nan!(tf64::INFINITY.sin());
+                /// assert_is_nan!(tf64::NEG_INFINITY.sin());
                 ///
                 /// ```
                 ///
@@ -685,8 +685,8 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 /// assert_relative_eq!(e.cos().get(), 0.0);
                 /// assert_relative_eq!(f.cos().get(), 0.0);
                 ///
-                /// assert!(tf64::INFINITY.cos().is_nan());
-                /// assert!(tf64::NEG_INFINITY.cos().is_nan());
+                /// assert_is_nan!(tf64::INFINITY.cos());
+                /// assert_is_nan!(tf64::NEG_INFINITY.cos());
                 /// ```
                 ///
                 /// See [`f64::cos()`] for more details.
@@ -720,8 +720,8 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 /// assert_eq!(tf64::ZERO.tan(), 0.0);
                 /// assert_relative_eq!(tf64::consts::FRAC_PI_4.tan().get(), 1.0);
                 ///
-                /// assert!(tf64::INFINITY.tan().is_nan());
-                /// assert!(tf64::NEG_INFINITY.tan().is_nan());
+                /// assert_is_nan!(tf64::INFINITY.tan());
+                /// assert_is_nan!(tf64::NEG_INFINITY.tan());
                 /// ```
                 ///
                 /// See [`f64::tan()`] for more details.
@@ -745,6 +745,24 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 ///
                 /// Return value is in radians in the range [-pi/2, pi/2] or NaN if the number is outside the range [-1, 1].
                 ///
+                /// # Examples
+                ///
+                /// ```
+                /// # use typed_floats::*;
+                /// 
+                /// let a: NonNaN = 2.0.try_into().unwrap();
+                /// let b: NonNaN = (-2.0).try_into().unwrap();
+                ///
+                /// assert_is_nan!(a.asin());
+                /// assert_is_nan!(b.asin());
+                /// 
+                /// assert!(tf64::is_positive_zero(tf64::ZERO.asin()));
+                /// assert!(tf64::is_negative_zero(tf64::NEG_ZERO.asin()));
+                ///
+                /// assert_is_nan!(tf64::INFINITY.asin());
+                /// assert_is_nan!(tf64::NEG_INFINITY.asin());
+                /// ```
+                ///
                 /// See [`f64::asin()`] for more details.
             })
             .result(Box::new(|_| None))
@@ -755,6 +773,27 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 ///
                 /// Return value is in radians in the range [0, pi] or NaN if the number is outside the range [-1, 1].
                 ///
+                /// # Examples
+                ///
+                /// ```
+                /// # use typed_floats::*;
+                /// 
+                /// let a: NonNaN = 2.0.try_into().unwrap();
+                /// let b: NonNaN = (-2.0).try_into().unwrap();
+                /// let c: NonNaN = (-1).try_into().unwrap();
+                /// let d: NonNaN = 1.try_into().unwrap();
+                ///
+                /// assert_is_nan!(a.acos());
+                /// assert_is_nan!(b.acos());
+                /// assert_relative_eq!(c.acos(), core::f64::consts::PI);
+                /// assert_relative_eq!(d.acos(), 0.0);
+                /// 
+                /// assert_relative_eq!(tf64::ZERO.acos(), core::f64::consts::FRAC_PI_2); 
+                ///
+                /// assert_is_nan!(tf64::INFINITY.acos());
+                /// assert_is_nan!(tf64::NEG_INFINITY.acos());
+                /// ```
+                ///
                 /// See [`f64::acos()`] for more details.
             })
             .result(Box::new(|_| None))
@@ -764,6 +803,18 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 /// Computes the arctangent of a number.
                 ///
                 /// Return value is in radians in the range [-pi/2, pi/2];
+                ///
+                /// # Examples
+                ///
+                /// ```
+                /// # use typed_floats::*;
+                /// 
+                /// assert_is_positive_zero!(tf64::ZERO.atan());
+                /// assert_is_negative_zero!(tf64::NEG_ZERO.atan());
+                /// 
+                /// assert_relative_eq!(tf64::INFINITY.atan().get(), core::f64::consts::FRAC_PI_2);
+                /// assert_relative_eq!(tf64::NEG_INFINITY.atan().get(), -core::f64::consts::FRAC_PI_2);
+                /// ```
                 ///
                 /// See [`f64::atan()`] for more details.
             })
@@ -780,6 +831,18 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
             .description(quote! {
                 /// Returns `e^(self) - 1` in a way that is accurate even if the number is close to zero.
                 ///
+                /// # Examples
+                ///
+                /// ```
+                /// # use typed_floats::*;
+                /// 
+                /// assert_is_positive_zero!(tf64::ZERO.exp_m1());
+                /// assert_is_negative_zero!(tf64::NEG_ZERO.exp_m1());
+                /// 
+                /// assert_eq!(tf64::INFINITY.exp_m1(), core::f64::INFINITY);
+                /// assert_eq!(tf64::NEG_INFINITY.exp_m1(), -1.0);
+                /// ```
+                ///
                 /// See [`f64::exp_m1()`] for more details.
             })
             .result(Box::new(|float| {
@@ -794,6 +857,21 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
         OpBuilder::new("ln_1p")
             .description(quote! {
                 /// Returns `ln(1+n)` (natural logarithm) more accurately than if the operations were performed separately.
+                ///
+                /// # Examples
+                ///
+                /// ```
+                /// # use typed_floats::*;
+                /// let a: NonNaN = (-1.0).try_into().unwrap();
+                /// 
+                /// assert_eq!(a.ln_1p(), core::f64::NEG_INFINITY);
+                /// 
+                /// assert!(tf64::is_positive_zero(tf64::ZERO.ln_1p().get()));
+                /// assert!(tf64::is_negative_zero(tf64::NEG_ZERO.ln_1p()));
+                /// 
+                /// assert_eq!(tf64::INFINITY.ln_1p(), core::f64::INFINITY);
+                /// assert_is_nan!(tf64::NEG_INFINITY.ln_1p());
+                /// ```
                 ///
                 /// See [`f64::ln_1p()`] for more details.
             })
@@ -814,6 +892,18 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
             .description(quote! {
                 /// Hyperbolic sine function.
                 ///
+                /// # Examples
+                ///
+                /// ```
+                /// # use typed_floats::*;
+                /// 
+                /// assert_is_positive_zero!(tf64::ZERO.sinh());
+                /// assert_is_negative_zero!(tf64::NEG_ZERO.sinh());
+                /// 
+                /// assert_eq!(tf64::INFINITY.sinh(), tf64::INFINITY);
+                /// assert_eq!(tf64::NEG_INFINITY.sinh(), tf64::NEG_INFINITY);
+                /// ```
+                ///
                 /// See [`f64::sinh()`] for more details.
             })
             .result(Box::new(|float| {
@@ -828,6 +918,18 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
         OpBuilder::new("cosh")
             .description(quote! {
                 /// Hyperbolic cosine function.
+                ///
+                /// # Examples
+                ///
+                /// ```
+                /// # use typed_floats::*;
+                /// 
+                /// assert_eq!(tf64::ZERO.cosh(), 1.0);
+                /// assert_eq!(tf64::NEG_ZERO.cosh(), 1.0);
+                /// 
+                /// assert_eq!(tf64::INFINITY.cosh(), tf64::INFINITY);
+                /// assert_eq!(tf64::NEG_INFINITY.cosh(), tf64::INFINITY);
+                /// ```
                 ///
                 /// See [`f64::cosh()`] for more details.
             })
@@ -844,6 +946,18 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
             .description(quote! {
                 /// Hyperbolic tangent function.
                 ///
+                /// # Examples
+                ///
+                /// ```
+                /// # use typed_floats::*;
+                /// 
+                /// assert_is_positive_zero!(tf64::ZERO.tanh());
+                /// assert_is_negative_zero!(tf64::NEG_ZERO.tanh());
+                /// 
+                /// assert_eq!(tf64::INFINITY.tanh(), 1.0);
+                /// assert_eq!(tf64::NEG_INFINITY.tanh(), -1.0);
+                /// ```
+                ///
                 /// See [`f64::tanh()`] for more details.
             })
             .result(Box::new(|float| {
@@ -858,6 +972,18 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
         OpBuilder::new("asinh")
             .description(quote! {
                 /// Inverse hyperbolic sine function.
+                ///
+                /// # Examples
+                ///
+                /// ```
+                /// # use typed_floats::*;
+                /// 
+                /// assert_is_positive_zero!(tf64::ZERO.asinh());
+                /// assert_is_negative_zero!(tf64::NEG_ZERO.asinh());
+                /// 
+                /// assert_eq!(tf64::INFINITY.asinh(), tf64::INFINITY);
+                /// assert_eq!(tf64::NEG_INFINITY.asinh(), tf64::NEG_INFINITY);
+                /// ```
                 ///
                 /// See [`f64::asinh()`] for more details.
             })
@@ -874,6 +1000,20 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
             .description(quote! {
                 /// Inverse hyperbolic cosine function.
                 ///
+                /// # Examples
+                ///
+                /// ```
+                /// # use typed_floats::*;
+                /// let a: NonNaN = 1.0.try_into().unwrap();
+                /// 
+                /// assert_is_positive_zero!(a.acosh());
+                /// 
+                /// assert_is_nan!(tf64::ZERO.acosh());
+                /// 
+                /// assert_eq!(tf64::INFINITY.acosh(), tf64::INFINITY);
+                /// assert_is_nan!(tf64::NEG_INFINITY.acosh());
+                /// ```
+                ///
                 /// See [`f64::acosh()`] for more details.
             })
             .result(Box::new(|_| None))
@@ -882,6 +1022,23 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
             .description(quote! {
                 /// Inverse hyperbolic tangent function.
                 ///
+                /// # Examples
+                ///
+                /// ```
+                /// # use typed_floats::*;
+                /// let a: NonNaN = 1.0.try_into().unwrap();
+                /// let b: NonNaN = (-1.0).try_into().unwrap();
+                /// 
+                /// assert_eq!(a.atanh(), tf64::INFINITY);
+                /// assert_eq!(b.atanh(), tf64::NEG_INFINITY);
+                /// 
+                /// assert_is_positive_zero!(tf64::ZERO.atanh());
+                /// assert_is_negative_zero!(tf64::NEG_ZERO.atanh());
+                /// 
+                /// assert_is_nan!(tf64::INFINITY.atanh());
+                /// assert_is_nan!(tf64::NEG_INFINITY.atanh());
+                /// ```
+                ///
                 /// See [`f64::atanh()`] for more details.
             })
             .result(Box::new(|_| None))
@@ -889,6 +1046,23 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
         OpBuilder::new("recip")
             .description(quote! {
                 /// Takes the reciprocal (inverse) of a number, `1/x`.
+                ///
+                /// # Examples
+                ///
+                /// ```
+                /// # use typed_floats::*;
+                /// let a: NonNaN = 1.0.try_into().unwrap();
+                /// let b: NonNaN = (-1.0).try_into().unwrap();
+                /// 
+                /// assert_eq!(a.recip(), 1.0);
+                /// assert_eq!(b.recip(), -1.0);
+                /// 
+                /// assert_eq!(tf64::ZERO.recip(), tf64::INFINITY);
+                /// assert_eq!(tf64::NEG_ZERO.recip(), tf64::NEG_INFINITY);
+                /// 
+                /// assert_is_positive_zero!(tf64::INFINITY.recip());
+                /// assert_is_negative_zero!(tf64::NEG_INFINITY.recip());
+                /// ```
                 ///
                 /// See [`f64::recip()`] for more details.
             })

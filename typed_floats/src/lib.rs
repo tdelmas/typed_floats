@@ -136,6 +136,104 @@ macro_rules! assert_relative_eq {
     }};
 }
 
+/// This macros assert that the value is NaN.
+///
+/// # Examples
+///
+/// ```
+/// # use typed_floats::*;
+/// assert_is_nan!(0.0_f64 / 0.0);
+/// ```
+///
+/// ```should_panic
+/// # use typed_floats::*;
+/// assert_is_nan!(2.0_f64);
+/// ```
+///
+/// ```should_panic
+/// # use typed_floats::*;
+/// assert_is_nan!(core::f64::INFINITY);
+/// ```
+#[macro_export]
+macro_rules! assert_is_nan {
+    ($left:expr) => {{
+        let left_val = $left;
+
+        assert!(
+            left_val.is_nan(),
+            "assertion failed: `(value is NaN)` \
+             (value: `{:?}`)",
+            left_val,
+        );
+    }};
+}
+
+/// This macros assert that the value is positive zero.
+/// 
+/// # Examples
+/// 
+/// ```
+/// # use typed_floats::*;
+/// assert_is_positive_zero!(0.0_f64);
+/// ```
+/// 
+/// ```should_panic
+/// # use typed_floats::*;
+/// assert_is_positive_zero!(-0.0_f64);
+/// ```
+/// 
+/// ```should_panic
+/// # use typed_floats::*;
+/// assert_is_positive_zero!(core::f64::INFINITY);
+/// ```
+#[macro_export]
+macro_rules! assert_is_positive_zero {
+    ($left:expr) => {{
+        let val = $left;
+
+        assert!(
+            val == 0.0 && val.is_sign_positive(),
+            "assertion failed: `(value is positive zero)` \
+             (value: `{:?}`)",
+             val,
+        );
+    }};
+}
+
+
+/// This macros assert that the value is negative zero.
+/// 
+/// # Examples
+/// 
+/// ```
+/// # use typed_floats::*;
+/// assert_is_negative_zero!(-0.0_f64);
+/// ```
+/// 
+/// ```should_panic
+/// # use typed_floats::*;
+/// assert_is_negative_zero!(0.0_f64);
+/// ```
+/// 
+/// ```should_panic
+/// # use typed_floats::*;
+/// assert_is_negative_zero!(core::f64::NEG_INFINITY);
+/// ```
+#[macro_export]
+macro_rules! assert_is_negative_zero {
+    ($left:expr) => {{
+        let val = $left;
+
+        assert!(
+            val == 0.0 && val.is_sign_negative(),
+            "assertion failed: `(value is negative zero)` \
+             (value: `{:?}`)",
+             val,
+        );
+    }};
+}
+
+
 /// This trait is used to specify the return type of the [`Hypot::hypot()`] function.
 pub trait Hypot<T> {
     /// The resulting type after applying [`Hypot::hypot()`].
