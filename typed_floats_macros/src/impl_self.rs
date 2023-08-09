@@ -755,7 +755,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 ///
                 /// Return value is in radians in the range [0, pi] or NaN if the number is outside the range [-1, 1].
                 ///
-                /// See [`acos::asin()`] for more details.
+                /// See [`f64::acos()`] for more details.
             })
             .result(Box::new(|_| None))
             .build(),
@@ -765,7 +765,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 ///
                 /// Return value is in radians in the range [-pi/2, pi/2];
                 ///
-                /// See [`acos::atan()`] for more details.
+                /// See [`f64::atan()`] for more details.
             })
             .result(Box::new(|float| {
                 Some(FloatSpecifications {
@@ -773,6 +773,21 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                     accept_positive: float.s.accept_positive,
                     accept_zero: float.s.accept_zero,
                     accept_inf: false,
+                })
+            }))
+            .build(),
+        OpBuilder::new("exp_m1")
+            .description(quote! {
+                /// Returns `e^(self) - 1` in a way that is accurate even if the number is close to zero.
+                ///
+                /// See [`f64::exp_m1()`] for more details.
+            })
+            .result(Box::new(|float| {
+                Some(FloatSpecifications {
+                    accept_negative: float.s.accept_negative,
+                    accept_positive: float.s.accept_positive,
+                    accept_zero: float.s.accept_zero,
+                    accept_inf: float.s.accept_positive,
                 })
             }))
             .build(),
