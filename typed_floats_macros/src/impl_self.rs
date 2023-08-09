@@ -791,5 +791,24 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 })
             }))
             .build(),
+        OpBuilder::new("ln_1p")
+            .description(quote! {
+                /// Returns `ln(1+n)` (natural logarithm) more accurately than if the operations were performed separately.
+                ///
+                /// See [`f64::ln_1p()`] for more details.
+            })
+            .result(Box::new(|float| {
+                if float.s.accept_negative {
+                    return None;
+                }
+
+                Some(FloatSpecifications {
+                    accept_negative: false,
+                    accept_positive: true,
+                    accept_zero: float.s.accept_zero,
+                    accept_inf: float.s.accept_inf,
+                })
+            }))
+            .build(),
     ]
 }
