@@ -855,5 +855,28 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 })
             }))
             .build(),
+        OpBuilder::new("asinh")
+            .description(quote! {
+                /// Inverse hyperbolic sine function.
+                ///
+                /// See [`f64::asinh()`] for more details.
+            })
+            .result(Box::new(|float| {
+                Some(FloatSpecifications {
+                    accept_negative: float.s.accept_negative,
+                    accept_positive: float.s.accept_positive,
+                    accept_zero: float.s.accept_zero,
+                    accept_inf: true,
+                })
+            }))
+            .build(),
+        OpBuilder::new("acosh")
+            .description(quote! {
+                /// Inverse hyperbolic cosine function.
+                ///
+                /// See [`f64::acosh()`] for more details.
+            })
+            .result(Box::new(|_| None))
+            .build(),
     ]
 }
