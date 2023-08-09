@@ -878,5 +878,28 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
             })
             .result(Box::new(|_| None))
             .build(),
+        OpBuilder::new("atanh")
+            .description(quote! {
+                /// Inverse hyperbolic tangent function.
+                ///
+                /// See [`f64::atanh()`] for more details.
+            })
+            .result(Box::new(|_| None))
+            .build(),
+        OpBuilder::new("recip")
+            .description(quote! {
+                /// Takes the reciprocal (inverse) of a number, `1/x`.
+                ///
+                /// See [`f64::recip()`] for more details.
+            })
+            .result(Box::new(|float| {
+                Some(FloatSpecifications {
+                    accept_negative: float.s.accept_negative,
+                    accept_positive: float.s.accept_positive,
+                    accept_zero: float.s.accept_inf,
+                    accept_inf: float.s.accept_zero,
+                })
+            }))
+            .build(),
     ]
 }
