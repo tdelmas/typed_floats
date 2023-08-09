@@ -810,5 +810,35 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 })
             }))
             .build(),
+        OpBuilder::new("sinh")
+            .description(quote! {
+                /// Hyperbolic sine function.
+                ///
+                /// See [`f64::sinh()`] for more details.
+            })
+            .result(Box::new(|float| {
+                Some(FloatSpecifications {
+                    accept_negative: float.s.accept_negative,
+                    accept_positive: float.s.accept_positive,
+                    accept_zero: float.s.accept_zero,
+                    accept_inf: true,
+                })
+            }))
+            .build(),
+        OpBuilder::new("cosh")
+            .description(quote! {
+                /// Hyperbolic cosine  function.
+                ///
+                /// See [`f64::cosh()`] for more details.
+            })
+            .result(Box::new(|_| {
+                Some(FloatSpecifications {
+                    accept_negative: false,
+                    accept_positive: true,
+                    accept_zero: false,
+                    accept_inf: true,
+                })
+            }))
+            .build(),
     ]
 }
