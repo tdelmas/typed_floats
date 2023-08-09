@@ -169,19 +169,19 @@ macro_rules! assert_is_nan {
 }
 
 /// This macros assert that the value is positive zero.
-/// 
+///
 /// # Examples
-/// 
+///
 /// ```
 /// # use typed_floats::*;
 /// assert_is_positive_zero!(0.0_f64);
 /// ```
-/// 
+///
 /// ```should_panic
 /// # use typed_floats::*;
 /// assert_is_positive_zero!(-0.0_f64);
 /// ```
-/// 
+///
 /// ```should_panic
 /// # use typed_floats::*;
 /// assert_is_positive_zero!(core::f64::INFINITY);
@@ -195,26 +195,25 @@ macro_rules! assert_is_positive_zero {
             val == 0.0 && val.is_sign_positive(),
             "assertion failed: `(value is positive zero)` \
              (value: `{:?}`)",
-             val,
+            val,
         );
     }};
 }
 
-
 /// This macros assert that the value is negative zero.
-/// 
+///
 /// # Examples
-/// 
+///
 /// ```
 /// # use typed_floats::*;
 /// assert_is_negative_zero!(-0.0_f64);
 /// ```
-/// 
+///
 /// ```should_panic
 /// # use typed_floats::*;
 /// assert_is_negative_zero!(0.0_f64);
 /// ```
-/// 
+///
 /// ```should_panic
 /// # use typed_floats::*;
 /// assert_is_negative_zero!(core::f64::NEG_INFINITY);
@@ -228,11 +227,10 @@ macro_rules! assert_is_negative_zero {
             val == 0.0 && val.is_sign_negative(),
             "assertion failed: `(value is negative zero)` \
              (value: `{:?}`)",
-             val,
+            val,
         );
     }};
 }
-
 
 /// This trait is used to specify the return type of the [`Hypot::hypot()`] function.
 pub trait Hypot<T> {
