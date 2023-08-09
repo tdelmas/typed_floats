@@ -241,6 +241,7 @@ fn do_generate_generic_floats(
             /// A floating point number that satisfies the following constraints:
             #constraints
             #[derive(Debug, Copy, Clone)]
+            #[repr(transparent)] 
             pub struct #name<T=#default_float_type>(T);
         });
     }
