@@ -752,11 +752,29 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
         OpBuilder::new("acos")
             .description(quote! {
                 /// Computes the arccosine of a number.
-                /// 
+                ///
                 /// Return value is in radians in the range [0, pi] or NaN if the number is outside the range [-1, 1].
                 ///
                 /// See [`acos::asin()`] for more details.
             })
             .result(Box::new(|_| None))
-            .build(),    ]
+            .build(),
+        OpBuilder::new("atan")
+            .description(quote! {
+                /// Computes the arctangent of a number.
+                ///
+                /// Return value is in radians in the range [-pi/2, pi/2];
+                ///
+                /// See [`acos::atan()`] for more details.
+            })
+            .result(Box::new(|float| {
+                Some(FloatSpecifications {
+                    accept_negative: float.s.accept_negative,
+                    accept_positive: float.s.accept_positive,
+                    accept_zero: float.s.accept_zero,
+                    accept_inf: false,
+                })
+            }))
+            .build(),
+    ]
 }
