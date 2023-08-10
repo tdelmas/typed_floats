@@ -65,7 +65,7 @@ Most constants are also available, with the most appropriate `Float` type (excep
 
 As none of the types of this crate can be `NaN`, the traits [`core::cmp::Ord`] and [`core::cmp::Eq`] are implemented for all of them.
 
-⚠️ `-0.0 == +0.0` is `true` for all types of this crate, like for primitives [`f32`] and [`f64`]. For that reason, [`std::hash::Hash`] is not implemented.
+⚠️ Like for primitives [`f32`] and [`f64`],`-0.0 == +0.0` is `true` for all types of this crate. For that reason, [`std::hash::Hash`] is not implemented.
 To facilitate comparisons, the methods `is_positive_zero` and `is_negative_zero` are added.
 
 # Similar crates
