@@ -1,4 +1,5 @@
 [package]
+categories = ["mathematics", "data-structures"]
 description = "Types for handling floats with type checking at compile time."
 edition = "2021"
 include = [
@@ -6,13 +7,12 @@ include = [
   "src/*.rs",
   "*.md",
 ]
-keywords = ["float"]
+keywords = ["float", "floats", "f32", "f64", "non-zero", "unsigned", "signed", "ord", "eq"]
 license = "MIT OR Apache-2.0"
 name = "typed_floats"
 readme = "./README.md"
 repository = "https://github.com/tdelmas/typed_floats"
 version = "0.1.34"
-categories = ["mathematics", "data-structures"]
 
 [dependencies]
 serde_json = {version = "1.0"}
