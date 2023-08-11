@@ -582,7 +582,9 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 ///
                 /// See [`f64::to_radians()`] for more details.
             })
-            .result(Box::new(|float| ReturnTypeSpecification::FloatSpecifications(float.s.clone())))
+            .result(Box::new(|float| {
+                ReturnTypeSpecification::FloatSpecifications(float.s.clone())
+            }))
             .build(),
         OpBuilder::new("cbrt")
             .description(quote! {
@@ -609,7 +611,9 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 ///
                 /// See [`f64::cbrt()`] for more details.
             })
-            .result(Box::new(|float| ReturnTypeSpecification::FloatSpecifications(float.s.clone())))
+            .result(Box::new(|float| {
+                ReturnTypeSpecification::FloatSpecifications(float.s.clone())
+            }))
             .build(),
         OpBuilder::new("sin")
             // For Non-zero, `sin` still produces zeros but the tests can't check it
