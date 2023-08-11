@@ -69,10 +69,25 @@ fn compute_similarity(float_a: &FloatSpecifications, float_b: &FloatSpecificatio
     score
 }
 
-pub(crate) fn find_float(
-    float: &FloatSpecifications,
+pub(crate) enum ReturnTypeSpecification {
+    NativeFloat,
+    FloatSpecifications(FloatSpecifications),
+}
+
+pub(crate) enum ReturnTypeDefinition {
+    NativeFloat,
+    FloatDefinition(FloatDefinition),
+}
+
+pub(crate) fn return_type_definition(
+    float: &ReturnTypeSpecification,
     floats: &[FloatDefinition],
-) -> Option<FloatDefinition> {
+) -> ReturnTypeDefinition {
+    let float = match float {
+        ReturnTypeSpecification::NativeFloat => return ReturnTypeDefinition::NativeFloat,
+        ReturnTypeSpecification::FloatSpecifications(float) => float,
+    };
+
     //filter incompatibles
     let mut floats = floats
         .iter()
@@ -95,37 +110,42 @@ pub(crate) fn find_float(
 
     let highest_score = floats
         .iter()
-        .map(|f| compute_similarity(float, &f.s))
+        .map(|f| compute_similarity(&float, &f.s))
         .max()
         .unwrap();
 
     //keep only the highest score
-    floats.retain(|f| compute_similarity(float, &f.s) == highest_score);
+    floats.retain(|f| compute_similarity(&float, &f.s) == highest_score);
 
     if floats.len() > 1 {
-        panic!("Ambiguous float type: {:?} => {:?}", float, floats);
+        panic!("Ambiguous float type: {:?} => {:?}", &float, floats);
     }
 
-    floats.first().map(|float| (*float).clone())
+    let found = floats.first().map(|float| (*float).clone());
+
+    match found {
+        Some(float) => ReturnTypeDefinition::FloatDefinition(float),
+        None => ReturnTypeDefinition::NativeFloat,
+    }
 }
 
 pub(crate) fn output_name(
-    output: &Option<FloatDefinition>,
+    output: &ReturnTypeDefinition,
     float_type: &Ident,
 ) -> proc_macro2::TokenStream {
     match output {
-        Some(output) => {
+        ReturnTypeDefinition::FloatDefinition(output) => {
             let full_type = output.full_type_ident();
 
             quote! { #full_type }
         }
-        None => quote! { #float_type },
+        ReturnTypeDefinition::NativeFloat => quote! { #float_type },
     }
 }
 
 type OpCallback = Box<dyn Fn(&FloatDefinition) -> proc_macro2::TokenStream>;
-type SimpleResultCallback = Box<dyn Fn(&FloatDefinition) -> Option<FloatSpecifications>>;
-type ResultCallback = Box<dyn Fn(&FloatDefinition, &[FloatDefinition]) -> Option<FloatDefinition>>;
+type SimpleResultCallback = Box<dyn Fn(&FloatDefinition) -> ReturnTypeSpecification>;
+type ResultCallback = Box<dyn Fn(&FloatDefinition, &[FloatDefinition]) -> ReturnTypeDefinition>;
 type TestCallback = Box<dyn Fn(&Ident) -> proc_macro2::TokenStream>;
 
 pub(crate) struct Op {
@@ -204,10 +224,7 @@ impl OpBuilder {
         self.op.result = Box::new(move |float, floats| {
             let output_spec = (result)(float);
 
-            match output_spec {
-                Some(output_spec) => find_float(&output_spec, floats),
-                None => None,
-            }
+            return_type_definition(&output_spec, floats)
         });
 
         self
@@ -223,7 +240,7 @@ impl Op {
         &self,
         float: &FloatDefinition,
         floats: &[FloatDefinition],
-    ) -> Option<FloatDefinition> {
+    ) -> ReturnTypeDefinition {
         (self.result)(float, floats)
     }
 
@@ -248,14 +265,14 @@ impl Op {
         let op = &self.get_op(float);
 
         let return_value = match &output {
-            Some(d) => {
+            ReturnTypeDefinition::FloatDefinition(d) => {
                 let output_call = &d.call_tokens();
 
                 quote! {
                     unsafe { #output_call::new_unchecked(#op) }
                 }
             }
-            None => {
+            ReturnTypeDefinition::NativeFloat => {
                 quote! { #op }
             }
         };
@@ -299,9 +316,9 @@ impl Op {
 type TestRhsCallback = Box<dyn Fn(&Ident, &Ident) -> proc_macro2::TokenStream>;
 type OpRhsCallback = Box<dyn Fn(&FloatDefinition, &FloatDefinition) -> proc_macro2::TokenStream>;
 type ResultRhsCallback =
-    Box<dyn Fn(&FloatDefinition, &FloatDefinition, &[FloatDefinition]) -> Option<FloatDefinition>>;
+    Box<dyn Fn(&FloatDefinition, &FloatDefinition, &[FloatDefinition]) -> ReturnTypeDefinition>;
 type SimpleResultRhsCallback =
-    Box<dyn Fn(&FloatDefinition, &FloatDefinition) -> Option<FloatSpecifications>>;
+    Box<dyn Fn(&FloatDefinition, &FloatDefinition) -> ReturnTypeSpecification>;
 
 pub(crate) struct OpRhsBuilder {
     op: OpRhs,
@@ -394,10 +411,7 @@ impl OpRhsBuilder {
         self.op.result = Box::new(move |float, rhs, floats| {
             let output_spec = (result)(float, rhs);
 
-            match output_spec {
-                Some(output_spec) => find_float(&output_spec, floats),
-                None => None,
-            }
+            return_type_definition(&output_spec, floats)
         });
 
         self
@@ -429,7 +443,7 @@ impl OpRhs {
         float: &FloatDefinition,
         rhs: &FloatDefinition,
         floats: &[FloatDefinition],
-    ) -> Option<FloatDefinition> {
+    ) -> ReturnTypeDefinition {
         (self.result)(float, rhs, floats)
     }
 
@@ -469,12 +483,12 @@ impl OpRhs {
         let op = &self.get_op(float, rhs);
 
         let return_value = match output {
-            Some(_) => {
+            ReturnTypeDefinition::FloatDefinition(_) => {
                 quote! {
                     unsafe { Self::Output::new_unchecked(#op) }
                 }
             }
-            None => {
+            ReturnTypeDefinition::NativeFloat => {
                 quote! { #op }
             }
         };
@@ -496,7 +510,7 @@ impl OpRhs {
         };
 
         if let Some((assign_trait, assign_fn)) = &self.assign {
-            if let Some(output) = output {
+            if let ReturnTypeDefinition::FloatDefinition(output) = output {
                 if output.s.can_fit_into(&float.s) {
                     let trait_assign_ident: syn::Path = syn::parse_str(assign_trait).unwrap();
                     let fn_assign_ident = Ident::new(assign_fn, Span::call_site());

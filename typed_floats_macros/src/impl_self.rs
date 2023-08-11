@@ -24,7 +24,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                     output_spec.accept_negative = true;
                 }
 
-                Some(output_spec)
+                ReturnTypeSpecification::FloatSpecifications(output_spec)
             }))
             .build(),
         OpBuilder::new("abs")
@@ -65,7 +65,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 output_spec.accept_positive = true;
                 output_spec.accept_negative = false;
 
-                Some(output_spec)
+                ReturnTypeSpecification::FloatSpecifications(output_spec)
             }))
             .build(),
         OpBuilder::new("ceil")
@@ -95,7 +95,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                     output_spec.accept_zero = true;
                 }
 
-                Some(output_spec)
+                ReturnTypeSpecification::FloatSpecifications(output_spec)
             }))
             .build(),
         OpBuilder::new("floor")
@@ -125,7 +125,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                     output_spec.accept_zero = true;
                 }
 
-                Some(output_spec)
+                ReturnTypeSpecification::FloatSpecifications(output_spec)
             }))
             .build(),
         OpBuilder::new("round")
@@ -154,7 +154,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
 
                 output_spec.accept_zero = true;
 
-                Some(output_spec)
+                ReturnTypeSpecification::FloatSpecifications(output_spec)
             }))
             .build(),
         OpBuilder::new("trunc")
@@ -183,7 +183,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
 
                 output_spec.accept_zero = true;
 
-                Some(output_spec)
+                ReturnTypeSpecification::FloatSpecifications(output_spec)
             }))
             .build(),
         OpBuilder::new("fract")
@@ -214,7 +214,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
             )
             .result(Box::new(|float| {
                 if float.s.accept_inf {
-                    return None;
+                    return ReturnTypeSpecification::NativeFloat;
                 }
 
                 let mut output_spec = float.s.clone();
@@ -222,7 +222,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 // Returns POSITIVE zero if the factional part is zero
                 output_spec.accept_positive = true;
 
-                Some(output_spec)
+                ReturnTypeSpecification::FloatSpecifications(output_spec)
             }))
             .build(),
         OpBuilder::new("signum")
@@ -284,7 +284,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                     }
                 };
 
-                Some(spec)
+                ReturnTypeSpecification::FloatSpecifications(spec)
             }))
             .build(),
         OpBuilder::new("sqrt")
@@ -326,10 +326,10 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
             }))
             .result(Box::new(|float| {
                 if float.s.accept_negative {
-                    return None;
+                    return ReturnTypeSpecification::NativeFloat;
                 }
 
-                Some(float.s.clone())
+                ReturnTypeSpecification::FloatSpecifications(float.s.clone())
             }))
             .build(),
         OpBuilder::new("exp")
@@ -356,7 +356,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 /// See [`f64::exp()`] for more details.
             })
             .result(Box::new(|float| {
-                Some(FloatSpecifications {
+                ReturnTypeSpecification::FloatSpecifications(FloatSpecifications {
                     accept_negative: false,
                     accept_positive: true,
                     accept_zero: float.s.accept_negative,
@@ -388,7 +388,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 /// See [`f64::exp2()`] for more details.
             })
             .result(Box::new(|float| {
-                Some(FloatSpecifications {
+                ReturnTypeSpecification::FloatSpecifications(FloatSpecifications {
                     accept_negative: false,
                     accept_positive: true,
                     accept_zero: float.s.accept_negative,
@@ -434,10 +434,10 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
             }))
             .result(Box::new(|float| {
                 if float.s.accept_negative {
-                    return None;
+                    return ReturnTypeSpecification::NativeFloat;
                 }
 
-                Some(FloatSpecifications {
+                ReturnTypeSpecification::FloatSpecifications(FloatSpecifications {
                     accept_negative: true,
                     accept_positive: true,
                     accept_zero: true,
@@ -474,10 +474,10 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
             })
             .result(Box::new(|float| {
                 if float.s.accept_negative {
-                    return None;
+                    return ReturnTypeSpecification::NativeFloat;
                 }
 
-                Some(FloatSpecifications {
+                ReturnTypeSpecification::FloatSpecifications(FloatSpecifications {
                     accept_negative: true,
                     accept_positive: true,
                     accept_zero: true,
@@ -514,10 +514,10 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
             })
             .result(Box::new(|float| {
                 if float.s.accept_negative {
-                    return None;
+                    return ReturnTypeSpecification::NativeFloat;
                 }
 
-                Some(FloatSpecifications {
+                ReturnTypeSpecification::FloatSpecifications(FloatSpecifications {
                     accept_negative: true,
                     accept_positive: true,
                     accept_zero: true,
@@ -555,7 +555,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
 
                 output_spec.accept_inf = true;
 
-                Some(output_spec)
+                ReturnTypeSpecification::FloatSpecifications(output_spec)
             }))
             .build(),
         OpBuilder::new("to_radians")
@@ -582,7 +582,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 ///
                 /// See [`f64::to_radians()`] for more details.
             })
-            .result(Box::new(|float| Some(float.s.clone())))
+            .result(Box::new(|float| ReturnTypeSpecification::FloatSpecifications(float.s.clone())))
             .build(),
         OpBuilder::new("cbrt")
             .description(quote! {
@@ -609,7 +609,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 ///
                 /// See [`f64::cbrt()`] for more details.
             })
-            .result(Box::new(|float| Some(float.s.clone())))
+            .result(Box::new(|float| ReturnTypeSpecification::FloatSpecifications(float.s.clone())))
             .build(),
         OpBuilder::new("sin")
             // For Non-zero, `sin` still produces zeros but the tests can't check it
@@ -647,10 +647,10 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
             })
             .result(Box::new(|float| {
                 if float.s.accept_inf {
-                    return None;
+                    return ReturnTypeSpecification::NativeFloat;
                 }
 
-                Some(FloatSpecifications {
+                ReturnTypeSpecification::FloatSpecifications(FloatSpecifications {
                     accept_negative: true,
                     accept_positive: true,
                     accept_zero: true,
@@ -693,10 +693,10 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
             })
             .result(Box::new(|float| {
                 if float.s.accept_inf {
-                    return None;
+                    return ReturnTypeSpecification::NativeFloat;
                 }
 
-                Some(FloatSpecifications {
+                ReturnTypeSpecification::FloatSpecifications(FloatSpecifications {
                     accept_negative: true,
                     accept_positive: true,
                     accept_zero: true,
@@ -727,10 +727,10 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
             })
             .result(Box::new(|float| {
                 if float.s.accept_inf {
-                    return None;
+                    return ReturnTypeSpecification::NativeFloat;
                 }
 
-                Some(FloatSpecifications {
+                ReturnTypeSpecification::FloatSpecifications(FloatSpecifications {
                     accept_negative: true,
                     accept_positive: true,
                     accept_zero: true,
@@ -763,7 +763,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 ///
                 /// See [`f64::asin()`] for more details.
             })
-            .result(Box::new(|_| None))
+            .result(Box::new(|_| ReturnTypeSpecification::NativeFloat))
             .build(),
         OpBuilder::new("acos")
             .description(quote! {
@@ -793,7 +793,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 ///
                 /// See [`f64::acos()`] for more details.
             })
-            .result(Box::new(|_| None))
+            .result(Box::new(|_| ReturnTypeSpecification::NativeFloat))
             .build(),
         OpBuilder::new("atan")
             .description(quote! {
@@ -815,7 +815,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 /// See [`f64::atan()`] for more details.
             })
             .result(Box::new(|float| {
-                Some(FloatSpecifications {
+                ReturnTypeSpecification::FloatSpecifications(FloatSpecifications {
                     accept_negative: float.s.accept_negative,
                     accept_positive: float.s.accept_positive,
                     accept_zero: float.s.accept_zero,
@@ -841,7 +841,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 /// See [`f64::exp_m1()`] for more details.
             })
             .result(Box::new(|float| {
-                Some(FloatSpecifications {
+                ReturnTypeSpecification::FloatSpecifications(FloatSpecifications {
                     accept_negative: float.s.accept_negative,
                     accept_positive: float.s.accept_positive,
                     accept_zero: float.s.accept_zero,
@@ -872,10 +872,10 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
             })
             .result(Box::new(|float| {
                 if float.s.accept_negative {
-                    return None;
+                    return ReturnTypeSpecification::NativeFloat;
                 }
 
-                Some(FloatSpecifications {
+                ReturnTypeSpecification::FloatSpecifications(FloatSpecifications {
                     accept_negative: false,
                     accept_positive: true,
                     accept_zero: float.s.accept_zero,
@@ -901,7 +901,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 /// See [`f64::sinh()`] for more details.
             })
             .result(Box::new(|float| {
-                Some(FloatSpecifications {
+                ReturnTypeSpecification::FloatSpecifications(FloatSpecifications {
                     accept_negative: float.s.accept_negative,
                     accept_positive: float.s.accept_positive,
                     accept_zero: float.s.accept_zero,
@@ -927,7 +927,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 /// See [`f64::cosh()`] for more details.
             })
             .result(Box::new(|_| {
-                Some(FloatSpecifications {
+                ReturnTypeSpecification::FloatSpecifications(FloatSpecifications {
                     accept_negative: false,
                     accept_positive: true,
                     accept_zero: false,
@@ -953,7 +953,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 /// See [`f64::tanh()`] for more details.
             })
             .result(Box::new(|float| {
-                Some(FloatSpecifications {
+                ReturnTypeSpecification::FloatSpecifications(FloatSpecifications {
                     accept_negative: float.s.accept_negative,
                     accept_positive: float.s.accept_positive,
                     accept_zero: float.s.accept_zero,
@@ -979,7 +979,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 /// See [`f64::asinh()`] for more details.
             })
             .result(Box::new(|float| {
-                Some(FloatSpecifications {
+                ReturnTypeSpecification::FloatSpecifications(FloatSpecifications {
                     accept_negative: float.s.accept_negative,
                     accept_positive: float.s.accept_positive,
                     accept_zero: float.s.accept_zero,
@@ -1007,7 +1007,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 ///
                 /// See [`f64::acosh()`] for more details.
             })
-            .result(Box::new(|_| None))
+            .result(Box::new(|_| ReturnTypeSpecification::NativeFloat))
             .build(),
         OpBuilder::new("atanh")
             .description(quote! {
@@ -1032,7 +1032,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 ///
                 /// See [`f64::atanh()`] for more details.
             })
-            .result(Box::new(|_| None))
+            .result(Box::new(|_| ReturnTypeSpecification::NativeFloat))
             .build(),
         OpBuilder::new("recip")
             .description(quote! {
@@ -1058,7 +1058,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 /// See [`f64::recip()`] for more details.
             })
             .result(Box::new(|float| {
-                Some(FloatSpecifications {
+                ReturnTypeSpecification::FloatSpecifications(FloatSpecifications {
                     accept_negative: float.s.accept_negative,
                     accept_positive: float.s.accept_positive,
                     accept_zero: float.s.accept_inf,

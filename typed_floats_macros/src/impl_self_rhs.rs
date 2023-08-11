@@ -44,8 +44,8 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
                 let can_be_nan = can_add_inf_and_negative_inf;
 
                 match can_be_nan {
-                    true => None,
-                    false => Some(FloatSpecifications {
+                    true => ReturnTypeSpecification::NativeFloat,
+                    false => ReturnTypeSpecification::FloatSpecifications(FloatSpecifications {
                         accept_inf: spec_a.accept_inf || spec_b.accept_inf || can_sign_be_same,
                         accept_zero: can_sign_be_different
                             || (spec_a.accept_zero && spec_b.accept_zero),
@@ -76,8 +76,8 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
                 let can_be_nan = can_sub_inf_and_inf;
 
                 match can_be_nan {
-                    true => None,
-                    false => Some(FloatSpecifications {
+                    true => ReturnTypeSpecification::NativeFloat,
+                    false => ReturnTypeSpecification::FloatSpecifications(FloatSpecifications {
                         accept_inf: spec_a.accept_inf || spec_b.accept_inf || can_overflow,
                         accept_zero: can_sign_be_same || (spec_a.accept_zero && spec_b.accept_zero),
                         accept_positive: spec_a.accept_positive || spec_b.accept_negative,
@@ -96,8 +96,8 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
                 let can_be_nan = spec_b.accept_zero || spec_a.accept_inf;
 
                 match can_be_nan {
-                    true => None,
-                    false => Some(FloatSpecifications {
+                    true => ReturnTypeSpecification::NativeFloat,
+                    false => ReturnTypeSpecification::FloatSpecifications(FloatSpecifications {
                         accept_inf: false,
                         accept_zero: true,
                         accept_positive: spec_a.accept_positive,
@@ -125,8 +125,8 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
                 let can_be_nan = can_zero_divide_zero || can_inf_divide_inf;
 
                 match can_be_nan {
-                    true => None,
-                    false => Some(FloatSpecifications {
+                    true => ReturnTypeSpecification::NativeFloat,
+                    false => ReturnTypeSpecification::FloatSpecifications(FloatSpecifications {
                         accept_inf: true,
                         accept_zero: true,
                         accept_positive: can_sign_be_same,
@@ -155,9 +155,9 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
                 let can_be_nan = can_zero_multiply_inf;
 
                 match can_be_nan {
-                    true => None,
+                    true => ReturnTypeSpecification::NativeFloat,
                     false => {
-                        Some(FloatSpecifications {
+                        ReturnTypeSpecification::FloatSpecifications(FloatSpecifications {
                             accept_inf: true,  // it can always overflow
                             accept_zero: true, // it can always round to zero
                             accept_positive: can_sign_be_same,
@@ -171,7 +171,7 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
             .op_is_commutative()
             .op_test_primitive(Box::new(|var1, var2| { quote! { #var1.hypot(#var2) } }))
             .result(Box::new(|float, rhs| {
-                Some(FloatSpecifications {
+                ReturnTypeSpecification::FloatSpecifications(FloatSpecifications {
                     accept_inf: true, // it can always overflow
                     accept_zero: float.s.accept_zero && rhs.s.accept_zero,
                     accept_positive: true,
@@ -235,7 +235,7 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
                     }
                 };
 
-                Some(output_def)
+                ReturnTypeSpecification::FloatSpecifications(output_def)
             }))
             .build(),
         OpRhsBuilder::new("Max", "max")
@@ -292,13 +292,13 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
                     }
                 };
 
-                Some(output_def)
+                ReturnTypeSpecification::FloatSpecifications(output_def)
             }))
             .build(),
         OpRhsBuilder::new("Copysign", "copysign")
             .op_test_primitive(Box::new(|var1, var2| quote! { #var1.copysign(#var2) }))
             .result(Box::new(|float, rhs| {
-                Some(FloatSpecifications {
+                ReturnTypeSpecification::FloatSpecifications(FloatSpecifications {
                     accept_inf: float.s.accept_inf,
                     accept_zero: float.s.accept_zero,
                     accept_positive: rhs.s.accept_positive,
@@ -324,8 +324,8 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
                     || (spec_a.accept_positive && spec_b.accept_positive);
 
                 match can_be_nan {
-                    true => None,
-                    false => Some(FloatSpecifications {
+                    true => ReturnTypeSpecification::NativeFloat,
+                    false => ReturnTypeSpecification::FloatSpecifications(FloatSpecifications {
                         accept_inf: true,
                         accept_zero: true, // Rounding errors can happen
                         accept_positive: sign_can_be_same,

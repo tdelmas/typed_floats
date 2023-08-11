@@ -97,8 +97,8 @@ fn generate_op_table(floats: &[FloatDefinition], op: &OpRhs) -> proc_macro2::Tok
             let result = op.get_result(float, rhs, floats);
 
             let result_str = match result {
-                Some(result) => result.name,
-                None => float_type,
+                ReturnTypeDefinition::FloatDefinition(result) => result.name,
+                ReturnTypeDefinition::NativeFloat => float_type,
             };
             line.push(result_str.to_string());
         }
@@ -147,8 +147,8 @@ fn generate_fn_table(floats: &[FloatDefinition]) -> proc_macro2::TokenStream {
             let result = op.get_result(float, floats);
 
             match result {
-                Some(result) => line.push(result.name.to_string()),
-                None => line.push(float_type.to_string()),
+                ReturnTypeDefinition::FloatDefinition(result) => line.push(result.name.to_string()),
+                ReturnTypeDefinition::NativeFloat => line.push(float_type.to_string()),
             };
         }
 
