@@ -1,7 +1,7 @@
 #![doc = include_str!("../README.truncated.md")]
 //! # Rules
 //!
-//! Conversions rules for operations are summarized in [`Float`].
+//! Conversions rules for operations are summarized in [`TypedFloat`].
 //!
 //! # Examples
 //!
@@ -374,8 +374,10 @@ pub trait DivEuclid<T> {
     fn div_euclid(self, rhs: T) -> Self::Output;
 }
 
+use num::Float;
+
 typed_floats_macros::generate_docs!(
-    pub trait Float:
+    pub trait TypedFloat:
         Eq
         + Copy
         + Ord
@@ -405,23 +407,7 @@ typed_floats_macros::generate_docs!(
         + std::ops::Rem
     {
         /// The primitive float type (f32 or f64)
-        type Content: Sized
-            + Clone
-            + Copy
-            + PartialOrd
-            + PartialEq
-            + core::fmt::Debug
-            + core::fmt::Display
-            + std::ops::Add<Output = Self::Content>
-            + std::ops::Sub<Output = Self::Content>
-            + std::ops::Mul<Output = Self::Content>
-            + std::ops::Div<Output = Self::Content>
-            + std::ops::Rem<Output = Self::Content>
-            + std::ops::AddAssign
-            + std::ops::SubAssign
-            + std::ops::MulAssign
-            + std::ops::DivAssign
-            + std::ops::RemAssign;
+        type Content: Float;
 
         /// Creates a new value from a primitive type
         /// It adds a little overhead compared to `new_unchecked`
@@ -622,7 +608,7 @@ typed_floats_macros::generate_docs!(
     }
 );
 
-/// An error that can occur when converting from a string into a typed `Float`
+/// An error that can occur when converting from a string into a `TypedFloat`
 #[derive(Error, Debug)]
 pub enum FromStrError {
     /// The string did not contain a valid float number

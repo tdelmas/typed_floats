@@ -261,7 +261,7 @@ fn do_generate_floats(floats: &[FloatDefinition]) -> proc_macro2::TokenStream {
         let full_type = float.full_type_ident();
 
         output.extend(quote! {
-            impl Float for #full_type {
+            impl TypedFloat for #full_type {
                 type Content = #float_type;
                 #[inline]
                 #[must_use]
