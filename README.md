@@ -61,11 +61,11 @@ It that example:
 
 Most methods and traits available on the underlying type are available on the types of this crate.
 
-Most constants are also available, with the most appropriate `Float` type (except `NAN` for obvious reasons) in the [`tf64`] and [`tf32`] modules (in [`tf64::consts`] and [`tf32::consts`] respectively when the constant comes from [`core::f64::consts`] or [`core::f32::consts`]). Those modules are named that way to avoid conflicts or confusion with the primitives [`f32`] and [`f64`].
+Most constants are also available, with the most appropriate `TypedFloat` type (except `NAN` for obvious reasons) in the [`tf64`] and [`tf32`] modules (in [`tf64::consts`] and [`tf32::consts`] respectively when the constant comes from [`core::f64::consts`] or [`core::f32::consts`]). Those modules are named that way to avoid conflicts or confusion with the primitives [`f32`] and [`f64`].
 
 As none of the types of this crate can be `NaN`, the traits [`core::cmp::Ord`] and [`core::cmp::Eq`] are implemented for all of them.
 
-⚠️ Like for primitives [`f32`] and [`f64`],`-0.0 == +0.0` is `true` for all types of this crate. For that reason, [`std::hash::Hash`] is not implemented.
+⚠️ Like for primitives [`f32`] and [`f64`],`-0.0 == +0.0` is `true` for all types of this crate. For that reason, [`core::hash::Hash`] is not implemented.
 To facilitate comparisons, the methods `is_positive_zero` and `is_negative_zero` are added.
 
 # Similar crates
@@ -85,7 +85,7 @@ Is on [docs.rs](https://docs.rs/typed_floats).
 [`core::f64::consts`]: https://doc.rust-lang.org/core/f64/consts/index.html
 [`core::cmp::Ord`]: https://doc.rust-lang.org/core/cmp/trait.Ord.html "`Ord`"
 [`core::cmp::Eq`]: https://doc.rust-lang.org/core/cmp/trait.Eq.html "`Eq`"
-[`std::hash::Hash`]: https://doc.rust-lang.org/std/hash/trait.Hash.html "`Hash`"
+[`core::hash::Hash`]: https://doc.rust-lang.org/core/hash/trait.Hash.html "`Hash`"
 [`NonNaN`]: https://docs.rs/typed_floats/latest/typed_floats/struct.NonNaN.html
 [`NonNaNFinite`]: https://docs.rs/typed_floats/latest/typed_floats/struct.NonNaNFinite.html
 [`NonZeroNonNaN`]: https://docs.rs/typed_floats/latest/typed_floats/struct.NonZeroNonNaN.html

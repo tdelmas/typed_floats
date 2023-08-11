@@ -7,12 +7,12 @@ use crate::*;
 fn test_op_checks(
     float: &FloatDefinition,
     op_name: &str,
-    result_type: &Option<FloatDefinition>,
+    result_type: &ReturnTypeDefinition,
     var: &proc_macro2::Ident,
 ) -> proc_macro2::TokenStream {
     let mut res = proc_macro2::TokenStream::new();
 
-    if let Some(def) = result_type {
+    if let ReturnTypeDefinition::FloatDefinition(def) = result_type {
         let full_type = def.name;
 
         if def.s.accept_inf {
@@ -131,8 +131,8 @@ pub(crate) fn generate_tests_self(float_type: &'static str) -> proc_macro2::Toke
             let test_float = &op.get_test("a");
 
             let get = match &op.get_result(float, &floats_f64) {
-                None => quote! { res },
-                Some(_) => {
+                ReturnTypeDefinition::NativeFloat => quote! { res },
+                ReturnTypeDefinition::FloatDefinition(_) => {
                     quote! { res.get() }
                 }
             };
@@ -237,8 +237,8 @@ pub(crate) fn generate_tests_self_rhs(float_type: &'static str) -> proc_macro2::
                 let test_float = &op.get_test_primitive("a", "b");
 
                 let get = match &op.get_result(float, float_rhs, &floats_f64) {
-                    None => quote! { res },
-                    Some(_) => {
+                    ReturnTypeDefinition::NativeFloat => quote! { res },
+                    ReturnTypeDefinition::FloatDefinition(_) => {
                         quote! { res.get() }
                     }
                 };
