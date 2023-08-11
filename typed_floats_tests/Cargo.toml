@@ -1,6 +1,6 @@
 [package]
 name = "typed_floats_tests"
-version = "0.1.34"
+version = "0.1.35"
 edition = "2021"
 license = "MIT OR Apache-2.0"
 description = "Types for handling floats with type checking at compile time."
@@ -9,6 +9,6 @@ readme = "./README.md"
 keywords = []
 
 [dependencies]
-typed_floats_macros = { version = "=0.1.34", path = "../typed_floats_macros" }
-typed_floats = { version = "=0.1.34", path = "../typed_floats" }
+typed_floats_macros = { version = "=0.1.35", path = "../typed_floats_macros" }
+typed_floats = { version = "=0.1.35", path = "../typed_floats" }
 
