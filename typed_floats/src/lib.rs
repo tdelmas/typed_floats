@@ -400,11 +400,11 @@ typed_floats_macros::generate_docs!(
         + TryFrom<NonZeroI16>
         + TryFrom<NonZeroI32>
         + TryFrom<NonZeroI64>
-        + std::ops::Add
-        + std::ops::Sub
-        + std::ops::Mul
-        + std::ops::Div
-        + std::ops::Rem
+        + core::ops::Add
+        + core::ops::Sub
+        + core::ops::Mul
+        + core::ops::Div
+        + core::ops::Rem
     {
         /// The primitive float type (f32 or f64)
         type Content: Float;
