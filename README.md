@@ -88,6 +88,7 @@ To facilitate comparisons, the methods `is_positive_zero` and `is_negative_zero`
 - [unsigned-f64](https://crates.io/crates/unsigned-f64) A wrapper around f64 that guarantees that the value is always non-negative on the type level.
 
 Features provided/checked by those crates:
+
 | Crates            | Eq/Ord | Hash | NaN | Inf | Zero | Positive | Negative |
 |------------------|--------|------|-----|-----|------|----------|----------|
 |**`typed_floats`**| ✔️     | ❌  | ✔️ | ✔️  | ✔️   | ✔️      | ✔️       |
