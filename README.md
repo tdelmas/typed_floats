@@ -70,8 +70,46 @@ To facilitate comparisons, the methods `is_positive_zero` and `is_negative_zero`
 
 # Similar crates
 
-- [unsigned-f64](https://crates.io/crates/unsigned-f64): A wrapper around f64 that guarantees that the value is always non-negative on the type level.
-- [ordered-float](https://crates.io/crates/ordered-float): Provides several wrapper types for Ord and Eq implementations on f64 and friends.
+- [checked-float](https://crates.io/crates/checked-float) A crate for making invariant-enforcing floating point wrappers
+- [decorum](https://crates.io/crates/decorum) Decorum is a Rust library that provides total ordering, equivalence, hashing, and constraints for floating-point representations. Decorum does not require std.
+- [eq-float](https://crates.io/crates/eq-float) Float wrappers with a total order (by setting NAN == NAN).
+- [fix_float](https://crates.io/crates/fix_float) Fixed floating types that allows useful trait implementations and datastructures on float numbers
+- [float-derive](https://crates.io/crates/float-derive) A crate that allows deriving Eq and Hash for types that contain floating points.
+- [float-ord](https://crates.io/crates/float-ord) A total ordering for floating-point numbers.
+- [nanbox](https://crates.io/crates/nanbox) NaN boxing implementation.
+- [num-order](https://crates.io/crates/num-order) Numerically consistent `Eq`, `Ord` and `Hash` implementations for various `num` types (`u32`, `f64`, `num_bigint::BigInt`, etc.)
+- [noisy_float](https://crates.io/crates/noisy_float) Contains floating point types that panic if they are set to an illegal value, such as NaN.
+- [ordered-float](https://crates.io/crates/ordered-float) Provides several wrapper types for Ord and Eq implementations on f64 and friends.
+- [partial-min-max](https://crates.io/crates/partial-min-max) `min` and `max` functions that work with `PartialOrd`.
+- [real_float](https://crates.io/crates/real_float) Floating point types that check for correctness and implement total ordering.
+- [result_float](https://crates.io/crates/result_float) Floating point type that cannot store NaN.
+- [screaming_float](https://crates.io/crates/screaming_float) Implements screaming NaNs
+- [totally-ordered](https://crates.io/crates/totally-ordered) No dependency, no-std totally ordered f32/f64
+- [unsigned-f64](https://crates.io/crates/unsigned-f64) A wrapper around f64 that guarantees that the value is always non-negative on the type level.
+
+Features provided/checked by those crates:
+| Crates            | Eq/Ord | Hash | NaN | Inf | Zero | Positive | Negative |
+|------------------|--------|------|-----|-----|------|----------|----------|
+|**`typed_floats`**| ✔️     | ❌  | ✔️ | ✔️  | ✔️   | ✔️      | ✔️       |
+| `decorum`        | ❌    | ❌   | ✔️* | ✔️*  | ✔️* | ✔️*    | ✔️*      |
+| `eq-float`       | ✔️    | ❌   | ❌ | ❌  | ❌   | ❌      | ❌       |
+| `fix_float`      | ✔️    | ✔️   | ✔️ | ✔️  | ❌**   | ❌      | ❌       |
+| `float-derive`   | ✔️    | ✔️   | ❌ | ❌  | ❌   | ❌      | ❌       |
+| `float-ord`      | ✔️    | ❌   | ❌ | ❌  | ❌   | ❌      | ❌       |
+| `nanbox`         | ❌    | ❌   | ✔️ | ❌  | ❌   | ❌      | ❌       |
+| `num-order`      | ✔️    | ✔️   | ❌ | ❌  | ❌   | ❌      | ❌       |
+| `noisy_float`    | ❌    | ❌   | ✔️ | ✔️  | ❌   | ❌      | ❌       |
+| `ordered-float`  | ✔️    | ❌   | ✔️ | ❌  | ❌   | ❌      | ❌       |
+| `partial-min-max`| ❌    | ❌   | ❌ | ❌  | ❌   | ❌      | ❌       |
+| `real_float`     | ✔️    | ❌   | ✔️ | ✔️  | ❌   | ✔️      | ❌       |
+| `result_float`   | ✔️    | ❌   | ✔️ | ❌  | ❌   | ❌      | ❌       |
+| `screaming_float`| ❌    | ❌   | ✔️ | ❌  | ❌   | ❌      | ❌       |
+| `screaming_float`| ✔️    | ✔️   | ❌ | ❌  | ❌   | ❌      | ❌       |
+| `unsigned-f64`   | ❌    | ❌   | ❌ | ❌  | ❌   | ✔️      | ❌       |
+
+
+*: Can be manually checked
+**: do handle `-0.0`
 
 # Full documentation
 
