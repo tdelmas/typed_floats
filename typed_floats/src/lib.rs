@@ -82,6 +82,21 @@
 //! assert_eq!(b, c);
 //! ```
 //!
+//! To return early in a function:
+//! ```
+//! use typed_floats::*;
+//! 
+//! fn early_return(a:f64,b:f64) -> Result<PositiveFinite,InvalidNumber> {
+//!   let a: StrictlyPositiveFinite = a.try_into()?;
+//!   let b: StrictlyPositiveFinite = b.try_into()?;
+//!
+//!   Ok(a % b)
+//! }
+//!
+//! assert_eq!(early_return(-1.0,2.0), Err(InvalidNumber::Negative));
+//! assert_eq!(early_return(1.0,2.0).unwrap().get(), 1.0);
+//! ```
+//!
 //!
 //!
 #![warn(clippy::pedantic)]
@@ -625,7 +640,7 @@ use core::num::{NonZeroU16, NonZeroU32, NonZeroU64, NonZeroU8};
 use thiserror::Error;
 
 /// An error that can occur when converting into a typed float
-#[derive(Error, Debug)]
+#[derive(Error, Debug, Eq, PartialEq)]
 pub enum InvalidNumber {
     /// Any variant of `Nan`
     #[error("Number is NaN")]
