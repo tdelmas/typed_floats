@@ -110,12 +110,12 @@ pub(crate) fn return_type_definition(
 
     let highest_score = floats
         .iter()
-        .map(|f| compute_similarity(&float, &f.s))
+        .map(|f| compute_similarity(float, &f.s))
         .max()
         .unwrap();
 
     //keep only the highest score
-    floats.retain(|f| compute_similarity(&float, &f.s) == highest_score);
+    floats.retain(|f| compute_similarity(float, &f.s) == highest_score);
 
     if floats.len() > 1 {
         panic!("Ambiguous float type: {:?} => {:?}", &float, floats);
