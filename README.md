@@ -20,6 +20,8 @@ And their positive and negative counterparts:
 - [`Positive`],[`PositiveFinite`], [`StrictlyPositive`], [`StrictlyPositiveFinite`]
 - [`Negative`],[`NegativeFinite`], [`StrictlyNegative`], [`StrictlyNegativeFinite`]
 
+(Negatives types reject `+0.0` and positives types reject `-0.0`)
+
 By default all types are [`f64`] but all can use [`f32`] (e.g. like [`Positive<f32>`]).
 
 The following conversions are implemented:
@@ -29,7 +31,7 @@ The following conversions are implemented:
 - From integers types (exept [`u128`] and [`i128`])
 - From `NonZero*` ([`NonZeroU8`], [`NonZeroU16`], [`NonZeroU32`], [`NonZeroU64`], [`NonZeroI8`], [`NonZeroI16`], [`NonZeroI32`], [`NonZeroI64`])
 
-(The trait `From` or `TryFrom` is implemented depending on the situation. Impossible conversions are not implemented.)
+(The trait `From` or `TryFrom` is implemented depending on the situation. Impossible conversions - for example between [`Positive`] and [`Negative`] - are not implemented.)
 
 # When to use it
 
