@@ -19,3 +19,8 @@ serde_json = {version = "1.0"}
 thiserror = "1.0"
 num = "0.4"
 typed_floats_macros = {version = "=0.1.37", path = "../typed_floats_macros"}
+
+[dev-dependencies]
+# For examples
+checked-float = "0.1.4"
+ordered-float = "4.1.0"
