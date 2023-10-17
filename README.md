@@ -91,24 +91,24 @@ To facilitate comparisons, the methods `is_positive_zero` and `is_negative_zero`
 
 Features provided/checked by those crates:
 
-| Crates            | Eq/Ord | Hash | NaN | Inf | Zero | Positive | Negative |
-|------------------|--------|------|-----|-----|------|----------|----------|
-|**`typed_floats`**| ✔️     | ❌  | ✔️ | ✔️  | ✔️   | ✔️      | ✔️       |
-| `decorum`        | ❌    | ❌   | ✔️* | ✔️*  | ✔️* | ✔️*    | ✔️*      |
-| `eq-float`       | ✔️    | ❌   | ❌ | ❌  | ❌   | ❌      | ❌       |
-| `fix_float`      | ✔️    | ✔️   | ✔️ | ✔️  | ❌**   | ❌      | ❌       |
-| `float-derive`   | ✔️    | ✔️   | ❌ | ❌  | ❌   | ❌      | ❌       |
-| `float-ord`      | ✔️    | ❌   | ❌ | ❌  | ❌   | ❌      | ❌       |
-| `nanbox`         | ❌    | ❌   | ✔️ | ❌  | ❌   | ❌      | ❌       |
-| `num-order`      | ✔️    | ✔️   | ❌ | ❌  | ❌   | ❌      | ❌       |
-| `noisy_float`    | ❌    | ❌   | ✔️ | ✔️  | ❌   | ❌      | ❌       |
-| `ordered-float`  | ✔️    | ❌   | ✔️ | ❌  | ❌   | ❌      | ❌       |
-| `partial-min-max`| ❌    | ❌   | ❌ | ❌  | ❌   | ❌      | ❌       |
-| `real_float`     | ✔️    | ❌   | ✔️ | ✔️  | ❌   | ✔️      | ❌       |
-| `result_float`   | ✔️    | ❌   | ✔️ | ❌  | ❌   | ❌      | ❌       |
-| `screaming_float`| ❌    | ❌   | ✔️ | ❌  | ❌   | ❌      | ❌       |
-| `screaming_float`| ✔️    | ✔️   | ❌ | ❌  | ❌   | ❌      | ❌       |
-| `unsigned-f64`   | ❌    | ❌   | ❌ | ❌  | ❌   | ✔️      | ❌       |
+| Crates           | Avoid `panic!` | Minimal overhead | Eq/Ord | Hash | NaN | Inf | Zero | Positive | Negative |
+|------------------|----------------|------------------|--------|------|-----|-----|------|----------|----------|
+|**`typed_floats`**| ✔️             | ✔️              | ✔️     | ❌  | ✔️ | ✔️  | ✔️   | ✔️      | ✔️       |
+| `decorum`        | ❓             | ❓              | ❌    | ❌   | ✔️*| ✔️* | ✔️*  | ✔️*     | ✔️*      |
+| `eq-float`       | ❓             | ❓              | ✔️    | ❌   | ❌ | ❌  | ❌   | ❌      | ❌       |
+| `fix_float`      | ❓             | ❓              | ✔️    | ✔️   | ✔️ | ✔️  | ❌** | ❌      | ❌       |
+| `float-derive`   | ❓             | ❓              | ✔️    | ✔️   | ❌ | ❌  | ❌   | ❌      | ❌       |
+| `float-ord`      | ❓             | ❓              | ✔️    | ❌   | ❌ | ❌  | ❌   | ❌      | ❌       |
+| `nanbox`         | ❓             | ❓              | ❌    | ❌   | ✔️ | ❌  | ❌   | ❌      | ❌       |
+| `num-order`      | ❓             | ❓              | ✔️    | ✔️   | ❌ | ❌  | ❌   | ❌      | ❌       |
+| `noisy_float`    | ❓             | ❓              | ❌    | ❌   | ✔️ | ✔️  | ❌   | ❌      | ❌       |
+| `ordered-float`  | ❓             | ❓              | ✔️    | ❌   | ✔️ | ❌  | ❌   | ❌      | ❌       |
+| `partial-min-max`| ❓             | ❓              | ❌    | ❌   | ❌ | ❌  | ❌   | ❌      | ❌       |
+| `real_float`     | ❓             | ❓              | ✔️    | ❌   | ✔️ | ✔️  | ❌   | ✔️      | ❌       |
+| `result_float`   | ❓             | ❓              | ✔️    | ❌   | ✔️ | ❌  | ❌   | ❌      | ❌       |
+| `screaming_float`| ❓             | ❓              | ❌    | ❌   | ✔️ | ❌  | ❌   | ❌      | ❌       |
+| `screaming_float`| ❓             | ❓              | ✔️    | ✔️   | ❌ | ❌  | ❌   | ❌      | ❌       |
+| `unsigned-f64`   | ❓             | ❓              | ❌    | ❌   | ❌ | ❌  | ❌   | ✔️      | ❌       |
 
 
 *: Can be manually checked
