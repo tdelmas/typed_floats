@@ -85,7 +85,7 @@
 //! To return early in a function:
 //! ```
 //! use typed_floats::*;
-//! 
+//!
 //! fn early_return(a:f64,b:f64) -> Result<PositiveFinite,InvalidNumber> {
 //!   let a: StrictlyPositiveFinite = a.try_into()?;
 //!   let b: StrictlyPositiveFinite = b.try_into()?;
