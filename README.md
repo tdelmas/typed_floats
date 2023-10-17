@@ -93,10 +93,10 @@ Features provided/checked by those crates:
 
 | Crates           | Avoid `panic!` | Minimal overhead | Eq/Ord | Hash | NaN | Inf | Zero | Positive | Negative |
 |------------------|----------------|------------------|--------|------|-----|-----|------|----------|----------|
-|**`typed_floats`**| ✔️             | ✔️              | ✔️     | ❌  | ✔️ | ✔️  | ✔️   | ✔️      | ✔️       |
-| `decorum`        | ❓             | ❓              | ❌    | ❌   | ✔️*| ✔️* | ✔️*  | ✔️*     | ✔️*      |
+|**`typed_floats`**| ✔️             | ✔️              | ✔️    | ✔️¹  | ✔️ | ✔️  | ✔️   | ✔️      | ✔️       |
+| `decorum`        | ❓             | ❓              | ❌    | ❌   | ✔️²| ✔️² | ✔️²  | ✔️²     | ✔️²      |
 | `eq-float`       | ❓             | ❓              | ✔️    | ❌   | ❌ | ❌  | ❌   | ❌      | ❌       |
-| `fix_float`      | ❓             | ❓              | ✔️    | ✔️   | ✔️ | ✔️  | ❌** | ❌      | ❌       |
+| `fix_float`      | ❓             | ❓              | ✔️    | ✔️   | ✔️ | ✔️  | ❌   | ❌      | ❌       |
 | `float-derive`   | ❓             | ❓              | ✔️    | ✔️   | ❌ | ❌  | ❌   | ❌      | ❌       |
 | `float-ord`      | ❓             | ❓              | ✔️    | ❌   | ❌ | ❌  | ❌   | ❌      | ❌       |
 | `nanbox`         | ❓             | ❓              | ❌    | ❌   | ✔️ | ❌  | ❌   | ❌      | ❌       |
@@ -111,8 +111,9 @@ Features provided/checked by those crates:
 | `unsigned-f64`   | ❓             | ❓              | ❌    | ❌   | ❌ | ❌  | ❌   | ✔️      | ❌       |
 
 
-*: Can be manually checked
-**: do handle `-0.0`
+¹: `Hash` is implemented for all types expect [`NonNaN`] and [`NonNaNFinite`] (because they both accept `0.0` and `-0.0`)
+
+²: Can be manually checked
 
 # Full documentation
 

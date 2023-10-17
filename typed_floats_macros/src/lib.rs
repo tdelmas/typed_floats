@@ -397,6 +397,22 @@ fn do_generate_floats(floats: &[FloatDefinition]) -> proc_macro2::TokenStream {
             }
         });
 
+        // If the type doesn't accept `+0.0` and `-0.0` we can implement `Hash`
+        // > When implementing both Hash and Eq, it is important that the following property holds:
+        // > `k1 == k2 -> hash(k1) == hash(k2)`
+        // because `NaN` is not allowed.
+        // https://doc.rust-lang.org/std/hash/trait.Hash.html
+        if !float.s.accept_zero || !float.s.accept_positive || !float.s.accept_negative {
+            output.extend(quote! {
+                impl core::hash::Hash for #full_type {
+                    #[inline]
+                    fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
+                        self.0.to_bits().hash(state)
+                    }
+                }
+            });
+        }
+
         output.extend(generate_try_from_float(float));
         output.extend(generate_try_ints(float));
     }
