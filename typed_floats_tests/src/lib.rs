@@ -1,5 +1,6 @@
 #[cfg(test)]
-use typed_floats::*;
+
+use typed_floats::tf64::NonNaN;
 
 #[test]
 fn test_others_f64() {
@@ -38,7 +39,7 @@ fn test_others_i64() {
     ];
 
     for (value, expected) in &values_i64 {
-        let num = NonNaN::<f64>::try_from(*value);
+        let num = NonNaN::try_from(*value);
         let result = num.is_ok();
         assert_eq!(result, *expected);
     }

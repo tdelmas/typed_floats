@@ -269,8 +269,8 @@ fn do_generate_floats(floats: &[FloatDefinition]) -> proc_macro2::TokenStream {
                 /// # Examples
                 ///
                 /// ```
-                /// # use typed_floats::*;
-                /// let x: NonNaN = NonNaN::new(3.0).unwrap();
+                /// # use typed_floats::tf64::NonNaN;
+                /// let x = NonNaN::new(3.0).unwrap();
                 ///
                 /// assert_eq!(x, 3.0);
                 /// ```
@@ -278,7 +278,7 @@ fn do_generate_floats(floats: &[FloatDefinition]) -> proc_macro2::TokenStream {
                 /// # Errors
                 /// Returns an error if the value is not valid
                 #[inline]
-                fn new(value: #float_type) -> Result<Self, InvalidNumber> {
+                pub fn new(value: #float_type) -> Result<Self, InvalidNumber> {
                     Self::try_from(value)
                 }
 
@@ -288,8 +288,8 @@ fn do_generate_floats(floats: &[FloatDefinition]) -> proc_macro2::TokenStream {
                 /// # Examples
                 ///
                 /// ```
-                /// # use typed_floats::*;
-                /// let x: NonNaN = unsafe { NonNaN::new_unchecked(3.0) };
+                /// # use typed_floats::tf64::NonNaN;
+                /// let x = unsafe { NonNaN::new_unchecked(3.0) };
                 ///
                 /// assert_eq!(x, 3.0);
                 /// ```

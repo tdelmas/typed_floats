@@ -443,6 +443,42 @@ macro_rules! add_const {
 
 /// This module contains constants from [`core::f64`], casted to the corresponding type
 pub mod tf64 {
+    /// Equivalent to `NonNaN<f64>`
+    pub type NonNaN = crate::NonNaN<f64>;
+
+    /// Equivalent to `NonNaNFinite<f64>`
+    pub type NonNaNFinite = crate::NonNaNFinite<f64>;
+
+    /// Equivalent to `NonZeroNonNaN<f64>`
+    pub type NonZero = crate::NonZeroNonNaN<f64>;
+
+    /// Equivalent to `NonZeroNonNaNFinite<f64>`
+    pub type NonZeroFinite = crate::NonZeroNonNaNFinite<f64>;
+
+    /// Equivalent to `StrictlyPositive<f64>`
+    pub type StrictlyPositive = crate::StrictlyPositive<f64>;
+
+    /// Equivalent to `StrictlyNegative<f64>`
+    pub type StrictlyNegative = crate::StrictlyNegative<f64>;
+
+    /// Equivalent to `Positive<f64>`
+    pub type Positive = crate::Positive<f64>;
+
+    /// Equivalent to `Negative<f64>`
+    pub type Negative = crate::Negative<f64>;
+
+    /// Equivalent to `StrictlyPositiveFinite<f64>`
+    pub type StrictlyPositiveFinite = crate::StrictlyPositiveFinite<f64>;
+
+    /// Equivalent to `StrictlyNegativeFinite<f64>`
+    pub type StrictlyNegativeFinite = crate::StrictlyNegativeFinite<f64>;
+
+    /// Equivalent to `PositiveFinite<f64>`
+    pub type PositiveFinite = crate::PositiveFinite<f64>;
+
+    /// Equivalent to `NegativeFinite<f64>`
+    pub type NegativeFinite = crate::NegativeFinite<f64>;
+
     /// Returns `true` if the number is positive zero.
     ///     
     /// # Examples
@@ -553,6 +589,42 @@ pub mod tf64 {
 
 /// This module contains constants from [`core::f32`], casted to the corresponding type
 pub mod tf32 {
+    /// Equivalent to `NonNaN<f32>`
+    pub type NonNaN = crate::NonNaN<f32>;
+
+    /// Equivalent to `NonNaNFinite<f32>`
+    pub type NonNaNFinite = crate::NonNaNFinite<f32>;
+
+    /// Equivalent to `NonZeroNonNaN<f32>`
+    pub type NonZero = crate::NonZeroNonNaN<f32>;
+
+    /// Equivalent to `NonZeroNonNaNFinite<f32>`
+    pub type NonZeroFinite = crate::NonZeroNonNaNFinite<f32>;
+
+    /// Equivalent to `StrictlyPositive<f32>`
+    pub type StrictlyPositive = crate::StrictlyPositive<f32>;
+
+    /// Equivalent to `StrictlyNegative<f32>`
+    pub type StrictlyNegative = crate::StrictlyNegative<f32>;
+
+    /// Equivalent to `Positive<f32>`
+    pub type Positive = crate::Positive<f32>;
+
+    /// Equivalent to `Negative<f32>`
+    pub type Negative = crate::Negative<f32>;
+
+    /// Equivalent to `StrictlyPositiveFinite<f32>`
+    pub type StrictlyPositiveFinite = crate::StrictlyPositiveFinite<f32>;
+
+    /// Equivalent to `StrictlyNegativeFinite<f32>`
+    pub type StrictlyNegativeFinite = crate::StrictlyNegativeFinite<f32>;
+
+    /// Equivalent to `PositiveFinite<f32>`
+    pub type PositiveFinite = crate::PositiveFinite<f32>;
+
+    /// Equivalent to `NegativeFinite<f32>`
+    pub type NegativeFinite = crate::NegativeFinite<f32>;
+
     /// Returns `true` if the number is positive zero.
     ///     
     /// # Examples
