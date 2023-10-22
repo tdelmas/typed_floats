@@ -80,7 +80,6 @@ All 12 types implement the methods available on [`f32`] and [`f64`] except:
 - mul_add(self, a: f64, b: f64) -> f64
 - powi(self, n: i32) -> f64
 - powf(self, n: f64) -> f64
-- total_cmp(&self, other: &f64) -> Ordering
 - clamp(self, min: f64, max: f64) -> f64
 - LowerExp
 - UpperExp

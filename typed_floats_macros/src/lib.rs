@@ -502,6 +502,12 @@ fn do_generate_floats(floats: &[FloatDefinition]) -> proc_macro2::TokenStream {
                 pub fn is_positive_zero(&self) -> bool {
                     self.0 == 0.0 && self.0.is_sign_positive()
                 }
+
+                #[inline]
+                #[must_use]
+                pub fn total_cmp(&self, other: &#float_type) -> core::cmp::Ordering {
+                    self.0.total_cmp(other)
+                }
             }
 
             impl PartialEq for #full_type {
