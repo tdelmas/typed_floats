@@ -525,7 +525,7 @@ fn do_generate_floats(floats: &[FloatDefinition]) -> proc_macro2::TokenStream {
             impl PartialOrd for #full_type {
                 #[inline]
                 fn partial_cmp(&self, other: &Self) -> Option<core::cmp::Ordering> {
-                    self.0.partial_cmp(&other.0)
+                    Some(self.cmp(other))
                 }
             }
 
