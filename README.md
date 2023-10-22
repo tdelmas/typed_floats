@@ -13,7 +13,7 @@ zero overhead: everything is checked at compile time.
 
 The types provided by this crate are:
 
-- [`NonNaN`],[`NonNaNFinite`], [`NonZeroNonNaN`], [`NonZeroNonNaNFinite`]
+- [`NonNaN`], [`NonNaNFinite`], [`NonZeroNonNaN`], [`NonZeroNonNaNFinite`]
 
 And their positive and negative counterparts:
 
@@ -69,6 +69,29 @@ As none of the types of this crate can be `NaN`, the traits [`core::cmp::Ord`] a
 
 ⚠️ Like for primitives [`f32`] and [`f64`],`-0.0 == +0.0` is `true` for all types of this crate. For that reason, [`core::hash::Hash`] is not implemented.
 To facilitate comparisons, the methods `is_positive_zero` and `is_negative_zero` are added.
+
+# Methods implemented
+
+All 12 types implement the methods available on [`f32`] and [`f64`] except:
+
+- deprecated and nightly-only methods
+- atan2(self, other: f64) -> f64
+- sin_cos(self) -> (f64, f64)
+- mul_add(self, a: f64, b: f64) -> f64
+- powi(self, n: i32) -> f64
+- powf(self, n: f64) -> f64
+- total_cmp(&self, other: &f64) -> Ordering
+- clamp(self, min: f64, max: f64) -> f64
+- LowerExp
+- UpperExp
+- Product
+- Sum
+- `to_int_unchecked`
+- `to*_bits`
+- `from*_bits`
+
+In addition, `Hash` is implemented for all types expect [`NonNaN`] and [`NonNaNFinite`] (because they both accept `0.0` and `-0.0`, which are equal, and that is incompatible with `Hash`).
+
 
 # Similar crates
 
