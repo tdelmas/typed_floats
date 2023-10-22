@@ -25,10 +25,10 @@ fn with_checked_float() {
 }
 
 fn with_typed_floats() {
-    use typed_floats::*;
+    use typed_floats::tf64::NonNaN;
 
-    let x = typed_floats::NonNaN::<f64>::new(2.0).unwrap(); // not nan, so we can unwrap
-    let y = typed_floats::NonNaN::<f64>::new(0.0).unwrap(); // not nan, so we can unwrap
+    let x = NonNaN::new(2.0).unwrap(); // not nan, so we can unwrap
+    let y = NonNaN::new(0.0).unwrap(); // not nan, so we can unwrap
 
     //TODO assert_eq!(x.powf(y).try_into::<NonNaN<f64>>().unwrap().get(), 1.0); // not nan, so we can unwrap
 
@@ -38,8 +38,6 @@ fn with_typed_floats() {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-
     #[test]
     fn test_with_checked_float() {
         with_checked_float();

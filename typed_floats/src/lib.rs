@@ -389,238 +389,8 @@ pub trait DivEuclid<T> {
     fn div_euclid(self, rhs: T) -> Self::Output;
 }
 
-use num::Float;
-
 typed_floats_macros::generate_docs!(
-    pub trait TypedFloat:
-        Eq
-        + Copy
-        + Ord
-        + core::fmt::Debug
-        + core::str::FromStr
-        + TryFrom<Self::Content, Error = InvalidNumber>
-        + TryFrom<u8>
-        + TryFrom<u16>
-        + TryFrom<u32>
-        + TryFrom<u64>
-        + TryFrom<i8>
-        + TryFrom<i16>
-        + TryFrom<i32>
-        + TryFrom<i64>
-        + TryFrom<NonZeroU8>
-        + TryFrom<NonZeroU16>
-        + TryFrom<NonZeroU32>
-        + TryFrom<NonZeroU64>
-        + TryFrom<NonZeroI8>
-        + TryFrom<NonZeroI16>
-        + TryFrom<NonZeroI32>
-        + TryFrom<NonZeroI64>
-        + core::ops::Add
-        + core::ops::Sub
-        + core::ops::Mul
-        + core::ops::Div
-        + core::ops::Rem
-    {
-        /// The primitive float type (f32 or f64)
-        type Content: Float;
-
-        /// Creates a new value from a primitive type
-        /// It adds a little overhead compared to `new_unchecked`
-        /// because it checks that the value is valid
-        ///
-        /// # Examples
-        ///
-        /// ```
-        /// # use typed_floats::*;
-        /// let x: NonNaN = NonNaN::new(3.0).unwrap();
-        ///
-        /// assert_eq!(x, 3.0);
-        /// ```
-        ///
-        /// # Errors
-        /// Returns an error if the value is not valid
-        #[inline]
-        fn new(value: Self::Content) -> Result<Self, InvalidNumber> {
-            Self::try_from(value)
-        }
-
-        /// Creates a new value from a primitive type with zero overhead (in release mode).
-        /// It is up to the caller to ensure that the value is valid
-        ///
-        /// # Examples
-        ///
-        /// ```
-        /// # use typed_floats::*;
-        /// let x: NonNaN = unsafe { NonNaN::new_unchecked(3.0) };
-        ///
-        /// assert_eq!(x, 3.0);
-        /// ```
-        /// # Safety
-        /// The caller must ensure that the value is valid
-        /// It will panic in debug mode if the value is not valid
-        /// but in release mode the behavior is undefined
-        unsafe fn new_unchecked(value: Self::Content) -> Self;
-
-        /// Returns the value as a primitive type
-        fn get(&self) -> Self::Content;
-
-        /// Returns `true` if this value is NaN.
-        /// This is never the case for the provided types
-        ///
-        /// # Examples
-        ///
-        /// ```
-        /// # use typed_floats::*;
-        /// let x: NonNaN = 3.0.try_into().unwrap();
-        ///
-        /// assert_eq!(x.is_nan(), false);
-        /// ```
-        ///
-        /// See [`f64::is_nan()`] for more details.
-        #[must_use]
-        fn is_nan(&self) -> bool {
-            false
-        }
-
-        /// Returns `true` if this value is positive infinity or negative infinity.
-        ///
-        /// # Examples
-        ///
-        /// ```
-        /// # use typed_floats::*;
-        /// let x: NonNaN = 3.0.try_into().unwrap();
-        ///
-        /// assert_eq!(x.is_infinite(), false);
-        /// ```
-        ///
-        /// See [`f64::is_infinite()`] for more details.
-        #[must_use]
-        fn is_infinite(&self) -> bool;
-
-        /// Returns `true` if this number is positive infinity nor negative infinity.
-        ///
-        /// # Examples
-        ///
-        /// ```
-        /// # use typed_floats::*;
-        /// let x: NonNaN = 3.0.try_into().unwrap();
-        ///
-        /// assert_eq!(x.is_finite(), true);
-        /// ```
-        ///
-        /// See [`f64::is_finite()`] for more details.
-        #[must_use]
-        fn is_finite(&self) -> bool;
-
-        /// Returns `true` if the number is [subnormal](https://en.wikipedia.org/wiki/Denormal_number).
-        ///
-        /// # Examples
-        ///
-        /// ```
-        /// # use typed_floats::*;
-        /// let x: NonNaN = 3.0.try_into().unwrap();
-        ///
-        /// assert_eq!(x.is_subnormal(), false);
-        /// ```
-        ///
-        /// See [`f64::is_subnormal()`] for more details.
-        #[must_use]
-        fn is_subnormal(&self) -> bool;
-
-        /// Returns `true` if the number is neither zero, infinite or [subnormal](https://en.wikipedia.org/wiki/Denormal_number).
-        ///
-        /// # Examples
-        ///
-        /// ```
-        /// # use typed_floats::*;
-        /// let x: NonNaN = 3.0.try_into().unwrap();
-        ///
-        /// assert_eq!(x.is_normal(), true);
-        /// ```
-        ///
-        /// See [`f64::is_normal()`] for more details.
-        #[must_use]
-        fn is_normal(&self) -> bool;
-
-        /// Returns the floating point category of the number. If only one property
-        /// is going to be tested, it is generally faster to use the specific
-        /// predicate instead.
-        ///
-        /// # Examples
-        ///
-        /// ```
-        /// # use typed_floats::*;
-        /// let x: NonNaN = 3.0.try_into().unwrap();
-        ///
-        /// assert_eq!(x.classify(), core::num::FpCategory::Normal);
-        /// ```
-        ///
-        /// See [`f64::classify()`] for more details.
-        #[must_use]
-        fn classify(&self) -> core::num::FpCategory;
-
-        /// Returns `true` if `self` has a positive sign, including `+0.0` and positive infinity.
-        ///
-        /// # Examples
-        ///
-        /// ```
-        /// # use typed_floats::*;
-        /// let x: NonNaN = 3.0.try_into().unwrap();
-        ///
-        /// assert_eq!(x.is_sign_positive(), true);
-        /// ```
-        ///
-        /// See [`f64::is_sign_positive()`] for more details.
-        #[must_use]
-        fn is_sign_positive(&self) -> bool;
-
-        /// Returns `true` if `self` has a negative sign, including `-0.0` and negative infinity.
-        ///
-        /// # Examples
-        ///
-        /// ```
-        /// # use typed_floats::*;
-        /// let x: NonNaN = 3.0.try_into().unwrap();
-        ///
-        /// assert_eq!(x.is_sign_negative(), false);
-        /// ```
-        ///
-        /// See [`f64::is_sign_negative()`] for more details.
-        #[must_use]
-        fn is_sign_negative(&self) -> bool;
-
-        /// Returns `true` if the number is positive zero.
-        ///
-        /// # Examples
-        ///
-        /// ```
-        /// # use typed_floats::*;
-        /// let x: NonNaN = 3.0.try_into().unwrap();
-        /// let y: NonNaN = (-0.0).try_into().unwrap();
-        /// let z: NonNaN = (0.0).try_into().unwrap();
-        ///
-        /// assert_eq!(x.is_positive_zero(), false);
-        /// assert_eq!(y.is_positive_zero(), false);
-        /// assert_eq!(z.is_positive_zero(), true);
-        /// ```
-        fn is_positive_zero(&self) -> bool;
-
-        /// Returns `true` if the number is negative zero.
-        ///     
-        /// # Examples
-        ///
-        /// ```
-        /// # use typed_floats::*;
-        /// let x: NonNaN = 3.0.try_into().unwrap();
-        /// let y: NonNaN = (-0.0).try_into().unwrap();
-        /// let z: NonNaN = (0.0).try_into().unwrap();
-        ///
-        /// assert_eq!(x.is_negative_zero(), false);
-        /// assert_eq!(y.is_negative_zero(), true);
-        /// assert_eq!(z.is_negative_zero(), false);
-        /// ```
-        fn is_negative_zero(&self) -> bool;
-    }
+    pub trait TypedFloat {}
 );
 
 /// An error that can occur when converting from a string into a `TypedFloat`
@@ -673,6 +443,42 @@ macro_rules! add_const {
 
 /// This module contains constants from [`core::f64`], casted to the corresponding type
 pub mod tf64 {
+    /// Equivalent to `NonNaN<f64>`
+    pub type NonNaN = crate::NonNaN<f64>;
+
+    /// Equivalent to `NonNaNFinite<f64>`
+    pub type NonNaNFinite = crate::NonNaNFinite<f64>;
+
+    /// Equivalent to `NonZeroNonNaN<f64>`
+    pub type NonZero = crate::NonZeroNonNaN<f64>;
+
+    /// Equivalent to `NonZeroNonNaNFinite<f64>`
+    pub type NonZeroFinite = crate::NonZeroNonNaNFinite<f64>;
+
+    /// Equivalent to `StrictlyPositive<f64>`
+    pub type StrictlyPositive = crate::StrictlyPositive<f64>;
+
+    /// Equivalent to `StrictlyNegative<f64>`
+    pub type StrictlyNegative = crate::StrictlyNegative<f64>;
+
+    /// Equivalent to `Positive<f64>`
+    pub type Positive = crate::Positive<f64>;
+
+    /// Equivalent to `Negative<f64>`
+    pub type Negative = crate::Negative<f64>;
+
+    /// Equivalent to `StrictlyPositiveFinite<f64>`
+    pub type StrictlyPositiveFinite = crate::StrictlyPositiveFinite<f64>;
+
+    /// Equivalent to `StrictlyNegativeFinite<f64>`
+    pub type StrictlyNegativeFinite = crate::StrictlyNegativeFinite<f64>;
+
+    /// Equivalent to `PositiveFinite<f64>`
+    pub type PositiveFinite = crate::PositiveFinite<f64>;
+
+    /// Equivalent to `NegativeFinite<f64>`
+    pub type NegativeFinite = crate::NegativeFinite<f64>;
+
     /// Returns `true` if the number is positive zero.
     ///     
     /// # Examples
@@ -783,6 +589,42 @@ pub mod tf64 {
 
 /// This module contains constants from [`core::f32`], casted to the corresponding type
 pub mod tf32 {
+    /// Equivalent to `NonNaN<f32>`
+    pub type NonNaN = crate::NonNaN<f32>;
+
+    /// Equivalent to `NonNaNFinite<f32>`
+    pub type NonNaNFinite = crate::NonNaNFinite<f32>;
+
+    /// Equivalent to `NonZeroNonNaN<f32>`
+    pub type NonZero = crate::NonZeroNonNaN<f32>;
+
+    /// Equivalent to `NonZeroNonNaNFinite<f32>`
+    pub type NonZeroFinite = crate::NonZeroNonNaNFinite<f32>;
+
+    /// Equivalent to `StrictlyPositive<f32>`
+    pub type StrictlyPositive = crate::StrictlyPositive<f32>;
+
+    /// Equivalent to `StrictlyNegative<f32>`
+    pub type StrictlyNegative = crate::StrictlyNegative<f32>;
+
+    /// Equivalent to `Positive<f32>`
+    pub type Positive = crate::Positive<f32>;
+
+    /// Equivalent to `Negative<f32>`
+    pub type Negative = crate::Negative<f32>;
+
+    /// Equivalent to `StrictlyPositiveFinite<f32>`
+    pub type StrictlyPositiveFinite = crate::StrictlyPositiveFinite<f32>;
+
+    /// Equivalent to `StrictlyNegativeFinite<f32>`
+    pub type StrictlyNegativeFinite = crate::StrictlyNegativeFinite<f32>;
+
+    /// Equivalent to `PositiveFinite<f32>`
+    pub type PositiveFinite = crate::PositiveFinite<f32>;
+
+    /// Equivalent to `NegativeFinite<f32>`
+    pub type NegativeFinite = crate::NegativeFinite<f32>;
+
     /// Returns `true` if the number is positive zero.
     ///     
     /// # Examples

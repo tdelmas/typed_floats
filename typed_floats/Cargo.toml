@@ -15,15 +15,10 @@ repository = "https://github.com/tdelmas/typed_floats"
 version = "0.1.37"
 
 [features]
-default = ["std", "num"]
-# The absence of this feature is not yet stable
-std = []
-# The absence of this feature is not yet stable
-num = ["dep:num"]
+default = []
 
 [dependencies]
 thiserror = "1.0"
-num = {version = "0.4", optional = true}
 typed_floats_macros = {version = "=0.1.37", path = "../typed_floats_macros"}
 
 [dev-dependencies]
