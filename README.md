@@ -22,7 +22,7 @@ And their positive and negative counterparts:
 
 (Negatives types reject `+0.0` and positives types reject `-0.0`)
 
-By default all types are [`f64`] but all can use [`f32`] (e.g. like [`Positive<f32>`]).
+To avoid specifying the kind of float (e.g. like [`Positive<f32>`]), you can use the modules [`tf64`] and [`tf32`] which expose aliases.
 
 The following conversions are implemented:
 
