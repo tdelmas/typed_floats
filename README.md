@@ -28,7 +28,7 @@ The following conversions are implemented:
 
 - Between all the types of this crate (of the same kind, [`f32`] or [`f64`])
 - From [`f32`] and [`f64`]
-- From integers types (exept [`u128`] and [`i128`])
+- From integers types (except [`u128`] and [`i128`])
 - From `NonZero*` ([`NonZeroU8`], [`NonZeroU16`], [`NonZeroU32`], [`NonZeroU64`], [`NonZeroI8`], [`NonZeroI16`], [`NonZeroI32`], [`NonZeroI64`])
 
 (The trait `From` or `TryFrom` is implemented depending on the situation. Impossible conversions - for example between [`Positive`] and [`Negative`] - are not implemented.)
