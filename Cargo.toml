@@ -6,7 +6,10 @@ members = [
     "typed_floats_tests",
 ]
 
+resolver = "2"
+
 [profile.dev]
+# To avoid creating +1GB incremental artifacts
 incremental = false
 
 [profile.test]
