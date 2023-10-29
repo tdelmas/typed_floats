@@ -10,6 +10,50 @@ pub(crate) struct FloatSpecifications {
     pub(crate) accept_negative: bool,
 }
 
+impl FloatSpecifications {
+    pub(crate) fn get_compiler_hints(&self, var_name: &Ident) -> proc_macro2::TokenStream {
+        let mut res = quote! {
+            if #var_name.is_nan() {
+                core::hint::unreachable_unchecked();
+            }
+        };
+
+        if !self.accept_zero {
+            res.extend(quote! {
+               if #var_name == 0.0 {
+                   core::hint::unreachable_unchecked();
+               }
+            });
+        }
+
+        if !self.accept_inf {
+            res.extend(quote! {
+               if #var_name.is_infinite() {
+                   core::hint::unreachable_unchecked();
+               }
+            });
+        }
+
+        if !self.accept_positive {
+            res.extend(quote! {
+               if #var_name.is_sign_positive() {
+                   core::hint::unreachable_unchecked();
+               }
+            });
+        }
+
+        if !self.accept_negative {
+            res.extend(quote! {
+               if #var_name.is_sign_negative() {
+                   core::hint::unreachable_unchecked();
+               }
+            });
+        }
+
+        res
+    }
+}
+
 #[derive(Clone, Debug)]
 pub(crate) struct FloatDefinition {
     pub(crate) name: &'static str,

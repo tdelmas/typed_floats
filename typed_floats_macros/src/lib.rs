@@ -260,6 +260,10 @@ fn do_generate_floats(floats: &[FloatDefinition]) -> proc_macro2::TokenStream {
         let float_type = float.float_type_ident();
         let full_type = float.full_type_ident();
 
+        let compiler_hints = float
+            .s
+            .get_compiler_hints(&syn::Ident::new("value", proc_macro2::Span::call_site()));
+
         output.extend(quote! {
             impl #full_type {
                 /// Creates a new value from a primitive type
@@ -306,6 +310,8 @@ fn do_generate_floats(floats: &[FloatDefinition]) -> proc_macro2::TokenStream {
                         value = value,
                         name = stringify!(#name)
                     );
+
+                    #compiler_hints
 
                     Self(value)
                 }
