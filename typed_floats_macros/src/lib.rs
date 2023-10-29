@@ -298,8 +298,8 @@ fn do_generate_floats(floats: &[FloatDefinition]) -> proc_macro2::TokenStream {
                 /// assert_eq!(x, 3.0);
                 /// ```
                 /// # Safety
-                /// The caller must ensure that the value is valid
-                /// It will panic in debug mode if the value is not valid
+                /// The caller must ensure that the value is valid.
+                /// It will panic in debug mode if the value is not valid,
                 /// but in release mode the behavior is undefined
                 #[inline]
                 #[must_use]
@@ -316,6 +316,19 @@ fn do_generate_floats(floats: &[FloatDefinition]) -> proc_macro2::TokenStream {
                     Self(value)
                 }
 
+                /// Returns the value as a primitive type
+                /// 
+                /// # Examples
+                /// 
+                /// ```
+                /// use typed_floats::tf64::NonNaN;
+                /// 
+                /// let x = NonNaN::new(3.0).unwrap();
+                /// 
+                /// let y: f64 = x.into();
+                /// 
+                /// assert_eq!(y, 3.0);
+                /// ```
                 #[inline]
                 #[must_use]
                 pub fn get(&self) -> #float_type {
