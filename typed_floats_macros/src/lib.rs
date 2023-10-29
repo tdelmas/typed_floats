@@ -523,8 +523,11 @@ fn do_generate_floats(floats: &[FloatDefinition]) -> proc_macro2::TokenStream {
             impl Ord for #full_type {
                 #[inline]
                 fn cmp(&self, other: &Self) -> core::cmp::Ordering {
-                    // This is safe because we know that both values are not NaN
-                    self.0.partial_cmp(&other.0).unwrap()
+                    match self.0.partial_cmp(&other.0) {
+                        Some(ordering) => ordering,
+                        // This is safe because we know that both values are not NaN
+                        None => unsafe { core::hint::unreachable_unchecked() },
+                    }
                 }
             }
 
