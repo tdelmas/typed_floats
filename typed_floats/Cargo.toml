@@ -13,7 +13,7 @@ name = "typed_floats"
 readme = "./README.md"
 repository = "https://github.com/tdelmas/typed_floats"
 version = "0.2.1"
-rust-version = "1.31"
+rust-version = "1.56"
 
 [features]
 default = []
