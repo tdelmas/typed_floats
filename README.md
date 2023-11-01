@@ -115,6 +115,12 @@ For each operation, at compile time crate determine the most strict type possibl
 
 For example, if you multiply a [`PositiveFinite`] and a [`StrictlyNegativeFinite`], the result will be a [`Negative`].
 
+## Main limitations
+
+- Doesn't work with `no_std` (for now)
+- Doesn't implement `serde` serialization/deserialization (yet)
+- Doesn't fix the floating point quirks such as `0.0 == -0.0` (because that would introduce a runtime overhead)
+
 ## Testing
 
 Tests are run on different architectures on [GitHub actions](https://github.com/tdelmas/typed_floats/actions/workflows/tests.yml) and [CircleCI](https://circleci.com/gh/tdelmas/typed_floats).
