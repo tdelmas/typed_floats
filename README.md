@@ -1,5 +1,6 @@
 
 [![Build Status](https://circleci.com/gh/tdelmas/typed_floats.svg?style=shield)](https://circleci.com/gh/tdelmas/typed_floats)
+[![Tests on GitHub CI](https://github.com/tdelmas/typed_floats/workflows/Tests/badge.svg?branch=main)](https://github.com/tdelmas/typed_floats/actions/workflows/tests.yml)
 [![Version](https://img.shields.io/crates/v/typed_floats.svg)](https://crates.io/crates/typed_floats)
 [![Documentation](https://docs.rs/typed_floats/badge.svg)](https://docs.rs/typed_floats)
 [![License](https://img.shields.io/crates/l/typed_floats.svg)](https://github.com/tdelmas/typed_floats/blob/main/LICENSE)
