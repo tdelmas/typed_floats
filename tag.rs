@@ -64,7 +64,7 @@ fn main() {
             println!("Use --force to force the tag");
             std::process::exit(1);
         }
-      }
+    }
 
     let crate_version = get_version("./typed_floats".into());
     let macros_version = get_version("./typed_floats_macros".into());
@@ -115,8 +115,19 @@ fn main() {
 
     println!("Commiting Cargo.toml files...");
 
+    // Commit Cargo.toml files
     std::process::Command::new("git")
-        .args(&["commit", "-am", &new_version])
+        .args(&[
+            "add",
+            "./typed_floats/Cargo.toml",
+            "./typed_floats_macros/Cargo.toml",
+            "./typed_floats_tests/Cargo.toml",
+        ])
+        .output()
+        .unwrap();
+
+    std::process::Command::new("git")
+        .args(&["commit", "-m", &new_version])
         .output()
         .unwrap();
 
