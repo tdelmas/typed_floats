@@ -12,6 +12,10 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    name: Tests on latest stable
+    strategy:
+      matrix:
+        version: [nightly, stable, 1.70]
 
     steps:
       - uses: actions/checkout@v3
@@ -19,6 +23,7 @@ jobs:
         run: |
           rustup toolchain install nightly
           cargo +nightly -Zscript ./pre-publish.rs
+          rustup toolchain install ${{ matrix.version }}
           cargo build
       - name: Build tests
         run: cargo test --no-run
