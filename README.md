@@ -91,6 +91,37 @@ All 12 types implement the methods available on [`f32`] and [`f64`] except:
 
 In addition, `Hash` is implemented for all types expect [`NonNaN`] and [`NonNaNFinite`] (because they both accept `0.0` and `-0.0`, which are equal, and that is incompatible with `Hash`).
 
+## Panics
+
+The only method that can `panic!` is the `unsafe` method `new_unchecked` when used in an invalid way.
+
+A `panic!` triggered in any other way is considered a security bug and should be reported.
+
+## Overhead
+
+This crate is designed to have a minimal overhead at runtime, in terms of memory, speed and binary size.
+
+It may even be faster than using primitives [`f32`] and [`f64`] directly, as it may avoids some checks by using compiler hints.
+
+The only methods that adds a little overhead are `try_from` because of the checks they do at runtime, compared to the `unsafe` method `new_unchecked`.
+
+In debug mode, a little overhead is present, both to check the validity of the values and because `inline` may not be respected.
+
+Any other overhead is considered a bug and should be reported.
+
+## Testing
+
+Tests are run on different architectures on [GitHub actions](https://github.com/tdelmas/typed_floats/actions/workflows/tests.yml) and [CircleCI](https://circleci.com/gh/tdelmas/typed_floats).
+
+A separate crate is handling exaustive testing: `typed_floats_test`. They are not included in the published crates because they use >1GB of disk and take >10 minutes to run.
+
+To run all tests:
+
+```bash
+git clone https://github.com/tdelmas/typed_floats
+cd typed_floats
+cargo test --all
+```
 
 # Similar crates
 
