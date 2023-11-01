@@ -109,6 +109,12 @@ In debug mode, a little overhead is present, both to check the validity of the v
 
 Any other overhead is considered a bug and should be reported.
 
+## How it works
+
+For each operation, at compile time crate determine the most strict type possible for the result.
+
+For example, if you multiply a [`PositiveFinite`] and a [`StrictlyNegativeFinite`], the result will be a [`Negative`].
+
 ## Testing
 
 Tests are run on different architectures on [GitHub actions](https://github.com/tdelmas/typed_floats/actions/workflows/tests.yml) and [CircleCI](https://circleci.com/gh/tdelmas/typed_floats).
@@ -132,37 +138,37 @@ cargo test --all
 - [float-derive](https://crates.io/crates/float-derive) A crate that allows deriving Eq and Hash for types that contain floating points.
 - [float-ord](https://crates.io/crates/float-ord) A total ordering for floating-point numbers.
 - [nanbox](https://crates.io/crates/nanbox) NaN boxing implementation.
-- [num-order](https://crates.io/crates/num-order) Numerically consistent `Eq`, `Ord` and `Hash` implementations for various `num` types (`u32`, `f64`, `num_bigint::BigInt`, etc.)
 - [noisy_float](https://crates.io/crates/noisy_float) Contains floating point types that panic if they are set to an illegal value, such as NaN.
+- [num-order](https://crates.io/crates/num-order) Numerically consistent `Eq`, `Ord` and `Hash` implementations for various `num` types (`u32`, `f64`, `num_bigint::BigInt`, etc.)
 - [ordered-float](https://crates.io/crates/ordered-float) Provides several wrapper types for Ord and Eq implementations on f64 and friends.
 - [partial-min-max](https://crates.io/crates/partial-min-max) `min` and `max` functions that work with `PartialOrd`.
 - [real_float](https://crates.io/crates/real_float) Floating point types that check for correctness and implement total ordering.
 - [result_float](https://crates.io/crates/result_float) Floating point type that cannot store NaN.
-- [screaming_float](https://crates.io/crates/screaming_float) Implements screaming NaNs
 - [totally-ordered](https://crates.io/crates/totally-ordered) No dependency, no-std totally ordered f32/f64
 - [unsigned-f64](https://crates.io/crates/unsigned-f64) A wrapper around f64 that guarantees that the value is always non-negative on the type level.
 
 Features provided/checked by those crates:
 
-| Crates           | Avoid `panic!` | Minimal overhead | Eq/Ord | Hash | NaN | Inf | Zero | Positive | Negative |
-|------------------|----------------|------------------|--------|------|-----|-----|------|----------|----------|
-|**`typed_floats`**| ✔️             | ✔️              | ✔️    | ✔️¹  | ✔️ | ✔️  | ✔️   | ✔️      | ✔️       |
-| `decorum`        | ❓             | ❓              | ❌    | ❌   | ✔️²| ✔️² | ✔️²  | ✔️²     | ✔️²      |
-| `eq-float`       | ❓             | ❓              | ✔️    | ❌   | ❌ | ❌  | ❌   | ❌      | ❌       |
-| `fix_float`      | ❓             | ❓              | ✔️    | ✔️   | ✔️ | ✔️  | ❌   | ❌      | ❌       |
-| `float-derive`   | ❓             | ❓              | ✔️    | ✔️   | ❌ | ❌  | ❌   | ❌      | ❌       |
-| `float-ord`      | ❓             | ❓              | ✔️    | ❌   | ❌ | ❌  | ❌   | ❌      | ❌       |
-| `nanbox`         | ❓             | ❓              | ❌    | ❌   | ✔️ | ❌  | ❌   | ❌      | ❌       |
-| `num-order`      | ❓             | ❓              | ✔️    | ✔️   | ❌ | ❌  | ❌   | ❌      | ❌       |
-| `noisy_float`    | ❓             | ❓              | ❌    | ❌   | ✔️ | ✔️  | ❌   | ❌      | ❌       |
-| `ordered-float`  | ❓             | ❓              | ✔️    | ❌   | ✔️ | ❌  | ❌   | ❌      | ❌       |
-| `partial-min-max`| ❓             | ❓              | ❌    | ❌   | ❌ | ❌  | ❌   | ❌      | ❌       |
-| `real_float`     | ❓             | ❓              | ✔️    | ❌   | ✔️ | ✔️  | ❌   | ✔️      | ❌       |
-| `result_float`   | ❓             | ❓              | ✔️    | ❌   | ✔️ | ❌  | ❌   | ❌      | ❌       |
-| `screaming_float`| ❓             | ❓              | ❌    | ❌   | ✔️ | ❌  | ❌   | ❌      | ❌       |
-| `screaming_float`| ❓             | ❓              | ✔️    | ✔️   | ❌ | ❌  | ❌   | ❌      | ❌       |
-| `unsigned-f64`   | ❓             | ❓              | ❌    | ❌   | ❌ | ❌  | ❌   | ✔️      | ❌       |
+| Crates           | Production ready | Avoid `panic!` | Minimal overhead | Eq/Ord | Hash | NaN | Inf | Zero | Positive | Negative |
+|------------------|------------------|----------------|------------------|--------|------|-----|-----|------|----------|----------|
+|**`typed_floats`**| ✔️              | ✔️             | ✔️              | ✔️    | ✔️¹  | ✔️ | ✔️  | ✔️   | ✔️      | ✔️       |
+| `checked-float`  | ✔️              | ✔️             | ❌              | ✔️    | ❌   | ✔️²| ✔️² | ✔️²  | ✔️²     | ✔️²      |
+| `decorum`        | ✔️              | ❌             | ❌              | ❌    | ❌   | ✔️²| ✔️² | ✔️²  | ✔️²     | ✔️²      |
+| `eq-float`       | ❌              | ✔️             | ✔️              | ✔️    | ❌   | ❌ | ❌  | ❌   | ❌      | ❌       |
+| `fix_float`      | ✔️              | ✔️             | ✔️              | ✔️    | ✔️   | ✔️ | ✔️  | ❌   | ❌      | ❌       |
+| `float-derive`   | ❌              | ❓             | ❓              | ✔️    | ✔️   | ❌ | ❌  | ❌   | ❌      | ❌       |
+| `float-ord`      | ✔️              | ✔️             | ❌              | ✔️    | ❌   | ❌ | ❌  | ❌   | ❌      | ❌       |
+| `nanbox`         | ❌              | ❓             | ❓              | ❌    | ❌   | ✔️ | ❌  | ❌   | ❌      | ❌       |
+| `noisy_float`    | ✔️              | ❌             | ❌              | ❌    | ❌   | ✔️ | ✔️  | ❌   | ❌      | ❌       |
+| `num-order`      | ✔️              | ✔️             | ❌              | ✔️    | ✔️   | ❌ | ❌  | ❌   | ❌      | ❌       |
+| `ordered-float`  | ✔️              | ❌             | ❌              | ✔️    | ❌   | ✔️ | ❌  | ❌   | ❌      | ❌       |
+| `partial-min-max`| ❌              | ✔️             | ✔️              | ❌    | ❌   | ❌ | ❌  | ❌   | ❌      | ❌       |
+| `real_float`     | ✔️              | ❌             | ❌              | ✔️    | ❌   | ✔️ | ✔️  | ❌   | ✔️      | ❌       |
+| `result_float`   | ✔️              | ✔️             | ❌              | ✔️    | ❌   | ✔️ | ❌  | ❌   | ❌      | ❌       |
+| `totally-ordered`| ✔️              | ✔️             | ❌              | ✔️    | ✔️   | ❌ | ❌  | ❌   | ❌      | ❌       |
+| `unsigned-f64`   | ❌              | ✔️             | ✔️              | ❌    | ❌   | ❌ | ❌  | ❌   | ✔️      | ❌       |
 
+(N.B. "Production ready" is a subjective measure)
 
 ¹: `Hash` is implemented for all types expect [`NonNaN`] and [`NonNaNFinite`] (because they both accept `0.0` and `-0.0`)
 
