@@ -14,6 +14,8 @@ use clap::Parser;
 struct Args {
     #[clap(long, help = "The new version")]
     version: Option<String>,
+    #[clap(long, help = "Force the tag")]
+    force: bool,
 }
 
 fn parse_version(version: &str) -> (u8, u8, u8) {
@@ -58,8 +60,11 @@ fn main() {
 
     if !is_clean {
         println!("The git repository is not clean");
-        std::process::exit(1);
-    }
+        if !args.force {
+            println!("Use --force to force the tag");
+            std::process::exit(1);
+        }
+      }
 
     let crate_version = get_version("./typed_floats".into());
     let macros_version = get_version("./typed_floats_macros".into());
