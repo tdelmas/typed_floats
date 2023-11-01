@@ -12,7 +12,7 @@ license = "MIT OR Apache-2.0"
 name = "typed_floats"
 readme = "./README.md"
 repository = "https://github.com/tdelmas/typed_floats"
-version = "0.1.37"
+version = "0.2.1"
 rust-version = "1.31"
 
 [features]
@@ -20,7 +20,7 @@ default = []
 
 [dependencies]
 thiserror = "1.0"
-typed_floats_macros = {version = "=0.1.37", path = "../typed_floats_macros"}
+typed_floats_macros = {version = "=0.2.1", path = "../typed_floats_macros"}
 
 [dev-dependencies]
 # For examples
