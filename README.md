@@ -155,6 +155,10 @@ cargo test --all
 
 Features provided/checked by those crates:
 
+✔️: provided, ❌: not provided, ❓: unknown
+
+(you may need to scroll to the right to see all the columns : "Production ready", "Avoid `panic!`", "Minimal overhead", "Eq/Ord", "Hash", "NaN", "Inf", "Zero", "Positive", "Negative")
+
 | Crates           | Production ready | Avoid `panic!` | Minimal overhead | Eq/Ord | Hash | NaN | Inf | Zero | Positive | Negative |
 |------------------|------------------|----------------|------------------|--------|------|-----|-----|------|----------|----------|
 |**`typed_floats`**| ✔️              | ✔️             | ✔️              | ✔️    | ✔️¹  | ✔️ | ✔️  | ✔️   | ✔️      | ✔️       |
