@@ -15,7 +15,13 @@ jobs:
     name: Tests on rust toolchain ${{ matrix.version }}
     strategy:
       matrix:
-        version: [nightly, stable, 1.70]
+        version: [
+          "nightly",
+          "stable",
+          "1.70",
+          "1.56", # 2021 edition
+          "1.31" # 2018 edition
+        ]
 
     steps:
       - uses: actions/checkout@v3
