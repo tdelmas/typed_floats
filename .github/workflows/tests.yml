@@ -35,4 +35,7 @@ jobs:
       - name: Run tests
         run: cargo test --verbose
       - name: Run clippy
-        run: RUSTFLAGS="-Z macro-backtrace" cargo +nightly clippy --verbose
+        run: |
+          rustup toolchain default nightly
+          rustup component add clippy 
+          RUSTFLAGS="-Z macro-backtrace" cargo clippy --verbose
