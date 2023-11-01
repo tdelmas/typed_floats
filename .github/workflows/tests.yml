@@ -35,4 +35,4 @@ jobs:
       - name: Run tests
         run: cargo test --verbose
       - name: Run clippy
-        run: cargo clippy --verbose
+        run: RUSTFLAGS="-Z macro-backtrace" cargo +nightly clippy --verbose
