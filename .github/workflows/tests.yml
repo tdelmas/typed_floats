@@ -41,9 +41,4 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: Build
-        run: |
-          rustup toolchain install nightly
-          rustup toolchain default nightly
-          cargo +nightly -Zscript ./pre-publish.rs
-          RUSTFLAGS="-Z macro-backtrace" cargo clippy --verbose
+      - run: cargo clippy --verbose
