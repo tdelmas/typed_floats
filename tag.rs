@@ -122,6 +122,7 @@ fn main() {
             "./typed_floats/Cargo.toml",
             "./typed_floats_macros/Cargo.toml",
             "./typed_floats_tests/Cargo.toml",
+            "./Cargo.lock"
         ])
         .output()
         .unwrap();

@@ -1,5 +1,4 @@
 #[cfg(test)]
-
 use typed_floats::tf64::NonNaN;
 
 #[test]
