@@ -34,8 +34,16 @@ jobs:
         run: cargo test --no-run
       - name: Run tests
         run: cargo test --verbose
-      - name: Run clippy
+
+  clippy:
+    runs-on: ubuntu-latest
+    name: Clippy
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build
         run: |
+          rustup toolchain install nightly
           rustup toolchain default nightly
-          rustup component add clippy 
+          cargo +nightly -Zscript ./pre-publish.rs
           RUSTFLAGS="-Z macro-backtrace" cargo clippy --verbose
