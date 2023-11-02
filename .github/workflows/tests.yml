@@ -41,4 +41,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - run: cargo clippy --verbose
+        run: |
+          rustup toolchain install nightly
+          cargo +nightly -Zscript ./pre-publish.rs
+          cargo clippy --verbose
