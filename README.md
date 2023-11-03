@@ -76,7 +76,6 @@ To facilitate comparisons, the methods `is_positive_zero` and `is_negative_zero`
 All 12 types implement the methods available on [`f32`] and [`f64`] except:
 
 - deprecated and nightly-only methods
-- atan2(self, other: f64) -> f64
 - sin_cos(self) -> (f64, f64)
 - mul_add(self, a: f64, b: f64) -> f64
 - powi(self, n: i32) -> f64
@@ -115,6 +114,9 @@ Any other overhead is considered a bug and should be reported.
 For each operation, at compile time crate determine the most strict type possible for the result.
 
 For example, if you multiply a [`PositiveFinite`] and a [`StrictlyNegativeFinite`], the result will be a [`Negative`].
+
+Methods that takes another float as parameter will also return the most strict type possible depending on the both types. For the methods where a trait is not available to specify the return type depending on the parameter type, a new trait is created: 
+[`Hypot`], [`Min`], [`Max`], [`Copysign`], [`DivEuclid`] and [`Atan2`].
 
 ## Main limitations
 
