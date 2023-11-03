@@ -4,6 +4,7 @@
 [![Version](https://img.shields.io/crates/v/typed_floats.svg)](https://crates.io/crates/typed_floats)
 [![Documentation](https://docs.rs/typed_floats/badge.svg)](https://docs.rs/typed_floats)
 [![License](https://img.shields.io/crates/l/typed_floats.svg)](https://github.com/tdelmas/typed_floats/blob/main/LICENSE)
+[![dependency status](https://deps.rs/repo/github/tdelmas/typed_floats/status.svg)](https://deps.rs/repo/github/tdelmas/typed_floats)
 
 This crate helps you to ensure the kind of floats you are using.
 
