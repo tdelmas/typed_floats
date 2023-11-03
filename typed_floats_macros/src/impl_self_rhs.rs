@@ -334,5 +334,24 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
                 }
             }))
             .build(),
+            OpRhsBuilder::new("Atan2", "atan2")
+                .op_test_primitive(Box::new(|var1, var2| quote! { #var1.atan2(#var2) }))
+                // Because of rounding errors we can't check that the result is always as strict as possible.
+                .skip_check_return_type_strictness()
+                .result(Box::new(|float, rhs| {
+                    let spec_a = &float.s;
+                    let spec_b = &rhs.s;
+
+                    let can_be_positive = spec_a.accept_positive || spec_b.accept_positive;
+                    let can_be_negative = spec_a.accept_negative || spec_b.accept_negative;
+
+                    ReturnTypeSpecification::FloatSpecifications(FloatSpecifications {
+                        accept_inf: false,
+                        accept_zero: true,
+                        accept_positive: can_be_positive,
+                        accept_negative: can_be_negative,
+                    })
+                }))
+                .build(),
     ]
 }

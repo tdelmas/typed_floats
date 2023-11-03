@@ -135,14 +135,14 @@ macro_rules! assert_relative_eq {
         assert_relative_eq!($left, $right, epsilon);
     }};
     ($left:expr, $right:expr, $epsilon:expr) => {{
-        let left_val = $left;
-        let right_val = $right;
+        let left_val: f64 = $left.into();
+        let right_val: f64 = $right.into();
         let diff = (left_val - right_val).abs();
 
         assert!(
             diff <= $epsilon,
             "assertion failed: `(left ~= right)` \
-             (left: `{:?}`, right: `{:?}`, (left - right): `{:?}`, epsilon: `{:?}`)",
+             (left: `{:?}`, right: `{:?}`, (left - right): `{:?}` > epsilon: `{:?}`)",
             left_val,
             right_val,
             diff,
@@ -387,6 +387,44 @@ pub trait DivEuclid<T> {
     ///
     /// See [`f64::div_euclid()`] for more details.
     fn div_euclid(self, rhs: T) -> Self::Output;
+}
+
+
+/// This trait is used to specify the return type of the [`Atan2::atan2()`] function.
+pub trait Atan2<T> {
+    /// The resulting type after applying [`Atan2::atan2()`].
+    type Output;
+
+    /// Computes the four quadrant arctangent of `self` (`y`) and `other` (`x`) in radians.
+    ///
+    /// * `x = 0`, `y = 0`: `0`
+    /// * `x >= 0`: `arctan(y/x)` -> `[-pi/2, pi/2]`
+    /// * `y >= 0`: `arctan(y/x) + pi` -> `(pi/2, pi]`
+    /// * `y < 0`: `arctan(y/x) - pi` -> `(-pi, -pi/2)`
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use typed_floats::*;
+    /// use typed_floats::tf64::NonNaN;
+    /// use typed_floats::tf64::consts::FRAC_PI_4;
+    /// 
+    /// // Positive angles measured counter-clockwise
+    /// // from positive x axis
+    /// // -pi/4 radians (45 deg clockwise)
+    /// let x1: NonNaN = 3.0_f64.try_into().unwrap();
+    /// let y1: NonNaN = (-3.0_f64).try_into().unwrap();
+    ///
+    /// // 3pi/4 radians (135 deg counter-clockwise)
+    /// let x2 = -3.0_f64;
+    /// let y2 = 3.0_f64;
+    ///
+    /// assert_relative_eq!(y1.atan2(x1), -std::f64::consts::FRAC_PI_4);
+    /// assert_relative_eq!(y2.atan2(x2), 3.0 * std::f64::consts::FRAC_PI_4);
+    /// ```
+    /// 
+    /// See [`f64::atan2()`] for more details.
+    fn atan2(self, rhs: T) -> Self::Output;
 }
 
 typed_floats_macros::generate_docs!(
