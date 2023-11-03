@@ -44,10 +44,11 @@ pub fn generate_tests_self_rhs(_input: proc_macro::TokenStream) -> proc_macro::T
     output.into()
 }
 
-fn get_specifications() -> Vec<(&'static str, FloatSpecifications)> {
+fn get_specifications() -> Vec<(&'static str,&'static str, FloatSpecifications)> {
     vec![
         (
             "NonNaN",
+            "A non-NaN floating point number",
             FloatSpecifications {
                 accept_inf: true,
                 accept_zero: true,
@@ -57,6 +58,7 @@ fn get_specifications() -> Vec<(&'static str, FloatSpecifications)> {
         ),
         (
             "NonZeroNonNaN",
+            "A non-NaN floating point number different from zero",
             FloatSpecifications {
                 accept_inf: true,
                 accept_zero: false,
@@ -66,6 +68,7 @@ fn get_specifications() -> Vec<(&'static str, FloatSpecifications)> {
         ),
         (
             "NonNaNFinite",
+            "A non-NaN finite floating point number",
             FloatSpecifications {
                 accept_inf: false,
                 accept_zero: true,
@@ -75,6 +78,7 @@ fn get_specifications() -> Vec<(&'static str, FloatSpecifications)> {
         ),
         (
             "NonZeroNonNaNFinite",
+            "A non-NaN finite floating point number different from zero",
             FloatSpecifications {
                 accept_inf: false,
                 accept_zero: false,
@@ -84,6 +88,7 @@ fn get_specifications() -> Vec<(&'static str, FloatSpecifications)> {
         ),
         (
             "Positive",
+            "A non-NaN positive floating point number",
             FloatSpecifications {
                 accept_inf: true,
                 accept_zero: true,
@@ -93,6 +98,7 @@ fn get_specifications() -> Vec<(&'static str, FloatSpecifications)> {
         ),
         (
             "Negative",
+            "A non-NaN negative floating point number",
             FloatSpecifications {
                 accept_inf: true,
                 accept_zero: true,
@@ -102,6 +108,7 @@ fn get_specifications() -> Vec<(&'static str, FloatSpecifications)> {
         ),
         (
             "PositiveFinite",
+            "A non-NaN positive finite floating point number",
             FloatSpecifications {
                 accept_inf: false,
                 accept_zero: true,
@@ -111,6 +118,7 @@ fn get_specifications() -> Vec<(&'static str, FloatSpecifications)> {
         ),
         (
             "NegativeFinite",
+            "A non-NaN negative finite floating point number",
             FloatSpecifications {
                 accept_inf: false,
                 accept_zero: true,
@@ -120,6 +128,7 @@ fn get_specifications() -> Vec<(&'static str, FloatSpecifications)> {
         ),
         (
             "StrictlyPositive",
+            "A non-NaN strictly positive floating point number",
             FloatSpecifications {
                 accept_inf: true,
                 accept_zero: false,
@@ -129,6 +138,7 @@ fn get_specifications() -> Vec<(&'static str, FloatSpecifications)> {
         ),
         (
             "StrictlyNegative",
+            "A non-NaN strictly negative floating point number",
             FloatSpecifications {
                 accept_inf: true,
                 accept_zero: false,
@@ -138,6 +148,7 @@ fn get_specifications() -> Vec<(&'static str, FloatSpecifications)> {
         ),
         (
             "StrictlyPositiveFinite",
+            "A non-NaN strictly positive finite floating point number",
             FloatSpecifications {
                 accept_inf: false,
                 accept_zero: false,
@@ -147,6 +158,7 @@ fn get_specifications() -> Vec<(&'static str, FloatSpecifications)> {
         ),
         (
             "StrictlyNegativeFinite",
+            "A non-NaN strictly negative finite floating point number",
             FloatSpecifications {
                 accept_inf: false,
                 accept_zero: false,
@@ -165,7 +177,7 @@ fn get_definitions(float_type: &'static str) -> Vec<FloatDefinition> {
         .map(|specification| FloatDefinition {
             name: specification.0,
             float_type,
-            s: specification.1.clone(),
+            s: specification.2.clone(),
         })
         .collect::<Vec<_>>()
 }
@@ -199,15 +211,16 @@ pub fn generate_floats(_input: proc_macro::TokenStream) -> proc_macro::TokenStre
 }
 
 fn do_generate_generic_floats(
-    specifications: &[(&'static str, FloatSpecifications)],
+    specifications: &[(&'static str,&'static str, FloatSpecifications)],
     default_float_type: &str,
 ) -> proc_macro2::TokenStream {
     let mut output = proc_macro2::TokenStream::new();
 
     let default_float_type = syn::Ident::new(default_float_type, proc_macro2::Span::call_site());
 
-    for (name, s) in specifications {
+    for (name, description, s) in specifications {
         let name = syn::Ident::new(name, proc_macro2::Span::call_site());
+        let description = add_doc::comment_line(description);
 
         let mut constraints = quote! {
             /// - It is not NaN.
@@ -238,7 +251,9 @@ fn do_generate_generic_floats(
         }
 
         output.extend(quote! {
-            /// A floating point number that satisfies the following constraints:
+            #description
+            ///
+            /// It satisfies the following constraints:
             #constraints
             #[derive(Debug, Copy, Clone)]
             #[repr(transparent)]

@@ -24,7 +24,7 @@ pub(crate) fn generate_main_description(floats: &[FloatDefinition]) -> proc_macr
     output
 }
 
-fn comment_line(str: &str) -> proc_macro2::TokenStream {
+pub(crate) fn comment_line(str: &str) -> proc_macro2::TokenStream {
     let comment: String = "/// ".to_owned() + str + "\n";
     comment.parse().unwrap()
 }
