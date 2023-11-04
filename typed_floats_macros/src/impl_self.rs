@@ -1070,5 +1070,48 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 })
             }))
             .build(),
+        OpBuilder::new("powi")
+            .params(quote! {self, n: i32})
+            .op_fn(Box::new(|_| {
+                let n = syn::Ident::new("n", proc_macro2::Span::call_site());
+
+                quote! { self.get().powi(#n) }
+            }))
+            .description(quote! {
+                /// Raises a number to an integer power.
+                ///
+                /// Using this function is generally faster than using `powf`.
+                /// It might have a different sequence of rounding operations than `powf`,
+                /// so the results are not guaranteed to agree.
+                ///
+                /// # Examples
+                ///
+                /// ```
+                /// # use typed_floats::*;
+                /// let x: NonNaN = (-2.0).try_into().unwrap();
+                ///
+                /// assert_eq!(x.powi(3), -8.0);
+                /// assert_eq!(x.powi(2), 4.0);
+                /// assert_eq!(x.powi(1), -2.0);
+                /// assert_eq!(x.powi(0), 1.0);
+                /// assert_eq!(x.powi(-1), -0.5);
+                /// assert_eq!(x.powi(-2), 0.25);
+                /// assert_eq!(x.powi(-3), -0.125);
+                /// ```
+                /// See [`f64::powi()`] for more details.
+            })
+            .result(Box::new(|float| {
+                ReturnTypeSpecification::FloatSpecifications(FloatSpecifications {
+                    accept_negative: float.s.accept_negative,
+                    accept_positive: true,
+                    accept_zero: true,
+                    accept_inf: true,
+                })
+            }))
+            .skip_check_return_type_strictness()
+            .op_test(Box::new(|var| {
+                quote! { #var.powi(2) }
+            }))
+            .build(),
     ]
 }

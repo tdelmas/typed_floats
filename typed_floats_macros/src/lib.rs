@@ -540,31 +540,6 @@ fn do_generate_floats(floats: &[FloatDefinition]) -> proc_macro2::TokenStream {
                 pub fn is_positive_zero(&self) -> bool {
                     self.0 == 0.0 && self.0.is_sign_positive()
                 }
-
-                /// Return the ordering between `self` and `other`.
-                ///
-                /// Unlike the standard partial comparison between floating point numbers,
-                /// this comparison always produces an ordering in accordance to
-                /// the `totalOrder` predicate as defined in the IEEE 754 (2008 revision)
-                /// floating point standard. The values are ordered in the following sequence:
-                ///
-                /// - negative infinity
-                /// - negative numbers
-                /// - negative subnormal numbers
-                /// - negative zero
-                /// - positive zero
-                /// - positive subnormal numbers
-                /// - positive numbers
-                /// - positive infinity
-                ///
-                /// The ordering established by this function does not always agree with the
-                /// [`PartialOrd`] and [`PartialEq`] implementations of `f64`:
-                /// they consider negative and positive zero equal, while `total_cmp` doesn't.
-                #[inline]
-                #[must_use]
-                pub fn total_cmp(&self, other: &#float_type) -> core::cmp::Ordering {
-                    self.0.total_cmp(other)
-                }
             }
 
             impl PartialEq for #full_type {

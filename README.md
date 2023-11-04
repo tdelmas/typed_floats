@@ -74,13 +74,12 @@ To facilitate comparisons, the methods `is_positive_zero` and `is_negative_zero`
 
 # Methods implemented
 
-All 12 types implement the methods available on [`f32`] and [`f64`] except:
+All 12 types implement the methods available on [`f32`] and [`f64`] **except**:
 
 - deprecated and nightly-only methods
+- total_cmp(&self, other: &f64) -> Ordering
 - sin_cos(self) -> (f64, f64)
 - mul_add(self, a: f64, b: f64) -> f64
-- powi(self, n: i32) -> f64
-- powf(self, n: f64) -> f64
 - clamp(self, min: f64, max: f64) -> f64
 - LowerExp
 - UpperExp

@@ -426,6 +426,15 @@ pub trait Atan2<T> {
     fn atan2(self, rhs: T) -> Self::Output;
 }
 
+/// This trait is used to specify the return type of the [`Powf::powf()`] function.
+pub trait Powf<T> {
+    /// The resulting type after applying [`Powf::powf()`].
+    type Output;
+
+    /// See [`f64::powf()`] for more details.
+    fn powf(self, rhs: T) -> Self::Output;
+}
+
 typed_floats_macros::generate_docs!(
     pub trait TypedFloat {}
 );
