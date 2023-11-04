@@ -355,13 +355,18 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
                 .build(),
                 OpRhsBuilder::new("Powf", "powf")
                     .op_test_primitive(Box::new(|var1, var2| quote! { #var1.powf(#var2) }))
+                    .comment("If the base is negative and the exponent is not an integer, the result is `NaN`.")
                     .result(Box::new(|float, _| {
-                        ReturnTypeSpecification::FloatSpecifications(FloatSpecifications {
-                            accept_negative: float.s.accept_negative,
-                            accept_positive: true,
-                            accept_zero: true,
-                            accept_inf: true,
-                        })
+                        if float.s.accept_negative {
+                            ReturnTypeSpecification::NativeFloat
+                        } else {
+                            ReturnTypeSpecification::FloatSpecifications(FloatSpecifications {
+                                accept_negative: false,
+                                accept_positive: true,
+                                accept_zero: true,
+                                accept_inf: true,
+                            })
+                        }
                     }))
                     .build(),
     ]
