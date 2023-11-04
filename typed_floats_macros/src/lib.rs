@@ -25,26 +25,30 @@ static F32: &str = "f32";
 static F64: &str = "f64";
 
 #[proc_macro]
-pub fn generate_tests_self(_input: proc_macro::TokenStream) -> proc_macro::TokenStream {
+pub fn generate_tests_self(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
+    let filter = input.to_string();
+
     let mut output = proc_macro2::TokenStream::new();
 
-    output.extend(gen_tests::generate_tests_self(F32));
-    output.extend(gen_tests::generate_tests_self(F64));
+    output.extend(gen_tests::generate_tests_self(F32, &filter));
+    output.extend(gen_tests::generate_tests_self(F64, &filter));
 
     output.into()
 }
 
 #[proc_macro]
-pub fn generate_tests_self_rhs(_input: proc_macro::TokenStream) -> proc_macro::TokenStream {
+pub fn generate_tests_self_rhs(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
+    let filter = input.to_string();
+
     let mut output = proc_macro2::TokenStream::new();
 
-    output.extend(gen_tests::generate_tests_self_rhs(F32));
-    output.extend(gen_tests::generate_tests_self_rhs(F64));
+    output.extend(gen_tests::generate_tests_self_rhs(F32, &filter));
+    output.extend(gen_tests::generate_tests_self_rhs(F64, &filter));
 
     output.into()
 }
 
-fn get_specifications() -> Vec<(&'static str,&'static str, FloatSpecifications)> {
+fn get_specifications() -> Vec<(&'static str, &'static str, FloatSpecifications)> {
     vec![
         (
             "NonNaN",
@@ -211,7 +215,7 @@ pub fn generate_floats(_input: proc_macro::TokenStream) -> proc_macro::TokenStre
 }
 
 fn do_generate_generic_floats(
-    specifications: &[(&'static str,&'static str, FloatSpecifications)],
+    specifications: &[(&'static str, &'static str, FloatSpecifications)],
     default_float_type: &str,
 ) -> proc_macro2::TokenStream {
     let mut output = proc_macro2::TokenStream::new();

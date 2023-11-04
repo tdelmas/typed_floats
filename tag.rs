@@ -107,11 +107,6 @@ fn main() {
         &new_version,
         "./typed_floats_macros/Cargo.toml",
     );
-    update_version(
-        &crate_version,
-        &new_version,
-        "./typed_floats_tests/Cargo.toml",
-    );
 
     //build
     std::process::Command::new("cargo")
@@ -126,7 +121,6 @@ fn main() {
             "add",
             "./typed_floats/Cargo.toml",
             "./typed_floats_macros/Cargo.toml",
-            "./typed_floats_tests/Cargo.toml",
             "./Cargo.lock"
         ])
         .output()

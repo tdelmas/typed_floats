@@ -2,8 +2,7 @@
 
 members = [
     "typed_floats",
-    "typed_floats_macros",
-    "typed_floats_tests",
+    "typed_floats_macros"
 ]
 
 resolver = "2"

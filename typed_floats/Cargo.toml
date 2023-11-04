@@ -18,6 +18,10 @@ rust-version = "1.56"
 [features]
 default = []
 
+#[lib]
+#name = "typed_floats"
+#path = "src/lib.rs"
+
 [dependencies]
 thiserror = "1.0"
 typed_floats_macros = {version = "=0.2.4", path = "../typed_floats_macros"}
