@@ -113,9 +113,14 @@ fn main() {
         "./typed_floats_tests/Cargo.toml",
     );
 
-    println!("Commiting Cargo.toml files...");
+    //build
+    std::process::Command::new("cargo")
+        .args(&["build", "--release"])
+        .output()
+        .unwrap();
 
-    // Commit Cargo.toml files
+    println!("Commiting files...");
+
     std::process::Command::new("git")
         .args(&[
             "add",
