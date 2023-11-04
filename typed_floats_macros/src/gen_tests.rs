@@ -150,7 +150,7 @@ pub(crate) fn generate_tests_self(
 
                 // Execute the operation, will throw if the result type is too strict
                 let res = #test;
-                println!("{:?} = {:?}",#op_name, res);
+                println!("{:?}({:?}) = {:?}",#op_name, a, res);
 
                 // Get the result as a float
                 let as_float = #get;
@@ -263,7 +263,7 @@ pub(crate) fn generate_tests_self_rhs(
                     println!("{:?} = ...",#op_name);
                     // This will panic if the result isn't compatible with the return type
                     let res = #test;
-                    println!("{:?} = {:?}",#op_name, res);
+                    println!("{:?}({:?},{:?}) = {:?}",#op_name, a, b, res);
 
                     let f: #float_type = #get;
 

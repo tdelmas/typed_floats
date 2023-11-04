@@ -198,6 +198,7 @@ pub(crate) struct Op {
     pub(crate) fn_name: &'static str,
     pub(crate) trait_name: Option<&'static str>,
     pub(crate) comment: Option<&'static str>,
+    pub(crate) params: proc_macro2::TokenStream,
     pub(crate) description: proc_macro2::TokenStream,
     pub(crate) skip_check_return_type_strictness: bool,
     op: OpCallback,
@@ -218,6 +219,7 @@ impl OpBuilder {
                 key: fn_name,
                 display: fn_name,
                 fn_name,
+                params: quote! { self },
                 trait_name: None,
                 description: proc_macro2::TokenStream::new(),
                 comment: None,
@@ -251,6 +253,11 @@ impl OpBuilder {
 
     pub fn op_test(mut self, op: TestCallback) -> Self {
         self.op.test = op;
+        self
+    }
+
+    pub fn params(mut self, params: proc_macro2::TokenStream) -> Self {
+        self.op.params = params;
         self
     }
 
@@ -327,6 +334,8 @@ impl Op {
 
         let description = &self.description;
 
+        let params = &self.params;
+
         if let Some(trait_name) = &self.trait_name {
             let trait_name: proc_macro2::TokenStream = trait_name.parse().unwrap();
 
@@ -337,7 +346,7 @@ impl Op {
                     #description
                     #[inline]
                     #[must_use]
-                    fn #fn_ident(self) -> Self::Output {
+                    fn #fn_ident(#params) -> Self::Output {
                         #return_value
                     }
                 }
@@ -348,7 +357,7 @@ impl Op {
                     #description
                     #[inline]
                     #[must_use]
-                    pub fn #fn_ident(self) -> #output_name {
+                    pub fn #fn_ident(#params) -> #output_name {
                         #return_value
                     }
                 }
