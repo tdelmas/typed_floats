@@ -353,5 +353,16 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
                     })
                 }))
                 .build(),
+                OpRhsBuilder::new("Powf", "powf")
+                    .op_test_primitive(Box::new(|var1, var2| quote! { #var1.powf(#var2) }))
+                    .result(Box::new(|float, _| {
+                        ReturnTypeSpecification::FloatSpecifications(FloatSpecifications {
+                            accept_negative: float.s.accept_negative,
+                            accept_positive: true,
+                            accept_zero: true,
+                            accept_inf: true,
+                        })
+                    }))
+                    .build(),
     ]
 }
