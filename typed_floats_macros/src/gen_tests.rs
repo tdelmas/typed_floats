@@ -103,16 +103,24 @@ fn get_test_values(float_type: Ident) -> proc_macro2::TokenStream {
     }
 }
 
-pub(crate) fn generate_tests_self(float_type: &'static str) -> proc_macro2::TokenStream {
+pub(crate) fn generate_tests_self(
+    float_type: &'static str,
+    filter: &str,
+) -> proc_macro2::TokenStream {
     let floats_f64 = get_definitions(float_type);
 
     let mut output = proc_macro2::TokenStream::new();
 
     let float_type = floats_f64[0].float_type_ident();
 
-    let test_fn_name = quote::format_ident!("test_{}", float_type);
+    let test_fn_name = quote::format_ident!("test_{float_type}_{filter}");
 
-    let ops = get_impl_self();
+    let ops = get_impl_self()
+        .into_iter()
+        .filter(|x| x.key == filter)
+        .collect::<Vec<_>>();
+
+    assert!(!ops.is_empty());
 
     for float in &floats_f64 {
         let mut init_test_ops = proc_macro2::TokenStream::new();
@@ -204,16 +212,24 @@ pub(crate) fn generate_tests_self(float_type: &'static str) -> proc_macro2::Toke
     }
 }
 
-pub(crate) fn generate_tests_self_rhs(float_type: &'static str) -> proc_macro2::TokenStream {
+pub(crate) fn generate_tests_self_rhs(
+    float_type: &'static str,
+    filter: &str,
+) -> proc_macro2::TokenStream {
     let floats_f64 = get_definitions(float_type);
 
     let mut output = proc_macro2::TokenStream::new();
 
     let float_type = floats_f64[0].float_type_ident();
 
-    let test_fn_name = quote::format_ident!("test_{}", float_type);
+    let test_fn_name = quote::format_ident!("test_{float_type}_{filter}");
 
-    let ops_rhs = get_impl_self_rhs();
+    let ops_rhs = get_impl_self_rhs()
+        .into_iter()
+        .filter(|x| x.key == filter)
+        .collect::<Vec<_>>();
+
+    assert!(!ops_rhs.is_empty());
 
     for float in &floats_f64 {
         let full_type = float.full_type_ident();

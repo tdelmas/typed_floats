@@ -389,7 +389,6 @@ pub trait DivEuclid<T> {
     fn div_euclid(self, rhs: T) -> Self::Output;
 }
 
-
 /// This trait is used to specify the return type of the [`Atan2::atan2()`] function.
 pub trait Atan2<T> {
     /// The resulting type after applying [`Atan2::atan2()`].
@@ -408,7 +407,7 @@ pub trait Atan2<T> {
     /// # use typed_floats::*;
     /// use typed_floats::tf64::NonNaN;
     /// use typed_floats::tf64::consts::FRAC_PI_4;
-    /// 
+    ///
     /// // Positive angles measured counter-clockwise
     /// // from positive x axis
     /// // -pi/4 radians (45 deg clockwise)
@@ -422,7 +421,7 @@ pub trait Atan2<T> {
     /// assert_relative_eq!(y1.atan2(x1), -std::f64::consts::FRAC_PI_4);
     /// assert_relative_eq!(y2.atan2(x2), 3.0 * std::f64::consts::FRAC_PI_4);
     /// ```
-    /// 
+    ///
     /// See [`f64::atan2()`] for more details.
     fn atan2(self, rhs: T) -> Self::Output;
 }

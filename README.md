@@ -129,8 +129,6 @@ Methods that takes another float as parameter will also return the most strict t
 
 Tests are run on different architectures on [GitHub actions](https://github.com/tdelmas/typed_floats/actions/workflows/tests.yml) and [CircleCI](https://circleci.com/gh/tdelmas/typed_floats).
 
-A separate crate is handling exaustive testing: `typed_floats_test`. They are not included in the published crates because they use >1GB of disk and take >10 minutes to run.
-
 To run all tests:
 
 ```bash

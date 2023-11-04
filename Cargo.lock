@@ -111,14 +111,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "typed_floats_tests"
-version = "0.2.4"
-dependencies = [
- "typed_floats",
- "typed_floats_macros",
-]
-
-[[package]]
 name = "unicode-ident"
 version = "1.0.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
