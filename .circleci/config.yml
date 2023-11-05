@@ -7,10 +7,8 @@ jobs:
       - checkout
       - run: rustup toolchain install nightly
       - run: cargo +nightly -Zscript ./pre-publish.rs
-      - run: 
-          command: cargo test --no-run
-          no_output_timeout: 15m
       - run: cargo test
+      - run: cargo test --test 'serde' --features serde
   build_and_test_arm:
     machine:
       image: ubuntu-2004:current 
@@ -20,10 +18,8 @@ jobs:
       - run: curl https://sh.rustup.rs -sSf | sh -s -- -y
       - run: rustup toolchain install nightly
       - run: cargo +nightly -Zscript ./pre-publish.rs
-      - run: 
-          command: cargo test --no-run
-          no_output_timeout: 15m
       - run: cargo test
+      - run: cargo test --test 'serde' --features serde
 
 workflows:
   version: 2

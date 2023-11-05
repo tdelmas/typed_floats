@@ -259,6 +259,7 @@ fn do_generate_generic_floats(
             ///
             /// It satisfies the following constraints:
             #constraints
+            #[cfg_attr(feature = "serde", derive(Serialize))]
             #[derive(Debug, Copy, Clone)]
             #[repr(transparent)]
             pub struct #name<T=#default_float_type>(T);
@@ -284,6 +285,18 @@ fn do_generate_floats(floats: &[FloatDefinition]) -> proc_macro2::TokenStream {
             .get_compiler_hints(&syn::Ident::new("value", proc_macro2::Span::call_site()));
 
         output.extend(quote! {
+            #[cfg(feature = "serde")]
+            impl<'de> Deserialize<'de> for #full_type {
+                fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+                where
+                    D: Deserializer<'de>,
+                {
+                    let val: #float_type = Deserialize::deserialize(deserializer)?;
+
+                    val.try_into().map_err(serde::de::Error::custom)
+                }
+            }
+
             impl #full_type {
                 /// Creates a new value from a primitive type
                 /// It adds a little overhead compared to `new_unchecked`

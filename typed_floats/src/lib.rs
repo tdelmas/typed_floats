@@ -450,6 +450,9 @@ pub enum FromStrError {
     InvalidNumber(InvalidNumber),
 }
 
+#[cfg(feature = "serde")]
+use serde::{Deserialize, Deserializer, Serialize};
+
 use core::num::{NonZeroI16, NonZeroI32, NonZeroI64, NonZeroI8};
 use core::num::{NonZeroU16, NonZeroU32, NonZeroU64, NonZeroU8};
 
@@ -776,5 +779,26 @@ pub mod tf32 {
         add_const!(LOG10_E, f32, PositiveFinite, "log<sub>10</sub>(e)");
         add_const!(LN_2, f32, PositiveFinite, "ln(2)");
         add_const!(LN_10, f32, PositiveFinite, "ln(10)");
+    }
+
+    #[cfg(feature = "serde")]
+    #[test]
+    fn test_serde() {
+        let map = serde_json::json!({
+            "a": 1.0,
+        });
+
+        #[derive(Serialize)]
+        struct A {
+            a: NonNaN,
+        }
+
+        let a = A {
+            a: NonNaN::try_from(1.0).unwrap(),
+        };
+
+        let a_json = serde_json::to_value(a).unwrap();
+
+        assert_eq!(a_json, map);
     }
 }
