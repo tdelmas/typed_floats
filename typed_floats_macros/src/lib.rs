@@ -259,6 +259,7 @@ fn do_generate_generic_floats(
             ///
             /// It satisfies the following constraints:
             #constraints
+            #[cfg_attr(feature = "serde", derive(Serialize))]
             #[derive(Debug, Copy, Clone)]
             #[repr(transparent)]
             pub struct #name<T=#default_float_type>(T);

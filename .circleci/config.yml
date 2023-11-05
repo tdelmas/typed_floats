@@ -11,6 +11,7 @@ jobs:
           command: cargo test --no-run
           no_output_timeout: 15m
       - run: cargo test
+      - run: cargo test --features serde
   build_and_test_arm:
     machine:
       image: ubuntu-2004:current 
@@ -24,6 +25,7 @@ jobs:
           command: cargo test --no-run
           no_output_timeout: 15m
       - run: cargo test
+      - run: cargo test --features serde
 
 workflows:
   version: 2
