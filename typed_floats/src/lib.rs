@@ -451,7 +451,7 @@ pub enum FromStrError {
 }
 
 #[cfg(feature = "serde")]
-use serde::Serialize;
+use serde::{Deserialize, Deserializer, Serialize};
 
 use core::num::{NonZeroI16, NonZeroI32, NonZeroI64, NonZeroI8};
 use core::num::{NonZeroU16, NonZeroU32, NonZeroU64, NonZeroU8};

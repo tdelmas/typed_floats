@@ -19,10 +19,6 @@ rust-version = "1.56"
 default = []
 serde = ["dep:serde"]
 
-#[lib]
-#name = "typed_floats"
-#path = "src/lib.rs"
-
 [dependencies]
 thiserror = "1.0"
 typed_floats_macros = {version = "=0.3.0", path = "../typed_floats_macros"}
