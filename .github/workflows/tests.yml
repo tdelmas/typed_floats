@@ -33,11 +33,11 @@ jobs:
       - name: Run tests
         run: cargo test --verbose
       - name: Run no-std tests
-        run: cargo test --verbose --no-default-feature
+        run: cargo test --verbose --no-default-features
       - name: Run serde tests
         run: cargo test --verbose --test 'serde' --features serde
       - name: Run no-std+serde tests
-        run: cargo test --verbose --test 'serde' --no-default-feature --features serde
+        run: cargo test --verbose --test 'serde' --no-default-features --features serde
 
   clippy:
     runs-on: ubuntu-latest

@@ -8,9 +8,9 @@ jobs:
       - run: rustup toolchain install nightly
       - run: cargo +nightly -Zscript ./pre-publish.rs
       - run: cargo test
-      - run: cargo test --no-default-feature
+      - run: cargo test --no-default-features
       - run: cargo test --test 'serde' --features serde
-      - run: cargo test --test 'serde' --no-default-feature --features serde
+      - run: cargo test --test 'serde' --no-default-features --features serde
   build_and_test_arm:
     machine:
       image: ubuntu-2004:current 
@@ -21,9 +21,9 @@ jobs:
       - run: rustup toolchain install nightly
       - run: cargo +nightly -Zscript ./pre-publish.rs
       - run: cargo test
-      - run: cargo test --no-default-feature
+      - run: cargo test --no-default-features
       - run: cargo test --test 'serde' --features serde
-      - run: cargo test --test 'serde' --no-default-feature --features serde
+      - run: cargo test --test 'serde' --no-default-features --features serde
 
 workflows:
   version: 2
