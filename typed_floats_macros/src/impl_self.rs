@@ -27,6 +27,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 ReturnTypeSpecification::FloatSpecifications(output_spec)
             }))
             .build(),
+        #[cfg(feature = "std")]
         OpBuilder::new("abs")
             .description(quote! {
                 /// Computes the absolute value of `self`.
@@ -68,6 +69,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 ReturnTypeSpecification::FloatSpecifications(output_spec)
             }))
             .build(),
+        #[cfg(feature = "std")]
         OpBuilder::new("ceil")
             .description(quote! {
                 /// Returns the smallest integer greater than or equal to `self`.
@@ -98,6 +100,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 ReturnTypeSpecification::FloatSpecifications(output_spec)
             }))
             .build(),
+        #[cfg(feature = "std")]
         OpBuilder::new("floor")
             .description(quote! {
                 /// Returns the largest integer less than or equal to `self`.
@@ -128,6 +131,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 ReturnTypeSpecification::FloatSpecifications(output_spec)
             }))
             .build(),
+        #[cfg(feature = "std")]
         OpBuilder::new("round")
             .description(quote! {
                 /// Returns the nearest integer to `self`. If a value is half-way between two
@@ -157,6 +161,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 ReturnTypeSpecification::FloatSpecifications(output_spec)
             }))
             .build(),
+        #[cfg(feature = "std")]
         OpBuilder::new("trunc")
             .description(quote! {
                 /// Returns the integer part of `self`.
@@ -186,6 +191,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 ReturnTypeSpecification::FloatSpecifications(output_spec)
             }))
             .build(),
+        #[cfg(feature = "std")]
         OpBuilder::new("fract")
             .description(quote! {
                 /// Returns the fractional part of `self`.
@@ -225,6 +231,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 ReturnTypeSpecification::FloatSpecifications(output_spec)
             }))
             .build(),
+        #[cfg(feature = "std")]
         OpBuilder::new("signum")
             .description(quote! {
                 /// Returns a number that represents the sign of `self`.
@@ -287,6 +294,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 ReturnTypeSpecification::FloatSpecifications(spec)
             }))
             .build(),
+        #[cfg(feature = "std")]
         OpBuilder::new("sqrt")
             .description(quote! {
                 /// Returns the square root of a number.
@@ -332,6 +340,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 ReturnTypeSpecification::FloatSpecifications(float.s.clone())
             }))
             .build(),
+        #[cfg(feature = "std")]
         OpBuilder::new("exp")
             .description(quote! {
                 /// Returns `e^(self)`, (the exponential function).
@@ -364,6 +373,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 })
             }))
             .build(),
+        #[cfg(feature = "std")]
         OpBuilder::new("exp2")
             .description(quote! {
                 /// Returns `2^(self)`.
@@ -396,6 +406,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 })
             }))
             .build(),
+        #[cfg(feature = "std")]
         OpBuilder::new("ln")
             .description(quote! {
                 /// Returns the natural logarithm of the number.
@@ -445,6 +456,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 })
             }))
             .build(),
+        #[cfg(feature = "std")]
         OpBuilder::new("log2")
             .description(quote! {
                 /// Returns the base 2 logarithm of the number.
@@ -485,6 +497,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 })
             }))
             .build(),
+        #[cfg(feature = "std")]
         OpBuilder::new("log10")
             .description(quote! {
                 /// Returns the base 10 logarithm of the number.
@@ -586,6 +599,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 ReturnTypeSpecification::FloatSpecifications(float.s.clone())
             }))
             .build(),
+        #[cfg(feature = "std")]
         OpBuilder::new("cbrt")
             .description(quote! {
                 /// Returns the cube root of a number.
@@ -615,6 +629,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 ReturnTypeSpecification::FloatSpecifications(float.s.clone())
             }))
             .build(),
+        #[cfg(feature = "std")]
         OpBuilder::new("sin")
             // For Non-zero, `sin` still produces zeros but the tests can't check it
             .skip_check_return_type_strictness()
@@ -662,6 +677,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 })
             }))
             .build(),
+        #[cfg(feature = "std")]
         OpBuilder::new("cos")
             // For Non-zero, `cos` still produces zeros but the tests can't check it
             .skip_check_return_type_strictness()
@@ -708,6 +724,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 })
             }))
             .build(),
+        #[cfg(feature = "std")]
         OpBuilder::new("tan")
             // For Non-zero, `tan` still produces zeros but the tests can't check it
             .skip_check_return_type_strictness()
@@ -742,6 +759,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 })
             }))
             .build(),
+        #[cfg(feature = "std")]
         OpBuilder::new("asin")
             .description(quote! {
                 /// Computes the arcsine of a number.
@@ -769,6 +787,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
             })
             .result(Box::new(|_| ReturnTypeSpecification::NativeFloat))
             .build(),
+        #[cfg(feature = "std")]
         OpBuilder::new("acos")
             .description(quote! {
                 /// Computes the arccosine of a number.
@@ -799,6 +818,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
             })
             .result(Box::new(|_| ReturnTypeSpecification::NativeFloat))
             .build(),
+        #[cfg(feature = "std")]
         OpBuilder::new("atan")
             .description(quote! {
                 /// Computes the arctangent of a number.
@@ -827,6 +847,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 })
             }))
             .build(),
+        #[cfg(feature = "std")]
         OpBuilder::new("exp_m1")
             .description(quote! {
                 /// Returns `e^(self) - 1` in a way that is accurate even if the number is close to zero.
@@ -853,6 +874,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 })
             }))
             .build(),
+        #[cfg(feature = "std")]
         OpBuilder::new("ln_1p")
             .description(quote! {
                 /// Returns `ln(1+n)` (natural logarithm) more accurately than if the operations were performed separately.
@@ -887,6 +909,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 })
             }))
             .build(),
+        #[cfg(feature = "std")]
         OpBuilder::new("sinh")
             .description(quote! {
                 /// Hyperbolic sine function.
@@ -913,6 +936,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 })
             }))
             .build(),
+        #[cfg(feature = "std")]
         OpBuilder::new("cosh")
             .description(quote! {
                 /// Hyperbolic cosine function.
@@ -939,6 +963,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 })
             }))
             .build(),
+        #[cfg(feature = "std")]
         OpBuilder::new("tanh")
             .description(quote! {
                 /// Hyperbolic tangent function.
@@ -965,6 +990,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 })
             }))
             .build(),
+        #[cfg(feature = "std")]
         OpBuilder::new("asinh")
             .description(quote! {
                 /// Inverse hyperbolic sine function.
@@ -991,6 +1017,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 })
             }))
             .build(),
+        #[cfg(feature = "std")]
         OpBuilder::new("acosh")
             .description(quote! {
                 /// Inverse hyperbolic cosine function.
@@ -1013,6 +1040,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
             })
             .result(Box::new(|_| ReturnTypeSpecification::NativeFloat))
             .build(),
+        #[cfg(feature = "std")]
         OpBuilder::new("atanh")
             .description(quote! {
                 /// Inverse hyperbolic tangent function.
@@ -1070,6 +1098,7 @@ pub(crate) fn get_impl_self() -> Vec<Op> {
                 })
             }))
             .build(),
+        #[cfg(feature = "std")]
         OpBuilder::new("powi")
             .params(quote! {self, n: i32})
             .op_fn(Box::new(|_| {
