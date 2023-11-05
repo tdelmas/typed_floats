@@ -167,6 +167,7 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
                 }
             }))
             .build(),
+            #[cfg(feature = "std")]
         OpRhsBuilder::new("Hypot", "hypot")
             .op_is_commutative()
             .op_test_primitive(Box::new(|var1, var2| { quote! { #var1.hypot(#var2) } }))
@@ -295,6 +296,7 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
                 ReturnTypeSpecification::FloatSpecifications(output_def)
             }))
             .build(),
+        #[cfg(feature = "std")]
         OpRhsBuilder::new("Copysign", "copysign")
             .op_test_primitive(Box::new(|var1, var2| quote! { #var1.copysign(#var2) }))
             .result(Box::new(|float, rhs| {
@@ -306,6 +308,7 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
                 })
             }))
             .build(),
+        #[cfg(feature = "std")]
         OpRhsBuilder::new("DivEuclid", "div_euclid")
             // Because of rounding errors we can't check that the result is always as strict as possible.
             .skip_check_return_type_strictness()
@@ -334,40 +337,42 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
                 }
             }))
             .build(),
-            OpRhsBuilder::new("Atan2", "atan2")
-                .op_test_primitive(Box::new(|var1, var2| quote! { #var1.atan2(#var2) }))
-                // Because of rounding errors we can't check that the result is always as strict as possible.
-                .skip_check_return_type_strictness()
-                .result(Box::new(|float, rhs| {
-                    let spec_a = &float.s;
-                    let spec_b = &rhs.s;
+        #[cfg(feature = "std")]
+        OpRhsBuilder::new("Atan2", "atan2")
+            .op_test_primitive(Box::new(|var1, var2| quote! { #var1.atan2(#var2) }))
+            // Because of rounding errors we can't check that the result is always as strict as possible.
+            .skip_check_return_type_strictness()
+            .result(Box::new(|float, rhs| {
+                let spec_a = &float.s;
+                let spec_b = &rhs.s;
 
-                    let can_be_positive = spec_a.accept_positive || spec_b.accept_positive;
-                    let can_be_negative = spec_a.accept_negative || spec_b.accept_negative;
+                let can_be_positive = spec_a.accept_positive || spec_b.accept_positive;
+                let can_be_negative = spec_a.accept_negative || spec_b.accept_negative;
 
+                ReturnTypeSpecification::FloatSpecifications(FloatSpecifications {
+                    accept_inf: false,
+                    accept_zero: true,
+                    accept_positive: can_be_positive,
+                    accept_negative: can_be_negative,
+                })
+            }))
+            .build(),
+        #[cfg(feature = "std")]
+        OpRhsBuilder::new("Powf", "powf")
+            .op_test_primitive(Box::new(|var1, var2| quote! { #var1.powf(#var2) }))
+            .comment("If the base is negative and the exponent is not an integer, the result is `NaN`.")
+            .result(Box::new(|float, _| {
+                if float.s.accept_negative {
+                    ReturnTypeSpecification::NativeFloat
+                } else {
                     ReturnTypeSpecification::FloatSpecifications(FloatSpecifications {
-                        accept_inf: false,
+                        accept_negative: false,
+                        accept_positive: true,
                         accept_zero: true,
-                        accept_positive: can_be_positive,
-                        accept_negative: can_be_negative,
+                        accept_inf: true,
                     })
-                }))
-                .build(),
-                OpRhsBuilder::new("Powf", "powf")
-                    .op_test_primitive(Box::new(|var1, var2| quote! { #var1.powf(#var2) }))
-                    .comment("If the base is negative and the exponent is not an integer, the result is `NaN`.")
-                    .result(Box::new(|float, _| {
-                        if float.s.accept_negative {
-                            ReturnTypeSpecification::NativeFloat
-                        } else {
-                            ReturnTypeSpecification::FloatSpecifications(FloatSpecifications {
-                                accept_negative: false,
-                                accept_positive: true,
-                                accept_zero: true,
-                                accept_inf: true,
-                            })
-                        }
-                    }))
-                    .build(),
+                }
+            }))
+            .build(),
     ]
 }

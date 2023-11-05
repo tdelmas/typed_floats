@@ -107,6 +107,7 @@
 #![warn(clippy::unwrap_in_result)]
 #![warn(clippy::indexing_slicing)]
 #![warn(missing_docs)]
+#![cfg_attr(not(feature = "std"), no_std)]
 
 /// This macros assert that two values are close to each other.
 ///
@@ -247,6 +248,7 @@ macro_rules! assert_is_negative_zero {
     }};
 }
 
+#[cfg(feature = "std")]
 /// This trait is used to specify the return type of the [`Hypot::hypot()`] function.
 pub trait Hypot<T> {
     /// The resulting type after applying [`Hypot::hypot()`].
@@ -325,6 +327,7 @@ pub trait Max<T> {
     fn max(self, rhs: T) -> Self::Output;
 }
 
+#[cfg(feature = "std")]
 /// This trait is used to specify the return type of the [`Copysign::copysign()`] function.
 pub trait Copysign<T> {
     /// The resulting type after applying [`Copysign::copysign()`].
@@ -359,6 +362,7 @@ pub trait Copysign<T> {
     fn copysign(self, rhs: T) -> Self::Output;
 }
 
+#[cfg(feature = "std")]
 /// This trait is used to specify the return type of the [`DivEuclid::div_euclid()`] function.
 pub trait DivEuclid<T> {
     /// The resulting type after applying [`DivEuclid::div_euclid()`].
@@ -389,6 +393,7 @@ pub trait DivEuclid<T> {
     fn div_euclid(self, rhs: T) -> Self::Output;
 }
 
+#[cfg(feature = "std")]
 /// This trait is used to specify the return type of the [`Atan2::atan2()`] function.
 pub trait Atan2<T> {
     /// The resulting type after applying [`Atan2::atan2()`].
@@ -418,14 +423,15 @@ pub trait Atan2<T> {
     /// let x2 = -3.0_f64;
     /// let y2 = 3.0_f64;
     ///
-    /// assert_relative_eq!(y1.atan2(x1), -std::f64::consts::FRAC_PI_4);
-    /// assert_relative_eq!(y2.atan2(x2), 3.0 * std::f64::consts::FRAC_PI_4);
+    /// assert_relative_eq!(y1.atan2(x1), -core::f64::consts::FRAC_PI_4);
+    /// assert_relative_eq!(y2.atan2(x2), 3.0 * core::f64::consts::FRAC_PI_4);
     /// ```
     ///
     /// See [`f64::atan2()`] for more details.
     fn atan2(self, rhs: T) -> Self::Output;
 }
 
+#[cfg(feature = "std")]
 /// This trait is used to specify the return type of the [`Powf::powf()`] function.
 pub trait Powf<T> {
     /// The resulting type after applying [`Powf::powf()`].
@@ -440,15 +446,25 @@ typed_floats_macros::generate_docs!(
 );
 
 /// An error that can occur when converting from a string into a `TypedFloat`
-#[derive(Error, Debug)]
+#[derive(Debug)]
 pub enum FromStrError {
     /// The string did not contain a valid float number
-    #[error("{0:?}")]
     ParseFloatError(core::num::ParseFloatError),
     /// The string contained a valid float number but it didn't fit in the target type
-    #[error("{0:?}")]
     InvalidNumber(InvalidNumber),
 }
+
+impl core::fmt::Display for FromStrError {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        match self {
+            FromStrError::ParseFloatError(e) => write!(f, "{e}"),
+            FromStrError::InvalidNumber(e) => write!(f, "{e}"),
+        }
+    }
+}
+
+#[cfg(feature = "std")]
+impl std::error::Error for FromStrError {}
 
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Deserializer, Serialize};
@@ -456,27 +472,35 @@ use serde::{Deserialize, Deserializer, Serialize};
 use core::num::{NonZeroI16, NonZeroI32, NonZeroI64, NonZeroI8};
 use core::num::{NonZeroU16, NonZeroU32, NonZeroU64, NonZeroU8};
 
-use thiserror::Error;
-
 /// An error that can occur when converting into a typed float
-#[derive(Error, Debug, Eq, PartialEq)]
+#[derive(Debug, Eq, PartialEq)]
 pub enum InvalidNumber {
     /// Any variant of `Nan`
-    #[error("Number is NaN")]
     NaN,
     /// `+0.0` or `-0.0`
-    #[error("Number is zero")]
     Zero,
     /// Any negative number, including `-0.0` and `-inf`
-    #[error("Number is negative")]
     Negative,
     /// Any positive number, including `+0.0` and `+inf`
-    #[error("Number is positive")]
     Positive,
     /// `+inf` or `-inf`
-    #[error("Number is infinite")]
     Infinite,
 }
+
+impl core::fmt::Display for InvalidNumber {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        match self {
+            InvalidNumber::NaN => write!(f, "Number is NaN"),
+            InvalidNumber::Zero => write!(f, "Number is zero"),
+            InvalidNumber::Negative => write!(f, "Number is negative"),
+            InvalidNumber::Positive => write!(f, "Number is positive"),
+            InvalidNumber::Infinite => write!(f, "Number is infinite"),
+        }
+    }
+}
+
+#[cfg(feature = "std")]
+impl std::error::Error for InvalidNumber {}
 
 typed_floats_macros::generate_floats!();
 

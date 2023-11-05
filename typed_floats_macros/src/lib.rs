@@ -616,7 +616,7 @@ fn do_generate_floats(floats: &[FloatDefinition]) -> proc_macro2::TokenStream {
         // > When implementing both Hash and Eq, it is important that the following property holds:
         // > `k1 == k2 -> hash(k1) == hash(k2)`
         // This is sound because `NaN` is not a possible value.
-        // https://doc.rust-lang.org/std/hash/trait.Hash.html
+        // https://doc.rust-lang.org/core/hash/trait.Hash.html
         if !float.s.accept_zero || !float.s.accept_positive || !float.s.accept_negative {
             output.extend(quote! {
                 impl core::hash::Hash for #full_type {
