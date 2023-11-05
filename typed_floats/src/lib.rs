@@ -108,6 +108,11 @@
 #![warn(clippy::indexing_slicing)]
 #![warn(missing_docs)]
 
+#![no_std]
+
+// Requires `alloc`.
+extern crate alloc;
+
 /// This macros assert that two values are close to each other.
 ///
 /// # Examples
@@ -418,8 +423,8 @@ pub trait Atan2<T> {
     /// let x2 = -3.0_f64;
     /// let y2 = 3.0_f64;
     ///
-    /// assert_relative_eq!(y1.atan2(x1), -std::f64::consts::FRAC_PI_4);
-    /// assert_relative_eq!(y2.atan2(x2), 3.0 * std::f64::consts::FRAC_PI_4);
+    /// assert_relative_eq!(y1.atan2(x1), -core::f64::consts::FRAC_PI_4);
+    /// assert_relative_eq!(y2.atan2(x2), 3.0 * core::f64::consts::FRAC_PI_4);
     /// ```
     ///
     /// See [`f64::atan2()`] for more details.
