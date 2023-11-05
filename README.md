@@ -97,7 +97,7 @@ The only method that can `panic!` is the `unsafe` method `new_unchecked` when us
 
 A `panic!` triggered in any other way is considered a security bug and should be reported.
 
-## Overhead
+## Minimal overhead
 
 This crate is designed to have a minimal overhead at runtime, in terms of memory, speed and binary size.
 
@@ -108,6 +108,10 @@ The only methods that adds a little overhead are `try_from` because of the check
 In debug mode, a little overhead is present, both to check the validity of the values and because `inline` may not be respected.
 
 Any other overhead is considered a bug and should be reported.
+
+# Features
+
+- `serde`: implements `Serialize` and `Deserialize` for all types
 
 ## How it works
 
@@ -121,7 +125,6 @@ Methods that takes another float as parameter will also return the most strict t
 ## Main limitations
 
 - Doesn't work with `no_std` (for now)
-- Doesn't implement `serde` serialization/deserialization (yet)
 - Doesn't fix the floating point quirks such as `0.0 == -0.0` (because that would introduce a runtime overhead)
 
 ## Testing
