@@ -116,7 +116,7 @@ dependencies = [
 
 [[package]]
 name = "typed_floats"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "checked-float",
  "ordered-float",
@@ -127,7 +127,7 @@ dependencies = [
 
 [[package]]
 name = "typed_floats_macros"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "proc-macro2",
  "quote",
