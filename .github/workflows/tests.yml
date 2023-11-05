@@ -30,10 +30,10 @@ jobs:
           cargo +nightly -Zscript ./pre-publish.rs
           rustup toolchain install ${{ matrix.version }}
           cargo build
-      - name: Build tests
-        run: cargo test --no-run
       - name: Run tests
         run: cargo test --verbose
+      - name: Run serde tests
+        run: cargo test --verbose --test 'serde' --features serde
 
   clippy:
     runs-on: ubuntu-latest
