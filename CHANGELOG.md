@@ -10,3 +10,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - First version to commit to semantic versioning.
+
+## 0.4.0 - 2023-11-05
+
+### Added
+
+- `no_std` support.
+
+## 0.3.0 - 2023-11-04
+
+### Added
+
+- `serde` serialization and deserialization support.
+
+## 0.2.3 - 2023-11-03
+
+### Added
+
+- `atan2` method.
+
+## 0.2.1 - 2023-11-01
+
+### Added
+
+- `Hash` implementation for compatible types.
