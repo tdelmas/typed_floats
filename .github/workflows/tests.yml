@@ -38,7 +38,22 @@ jobs:
         run: cargo test --verbose --test 'serde' --features serde
       - name: Run no-std+serde tests
         run: cargo test --verbose --test 'serde' --no-default-features --features serde
-
+        
+  codecov:
+      - uses: actions/checkout@v3
+      - name: Build
+        run: |
+          rustup toolchain install nightly
+          cargo +nightly -Zscript ./pre-publish.rs
+          rustup toolchain install ${{ matrix.version }}
+          cargo build
+      - name: Run tests on with all features for Codecov
+        run: cargo test --all-features
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v3
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+    
   clippy:
     runs-on: ubuntu-latest
     name: Clippy
