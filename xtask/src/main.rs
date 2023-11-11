@@ -75,19 +75,19 @@ fn get_version(path: std::path::PathBuf) -> String {
 fn update_version(previous: &str, next: &str, path: &str) {
     let str = std::fs::read_to_string(path)
         .unwrap()
-        .replace(&previous, &next);
+        .replace(previous, next);
 
     std::fs::write(path, str).unwrap();
 }
 
 fn tag(args: &TagArgs) {
     std::process::Command::new("cargo")
-        .args(&["fmt"])
+        .args(["fmt"])
         .output()
         .unwrap();
 
     let is_clean = std::process::Command::new("git")
-        .args(&["status", "--porcelain"])
+        .args(["status", "--porcelain"])
         .output()
         .unwrap()
         .stdout
@@ -115,11 +115,7 @@ fn tag(args: &TagArgs) {
         let version = args.version.clone().unwrap();
         let version = parse_version(&version);
 
-        if version.0 > major {
-            version
-        } else if version.1 > minor {
-            version
-        } else if version.2 > patch {
+        if version.0 > major || version.1 > minor || version.2 > patch {
             version
         } else {
             println!("The version must be greater than the current version");
@@ -145,14 +141,14 @@ fn tag(args: &TagArgs) {
 
     //build
     std::process::Command::new("cargo")
-        .args(&["build", "--release"])
+        .args(["build", "--release"])
         .output()
         .unwrap();
 
     println!("Commiting files...");
 
     std::process::Command::new("git")
-        .args(&[
+        .args([
             "add",
             "./typed_floats/Cargo.toml",
             "./typed_floats_macros/Cargo.toml",
@@ -162,28 +158,28 @@ fn tag(args: &TagArgs) {
         .unwrap();
 
     std::process::Command::new("git")
-        .args(&["commit", "-m", &new_version])
+        .args(["commit", "-m", &new_version])
         .output()
         .unwrap();
 
     println!("Push to remote...");
 
     std::process::Command::new("git")
-        .args(&["push"])
+        .args(["push"])
         .output()
         .unwrap();
 
     println!("Tagging...");
 
     std::process::Command::new("git")
-        .args(&["tag", "-a", &new_version, "-m", &new_version])
+        .args(["tag", "-a", &new_version, "-m", &new_version])
         .output()
         .unwrap();
 
     println!("Pushing tag to trigger publish...");
 
     std::process::Command::new("git")
-        .args(&["push", "origin", &new_version])
+        .args(["push", "origin", &new_version])
         .output()
         .unwrap();
 }
