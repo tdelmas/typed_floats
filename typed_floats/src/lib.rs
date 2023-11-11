@@ -109,6 +109,9 @@
 #![warn(missing_docs)]
 #![cfg_attr(not(feature = "std"), no_std)]
 
+#[cfg(feature = "libm")]
+use num_traits::Float;
+
 /// This macros assert that two values are close to each other.
 ///
 /// # Examples
@@ -250,6 +253,7 @@ macro_rules! assert_is_negative_zero {
 
 #[cfg(feature = "std")]
 /// This trait is used to specify the return type of the [`Hypot::hypot()`] function.
+
 pub trait Hypot<T> {
     /// The resulting type after applying [`Hypot::hypot()`].
     type Output;

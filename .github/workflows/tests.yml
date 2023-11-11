@@ -37,6 +37,8 @@ jobs:
         run: cargo test --verbose --test 'serde' --features serde
       - name: Run no-std+serde tests
         run: cargo test --verbose --test 'serde' --no-default-features --features serde
+      - name: Partial no-std+libm tests
+        run: cargo test --test 'abs' --no-default-features --features 'libm'
         
   clippy:
     runs-on: ubuntu-latest
