@@ -31,10 +31,12 @@ jobs:
           cargo build
       - run: cargo test --verbose
       - run: cargo test --verbose --no-default-features
-      - run: cargo test --verbose --test 'serde' --features serde
+      - run: cargo test --verbose --features serde
       - run: cargo test --verbose --test 'serde' --no-default-features --features serde
       - run: cargo test --verbose --test 'serde' --no-default-features --features serde,libm
+      - run: cargo test --verbose --test 'serde' --no-default-features --features serde,libm,std
       - run: cargo test --no-default-features --features 'libm'
+      - run: cargo build --no-default-features --features serde,std,libm
         
   clippy:
     runs-on: ubuntu-latest

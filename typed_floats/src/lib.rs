@@ -808,25 +808,4 @@ pub mod tf32 {
         add_const!(LN_2, f32, PositiveFinite, "ln(2)");
         add_const!(LN_10, f32, PositiveFinite, "ln(10)");
     }
-
-    #[cfg(feature = "serde")]
-    #[test]
-    fn test_serde() {
-        let map = serde_json::json!({
-            "a": 1.0,
-        });
-
-        #[derive(Serialize)]
-        struct A {
-            a: NonNaN,
-        }
-
-        let a = A {
-            a: NonNaN::try_from(1.0).unwrap(),
-        };
-
-        let a_json = serde_json::to_value(a).unwrap();
-
-        assert_eq!(a_json, map);
-    }
 }

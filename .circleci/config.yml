@@ -8,9 +8,10 @@ jobs:
       - run: cargo xtask pre-build
       - run: cargo test
       - run: cargo test --no-default-features
-      - run: cargo test --test 'serde' --features serde
+      - run: cargo test --verbose --features serde
       - run: cargo test --test 'serde' --no-default-features --features serde
-      - run: cargo test --test 'serde' --no-default-features --features libm
+      - run: cargo test --no-default-features --features libm
+      - run: cargo build --no-default-features --features serde,std,libm
   build_and_test_arm:
     machine:
       image: ubuntu-2004:current 
@@ -21,9 +22,12 @@ jobs:
       - run: cargo xtask pre-build
       - run: cargo test
       - run: cargo test --no-default-features
-      - run: cargo test --test 'serde' --features serde
+      - run: cargo test --verbose --features serde
       - run: cargo test --test 'serde' --no-default-features --features serde
-      - run: cargo test --test 'serde' --no-default-features --features libm
+      - run: cargo test --test 'serde' --no-default-features --features serde,libm
+      - run: cargo test --test 'serde' --no-default-features --features serde,libm,std
+      - run: cargo test --no-default-features --features libm
+      - run: cargo build --no-default-features --features serde,std,libm
 
 workflows:
   version: 2

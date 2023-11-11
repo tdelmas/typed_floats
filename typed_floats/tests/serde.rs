@@ -24,3 +24,25 @@ fn test_serde_deserialize() {
     assert!(a.is_err());
     assert_eq!(a.unwrap_err().to_string(), "Number is negative");
 }
+
+#[test]
+fn test_serde_struct() {
+    use serde::Serialize;
+
+    let map = serde_json::json!({
+        "a": 1.0,
+    });
+
+    #[derive(Serialize)]
+    struct A {
+        a: NonNaN,
+    }
+
+    let a = A {
+        a: NonNaN::try_from(1.0).unwrap(),
+    };
+
+    let a_json = serde_json::to_value(a).unwrap();
+
+    assert_eq!(a_json, map);
+}
