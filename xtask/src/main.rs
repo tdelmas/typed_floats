@@ -1,21 +1,58 @@
-#!/usr/bin/env cargo
-
-//! ```cargo
-//! [package]
-//! edition = "2021"
-//! [dependencies]
-//! clap = { version = "4.2", features = ["derive"] }
-//! toml = "0.7"
-//! ```
-
-use clap::Parser;
+use clap::{Parser, Subcommand};
+use std::fs;
+use std::path::Path;
 
 #[derive(Parser, Debug)]
-struct Args {
+#[command(arg_required_else_help(true))]
+struct Cli {
+    #[command(subcommand)]
+    command: Option<Commands>,
+}
+
+#[derive(Subcommand, Debug)]
+enum Commands {
+    Tag(TagArgs),
+    PreBuild,
+}
+
+#[derive(Parser, Debug)]
+struct TagArgs {
     #[clap(long, help = "The new version")]
     version: Option<String>,
     #[clap(long, help = "Force the tag")]
     force: bool,
+}
+
+fn main() {
+    let cli: Cli = Cli::parse();
+
+    match &cli.command {
+        Some(Commands::PreBuild) => create_creadmes(),
+        Some(Commands::Tag(args)) => tag(args),
+        None => {}
+    }
+}
+
+fn create_creadmes() {
+    let orig_readme = Path::new("./README.md");
+    let crate_readme = Path::new("./typed_floats/README.md");
+
+    // Copy the README.md from the root (used by GitHub)
+    // to the crate root (used by crates.io)
+    fs::copy(orig_readme, crate_readme).unwrap();
+
+    // Truncate the README to include it in the documentation of the crate
+    let trucated_readme = Path::new("./typed_floats/README.truncated.md");
+
+    // remove the parts that are not used by docs.io
+    // That truncated version is the introduction of the documentation
+    let text_readme = fs::read_to_string(crate_readme).unwrap();
+
+    let text = text_readme.split("# Full documentation").next().unwrap();
+
+    let text = text.replace("```rust", "```ignore");
+
+    fs::write(trucated_readme, text).unwrap();
 }
 
 fn parse_version(version: &str) -> (u8, u8, u8) {
@@ -38,21 +75,19 @@ fn get_version(path: std::path::PathBuf) -> String {
 fn update_version(previous: &str, next: &str, path: &str) {
     let str = std::fs::read_to_string(path)
         .unwrap()
-        .replace(&previous, &next);
+        .replace(previous, next);
 
     std::fs::write(path, str).unwrap();
 }
 
-fn main() {
-    let args = Args::parse();
-
+fn tag(args: &TagArgs) {
     std::process::Command::new("cargo")
-        .args(&["fmt"])
+        .args(["fmt"])
         .output()
         .unwrap();
 
     let is_clean = std::process::Command::new("git")
-        .args(&["status", "--porcelain"])
+        .args(["status", "--porcelain"])
         .output()
         .unwrap()
         .stdout
@@ -77,14 +112,10 @@ fn main() {
     let (major, minor, patch) = parse_version(&crate_version);
 
     let (major, minor, patch) = if args.version.is_some() {
-        let version = args.version.unwrap();
+        let version = args.version.clone().unwrap();
         let version = parse_version(&version);
 
-        if version.0 > major {
-            version
-        } else if version.1 > minor {
-            version
-        } else if version.2 > patch {
+        if version.0 > major || version.1 > minor || version.2 > patch {
             version
         } else {
             println!("The version must be greater than the current version");
@@ -110,45 +141,45 @@ fn main() {
 
     //build
     std::process::Command::new("cargo")
-        .args(&["build", "--release"])
+        .args(["build", "--release"])
         .output()
         .unwrap();
 
     println!("Commiting files...");
 
     std::process::Command::new("git")
-        .args(&[
+        .args([
             "add",
             "./typed_floats/Cargo.toml",
             "./typed_floats_macros/Cargo.toml",
-            "./Cargo.lock"
+            "./Cargo.lock",
         ])
         .output()
         .unwrap();
 
     std::process::Command::new("git")
-        .args(&["commit", "-m", &new_version])
+        .args(["commit", "-m", &new_version])
         .output()
         .unwrap();
 
     println!("Push to remote...");
 
     std::process::Command::new("git")
-        .args(&["push"])
+        .args(["push"])
         .output()
         .unwrap();
 
     println!("Tagging...");
 
     std::process::Command::new("git")
-        .args(&["tag", "-a", &new_version, "-m", &new_version])
+        .args(["tag", "-a", &new_version, "-m", &new_version])
         .output()
         .unwrap();
 
     println!("Pushing tag to trigger publish...");
 
     std::process::Command::new("git")
-        .args(&["push", "origin", &new_version])
+        .args(["push", "origin", &new_version])
         .output()
         .unwrap();
 }

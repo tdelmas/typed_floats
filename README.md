@@ -143,9 +143,8 @@ To run all tests:
 git clone https://github.com/tdelmas/typed_floats
 cd typed_floats
 
-# Nightly is require to run that script that
-# generate the published documentation including some tests
-cargo +nightly -Zscript ./pre-publish.rs
+# generate the published documentation, including some tests
+cargo xtask pre-build
 
 cargo test --all
 ```

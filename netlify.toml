@@ -1,7 +1,7 @@
 [build]
 
 publish = "./target/doc/"
-command = "rustup default stable && rustup toolchain install nightly && cargo +nightly -Zscript ./pre-publish.rs && cd typed_floats && cargo doc"
+command = "cargo xtask pre-build && cd typed_floats && cargo doc"
 
 [[redirects]]
 from = "/"
