@@ -312,7 +312,22 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
         OpRhsBuilder::new("DivEuclid", "div_euclid")
             // Because of rounding errors we can't check that the result is always as strict as possible.
             .skip_check_return_type_strictness()
-            .op_test_primitive(Box::new(|var1, var2| quote! { #var1.div_euclid(#var2) }))
+            .op_fn(
+                if cfg!(feature = "std") {
+                    Box::new(|_, _| quote! { self.get().div_euclid(rhs.get()) })
+                } else if cfg!(feature = "libm") {
+                    Box::new(|_, _| quote! { self.get().div_euclid(&rhs.get()) })
+                } else {
+                    Box::new(|_, _| quote! { panic!("No implementation for div_euclid") })
+                }
+            )
+            .op_test_primitive(Box::new(|var1, var2| quote! { 
+                if cfg!(feature = "std") {
+                    #var1.div_euclid(#var2)
+                } else if cfg!(feature = "libm") {
+                    #var1.div_euclid(&#var2)
+                }
+            }))
             .result(Box::new(|float, rhs| {
                 let spec_a = &float.s;
                 let spec_b = &rhs.s;

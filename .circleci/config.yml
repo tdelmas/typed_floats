@@ -12,7 +12,7 @@ jobs:
     resource_class: arm.medium
     steps:
       - checkout
-      - run: ./test.sh
+      - run: ./test-ci.sh
 
 workflows:
   version: 2

@@ -394,7 +394,7 @@ pub trait DivEuclid<T> {
     /// ```
     ///
     /// See [`f64::div_euclid()`] for more details.
-    fn div_euclid(&self, rhs: &T) -> Self::Output;
+    fn div_euclid(self, rhs: T) -> Self::Output;
 }
 
 #[cfg(any(feature = "std", feature = "libm"))]
