@@ -86,6 +86,12 @@ fn tag(args: &TagArgs) {
         .output()
         .unwrap();
 
+    std::process::Command::new("./tests.sh")
+        .stdout(std::process::Stdio::inherit())
+        .stderr(std::process::Stdio::inherit())
+        .output()
+        .expect("failed run tests");
+
     let is_clean = std::process::Command::new("git")
         .args(["status", "--porcelain"])
         .output()
