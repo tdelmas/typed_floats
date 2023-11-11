@@ -251,7 +251,7 @@ macro_rules! assert_is_negative_zero {
     }};
 }
 
-#[cfg(feature = "std")]
+#[cfg(any(feature = "std", feature = "libm"))]
 /// This trait is used to specify the return type of the [`Hypot::hypot()`] function.
 
 pub trait Hypot<T> {
@@ -331,7 +331,7 @@ pub trait Max<T> {
     fn max(self, rhs: T) -> Self::Output;
 }
 
-#[cfg(feature = "std")]
+#[cfg(any(feature = "std", feature = "libm"))]
 /// This trait is used to specify the return type of the [`Copysign::copysign()`] function.
 pub trait Copysign<T> {
     /// The resulting type after applying [`Copysign::copysign()`].
@@ -366,7 +366,7 @@ pub trait Copysign<T> {
     fn copysign(self, rhs: T) -> Self::Output;
 }
 
-#[cfg(feature = "std")]
+#[cfg(any(feature = "std", feature = "libm"))]
 /// This trait is used to specify the return type of the [`DivEuclid::div_euclid()`] function.
 pub trait DivEuclid<T> {
     /// The resulting type after applying [`DivEuclid::div_euclid()`].
@@ -397,7 +397,7 @@ pub trait DivEuclid<T> {
     fn div_euclid(self, rhs: T) -> Self::Output;
 }
 
-#[cfg(feature = "std")]
+#[cfg(any(feature = "std", feature = "libm"))]
 /// This trait is used to specify the return type of the [`Atan2::atan2()`] function.
 pub trait Atan2<T> {
     /// The resulting type after applying [`Atan2::atan2()`].
@@ -435,7 +435,7 @@ pub trait Atan2<T> {
     fn atan2(self, rhs: T) -> Self::Output;
 }
 
-#[cfg(feature = "std")]
+#[cfg(any(feature = "std", feature = "libm"))]
 /// This trait is used to specify the return type of the [`Powf::powf()`] function.
 pub trait Powf<T> {
     /// The resulting type after applying [`Powf::powf()`].

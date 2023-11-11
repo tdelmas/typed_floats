@@ -167,7 +167,7 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
                 }
             }))
             .build(),
-            #[cfg(feature = "std")]
+            #[cfg(any(feature = "std", feature = "libm"))]
         OpRhsBuilder::new("Hypot", "hypot")
             .op_is_commutative()
             .op_test_primitive(Box::new(|var1, var2| { quote! { #var1.hypot(#var2) } }))
@@ -296,7 +296,7 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
                 ReturnTypeSpecification::FloatSpecifications(output_def)
             }))
             .build(),
-        #[cfg(feature = "std")]
+        #[cfg(any(feature = "std", feature = "libm"))]
         OpRhsBuilder::new("Copysign", "copysign")
             .op_test_primitive(Box::new(|var1, var2| quote! { #var1.copysign(#var2) }))
             .result(Box::new(|float, rhs| {
@@ -308,7 +308,7 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
                 })
             }))
             .build(),
-        #[cfg(feature = "std")]
+        #[cfg(any(feature = "std", feature = "libm"))]
         OpRhsBuilder::new("DivEuclid", "div_euclid")
             // Because of rounding errors we can't check that the result is always as strict as possible.
             .skip_check_return_type_strictness()
@@ -337,7 +337,7 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
                 }
             }))
             .build(),
-        #[cfg(feature = "std")]
+        #[cfg(any(feature = "std", feature = "libm"))]
         OpRhsBuilder::new("Atan2", "atan2")
             .op_test_primitive(Box::new(|var1, var2| quote! { #var1.atan2(#var2) }))
             // Because of rounding errors we can't check that the result is always as strict as possible.
@@ -357,7 +357,7 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
                 })
             }))
             .build(),
-        #[cfg(feature = "std")]
+        #[cfg(any(feature = "std", feature = "libm"))]
         OpRhsBuilder::new("Powf", "powf")
             .op_test_primitive(Box::new(|var1, var2| quote! { #var1.powf(#var2) }))
             .comment("If the base is negative and the exponent is not an integer, the result is `NaN`.")

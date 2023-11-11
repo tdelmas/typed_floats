@@ -10,6 +10,7 @@ jobs:
       - run: cargo test --no-default-features
       - run: cargo test --test 'serde' --features serde
       - run: cargo test --test 'serde' --no-default-features --features serde
+      - run: cargo test --test 'serde' --no-default-features --features libm
   build_and_test_arm:
     machine:
       image: ubuntu-2004:current 
@@ -22,6 +23,7 @@ jobs:
       - run: cargo test --no-default-features
       - run: cargo test --test 'serde' --features serde
       - run: cargo test --test 'serde' --no-default-features --features serde
+      - run: cargo test --test 'serde' --no-default-features --features libm
 
 workflows:
   version: 2
