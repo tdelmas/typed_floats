@@ -3,8 +3,8 @@
 # Stop at first error
 set -e
 
+# Display commands error output
 set -x
-
 
 # First check that it builds with all features combinations
 cargo build

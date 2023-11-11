@@ -321,7 +321,7 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
                     Box::new(|_, _| quote! { panic!("No implementation for div_euclid") })
                 }
             )
-            .op_test_primitive(Box::new(|var1, var2| quote! { 
+            .op_test_primitive(Box::new(|var1, var2| quote! {
                 if cfg!(feature = "std") {
                     #var1.div_euclid(#var2)
                 } else if cfg!(feature = "libm") {
