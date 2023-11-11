@@ -5,8 +5,7 @@ jobs:
       - image: cimg/rust:1.70.0
     steps:
       - checkout
-      - run: rustup toolchain install nightly
-      - run: cargo +nightly -Zscript ./pre-publish.rs
+      - run: cargo xtask pre-build
       - run: cargo test
       - run: cargo test --no-default-features
       - run: cargo test --test 'serde' --features serde
@@ -18,8 +17,7 @@ jobs:
     steps:
       - checkout
       - run: curl https://sh.rustup.rs -sSf | sh -s -- -y
-      - run: rustup toolchain install nightly
-      - run: cargo +nightly -Zscript ./pre-publish.rs
+      - run: cargo xtask pre-build
       - run: cargo test
       - run: cargo test --no-default-features
       - run: cargo test --test 'serde' --features serde

@@ -1,21 +1,58 @@
-#!/usr/bin/env cargo
-
-//! ```cargo
-//! [package]
-//! edition = "2021"
-//! [dependencies]
-//! clap = { version = "4.2", features = ["derive"] }
-//! toml = "0.7"
-//! ```
-
-use clap::Parser;
+use clap::{Parser, Subcommand};
+use std::fs;
+use std::path::Path;
 
 #[derive(Parser, Debug)]
-struct Args {
+#[command(arg_required_else_help(true))]
+struct Cli {
+    #[command(subcommand)]
+    command: Option<Commands>,
+}
+
+#[derive(Subcommand, Debug)]
+enum Commands {
+    Tag(TagArgs),
+    PreBuild,
+}
+
+#[derive(Parser, Debug)]
+struct TagArgs {
     #[clap(long, help = "The new version")]
     version: Option<String>,
     #[clap(long, help = "Force the tag")]
     force: bool,
+}
+
+fn main() {
+    let cli: Cli = Cli::parse();
+
+    match &cli.command {
+        Some(Commands::PreBuild) => create_creadmes(),
+        Some(Commands::Tag(args)) => tag(args),
+        None => {}
+    }
+}
+
+fn create_creadmes() {
+    let orig_readme = Path::new("./README.md");
+    let crate_readme = Path::new("./typed_floats/README.md");
+
+    // Copy the README.md from the root (used by GitHub)
+    // to the crate root (used by crates.io)
+    fs::copy(orig_readme, crate_readme).unwrap();
+
+    // Truncate the README to include it in the documentation of the crate
+    let trucated_readme = Path::new("./typed_floats/README.truncated.md");
+
+    // remove the parts that are not used by docs.io
+    // That truncated version is the introduction of the documentation
+    let text_readme = fs::read_to_string(crate_readme).unwrap();
+
+    let text = text_readme.split("# Full documentation").next().unwrap();
+
+    let text = text.replace("```rust", "```ignore");
+
+    fs::write(trucated_readme, text).unwrap();
 }
 
 fn parse_version(version: &str) -> (u8, u8, u8) {
@@ -43,9 +80,7 @@ fn update_version(previous: &str, next: &str, path: &str) {
     std::fs::write(path, str).unwrap();
 }
 
-fn main() {
-    let args = Args::parse();
-
+fn tag(args: &TagArgs) {
     std::process::Command::new("cargo")
         .args(&["fmt"])
         .output()
@@ -77,7 +112,7 @@ fn main() {
     let (major, minor, patch) = parse_version(&crate_version);
 
     let (major, minor, patch) = if args.version.is_some() {
-        let version = args.version.unwrap();
+        let version = args.version.clone().unwrap();
         let version = parse_version(&version);
 
         if version.0 > major {
@@ -121,7 +156,7 @@ fn main() {
             "add",
             "./typed_floats/Cargo.toml",
             "./typed_floats_macros/Cargo.toml",
-            "./Cargo.lock"
+            "./Cargo.lock",
         ])
         .output()
         .unwrap();

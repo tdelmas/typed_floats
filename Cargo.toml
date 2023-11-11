@@ -1,18 +1,3 @@
 [workspace]
-
-members = [
-    "typed_floats",
-    "typed_floats_macros"
-]
-
+members = ["xtask", "typed_floats", "typed_floats_macros"]
 resolver = "2"
-
-[profile.dev]
-# To avoid creating +1GB incremental artifacts
-incremental = false
-
-[profile.test]
-incremental = false
-
-[profile.release]
-panic = "abort"
