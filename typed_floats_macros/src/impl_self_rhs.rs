@@ -326,6 +326,8 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
                     #var1.div_euclid(#var2)
                 } else if cfg!(feature = "libm") {
                     #var1.div_euclid(&#var2)
+                } else {
+                    panic!("No implementation for div_euclid")
                 }
             }))
             .result(Box::new(|float, rhs| {
