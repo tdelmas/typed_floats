@@ -29,21 +29,7 @@ jobs:
           cargo xtask pre-build
           rustup toolchain install ${{ matrix.version }}
           cargo build
-      - run: cargo test --verbose
-      - run: cargo test --verbose --no-default-features
-      - run: cargo test --verbose --features serde
-      - run: cargo test --verbose --test 'serde' --no-default-features --features serde
-      - run: cargo test --verbose --test 'serde' --no-default-features --features serde,libm
-      - run: cargo test --verbose --test 'serde' --no-default-features --features serde,libm,std
-      - run: cargo test --no-default-features --features 'libm'
-      - run: cargo build --no-default-features --features serde,std,libm
-      - run: cargo build --release
-      - run: cargo build --release --no-default-features
-      - run: cargo build --release --no-default-features --features serde
-      - run: cargo build --release --no-default-features --features libm
-      - run: cargo build --release --no-default-features --features serde,libm
-      - run: cargo build --release --no-default-features --features serde,std,libm
-      - run: cargo test --release --no-default-features --features serde,std
+      - run: ./tests.sh
         
   clippy:
     runs-on: ubuntu-latest
