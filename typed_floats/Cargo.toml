@@ -19,7 +19,7 @@ rust-version = "1.56"
 default = ["std"]
 serde = ["dep:serde"]
 std = ["typed_floats_macros/std"]
-libm = ["dep:num-traits", "num-traits/libm", "typed_floats_macros/libm"]
+libm = ["dep:num-traits", "typed_floats_macros/libm"]
 
 [dependencies]
 
@@ -36,6 +36,7 @@ optional = true
 [dependencies.num-traits]
 version = "0.2"
 default-features = false
+features = ["libm"]
 optional = true
 
 [dev-dependencies]
