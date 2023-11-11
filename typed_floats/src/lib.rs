@@ -110,7 +110,7 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 
 #[cfg(feature = "libm")]
-use num_traits::Float;
+use num_traits::{Euclid, Float};
 
 /// This macros assert that two values are close to each other.
 ///
@@ -394,7 +394,7 @@ pub trait DivEuclid<T> {
     /// ```
     ///
     /// See [`f64::div_euclid()`] for more details.
-    fn div_euclid(self, rhs: T) -> Self::Output;
+    fn div_euclid(&self, rhs: &T) -> Self::Output;
 }
 
 #[cfg(any(feature = "std", feature = "libm"))]

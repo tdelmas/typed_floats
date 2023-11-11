@@ -38,6 +38,13 @@ cargo build --release --no-default-features --features libm
 cargo build --release --no-default-features --features serde,libm
 cargo build --release --no-default-features --features serde,std,libm
 
+cargo test --no-run --release
+cargo test --no-run --release --no-default-features
+cargo test --no-run --release --no-default-features --features serde
+cargo test --no-run --release --no-default-features --features libm
+cargo test --no-run --release --no-default-features --features serde,libm
+cargo test --no-run --release --no-default-features --features serde,std,libm
+
 ## Run tests with the two main features: serde and std
 cargo test --release --no-default-features --features serde,std
 
