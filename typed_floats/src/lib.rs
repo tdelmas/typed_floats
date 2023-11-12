@@ -109,8 +109,8 @@
 #![warn(missing_docs)]
 #![cfg_attr(not(feature = "std"), no_std)]
 
-#[cfg(feature = "libm")]
-use num_traits::{Euclid, Float};
+#[cfg(all(feature = "libm", not(feature = "std")))]
+use num_traits::Float;
 
 /// This macros assert that two values are close to each other.
 ///

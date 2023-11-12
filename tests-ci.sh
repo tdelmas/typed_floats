@@ -3,7 +3,7 @@
 # Stop at first error
 set -e
 
-# Display commands error output
+# Display executed commands
 set -x
 
 # First check that it builds with all features combinations

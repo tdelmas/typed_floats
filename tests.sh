@@ -3,7 +3,10 @@
 # Stop at first error
 set -e
 
-cargo xtask pre-build
+# Display executed commands
+set -x
+
+cd .. && cargo xtask pre-build
 
 # First check that it builds with all features combinations
 cargo build --no-default-features
