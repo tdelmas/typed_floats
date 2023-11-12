@@ -111,8 +111,9 @@ Any other overhead is considered a bug and should be reported.
 
 # Features
 
-- `std`: enabled by default, required by some `f32` and `f64` methods.
-- `serde`: implements `Serialize` and `Deserialize` for all types.
+- `std`: enabled by default, gives all `f32` and `f64` methods.
+- `serde`: implements `Serialize` and `Deserialize` for all `NonNaN` types.
+- `libm`: use the `Float` trait from `num-traits` and `libm` to implement the missing methods when the `std` feature is disabled. Side effect: `f32` and `f64` will implement `Float` from `num-traits`. When both `std` and `libm` features are enabled, the `std` implementation is used.
 
 ## How it works
 

@@ -24,19 +24,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: Build
-        run: |
-          cargo xtask pre-build
-          rustup toolchain install ${{ matrix.version }}
-          cargo build
-      - name: Run tests
-        run: cargo test --verbose
-      - name: Run no-std tests
-        run: cargo test --verbose --no-default-features
-      - name: Run serde tests
-        run: cargo test --verbose --test 'serde' --features serde
-      - name: Run no-std+serde tests
-        run: cargo test --verbose --test 'serde' --no-default-features --features serde
+      - run: rustup toolchain install ${{ matrix.version }}
+      - run: cargo --version
+      - run: cargo xtask pre-build
+      - run: cd typed_floats && ./tests-ci.sh
         
   clippy:
     runs-on: ubuntu-latest
@@ -44,6 +35,5 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - run: |
-          cargo xtask pre-build
-          cargo clippy --verbose
+      - run: cargo xtask pre-build
+      - run: cargo clippy --verbose

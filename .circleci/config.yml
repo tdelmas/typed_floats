@@ -6,10 +6,8 @@ jobs:
     steps:
       - checkout
       - run: cargo xtask pre-build
-      - run: cargo test
-      - run: cargo test --no-default-features
-      - run: cargo test --test 'serde' --features serde
-      - run: cargo test --test 'serde' --no-default-features --features serde
+      - run: cd typed_floats && ./tests-ci.sh
+
   build_and_test_arm:
     machine:
       image: ubuntu-2004:current 
@@ -18,10 +16,7 @@ jobs:
       - checkout
       - run: curl https://sh.rustup.rs -sSf | sh -s -- -y
       - run: cargo xtask pre-build
-      - run: cargo test
-      - run: cargo test --no-default-features
-      - run: cargo test --test 'serde' --features serde
-      - run: cargo test --test 'serde' --no-default-features --features serde
+      - run: cd typed_floats && ./tests-ci.sh
 
 workflows:
   version: 2

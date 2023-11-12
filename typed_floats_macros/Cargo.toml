@@ -12,6 +12,7 @@ proc-macro = true
 
 [features]
 std = []
+libm = []
 
 [dependencies]
 quote = "1.0"

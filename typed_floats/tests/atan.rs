@@ -1,4 +1,4 @@
-#![cfg(feature = "std")]
+#![cfg(any(feature = "std", feature = "libm"))]
 
 use typed_floats::*;
 

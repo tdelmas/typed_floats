@@ -109,6 +109,9 @@
 #![warn(missing_docs)]
 #![cfg_attr(not(feature = "std"), no_std)]
 
+#[cfg(all(feature = "libm", not(feature = "std")))]
+use num_traits::Float;
+
 /// This macros assert that two values are close to each other.
 ///
 /// # Examples
@@ -248,8 +251,9 @@ macro_rules! assert_is_negative_zero {
     }};
 }
 
-#[cfg(feature = "std")]
+#[cfg(any(feature = "std", feature = "libm"))]
 /// This trait is used to specify the return type of the [`Hypot::hypot()`] function.
+
 pub trait Hypot<T> {
     /// The resulting type after applying [`Hypot::hypot()`].
     type Output;
@@ -327,7 +331,7 @@ pub trait Max<T> {
     fn max(self, rhs: T) -> Self::Output;
 }
 
-#[cfg(feature = "std")]
+#[cfg(any(feature = "std", feature = "libm"))]
 /// This trait is used to specify the return type of the [`Copysign::copysign()`] function.
 pub trait Copysign<T> {
     /// The resulting type after applying [`Copysign::copysign()`].
@@ -362,7 +366,7 @@ pub trait Copysign<T> {
     fn copysign(self, rhs: T) -> Self::Output;
 }
 
-#[cfg(feature = "std")]
+#[cfg(any(feature = "std", feature = "libm"))]
 /// This trait is used to specify the return type of the [`DivEuclid::div_euclid()`] function.
 pub trait DivEuclid<T> {
     /// The resulting type after applying [`DivEuclid::div_euclid()`].
@@ -393,7 +397,7 @@ pub trait DivEuclid<T> {
     fn div_euclid(self, rhs: T) -> Self::Output;
 }
 
-#[cfg(feature = "std")]
+#[cfg(any(feature = "std", feature = "libm"))]
 /// This trait is used to specify the return type of the [`Atan2::atan2()`] function.
 pub trait Atan2<T> {
     /// The resulting type after applying [`Atan2::atan2()`].
@@ -431,7 +435,7 @@ pub trait Atan2<T> {
     fn atan2(self, rhs: T) -> Self::Output;
 }
 
-#[cfg(feature = "std")]
+#[cfg(any(feature = "std", feature = "libm"))]
 /// This trait is used to specify the return type of the [`Powf::powf()`] function.
 pub trait Powf<T> {
     /// The resulting type after applying [`Powf::powf()`].
@@ -803,26 +807,5 @@ pub mod tf32 {
         add_const!(LOG10_E, f32, PositiveFinite, "log<sub>10</sub>(e)");
         add_const!(LN_2, f32, PositiveFinite, "ln(2)");
         add_const!(LN_10, f32, PositiveFinite, "ln(10)");
-    }
-
-    #[cfg(feature = "serde")]
-    #[test]
-    fn test_serde() {
-        let map = serde_json::json!({
-            "a": 1.0,
-        });
-
-        #[derive(Serialize)]
-        struct A {
-            a: NonNaN,
-        }
-
-        let a = A {
-            a: NonNaN::try_from(1.0).unwrap(),
-        };
-
-        let a_json = serde_json::to_value(a).unwrap();
-
-        assert_eq!(a_json, map);
     }
 }

@@ -15,7 +15,7 @@ fn can_one_be_zero_neg_and_the_other_zero_pos(
 }
 
 pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
-    vec![
+    let mut ops = vec![
         OpRhsBuilder::new("core::ops::Add", "add")
             .with_assign("core::ops::AddAssign", "add_assign")
             .bin_op("+")
@@ -167,7 +167,7 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
                 }
             }))
             .build(),
-            #[cfg(feature = "std")]
+            #[cfg(any(feature = "std", feature = "libm"))]
         OpRhsBuilder::new("Hypot", "hypot")
             .op_is_commutative()
             .op_test_primitive(Box::new(|var1, var2| { quote! { #var1.hypot(#var2) } }))
@@ -296,7 +296,7 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
                 ReturnTypeSpecification::FloatSpecifications(output_def)
             }))
             .build(),
-        #[cfg(feature = "std")]
+        #[cfg(any(feature = "std", feature = "libm"))]
         OpRhsBuilder::new("Copysign", "copysign")
             .op_test_primitive(Box::new(|var1, var2| quote! { #var1.copysign(#var2) }))
             .result(Box::new(|float, rhs| {
@@ -308,36 +308,7 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
                 })
             }))
             .build(),
-        #[cfg(feature = "std")]
-        OpRhsBuilder::new("DivEuclid", "div_euclid")
-            // Because of rounding errors we can't check that the result is always as strict as possible.
-            .skip_check_return_type_strictness()
-            .op_test_primitive(Box::new(|var1, var2| quote! { #var1.div_euclid(#var2) }))
-            .result(Box::new(|float, rhs| {
-                let spec_a = &float.s;
-                let spec_b = &rhs.s;
-
-                let can_be_nan = (spec_a.accept_inf && spec_b.accept_inf)
-                    || (spec_a.accept_zero && spec_b.accept_zero);
-
-                let sign_can_be_different = (spec_a.accept_negative && spec_b.accept_positive)
-                    || (spec_a.accept_positive && spec_b.accept_negative);
-
-                let sign_can_be_same = (spec_a.accept_negative && spec_b.accept_negative)
-                    || (spec_a.accept_positive && spec_b.accept_positive);
-
-                match can_be_nan {
-                    true => ReturnTypeSpecification::NativeFloat,
-                    false => ReturnTypeSpecification::FloatSpecifications(FloatSpecifications {
-                        accept_inf: true,
-                        accept_zero: true, // Rounding errors can happen
-                        accept_positive: sign_can_be_same,
-                        accept_negative: sign_can_be_different,
-                    }),
-                }
-            }))
-            .build(),
-        #[cfg(feature = "std")]
+        #[cfg(any(feature = "std", feature = "libm"))]
         OpRhsBuilder::new("Atan2", "atan2")
             .op_test_primitive(Box::new(|var1, var2| quote! { #var1.atan2(#var2) }))
             // Because of rounding errors we can't check that the result is always as strict as possible.
@@ -357,7 +328,7 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
                 })
             }))
             .build(),
-        #[cfg(feature = "std")]
+        #[cfg(any(feature = "std", feature = "libm"))]
         OpRhsBuilder::new("Powf", "powf")
             .op_test_primitive(Box::new(|var1, var2| quote! { #var1.powf(#var2) }))
             .comment("If the base is negative and the exponent is not an integer, the result is `NaN`.")
@@ -374,5 +345,59 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
                 }
             }))
             .build(),
-    ]
+    ];
+
+
+
+    #[cfg(any(feature = "std", feature = "libm"))]
+    {
+        
+        let div_euclid = OpRhsBuilder::new("DivEuclid", "div_euclid")
+            // Because of rounding errors we can't check that the result is always as strict as possible.
+            .skip_check_return_type_strictness();
+
+        #[cfg(feature = "std")]
+        let div_euclid =div_euclid .op_fn(
+            Box::new(|_, _| quote! { self.get().div_euclid(rhs.get()) })
+        );
+        #[cfg(all(feature = "libm", not(feature = "std")))]
+        let div_euclid =div_euclid .op_fn(
+            Box::new(|_, _| quote! { num_traits::Euclid::div_euclid(&self.get(),&rhs.get()) })
+        );
+
+        #[cfg(feature = "std")]
+        let div_euclid =div_euclid.op_test_primitive(Box::new(|var1, var2| quote! { #var1.div_euclid(#var2) }));
+
+        #[cfg(all(feature = "libm", not(feature = "std")))]
+        let div_euclid=div_euclid .op_test_primitive(Box::new(|var1, var2| quote! { num_traits::Euclid::div_euclid(&#var1, &#var2) }));
+    
+        let div_euclid= div_euclid.result(Box::new(|float, rhs| {
+            let spec_a = &float.s;
+            let spec_b = &rhs.s;
+
+            let can_be_nan = (spec_a.accept_inf && spec_b.accept_inf)
+                || (spec_a.accept_zero && spec_b.accept_zero);
+
+            let sign_can_be_different = (spec_a.accept_negative && spec_b.accept_positive)
+                || (spec_a.accept_positive && spec_b.accept_negative);
+
+            let sign_can_be_same = (spec_a.accept_negative && spec_b.accept_negative)
+                || (spec_a.accept_positive && spec_b.accept_positive);
+
+            match can_be_nan {
+                true => ReturnTypeSpecification::NativeFloat,
+                false => ReturnTypeSpecification::FloatSpecifications(FloatSpecifications {
+                    accept_inf: true,
+                    accept_zero: true, // Rounding errors can happen
+                    accept_positive: sign_can_be_same,
+                    accept_negative: sign_can_be_different,
+                }),
+            }
+        }));
+
+        ops.push(div_euclid.build());
+    };
+
+
+    ops
 }
