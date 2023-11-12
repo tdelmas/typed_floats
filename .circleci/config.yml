@@ -5,14 +5,17 @@ jobs:
       - image: cimg/rust:1.70.0
     steps:
       - checkout
+      - run: cargo xtask pre-build
       - run: cd typed_floats && ./tests-ci.sh
-      
+
   build_and_test_arm:
     machine:
       image: ubuntu-2004:current 
     resource_class: arm.medium
     steps:
       - checkout
+      - run: curl https://sh.rustup.rs -sSf | sh -s -- -y
+      - run: cargo xtask pre-build
       - run: cd typed_floats && ./tests-ci.sh
 
 workflows:
