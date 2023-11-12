@@ -19,7 +19,6 @@ jobs:
           "beta",
           "stable",
           "1.70",
-          "1.60",
         ]
 
     steps:
