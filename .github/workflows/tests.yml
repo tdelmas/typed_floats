@@ -24,7 +24,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - run: rustup toolchain install ${{ matrix.version }}
+      - run: rustup default ${{ matrix.version }}
       - run: cargo --version
       - run: cargo xtask pre-build
       - run: cd typed_floats && ./tests-ci.sh

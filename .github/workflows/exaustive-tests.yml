@@ -9,7 +9,7 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-    name: Tests on rust toolchain ${{ matrix.version }}
+    name: Tests on rust ${{ matrix.version }} features "${{ matrix.features }}"
     strategy:
       matrix:
         version: [
@@ -32,7 +32,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - run: rustup toolchain install ${{ matrix.version }}
+      - run: rustup default ${{ matrix.version }}
       - run: cargo --version
       - run: cargo xtask pre-build
       - run: cd typed_floats && cargo build --no-default-features --features "${{ matrix.features }}"
