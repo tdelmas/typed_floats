@@ -1,10 +1,10 @@
-name: Tests
+name: Weekly tests on nightly/beta/stable
 
 on:
-  push:
-    branches: ["main"]
-  pull_request:
-    branches: ["main"]
+  schedule:
+    # Every Monday
+    - cron:  '0 0 * * 1'
+  workflow_dispatch:
 
 env:
   CARGO_TERM_COLOR: always
@@ -16,10 +16,9 @@ jobs:
     strategy:
       matrix:
         version: [
+          "nightly",
           "beta",
           "stable",
-          "1.70",
-          "1.60",
         ]
 
     steps:
@@ -28,12 +27,3 @@ jobs:
       - run: cargo --version
       - run: cargo xtask pre-build
       - run: cd typed_floats && ./tests-ci.sh
-        
-  clippy:
-    runs-on: ubuntu-latest
-    name: Clippy
-
-    steps:
-      - uses: actions/checkout@v3
-      - run: cargo xtask pre-build
-      - run: cargo clippy --verbose
