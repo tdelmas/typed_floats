@@ -14,7 +14,12 @@ pub fn tag(args: &TagArgs) {
         .output()
         .unwrap();
 
+    let dir = std::env::current_dir()
+        .unwrap()
+        .join(std::path::Path::new("typed_floats"));
+
     std::process::Command::new("./tests.sh")
+        .current_dir(dir)
         .stdout(std::process::Stdio::inherit())
         .stderr(std::process::Stdio::inherit())
         .output()
