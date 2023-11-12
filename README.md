@@ -136,11 +136,14 @@ Because that would introduce a runtime overhead and may introduce some incompati
 
 ## Rust version
 
-This crate is tested with:
-- Rust nightly
+This crate is tested when a new version is release with:
+- Rust beta
 - Rust stable
 - Rust 1.70.0
 - Rust 1.60.0
+
+Also, tests on `nightly`, `beta` and `stable` are run weekly on [GitHub actions](https://github.com/tdelmas/typed_floats/actions/workflows/weekly-tests.yml).
+
 
 The minimum supported Rust version is 1.60.0 because of the use of `dep:` in `Cargo.toml`.
 
