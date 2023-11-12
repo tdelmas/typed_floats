@@ -134,6 +134,16 @@ Methods that takes another float as parameter will also return the most strict t
 
 Because that would introduce a runtime overhead and may introduce some incompatibilities with existing code.
 
+## Rust version
+
+This crate is tested with:
+- Rust nightly
+- Rust stable
+- Rust 1.70.0
+- Rust 1.60.0
+
+The minimum supported Rust version is 1.60.0 because of the use of `dep:` in `Cargo.toml`.
+
 ## Testing
 
 Tests are run on different architectures on [GitHub actions](https://github.com/tdelmas/typed_floats/actions/workflows/tests.yml) and [CircleCI](https://circleci.com/gh/tdelmas/typed_floats).

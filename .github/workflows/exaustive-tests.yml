@@ -16,7 +16,7 @@ jobs:
           "nightly",
           "stable",
           "1.70",
-          "1.56", # 2021 edition
+          "1.60",
         ]
 
         features: [
