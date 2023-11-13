@@ -24,6 +24,21 @@ And their positive and negative counterparts:
 
 (Negatives types reject `+0.0` and positives types reject `-0.0`)
 
+| Type | -∞ | ]-∞; -0.0[ | -0.0 | +0.0 | ]+0.0; +∞[ | +∞ | `NaN` |
+|---|---|---|---|---|---|---|---|
+| [`NonNaN`] | ✔️ | ✔️ | ✔️ | ✔️  | ✔️ | ✔️ | ❌ |
+| [`NonNaNFinite`] | ❌ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |  ❌ |
+| [`NonZeroNonNaN`] | ✔️ | ✔️ | ❌ | ❌ | ✔️ | ✔️ |  ❌ |
+| [`NonZeroNonNaNFinite`] | ❌ | ✔️ | ❌ | ❌ | ✔️ | ❌ | ❌ |
+| [`Positive`] | ❌ | ❌ | ❌ | ✔️ | ✔️ | ✔️ | ❌ |
+| [`PositiveFinite`] | ❌ | ❌ | ❌ | ✔️ | ✔️ | ❌ | ❌ |
+| [`StrictlyPositive`] | ❌ | ❌ | ❌ | ❌ | ✔️ | ✔️ | ❌ |
+| [`StrictlyPositiveFinite`] | ❌ | ❌ | ❌ | ❌ | ✔️ | ❌ | ❌ |
+| [`Negative`] | ✔️ | ✔️ | ✔️ | ❌ | ❌ | ❌ | ❌ |
+| [`NegativeFinite`] | ❌ | ✔️ | ✔️ | ❌ | ❌ | ❌ | ❌ |
+| [`StrictlyNegative`] | ✔️ | ✔️ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| [`StrictlyNegativeFinite`] | ❌ | ✔️ | ❌ | ❌ | ❌ | ❌ | ❌ |
+
 To avoid specifying the kind of float (e.g. like [`Positive<f32>`]), you can use the modules [`tf64`] and [`tf32`] which expose aliases.
 
 The following conversions are implemented:
