@@ -27,7 +27,7 @@ And their positive and negative counterparts:
 | Type | -∞ | ]-∞; -0.0[ | -0.0 | +0.0 | ]+0.0; +∞[ | +∞ | `NaN` |
 |---|---|---|---|---|---|---|---|
 | [`NonNaN`] | ✔️ | ✔️ | ✔️ | ✔️  | ✔️ | ✔️ | ❌ |
-| [`NonNaNFinite`] | ❌ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |  ❌ |
+| [`NonNaNFinite`] | ❌ | ✔️ | ✔️ | ✔️ | ✔️ | ❌ |  ❌ |
 | [`NonZeroNonNaN`] | ✔️ | ✔️ | ❌ | ❌ | ✔️ | ✔️ |  ❌ |
 | [`NonZeroNonNaNFinite`] | ❌ | ✔️ | ❌ | ❌ | ✔️ | ❌ | ❌ |
 | [`Positive`] | ❌ | ❌ | ❌ | ✔️ | ✔️ | ✔️ | ❌ |
