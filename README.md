@@ -83,10 +83,18 @@ Most methods and traits available on the underlying type are available on the ty
 
 Most constants are also available, with the most appropriate `TypedFloat` type (except `NAN` for obvious reasons) in the [`tf64`] and [`tf32`] modules (in [`tf64::consts`] and [`tf32::consts`] respectively when the constant comes from [`core::f64::consts`] or [`core::f32::consts`]). Those modules are named that way to avoid conflicts or confusion with the primitives [`f32`] and [`f64`].
 
-As none of the types of this crate can be `NaN`, the traits [`core::cmp::Ord`] and [`core::cmp::Eq`] are implemented for all of them.
-
-⚠️ Like for primitives [`f32`] and [`f64`],`-0.0 == +0.0` is `true` for all types of this crate. For that reason, [`core::hash::Hash`] is not implemented.
+⚠️ Like for primitives [`f32`] and [`f64`],`-0.0 == +0.0` is `true` for all types of this crate.
 To facilitate comparisons, the methods `is_positive_zero` and `is_negative_zero` are added.
+
+# Traits implemented
+
+As none of the types of this crate can be `NaN`, the following traits are implemented on all 12 types:
+
+- [`core::cmp::Ord`]
+- [`core::cmp::Eq`]
+- `Hash` 
+
+Note: for `Hash` on [`NonNaN`] and [`NonNaNFinite`] there is a (small) overhead because they both accept `0.0` and `-0.0`, which are equal so they mush `hash` to the same value.
 
 # Methods implemented
 
@@ -104,8 +112,6 @@ All 12 types implement the methods available on [`f32`] and [`f64`] **except**:
 - `to_int_unchecked`
 - `to*_bits`
 - `from*_bits`
-
-In addition, `Hash` is implemented for all types expect [`NonNaN`] and [`NonNaNFinite`] (because they both accept `0.0` and `-0.0`, which are equal, and that is incompatible with `Hash`).
 
 ## Panics
 
@@ -235,9 +241,9 @@ Features provided/checked by those crates:
 
 | Crates           | Production ready | Avoid `panic!` | Minimal overhead | Eq/Ord | Hash | NaN | Inf | Zero | Positive | Negative |
 |------------------|------------------|----------------|------------------|--------|------|-----|-----|------|----------|----------|
-|**`typed_floats`**| ✔️              | ✔️             | ✔️              | ✔️    | ✔️¹  | ✔️ | ✔️  | ✔️   | ✔️      | ✔️       |
-| `checked-float`  | ✔️              | ✔️             | ❌              | ✔️    | ❌   | ✔️²| ✔️² | ✔️²  | ✔️²     | ✔️²      |
-| `decorum`        | ✔️              | ❌             | ❌              | ❌    | ❌   | ✔️²| ✔️² | ✔️²  | ✔️²     | ✔️²      |
+|**`typed_floats`**| ✔️              | ✔️             | ✔️              | ✔️    | ✔️  | ✔️ | ✔️  | ✔️   | ✔️      | ✔️       |
+| `checked-float`  | ✔️              | ✔️             | ❌              | ✔️    | ❌   | ✔️¹| ✔️¹ | ✔️¹  | ✔️¹     | ✔️¹      |
+| `decorum`        | ✔️              | ❌             | ❌              | ❌    | ❌   | ✔️¹| ✔️¹ | ✔️¹  | ✔️¹     | ✔️¹      |
 | `eq-float`       | ❌              | ✔️             | ✔️              | ✔️    | ❌   | ❌ | ❌  | ❌   | ❌      | ❌       |
 | `fix_float`      | ✔️              | ✔️             | ✔️              | ✔️    | ✔️   | ✔️ | ✔️  | ❌   | ❌      | ❌       |
 | `float-derive`   | ❌              | ❓             | ❓              | ✔️    | ✔️   | ❌ | ❌  | ❌   | ❌      | ❌       |
@@ -254,9 +260,7 @@ Features provided/checked by those crates:
 
 (N.B. "Production ready" is a subjective measure)
 
-¹: `Hash` is implemented for all types expect [`NonNaN`] and [`NonNaNFinite`] (because they both accept `0.0` and `-0.0`)
-
-²: Can be manually checked
+¹: Can be manually checked
 
 # Full documentation
 

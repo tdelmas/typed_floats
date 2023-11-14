@@ -624,7 +624,6 @@ fn do_generate_floats(floats: &[FloatDefinition]) -> proc_macro2::TokenStream {
             }
         });
 
-        // If the type doesn't accept simultaneously `+0.0` and `-0.0` we can implement `Hash`
         // > When implementing both Hash and Eq, it is important that the following property holds:
         // > `k1 == k2 -> hash(k1) == hash(k2)`
         // This is sound because `NaN` is not a possible value.
@@ -635,6 +634,22 @@ fn do_generate_floats(floats: &[FloatDefinition]) -> proc_macro2::TokenStream {
                     #[inline]
                     fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
                         self.0.to_bits().hash(state)
+                    }
+                }
+            });
+        } else {
+            output.extend(quote! {
+                impl core::hash::Hash for #full_type {
+                    #[inline]
+                    fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
+                        let f = if self.0 == 0.0 {
+                            // `+0.0` and `-0.0` are equal to they must have the same hash
+                            0.0
+                        } else {
+                            self.0
+                        };
+
+                        f.to_bits().hash(state)
                     }
                 }
             });
