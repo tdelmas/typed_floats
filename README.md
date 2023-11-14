@@ -181,7 +181,7 @@ cargo test --all
 
 ```bash
 cargo install cargo-geiger
-cargo geiger --all-features --graph
+cargo geiger --all-features
 ```
 
 Results:
