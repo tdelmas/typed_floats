@@ -7,7 +7,7 @@ include = [
   "src/*.rs",
   "*.md",
 ]
-keywords = ["floats", "non-zero", "NaN", "no_std"]
+keywords = ["floats", "non-zero", "nan", "no_std"]
 license = "MIT OR Apache-2.0"
 name = "typed_floats"
 readme = "./README.md"
