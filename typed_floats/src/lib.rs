@@ -99,14 +99,18 @@
 //!
 //!
 //!
-#![warn(clippy::pedantic)]
-#![warn(clippy::nursery)]
-#![warn(clippy::panic)]
-#![warn(clippy::panic_in_result_fn)]
-#![warn(clippy::unwrap_used)]
-#![warn(clippy::unwrap_in_result)]
 #![warn(clippy::indexing_slicing)]
+#![warn(clippy::nursery)]
+#![warn(clippy::panic_in_result_fn)]
+#![warn(clippy::panic)]
+#![warn(clippy::pedantic)]
+#![warn(clippy::unwrap_in_result)]
+#![warn(clippy::unwrap_used)]
 #![warn(missing_docs)]
+#![warn(unsafe_op_in_unsafe_fn)]
+#![warn(unused_crate_dependencies)]
+#![forbid(unsafe_code)]
+
 #![cfg_attr(not(feature = "std"), no_std)]
 
 #[cfg(all(feature = "libm", not(feature = "std")))]
@@ -253,7 +257,6 @@ macro_rules! assert_is_negative_zero {
 
 #[cfg(any(feature = "std", feature = "libm"))]
 /// This trait is used to specify the return type of the [`Hypot::hypot()`] function.
-
 pub trait Hypot<T> {
     /// The resulting type after applying [`Hypot::hypot()`].
     type Output;
@@ -461,8 +464,8 @@ pub enum FromStrError {
 impl core::fmt::Display for FromStrError {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         match self {
-            FromStrError::ParseFloatError(e) => write!(f, "{e}"),
-            FromStrError::InvalidNumber(e) => write!(f, "{e}"),
+            Self::ParseFloatError(e) => write!(f, "{e}"),
+            Self::InvalidNumber(e) => write!(f, "{e}"),
         }
     }
 }
@@ -494,11 +497,11 @@ pub enum InvalidNumber {
 impl core::fmt::Display for InvalidNumber {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         match self {
-            InvalidNumber::NaN => write!(f, "Number is NaN"),
-            InvalidNumber::Zero => write!(f, "Number is zero"),
-            InvalidNumber::Negative => write!(f, "Number is negative"),
-            InvalidNumber::Positive => write!(f, "Number is positive"),
-            InvalidNumber::Infinite => write!(f, "Number is infinite"),
+            Self::NaN => write!(f, "Number is NaN"),
+            Self::Zero => write!(f, "Number is zero"),
+            Self::Negative => write!(f, "Number is negative"),
+            Self::Positive => write!(f, "Number is positive"),
+            Self::Infinite => write!(f, "Number is infinite"),
         }
     }
 }

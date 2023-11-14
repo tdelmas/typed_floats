@@ -5,6 +5,7 @@
 [![Documentation](https://docs.rs/typed_floats/badge.svg)](https://docs.rs/typed_floats)
 [![License](https://img.shields.io/crates/l/typed_floats.svg)](https://github.com/tdelmas/typed_floats/blob/main/LICENSE)
 [![dependency status](https://deps.rs/repo/github/tdelmas/typed_floats/status.svg)](https://deps.rs/repo/github/tdelmas/typed_floats)
+[![unsafe forbidden](https://img.shields.io/badge/unsafe-forbidden-success.svg)](https://github.com/rust-secure-code/safety-dance/)
 
 This crate helps you to ensure the kind of floats you are using, without `panic!` (except if the `unsafe` function is used in an unsound way).
 
@@ -174,6 +175,38 @@ cd typed_floats
 cargo xtask pre-build
 
 cargo test --all
+```
+
+## Cargo geiger
+
+```bash
+cargo install cargo-geiger
+cargo geiger --all-features --graph
+```
+
+Results:
+```text
+Functions  Expressions  Impls  Traits  Methods  Dependency
+
+0/0        0/0          0/0    0/0     0/0      🔒 typed_floats 0.5.0
+0/0        0/0          0/0    0/0     0/0      ❓ ├── num-traits 0.2.17
+0/0        0/8          0/0    0/0     0/0      ❓ │   └── libm 0.2.8
+0/0        0/5          0/0    0/0     0/0      ❓ ├── serde 1.0.192
+0/0        0/0          0/0    0/0     0/0      ❓ │   └── serde_derive 1.0.192
+0/0        0/15         0/0    0/0     0/3      ❓ │       ├── proc-macro2 1.0.69
+0/0        0/4          0/0    0/0     0/0      ❓ │       │   └── unicode-ident 1.0.12
+0/0        0/0          0/0    0/0     0/0      ❓ │       ├── quote 1.0.33
+0/0        0/15         0/0    0/0     0/3      ❓ │       │   └── proc-macro2 1.0.69
+0/0        0/79         0/3    0/0     0/2      ❓ │       └── syn 2.0.39
+0/0        0/15         0/0    0/0     0/3      ❓ │           ├── proc-macro2 1.0.69
+0/0        0/0          0/0    0/0     0/0      ❓ │           ├── quote 1.0.33
+0/0        0/4          0/0    0/0     0/0      ❓ │           └── unicode-ident 1.0.12
+0/0        0/0          0/0    0/0     0/0      🔒 └── typed_floats_macros 0.5.0
+0/0        0/15         0/0    0/0     0/3      ❓     ├── proc-macro2 1.0.69
+0/0        0/0          0/0    0/0     0/0      ❓     ├── quote 1.0.33
+0/0        0/79         0/3    0/0     0/2      ❓     └── syn 2.0.39
+
+0/0        0/111        0/3    0/0     0/5
 ```
 
 # Similar crates
