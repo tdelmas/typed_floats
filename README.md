@@ -6,7 +6,7 @@
 [![License](https://img.shields.io/crates/l/typed_floats.svg)](https://github.com/tdelmas/typed_floats/blob/main/LICENSE)
 [![dependency status](https://deps.rs/repo/github/tdelmas/typed_floats/status.svg)](https://deps.rs/repo/github/tdelmas/typed_floats)
 
-This crate helps you to ensure the kind of floats you are using, without `panic!` (expect if the `unsafe` function is used in an unsound way).
+This crate helps you to ensure the kind of floats you are using, without `panic!` (except if the `unsafe` function is used in an unsound way).
 
 zero overhead: everything is checked at compile time.
 (only `try_from` adds a little overhead at runtime)
