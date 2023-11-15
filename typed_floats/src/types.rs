@@ -178,6 +178,9 @@ use crate::traits::*;
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Deserializer, Serialize};
 
+#[cfg(all(feature = "libm", not(feature = "std")))]
+use num_traits::Float;
+
 use core::num::{NonZeroI16, NonZeroI32, NonZeroI64, NonZeroI8};
 use core::num::{NonZeroU16, NonZeroU32, NonZeroU64, NonZeroU8};
 

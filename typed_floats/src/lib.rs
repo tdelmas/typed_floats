@@ -112,9 +112,6 @@
 #![forbid(unsafe_code)]
 #![cfg_attr(not(feature = "std"), no_std)]
 
-#[cfg(all(feature = "libm", not(feature = "std")))]
-use num_traits::Float;
-
 mod traits;
 mod types;
 
