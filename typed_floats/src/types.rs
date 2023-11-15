@@ -19,6 +19,9 @@ impl core::fmt::Display for FromStrError {
 #[cfg(feature = "std")]
 impl std::error::Error for FromStrError {}
 
+#[cfg(feature = "serde")]
+use serde::Serialize;
+
 /// An error that can occur when converting into a typed float
 #[derive(Debug, Eq, PartialEq)]
 pub enum InvalidNumber {
@@ -174,9 +177,6 @@ pub struct StrictlyPositiveFinite<T = f64>(pub(crate) T);
 pub struct StrictlyNegativeFinite<T = f64>(pub(crate) T);
 
 use crate::traits::*;
-
-#[cfg(feature = "serde")]
-use serde::{Deserialize, Deserializer, Serialize};
 
 #[cfg(all(feature = "libm", not(feature = "std")))]
 use num_traits::Float;
