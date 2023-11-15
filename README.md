@@ -14,7 +14,7 @@ zero overhead: everything is checked at compile time.
 
 `NaN` is rejected by all types.
 
-The types provided by this crate are:
+The 12 types provided by this crate are:
 
 - [`NonNaN`], [`NonNaNFinite`], [`NonZeroNonNaN`], [`NonZeroNonNaNFinite`]
 
