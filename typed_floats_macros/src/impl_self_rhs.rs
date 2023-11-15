@@ -347,31 +347,30 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
             .build(),
     ];
 
-
-
     #[cfg(any(feature = "std", feature = "libm"))]
     {
-        
         let div_euclid = OpRhsBuilder::new("DivEuclid", "div_euclid")
             // Because of rounding errors we can't check that the result is always as strict as possible.
             .skip_check_return_type_strictness();
 
         #[cfg(feature = "std")]
-        let div_euclid =div_euclid .op_fn(
-            Box::new(|_, _| quote! { self.get().div_euclid(rhs.get()) })
-        );
+        let div_euclid =
+            div_euclid.op_fn(Box::new(|_, _| quote! { self.get().div_euclid(rhs.get()) }));
         #[cfg(all(feature = "libm", not(feature = "std")))]
-        let div_euclid =div_euclid .op_fn(
-            Box::new(|_, _| quote! { num_traits::Euclid::div_euclid(&self.get(),&rhs.get()) })
-        );
+        let div_euclid = div_euclid.op_fn(Box::new(
+            |_, _| quote! { num_traits::Euclid::div_euclid(&self.get(),&rhs.get()) },
+        ));
 
         #[cfg(feature = "std")]
-        let div_euclid =div_euclid.op_test_primitive(Box::new(|var1, var2| quote! { #var1.div_euclid(#var2) }));
+        let div_euclid =
+            div_euclid.op_test_primitive(Box::new(|var1, var2| quote! { #var1.div_euclid(#var2) }));
 
         #[cfg(all(feature = "libm", not(feature = "std")))]
-        let div_euclid=div_euclid .op_test_primitive(Box::new(|var1, var2| quote! { num_traits::Euclid::div_euclid(&#var1, &#var2) }));
-    
-        let div_euclid= div_euclid.result(Box::new(|float, rhs| {
+        let div_euclid = div_euclid.op_test_primitive(Box::new(
+            |var1, var2| quote! { num_traits::Euclid::div_euclid(&#var1, &#var2) },
+        ));
+
+        let div_euclid = div_euclid.result(Box::new(|float, rhs| {
             let spec_a = &float.s;
             let spec_b = &rhs.s;
 
@@ -397,7 +396,6 @@ pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
 
         ops.push(div_euclid.build());
     };
-
 
     ops
 }
