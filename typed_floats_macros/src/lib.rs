@@ -213,72 +213,15 @@ pub fn generate_docs(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
 
 #[proc_macro]
 pub fn generate_floats(_input: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    let specifications = get_specifications();
     let floats_f64 = get_definitions("f64");
     let floats_f32 = get_definitions("f32");
 
     let mut output = proc_macro2::TokenStream::new();
 
-    output.extend(do_generate_generic_floats(&specifications, "f64"));
     output.extend(do_generate_floats(&floats_f64));
     output.extend(do_generate_floats(&floats_f32));
 
     output.into()
-}
-
-fn do_generate_generic_floats(
-    specifications: &[(&'static str, &'static str, FloatSpecifications)],
-    default_float_type: &str,
-) -> proc_macro2::TokenStream {
-    let mut output = proc_macro2::TokenStream::new();
-
-    let default_float_type = syn::Ident::new(default_float_type, proc_macro2::Span::call_site());
-
-    for (name, description, s) in specifications {
-        let name = syn::Ident::new(name, proc_macro2::Span::call_site());
-        let description = add_doc::comment_line(description);
-
-        let mut constraints = quote! {
-            /// - It is not NaN.
-        };
-
-        if !s.accept_inf {
-            constraints.extend(quote! {
-                /// - It is not infinite.
-            });
-        }
-
-        if !s.accept_zero {
-            constraints.extend(quote! {
-                /// - It is not zero.
-            });
-        }
-
-        if !s.accept_positive {
-            constraints.extend(quote! {
-                /// - It is not positive.
-            });
-        }
-
-        if !s.accept_negative {
-            constraints.extend(quote! {
-                /// - It is not negative.
-            });
-        }
-
-        output.extend(quote! {
-            #description
-            ///
-            /// It satisfies the following constraints:
-            #constraints
-            #[cfg_attr(feature = "serde", derive(Serialize))]
-            #[derive(Debug, Copy, Clone)]
-            #[repr(transparent)]
-            pub struct #name<T=#default_float_type>(T);
-        });
-    }
-
-    output
 }
 
 fn do_generate_floats(floats: &[FloatDefinition]) -> proc_macro2::TokenStream {
