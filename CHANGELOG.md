@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - First version to commit to semantic versioning.
 
+## 0.6.0 - Unreleased
+
+- `Hash` implementation for all 12 types.
+
 ## 0.5.0 - 2023-11-12
 
 - `libm` optional feature for `no_std`.
