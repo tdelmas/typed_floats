@@ -231,18 +231,6 @@ fn do_generate_floats(floats: &[FloatDefinition]) -> proc_macro2::TokenStream {
                     value.0
                 }
             }
-
-            impl core::str::FromStr for #full_type {
-                type Err = FromStrError;
-
-                #[inline]
-                #[must_use]
-                fn from_str(s: &str) -> Result<Self, Self::Err> {
-                    let f: #float_type = s.parse::<#float_type>().map_err(FromStrError::ParseFloatError)?;
-
-                    Self::try_from(f).map_err(FromStrError::InvalidNumber)
-                }
-            }
         });
 
         output.extend(generate_try_from_float(float));
