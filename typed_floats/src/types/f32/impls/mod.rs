@@ -1,1 +1,2 @@
+mod eq;
 mod hash;

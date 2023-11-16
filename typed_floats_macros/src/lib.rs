@@ -224,16 +224,6 @@ fn do_generate_floats(floats: &[FloatDefinition]) -> proc_macro2::TokenStream {
         let full_type = float.full_type_ident();
 
         output.extend(quote! {
-            impl PartialEq for #full_type {
-                fn eq(&self, other: &Self) -> bool {
-                    self.0 == other.0
-                }
-            }
-
-            impl Eq for #full_type {
-                // This is safe because we know that both values are not NaN
-            }
-
             impl Ord for #full_type {
                 #[inline]
                 fn cmp(&self, other: &Self) -> core::cmp::Ordering {
