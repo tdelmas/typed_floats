@@ -232,14 +232,6 @@ fn do_generate_floats(floats: &[FloatDefinition]) -> proc_macro2::TokenStream {
                 }
             }
 
-            impl core::fmt::Display for #full_type {
-                #[inline]
-                #[must_use]
-                fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-                    write!(f, "{}", self.0)
-                }
-            }
-
             impl core::str::FromStr for #full_type {
                 type Err = FromStrError;
 
