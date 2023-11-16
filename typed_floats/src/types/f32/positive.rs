@@ -1,6 +1,6 @@
 use crate::types::*;
 
-impl NonZeroNonNaNFinite<f32> {
+impl Positive<f32> {
     /// Creates a new value from a primitive type
     /// It adds a little overhead compared to `new_unchecked`
     /// because it checks that the value is valid
@@ -46,22 +46,28 @@ impl NonZeroNonNaNFinite<f32> {
             name = stringify!(#name)
         );
 
-        //#compiler_hints
+        // compiler hints
+        #[cfg(feature = "experimental_compiler_hints")]
+        if value.is_nan() || value.is_sign_negative() {
+            unsafe {
+                core::hint::unreachable_unchecked();
+            }
+        }
 
         Self(value)
     }
 
     /// Returns the value as a primitive type
-    /// 
+    ///
     /// # Examples
-    /// 
+    ///
     /// ```
     /// use typed_floats::tf32::NonNaN;
-    /// 
+    ///
     /// let x = NonNaN::new(3.0).unwrap();
-    /// 
+    ///
     /// let y: f32 = x.into();
-    /// 
+    ///
     /// assert_eq!(y, 3.0);
     /// ```
     #[inline]

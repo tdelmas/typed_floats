@@ -46,22 +46,28 @@ impl NonZeroNonNaNFinite<f64> {
             name = stringify!(#name)
         );
 
-        //#compiler_hints
+        // compiler hints
+        #[cfg(feature = "experimental_compiler_hints")]
+        if value.is_nan() || value.is_infinite() || value == 0.0 {
+            unsafe {
+                core::hint::unreachable_unchecked();
+            }
+        }
 
         Self(value)
     }
 
     /// Returns the value as a primitive type
-    /// 
+    ///
     /// # Examples
-    /// 
+    ///
     /// ```
     /// use typed_floats::tf64::NonNaN;
-    /// 
+    ///
     /// let x = NonNaN::new(3.0).unwrap();
-    /// 
+    ///
     /// let y: f64 = x.into();
-    /// 
+    ///
     /// assert_eq!(y, 3.0);
     /// ```
     #[inline]

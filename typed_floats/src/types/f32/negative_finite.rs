@@ -1,6 +1,6 @@
 use crate::types::*;
 
-impl Negative<f64> {
+impl NegativeFinite<f32> {
     /// Creates a new value from a primitive type
     /// It adds a little overhead compared to `new_unchecked`
     /// because it checks that the value is valid
@@ -8,7 +8,7 @@ impl Negative<f64> {
     /// # Examples
     ///
     /// ```
-    /// # use typed_floats::tf64::NonNaN;
+    /// # use typed_floats::tf32::NonNaN;
     /// let x = NonNaN::new(3.0).unwrap();
     ///
     /// assert_eq!(x, 3.0);
@@ -17,7 +17,7 @@ impl Negative<f64> {
     /// # Errors
     /// Returns an error if the value is not valid
     #[inline]
-    pub fn new(value: f64) -> Result<Self, InvalidNumber> {
+    pub fn new(value: f32) -> Result<Self, InvalidNumber> {
         Self::try_from(value)
     }
 
@@ -27,7 +27,7 @@ impl Negative<f64> {
     /// # Examples
     ///
     /// ```
-    /// # use typed_floats::tf64::NonNaN;
+    /// # use typed_floats::tf32::NonNaN;
     /// let x = unsafe { NonNaN::new_unchecked(3.0) };
     ///
     /// assert_eq!(x, 3.0);
@@ -38,35 +38,39 @@ impl Negative<f64> {
     /// but in release mode the behavior is undefined
     #[inline]
     #[must_use]
-    pub unsafe fn new_unchecked(value: f64) -> Self {
+    pub unsafe fn new_unchecked(value: f32) -> Self {
         debug_assert!(
             Self::try_from(value).is_ok(),
-            "{value} is not a valid {name}",
-            value = value,
-            name = stringify!(#name)
+            "{value} is not a valid NegativeFinite<f32>"
         );
 
-        //#compiler_hints
+        // compiler hints
+        #[cfg(feature = "experimental_compiler_hints")]
+        if value.is_nan() || value.is_infinite() || value.is_sign_positive() || value <= 0.0 {
+            unsafe {
+                core::hint::unreachable_unchecked();
+            }
+        }
 
         Self(value)
     }
 
     /// Returns the value as a primitive type
-    /// 
+    ///
     /// # Examples
-    /// 
+    ///
     /// ```
-    /// use typed_floats::tf64::NonNaN;
-    /// 
+    /// use typed_floats::tf32::NonNaN;
+    ///
     /// let x = NonNaN::new(3.0).unwrap();
-    /// 
-    /// let y: f64 = x.into();
-    /// 
+    ///
+    /// let y: f32 = x.into();
+    ///
     /// assert_eq!(y, 3.0);
     /// ```
     #[inline]
     #[must_use]
-    pub fn get(&self) -> f64 {
+    pub fn get(&self) -> f32 {
         self.0
     }
 
@@ -82,7 +86,7 @@ impl Negative<f64> {
     /// assert_eq!(x.is_nan(), false);
     /// ```
     ///
-    /// See [`f64::is_nan()`] for more details.
+    /// See [`f32::is_nan()`] for more details.
     #[inline]
     #[must_use]
     pub fn is_nan(&self) -> bool {
@@ -100,7 +104,7 @@ impl Negative<f64> {
     /// assert_eq!(x.is_infinite(), false);
     /// ```
     ///
-    /// See [`f64::is_infinite()`] for more details.
+    /// See [`f32::is_infinite()`] for more details.
     #[inline]
     #[must_use]
     pub fn is_infinite(&self) -> bool {
@@ -118,7 +122,7 @@ impl Negative<f64> {
     /// assert_eq!(x.is_finite(), true);
     /// ```
     ///
-    /// See [`f64::is_finite()`] for more details.
+    /// See [`f32::is_finite()`] for more details.
     #[inline]
     #[must_use]
     pub fn is_finite(&self) -> bool {
@@ -136,7 +140,7 @@ impl Negative<f64> {
     /// assert_eq!(x.is_subnormal(), false);
     /// ```
     ///
-    /// See [`f64::is_subnormal()`] for more details.
+    /// See [`f32::is_subnormal()`] for more details.
     #[inline]
     #[must_use]
     pub fn is_subnormal(&self) -> bool {
@@ -154,7 +158,7 @@ impl Negative<f64> {
     /// assert_eq!(x.is_normal(), true);
     /// ```
     ///
-    /// See [`f64::is_normal()`] for more details.
+    /// See [`f32::is_normal()`] for more details.
     #[inline]
     #[must_use]
     pub fn is_normal(&self) -> bool {
@@ -174,7 +178,7 @@ impl Negative<f64> {
     /// assert_eq!(x.classify(), core::num::FpCategory::Normal);
     /// ```
     ///
-    /// See [`f64::classify()`] for more details.
+    /// See [`f32::classify()`] for more details.
     #[inline]
     #[must_use]
     pub fn classify(&self) -> core::num::FpCategory {
@@ -192,7 +196,7 @@ impl Negative<f64> {
     /// assert_eq!(x.is_sign_positive(), true);
     /// ```
     ///
-    /// See [`f64::is_sign_positive()`] for more details.
+    /// See [`f32::is_sign_positive()`] for more details.
     #[inline]
     #[must_use]
     pub fn is_sign_positive(&self) -> bool {
@@ -210,7 +214,7 @@ impl Negative<f64> {
     /// assert_eq!(x.is_sign_negative(), false);
     /// ```
     ///
-    /// See [`f64::is_sign_negative()`] for more details.
+    /// See [`f32::is_sign_negative()`] for more details.
     #[inline]
     #[must_use]
     pub fn is_sign_negative(&self) -> bool {

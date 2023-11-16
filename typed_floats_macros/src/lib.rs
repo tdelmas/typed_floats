@@ -223,10 +223,6 @@ fn do_generate_floats(floats: &[FloatDefinition]) -> proc_macro2::TokenStream {
         let float_type = float.float_type_ident();
         let full_type = float.full_type_ident();
 
-        let compiler_hints = float
-            .s
-            .get_compiler_hints(&syn::Ident::new("value", proc_macro2::Span::call_site()));
-
         output.extend(quote! {
             impl PartialEq for #full_type {
                 fn eq(&self, other: &Self) -> bool {
@@ -284,37 +280,6 @@ fn do_generate_floats(floats: &[FloatDefinition]) -> proc_macro2::TokenStream {
                 }
             }
         });
-
-        // > When implementing both Hash and Eq, it is important that the following property holds:
-        // > `k1 == k2 -> hash(k1) == hash(k2)`
-        // This is sound because `NaN` is not a possible value.
-        // https://doc.rust-lang.org/core/hash/trait.Hash.html
-        if !float.s.accept_zero || !float.s.accept_positive || !float.s.accept_negative {
-            output.extend(quote! {
-                impl core::hash::Hash for #full_type {
-                    #[inline]
-                    fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
-                        self.0.to_bits().hash(state)
-                    }
-                }
-            });
-        } else {
-            output.extend(quote! {
-                impl core::hash::Hash for #full_type {
-                    #[inline]
-                    fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
-                        let f = if self.0 == 0.0 {
-                            // `+0.0` and `-0.0` are equal to they must have the same hash
-                            0.0
-                        } else {
-                            self.0
-                        };
-
-                        f.to_bits().hash(state)
-                    }
-                }
-            });
-        }
 
         output.extend(generate_try_from_float(float));
         output.extend(generate_try_ints(float));
