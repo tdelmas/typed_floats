@@ -44,3 +44,6 @@ optional = true
 checked-float = "0.1.4"
 ordered-float = "4.1.0"
 serde_json = { version = "1.0" }
+
+[package.metadata.docs.rs]
+features = ["serde"]
