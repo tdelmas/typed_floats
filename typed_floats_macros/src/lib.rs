@@ -224,24 +224,6 @@ fn do_generate_floats(floats: &[FloatDefinition]) -> proc_macro2::TokenStream {
         let full_type = float.full_type_ident();
 
         output.extend(quote! {
-            impl Ord for #full_type {
-                #[inline]
-                fn cmp(&self, other: &Self) -> core::cmp::Ordering {
-                    match self.0.partial_cmp(&other.0) {
-                        Some(ordering) => ordering,
-                        // This is safe because we know that both values are not NaN
-                        None => unsafe { core::hint::unreachable_unchecked() },
-                    }
-                }
-            }
-
-            impl PartialOrd for #full_type {
-                #[inline]
-                fn partial_cmp(&self, other: &Self) -> Option<core::cmp::Ordering> {
-                    Some(self.cmp(other))
-                }
-            }
-
             impl From<#name<Self>> for #float_type {
                 #[inline]
                 #[must_use]
