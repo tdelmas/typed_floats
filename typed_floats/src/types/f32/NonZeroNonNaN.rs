@@ -8,7 +8,7 @@ impl NonZeroNonNaN<f32> {
     /// # Examples
     ///
     /// ```
-    /// # use typed_floats::tf64::NonNaN;
+    /// # use typed_floats::tf32::NonNaN;
     /// let x = NonNaN::new(3.0).unwrap();
     ///
     /// assert_eq!(x, 3.0);
@@ -27,7 +27,7 @@ impl NonZeroNonNaN<f32> {
     /// # Examples
     ///
     /// ```
-    /// # use typed_floats::tf64::NonNaN;
+    /// # use typed_floats::tf32::NonNaN;
     /// let x = unsafe { NonNaN::new_unchecked(3.0) };
     ///
     /// assert_eq!(x, 3.0);
@@ -56,7 +56,7 @@ impl NonZeroNonNaN<f32> {
     /// # Examples
     /// 
     /// ```
-    /// use typed_floats::tf64::NonNaN;
+    /// use typed_floats::tf32::NonNaN;
     /// 
     /// let x = NonNaN::new(3.0).unwrap();
     /// 
