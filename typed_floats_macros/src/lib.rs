@@ -219,21 +219,6 @@ fn do_generate_floats(floats: &[FloatDefinition]) -> proc_macro2::TokenStream {
     let ops_rhs = get_impl_self_rhs();
 
     for float in floats {
-        let name = float.name_ident();
-        let float_type = float.float_type_ident();
-        let full_type = float.full_type_ident();
-
-        output.extend(quote! {
-            impl From<#name<Self>> for #float_type {
-                #[inline]
-                #[must_use]
-                fn from(value: #name<Self>) -> Self {
-                    value.0
-                }
-            }
-        });
-
-        output.extend(generate_try_from_float(float));
         output.extend(generate_try_ints(float));
     }
 

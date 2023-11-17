@@ -18,7 +18,11 @@ impl NonNaN<f32> {
     /// Returns an error if the value is not valid
     #[inline]
     pub fn new(value: f32) -> Result<Self, InvalidNumber> {
-        Self::try_from(value)
+        if value.is_nan() {
+            return Err(InvalidNumber::NaN);
+        }
+
+        Ok(Self(value))
     }
 
     /// Creates a new value from a primitive type with zero overhead (in release mode).
@@ -39,18 +43,12 @@ impl NonNaN<f32> {
     #[inline]
     #[must_use]
     pub unsafe fn new_unchecked(value: f32) -> Self {
-        debug_assert!(
-            Self::try_from(value).is_ok(),
-            "{value} is not a valid {name}",
-            value = value,
-            name = stringify!(#name)
-        );
+        if Self::new(value).is_err() {
+            debug_assert!(false, "{value} is not a valid NonNaN<f32>");
 
-        // compiler hints
-        #[cfg(feature = "experimental_compiler_hints")]
-        if value.is_nan() {
+            #[cfg(feature = "experimental_compiler_hints")]
             unsafe {
-                core::hint::unreachable_unchecked();
+                core::hint::unreachable_unchecked()
             }
         }
 

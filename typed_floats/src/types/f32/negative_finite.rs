@@ -18,7 +18,19 @@ impl NegativeFinite<f32> {
     /// Returns an error if the value is not valid
     #[inline]
     pub fn new(value: f32) -> Result<Self, InvalidNumber> {
-        Self::try_from(value)
+        if value.is_nan() {
+            return Err(InvalidNumber::NaN);
+        }
+
+        if value.is_infinite() {
+            return Err(InvalidNumber::Infinite);
+        }
+
+        if value.is_sign_positive() {
+            return Err(InvalidNumber::Positive);
+        }
+
+        Ok(Self(value))
     }
 
     /// Creates a new value from a primitive type with zero overhead (in release mode).
@@ -39,16 +51,12 @@ impl NegativeFinite<f32> {
     #[inline]
     #[must_use]
     pub unsafe fn new_unchecked(value: f32) -> Self {
-        debug_assert!(
-            Self::try_from(value).is_ok(),
-            "{value} is not a valid NegativeFinite<f32>"
-        );
+        if Self::new(value).is_err() {
+            debug_assert!(false, "{value} is not a valid NegativeFinite<f32>");
 
-        // compiler hints
-        #[cfg(feature = "experimental_compiler_hints")]
-        if value.is_nan() || value.is_infinite() || value.is_sign_positive() || value <= 0.0 {
+            #[cfg(feature = "experimental_compiler_hints")]
             unsafe {
-                core::hint::unreachable_unchecked();
+                core::hint::unreachable_unchecked()
             }
         }
 

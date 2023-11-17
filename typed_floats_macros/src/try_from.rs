@@ -58,66 +58,6 @@ pub(crate) fn impl_from_or_try_from(
     }
 }
 
-pub(crate) fn generate_try_from_float(float: &FloatDefinition) -> proc_macro2::TokenStream {
-    let float_type = &float.float_type_ident();
-    let full_type = &float.full_type_ident();
-    let call_tokens = &float.call_tokens();
-
-    let mut try_from_float = proc_macro2::TokenStream::new();
-
-    try_from_float.extend(quote! {
-        if value.is_nan() {
-            return Err(InvalidNumber::NaN);
-        }
-    });
-
-    if !float.s.accept_inf {
-        try_from_float.extend(quote! {
-            if value.is_infinite() {
-                return Err(InvalidNumber::Infinite);
-            }
-        });
-    }
-
-    if !float.s.accept_zero {
-        try_from_float.extend(quote! {
-            if value == 0.0 {
-                return Err(InvalidNumber::Zero);
-            }
-        });
-    }
-
-    if !float.s.accept_positive {
-        try_from_float.extend(quote! {
-            if value.is_sign_positive() {
-                return Err(InvalidNumber::Positive);
-            }
-        });
-    }
-
-    if !float.s.accept_negative {
-        try_from_float.extend(quote! {
-            if value.is_sign_negative() {
-                return Err(InvalidNumber::Negative);
-            }
-        });
-    }
-
-    quote! {
-        impl TryFrom<#float_type> for #full_type {
-            type Error = InvalidNumber;
-
-            #[inline]
-            #[must_use]
-            fn try_from(value: #float_type) -> Result<Self, Self::Error> {
-                #try_from_float
-
-                Ok(#call_tokens(value))
-            }
-        }
-    }
-}
-
 pub(crate) fn generate_try_ints(float: &FloatDefinition) -> proc_macro2::TokenStream {
     let mut try_from_ints = proc_macro2::TokenStream::new();
 
