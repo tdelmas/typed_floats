@@ -2,7 +2,7 @@ use proc_macro2::Span;
 use quote::quote;
 use syn::Ident;
 
-use crate::types::*;
+use crate::types::FloatDefinition;
 
 fn impl_from(float_from: &FloatDefinition, float_to: &FloatDefinition) -> proc_macro2::TokenStream {
     let from_full_type = &float_from.full_type_ident();
@@ -39,7 +39,7 @@ fn impl_try_from(
     }
 }
 
-pub(crate) fn impl_from_or_try_from(
+pub fn impl_from_or_try_from(
     float_from: &FloatDefinition,
     float_to: &FloatDefinition,
 ) -> proc_macro2::TokenStream {
@@ -58,7 +58,7 @@ pub(crate) fn impl_from_or_try_from(
     }
 }
 
-pub(crate) fn generate_try_ints(float: &FloatDefinition) -> proc_macro2::TokenStream {
+pub fn generate_try_ints(float: &FloatDefinition) -> proc_macro2::TokenStream {
     let mut try_from_ints = proc_macro2::TokenStream::new();
 
     // https://doc.rust-lang.org/1.49.0/reference/expressions/operator-expr.html#type-cast-expressions
@@ -88,7 +88,7 @@ pub(crate) fn generate_try_ints(float: &FloatDefinition) -> proc_macro2::TokenSt
     try_from_ints
 }
 
-pub(crate) fn generate_try_int(
+pub fn generate_try_int(
     float: &FloatDefinition,
     int_type: &str,
     can_be_negative: bool,
@@ -128,7 +128,7 @@ pub(crate) fn generate_try_int(
     }
 }
 
-pub(crate) fn generate_try_int_nonzero(
+pub fn generate_try_int_nonzero(
     float: &FloatDefinition,
     int_type: &str,
     can_be_negative: bool,

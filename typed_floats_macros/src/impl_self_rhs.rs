@@ -1,6 +1,6 @@
 use quote::quote;
 
-use crate::types::*;
+use crate::types::{FloatSpecifications, OpRhs, OpRhsBuilder, ReturnTypeSpecification};
 
 fn can_one_be_zero_neg_and_the_other_zero_pos(
     spec_a: &FloatSpecifications,
@@ -14,7 +14,7 @@ fn can_one_be_zero_neg_and_the_other_zero_pos(
     (can_a_be_zero_neg && can_b_be_zero_pos) || (can_a_be_zero_pos && can_b_be_zero_neg)
 }
 
-pub(crate) fn get_impl_self_rhs() -> Vec<OpRhs> {
+pub fn get_impl_self_rhs() -> Vec<OpRhs> {
     let mut ops = vec![
         OpRhsBuilder::new("core::ops::Add", "add")
             .with_assign("core::ops::AddAssign", "add_assign")

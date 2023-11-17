@@ -1,4 +1,8 @@
-use crate::*;
+use crate::{
+    Negative, NegativeFinite, NonNaN, NonNaNFinite, NonZeroNonNaN, NonZeroNonNaNFinite, Positive,
+    PositiveFinite, StrictlyNegative, StrictlyNegativeFinite, StrictlyPositive,
+    StrictlyPositiveFinite,
+};
 
 // > When implementing both Hash and Eq, it is important that the following property holds:
 // > `k1 == k2 -> hash(k1) == hash(k2)`
@@ -16,7 +20,7 @@ impl core::hash::Hash for NonNaN<f32> {
             self.0.to_bits()
         };
 
-        bits.hash(state)
+        bits.hash(state);
     }
 }
 
@@ -29,7 +33,7 @@ impl core::hash::Hash for NonNaNFinite<f32> {
             self.0.to_bits()
         };
 
-        bits.hash(state)
+        bits.hash(state);
     }
 }
 

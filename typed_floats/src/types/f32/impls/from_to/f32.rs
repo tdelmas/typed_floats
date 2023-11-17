@@ -1,4 +1,8 @@
-use crate::*;
+use crate::{
+    InvalidNumber, Negative, NegativeFinite, NonNaN, NonNaNFinite, NonZeroNonNaN,
+    NonZeroNonNaNFinite, Positive, PositiveFinite, StrictlyNegative, StrictlyNegativeFinite,
+    StrictlyPositive, StrictlyPositiveFinite,
+};
 
 impl From<NonNaN<Self>> for f32 {
     #[inline]
@@ -12,7 +16,6 @@ impl TryFrom<f32> for NonNaN<f32> {
     type Error = InvalidNumber;
 
     #[inline]
-    #[must_use]
     fn try_from(value: f32) -> Result<Self, Self::Error> {
         Self::new(value)
     }
@@ -30,7 +33,6 @@ impl TryFrom<f32> for NonZeroNonNaN<f32> {
     type Error = InvalidNumber;
 
     #[inline]
-    #[must_use]
     fn try_from(value: f32) -> Result<Self, Self::Error> {
         Self::new(value)
     }
@@ -48,7 +50,6 @@ impl TryFrom<f32> for NonNaNFinite<f32> {
     type Error = InvalidNumber;
 
     #[inline]
-    #[must_use]
     fn try_from(value: f32) -> Result<Self, Self::Error> {
         Self::new(value)
     }
@@ -66,7 +67,6 @@ impl TryFrom<f32> for NonZeroNonNaNFinite<f32> {
     type Error = InvalidNumber;
 
     #[inline]
-    #[must_use]
     fn try_from(value: f32) -> Result<Self, Self::Error> {
         Self::new(value)
     }
@@ -84,7 +84,6 @@ impl TryFrom<f32> for Positive<f32> {
     type Error = InvalidNumber;
 
     #[inline]
-    #[must_use]
     fn try_from(value: f32) -> Result<Self, Self::Error> {
         Self::new(value)
     }
@@ -102,7 +101,6 @@ impl TryFrom<f32> for Negative<f32> {
     type Error = InvalidNumber;
 
     #[inline]
-    #[must_use]
     fn try_from(value: f32) -> Result<Self, Self::Error> {
         Self::new(value)
     }
@@ -120,7 +118,6 @@ impl TryFrom<f32> for PositiveFinite<f32> {
     type Error = InvalidNumber;
 
     #[inline]
-    #[must_use]
     fn try_from(value: f32) -> Result<Self, Self::Error> {
         Self::new(value)
     }
@@ -138,7 +135,6 @@ impl TryFrom<f32> for NegativeFinite<f32> {
     type Error = InvalidNumber;
 
     #[inline]
-    #[must_use]
     fn try_from(value: f32) -> Result<Self, Self::Error> {
         Self::new(value)
     }
@@ -156,7 +152,6 @@ impl TryFrom<f32> for StrictlyPositive<f32> {
     type Error = InvalidNumber;
 
     #[inline]
-    #[must_use]
     fn try_from(value: f32) -> Result<Self, Self::Error> {
         Self::new(value)
     }
@@ -174,7 +169,6 @@ impl TryFrom<f32> for StrictlyNegative<f32> {
     type Error = InvalidNumber;
 
     #[inline]
-    #[must_use]
     fn try_from(value: f32) -> Result<Self, Self::Error> {
         Self::new(value)
     }
@@ -192,7 +186,6 @@ impl TryFrom<f32> for StrictlyPositiveFinite<f32> {
     type Error = InvalidNumber;
 
     #[inline]
-    #[must_use]
     fn try_from(value: f32) -> Result<Self, Self::Error> {
         Self::new(value)
     }
@@ -210,7 +203,6 @@ impl TryFrom<f32> for StrictlyNegativeFinite<f32> {
     type Error = InvalidNumber;
 
     #[inline]
-    #[must_use]
     fn try_from(value: f32) -> Result<Self, Self::Error> {
         Self::new(value)
     }

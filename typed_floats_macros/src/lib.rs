@@ -17,19 +17,19 @@ extern crate proc_macro;
 use quote::quote;
 
 mod try_from;
-use try_from::*;
+use try_from::{generate_try_ints, impl_from_or_try_from};
 
 mod types;
-use types::*;
+use types::{FloatDefinition, FloatSpecifications, ReturnTypeDefinition};
 
 mod impl_self;
-use impl_self::*;
+use impl_self::get_impl_self;
 
 mod impl_self_rhs;
-use impl_self_rhs::*;
+use impl_self_rhs::get_impl_self_rhs;
 
 mod add_doc;
-use add_doc::*;
+use add_doc::generate_main_description;
 
 mod gen_tests;
 

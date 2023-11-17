@@ -1,4 +1,4 @@
-use crate::types::*;
+use crate::types::{f32, InvalidNumber, NegativeFinite};
 
 impl NegativeFinite<f32> {
     /// Creates a new value from a primitive type
@@ -78,7 +78,7 @@ impl NegativeFinite<f32> {
     /// ```
     #[inline]
     #[must_use]
-    pub fn get(&self) -> f32 {
+    pub const fn get(&self) -> f32 {
         self.0
     }
 
@@ -97,8 +97,8 @@ impl NegativeFinite<f32> {
     /// See [`f32::is_nan()`] for more details.
     #[inline]
     #[must_use]
-    pub fn is_nan(&self) -> bool {
-        return false;
+    pub const fn is_nan(&self) -> bool {
+        false
     }
 
     /// Returns `true` if this value is positive infinity or negative infinity.
@@ -115,8 +115,8 @@ impl NegativeFinite<f32> {
     /// See [`f32::is_infinite()`] for more details.
     #[inline]
     #[must_use]
-    pub fn is_infinite(&self) -> bool {
-        self.0.is_infinite()
+    pub const fn is_infinite(&self) -> bool {
+        false
     }
 
     /// Returns `true` if this number is positive infinity nor negative infinity.
@@ -134,7 +134,7 @@ impl NegativeFinite<f32> {
     #[inline]
     #[must_use]
     pub fn is_finite(&self) -> bool {
-        self.0.is_finite()
+        true
     }
 
     /// Returns `true` if the number is [subnormal](https://en.wikipedia.org/wiki/Denormal_number).
@@ -208,7 +208,7 @@ impl NegativeFinite<f32> {
     #[inline]
     #[must_use]
     pub fn is_sign_positive(&self) -> bool {
-        self.0.is_sign_positive()
+        false
     }
 
     /// Returns `true` if `self` has a negative sign, including `-0.0` and negative infinity.
@@ -226,7 +226,7 @@ impl NegativeFinite<f32> {
     #[inline]
     #[must_use]
     pub fn is_sign_negative(&self) -> bool {
-        self.0.is_sign_negative()
+        true
     }
 
     /// Returns `true` if the number is negative zero.
@@ -246,7 +246,7 @@ impl NegativeFinite<f32> {
     #[inline]
     #[must_use]
     pub fn is_negative_zero(&self) -> bool {
-        self.0 == 0.0 && self.0.is_sign_negative()
+        self.0 == 0.0
     }
 
     /// Returns `true` if the number is positive zero.
@@ -265,7 +265,7 @@ impl NegativeFinite<f32> {
     /// ```
     #[inline]
     #[must_use]
-    pub fn is_positive_zero(&self) -> bool {
-        self.0 == 0.0 && self.0.is_sign_positive()
+    pub const fn is_positive_zero(&self) -> bool {
+        false
     }
 }

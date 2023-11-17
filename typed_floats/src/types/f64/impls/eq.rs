@@ -1,4 +1,8 @@
-use crate::*;
+use crate::{
+    Negative, NegativeFinite, NonNaN, NonNaNFinite, NonZeroNonNaN, NonZeroNonNaNFinite, Positive,
+    PositiveFinite, StrictlyNegative, StrictlyNegativeFinite, StrictlyPositive,
+    StrictlyPositiveFinite,
+};
 
 // This is safe because we know that both values are not NaN
 

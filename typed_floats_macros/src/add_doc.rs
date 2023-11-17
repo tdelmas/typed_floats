@@ -1,10 +1,10 @@
-use crate::impl_self::*;
-use crate::impl_self_rhs::*;
-use crate::types::*;
+use crate::impl_self::get_impl_self;
+use crate::impl_self_rhs::get_impl_self_rhs;
+use crate::types::{OpRhs, ReturnTypeDefinition};
 
 use crate::types::FloatDefinition;
 
-pub(crate) fn generate_main_description(floats: &[FloatDefinition]) -> proc_macro2::TokenStream {
+pub fn generate_main_description(floats: &[FloatDefinition]) -> proc_macro2::TokenStream {
     let mut output: proc_macro2::TokenStream = proc_macro2::TokenStream::new();
 
     let ops = get_impl_self_rhs();
@@ -24,7 +24,7 @@ pub(crate) fn generate_main_description(floats: &[FloatDefinition]) -> proc_macr
     output
 }
 
-pub(crate) fn comment_line(str: &str) -> proc_macro2::TokenStream {
+pub fn comment_line(str: &str) -> proc_macro2::TokenStream {
     let comment: String = "/// ".to_owned() + str + "\n";
     comment.parse().unwrap()
 }
@@ -50,9 +50,9 @@ fn print_table(content: Vec<Vec<String>>) -> proc_macro2::TokenStream {
 
     output.extend(comment_line(&line_to_string(first_line)));
     output.extend(comment_line(&line_to_string(sep)));
-    lines.iter().for_each(|line| {
+    for line in &lines {
         output.extend(comment_line(&line_to_string(line.clone())));
-    });
+    }
 
     output.extend(comment_line(""));
 
@@ -76,12 +76,7 @@ fn generate_op_table(floats: &[FloatDefinition], op: &OpRhs) -> proc_macro2::Tok
     }
 
     header.push(title);
-    header.extend(
-        floats
-            .iter()
-            .map(|float| float.name.to_string())
-            .collect::<Vec<String>>(),
-    );
+    header.extend(floats.iter().map(|float| float.name.to_string()));
 
     table.push(header);
 

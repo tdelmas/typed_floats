@@ -1,4 +1,4 @@
-use crate::types::*;
+use crate::types::{f64, InvalidNumber, NonNaNFinite};
 
 impl NonNaNFinite<f64> {
     /// Creates a new value from a primitive type
@@ -74,7 +74,7 @@ impl NonNaNFinite<f64> {
     /// ```
     #[inline]
     #[must_use]
-    pub fn get(&self) -> f64 {
+    pub const fn get(&self) -> f64 {
         self.0
     }
 
@@ -93,8 +93,8 @@ impl NonNaNFinite<f64> {
     /// See [`f64::is_nan()`] for more details.
     #[inline]
     #[must_use]
-    pub fn is_nan(&self) -> bool {
-        return false;
+    pub const fn is_nan(&self) -> bool {
+        false
     }
 
     /// Returns `true` if this value is positive infinity or negative infinity.

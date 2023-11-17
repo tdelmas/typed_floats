@@ -1,4 +1,10 @@
-use crate::*;
+#![allow(clippy::comparison_chain)]
+
+use crate::{
+    Negative, NegativeFinite, NonNaN, NonNaNFinite, NonZeroNonNaN, NonZeroNonNaNFinite, Positive,
+    PositiveFinite, StrictlyNegative, StrictlyNegativeFinite, StrictlyPositive,
+    StrictlyPositiveFinite,
+};
 
 impl Ord for NonNaN<f32> {
     #[inline]

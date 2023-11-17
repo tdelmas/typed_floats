@@ -1,8 +1,8 @@
 use quote::quote;
 
-use crate::types::*;
+use crate::types::{FloatSpecifications, Op, OpBuilder, ReturnTypeSpecification};
 
-pub(crate) fn get_impl_self() -> Vec<Op> {
+pub fn get_impl_self() -> Vec<Op> {
     vec![
         OpBuilder::new("neg")
             .trait_name("core::ops::Neg")

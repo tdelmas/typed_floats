@@ -1,4 +1,4 @@
-use crate::types::*;
+use crate::types::{f32, InvalidNumber, NonNaN};
 
 impl NonNaN<f32> {
     /// Creates a new value from a primitive type
@@ -70,7 +70,7 @@ impl NonNaN<f32> {
     /// ```
     #[inline]
     #[must_use]
-    pub fn get(&self) -> f32 {
+    pub const fn get(&self) -> f32 {
         self.0
     }
 
@@ -89,8 +89,8 @@ impl NonNaN<f32> {
     /// See [`f32::is_nan()`] for more details.
     #[inline]
     #[must_use]
-    pub fn is_nan(&self) -> bool {
-        return false;
+    pub const fn is_nan(&self) -> bool {
+        false
     }
 
     /// Returns `true` if this value is positive infinity or negative infinity.

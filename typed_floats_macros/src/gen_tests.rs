@@ -1,8 +1,8 @@
 use quote::quote;
 use syn::Ident;
 
-use crate::impl_self::*;
-use crate::*;
+use crate::impl_self::get_impl_self;
+use crate::{get_definitions, get_impl_self_rhs, FloatDefinition, ReturnTypeDefinition};
 
 fn test_op_checks(
     float: &FloatDefinition,
@@ -103,10 +103,7 @@ fn get_test_values(float_type: Ident) -> proc_macro2::TokenStream {
     }
 }
 
-pub(crate) fn generate_tests_self(
-    float_type: &'static str,
-    filter: &str,
-) -> proc_macro2::TokenStream {
+pub fn generate_tests_self(float_type: &'static str, filter: &str) -> proc_macro2::TokenStream {
     let floats_f64 = get_definitions(float_type);
 
     let mut output = proc_macro2::TokenStream::new();
@@ -212,10 +209,7 @@ pub(crate) fn generate_tests_self(
     }
 }
 
-pub(crate) fn generate_tests_self_rhs(
-    float_type: &'static str,
-    filter: &str,
-) -> proc_macro2::TokenStream {
+pub fn generate_tests_self_rhs(float_type: &'static str, filter: &str) -> proc_macro2::TokenStream {
     let floats_f64 = get_definitions(float_type);
 
     let mut output = proc_macro2::TokenStream::new();
