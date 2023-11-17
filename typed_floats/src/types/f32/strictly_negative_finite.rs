@@ -55,10 +55,10 @@ impl StrictlyNegativeFinite<f32> {
     #[inline]
     #[must_use]
     pub unsafe fn new_unchecked(value: f32) -> Self {
-        if Self::new(value).is_err() {
+        if Self::new(value).is_err() || value >= 0.0 {
             debug_assert!(false, "{value} is not a valid StrictlyNegativeFinite<f32>");
 
-            #[cfg(feature = "experimental_compiler_hints")]
+            #[cfg(feature = "compiler_hints")]
             unsafe {
                 core::hint::unreachable_unchecked()
             }

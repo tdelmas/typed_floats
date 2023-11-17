@@ -51,10 +51,10 @@ impl StrictlyNegative<f64> {
     #[inline]
     #[must_use]
     pub unsafe fn new_unchecked(value: f64) -> Self {
-        if Self::new(value).is_err() {
+        if Self::new(value).is_err() || value >= 0.0 {
             debug_assert!(false, "{value} is not a valid StrictlyNegative<f64>");
 
-            #[cfg(feature = "experimental_compiler_hints")]
+            #[cfg(feature = "compiler_hints")]
             unsafe {
                 core::hint::unreachable_unchecked()
             }

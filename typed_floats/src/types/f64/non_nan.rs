@@ -46,7 +46,7 @@ impl NonNaN<f64> {
         if Self::new(value).is_err() {
             debug_assert!(false, "{value} is not a valid NonNaN<f64>");
 
-            #[cfg(feature = "experimental_compiler_hints")]
+            #[cfg(feature = "compiler_hints")]
             unsafe {
                 core::hint::unreachable_unchecked()
             }

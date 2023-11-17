@@ -16,7 +16,8 @@ version = "0.6.0"
 rust-version = "1.70"
 
 [features]
-default = ["std"]
+default = ["std", "compiler_hints"]
+compiler_hints = []
 serde = ["dep:serde"]
 std = ["typed_floats_macros/std"]
 libm = ["dep:num-traits", "typed_floats_macros/libm"]
