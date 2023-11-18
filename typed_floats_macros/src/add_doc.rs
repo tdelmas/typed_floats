@@ -26,7 +26,17 @@ pub fn generate_main_description(floats: &[FloatDefinition]) -> proc_macro2::Tok
 
 pub fn comment_line(str: &str) -> proc_macro2::TokenStream {
     let comment: String = "/// ".to_owned() + str + "\n";
-    comment.parse().unwrap()
+    comment.parse().expect("Failed to parse comment")
+}
+
+fn line_to_string(line: Vec<String>) -> String {
+    let mut str = "|".to_string();
+    for cell in line {
+        str += cell.as_str();
+        str += "|";
+    }
+
+    str
 }
 
 fn print_table(content: Vec<Vec<String>>) -> proc_macro2::TokenStream {
@@ -38,15 +48,6 @@ fn print_table(content: Vec<Vec<String>>) -> proc_macro2::TokenStream {
 
     let first_line = content[0].clone();
     let lines = content[1..].to_vec();
-
-    fn line_to_string(line: Vec<String>) -> String {
-        let mut str = "|".to_string();
-        for cell in line {
-            str += cell.as_str();
-            str += "|";
-        }
-        str
-    }
 
     let sep: Vec<String> = first_line.iter().map(|_| "---".to_string()).collect();
 

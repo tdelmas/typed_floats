@@ -150,15 +150,14 @@ macro_rules! assert_relative_eq {
     ($left:expr, $right:expr, $epsilon:expr) => {{
         let left_val: f64 = $left.into();
         let right_val: f64 = $right.into();
-        let diff = (left_val - right_val).abs();
 
         assert!(
-            diff <= $epsilon,
+            (left_val == right_val) || (left_val - right_val).abs() <= $epsilon,
             "assertion failed: `(left ~= right)` \
              (left: `{:?}`, right: `{:?}`, (left - right): `{:?}` > epsilon: `{:?}`)",
             left_val,
             right_val,
-            diff,
+            left_val - right_val,
             $epsilon
         );
     }};

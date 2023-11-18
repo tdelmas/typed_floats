@@ -1,6 +1,40 @@
 use quote::quote;
 
-use crate::types::{FloatSpecifications, OpRhs, OpRhsBuilder, ReturnTypeSpecification};
+use crate::types::{
+    FloatDefinition, FloatSpecifications, OpRhs, OpRhsBuilder, ReturnTypeSpecification,
+};
+
+fn add_result(float: &FloatDefinition, rhs: &FloatDefinition) -> ReturnTypeSpecification {
+    let spec_a = &float.s;
+    let spec_b = &rhs.s;
+
+    let can_sign_be_different = (spec_a.accept_negative && spec_b.accept_positive)
+        || (spec_a.accept_positive && spec_b.accept_negative);
+    let can_sign_be_same = (spec_a.accept_negative && spec_b.accept_negative)
+        || (spec_a.accept_positive && spec_b.accept_positive);
+
+    let can_add_inf_and_negative_inf = (spec_a.accept_inf
+        && spec_a.accept_negative
+        && spec_b.accept_inf
+        && spec_b.accept_positive)
+        || (spec_b.accept_inf
+            && spec_b.accept_negative
+            && spec_a.accept_inf
+            && spec_a.accept_positive);
+
+    let can_be_nan = can_add_inf_and_negative_inf;
+
+    if can_be_nan {
+        ReturnTypeSpecification::NativeFloat
+    } else {
+        ReturnTypeSpecification::FloatSpecifications(FloatSpecifications {
+            accept_inf: spec_a.accept_inf || spec_b.accept_inf || can_sign_be_same,
+            accept_zero: can_sign_be_different || (spec_a.accept_zero && spec_b.accept_zero),
+            accept_positive: spec_a.accept_positive || spec_b.accept_positive,
+            accept_negative: spec_a.accept_negative || spec_b.accept_negative,
+        })
+    }
+}
 
 fn can_one_be_zero_neg_and_the_other_zero_pos(
     spec_a: &FloatSpecifications,
@@ -23,37 +57,7 @@ pub fn get_impl_self_rhs() -> Vec<OpRhs> {
             .op_test(Box::new(|var1, var2| quote! { #var1 + #var2 }))
             .op_is_commutative()
             .comment("The addition of two opposite infinity is `NaN`.")
-            .result(Box::new(|float, rhs| {
-                let spec_a = &float.s;
-                let spec_b = &rhs.s;
-
-                let can_sign_be_different = (spec_a.accept_negative && spec_b.accept_positive)
-                    || (spec_a.accept_positive && spec_b.accept_negative);
-                let can_sign_be_same = (spec_a.accept_negative && spec_b.accept_negative)
-                    || (spec_a.accept_positive && spec_b.accept_positive);
-
-                let can_add_inf_and_negative_inf = (spec_a.accept_inf
-                    && spec_a.accept_negative
-                    && spec_b.accept_inf
-                    && spec_b.accept_positive)
-                    || (spec_b.accept_inf
-                        && spec_b.accept_negative
-                        && spec_a.accept_inf
-                        && spec_a.accept_positive);
-
-                let can_be_nan = can_add_inf_and_negative_inf;
-
-                match can_be_nan {
-                    true => ReturnTypeSpecification::NativeFloat,
-                    false => ReturnTypeSpecification::FloatSpecifications(FloatSpecifications {
-                        accept_inf: spec_a.accept_inf || spec_b.accept_inf || can_sign_be_same,
-                        accept_zero: can_sign_be_different
-                            || (spec_a.accept_zero && spec_b.accept_zero),
-                        accept_positive: spec_a.accept_positive || spec_b.accept_positive,
-                        accept_negative: spec_a.accept_negative || spec_b.accept_negative,
-                    }),
-                }
-            }))
+            .result(Box::new(add_result))
             .build(),
         OpRhsBuilder::new("core::ops::Sub", "sub")
             .with_assign("core::ops::SubAssign", "sub_assign")
@@ -75,14 +79,14 @@ pub fn get_impl_self_rhs() -> Vec<OpRhs> {
 
                 let can_be_nan = can_sub_inf_and_inf;
 
-                match can_be_nan {
-                    true => ReturnTypeSpecification::NativeFloat,
-                    false => ReturnTypeSpecification::FloatSpecifications(FloatSpecifications {
+                if can_be_nan {
+                      ReturnTypeSpecification::NativeFloat
+                 }else{ ReturnTypeSpecification::FloatSpecifications(FloatSpecifications {
                         accept_inf: spec_a.accept_inf || spec_b.accept_inf || can_overflow,
                         accept_zero: can_sign_be_same || (spec_a.accept_zero && spec_b.accept_zero),
                         accept_positive: spec_a.accept_positive || spec_b.accept_negative,
                         accept_negative: spec_a.accept_negative || spec_b.accept_positive,
-                    }),
+                    })
                 }
             }))
             .build(),
@@ -95,14 +99,14 @@ pub fn get_impl_self_rhs() -> Vec<OpRhs> {
 
                 let can_be_nan = spec_b.accept_zero || spec_a.accept_inf;
 
-                match can_be_nan {
-                    true => ReturnTypeSpecification::NativeFloat,
-                    false => ReturnTypeSpecification::FloatSpecifications(FloatSpecifications {
+                if can_be_nan {
+  ReturnTypeSpecification::NativeFloat
+                }else{ReturnTypeSpecification::FloatSpecifications(FloatSpecifications {
                         accept_inf: false,
                         accept_zero: true,
                         accept_positive: spec_a.accept_positive,
                         accept_negative: spec_a.accept_negative,
-                    }),
+                    })
                 }
             }))
             .build(),
@@ -124,14 +128,14 @@ pub fn get_impl_self_rhs() -> Vec<OpRhs> {
 
                 let can_be_nan = can_zero_divide_zero || can_inf_divide_inf;
 
-                match can_be_nan {
-                    true => ReturnTypeSpecification::NativeFloat,
-                    false => ReturnTypeSpecification::FloatSpecifications(FloatSpecifications {
+                if can_be_nan {
+                      ReturnTypeSpecification::NativeFloat
+                 }else{ ReturnTypeSpecification::FloatSpecifications(FloatSpecifications {
                         accept_inf: true,
                         accept_zero: true,
                         accept_positive: can_sign_be_same,
                         accept_negative: can_sign_be_different,
-                    }),
+                    })
                 }
             }))
             .build(),
@@ -154,16 +158,15 @@ pub fn get_impl_self_rhs() -> Vec<OpRhs> {
 
                 let can_be_nan = can_zero_multiply_inf;
 
-                match can_be_nan {
-                    true => ReturnTypeSpecification::NativeFloat,
-                    false => {
-                        ReturnTypeSpecification::FloatSpecifications(FloatSpecifications {
-                            accept_inf: true,  // it can always overflow
-                            accept_zero: true, // it can always round to zero
-                            accept_positive: can_sign_be_same,
-                            accept_negative: can_sign_be_different,
-                        })
-                    }
+                if can_be_nan {
+                      ReturnTypeSpecification::NativeFloat
+                } else {
+                    ReturnTypeSpecification::FloatSpecifications(FloatSpecifications {
+                        accept_inf: true,  // it can always overflow
+                        accept_zero: true, // it can always round to zero
+                        accept_positive: can_sign_be_same,
+                        accept_negative: can_sign_be_different,
+                    })
                 }
             }))
             .build(),
@@ -383,14 +386,15 @@ pub fn get_impl_self_rhs() -> Vec<OpRhs> {
             let sign_can_be_same = (spec_a.accept_negative && spec_b.accept_negative)
                 || (spec_a.accept_positive && spec_b.accept_positive);
 
-            match can_be_nan {
-                true => ReturnTypeSpecification::NativeFloat,
-                false => ReturnTypeSpecification::FloatSpecifications(FloatSpecifications {
+            if can_be_nan {
+                ReturnTypeSpecification::NativeFloat
+            } else {
+                ReturnTypeSpecification::FloatSpecifications(FloatSpecifications {
                     accept_inf: true,
                     accept_zero: true, // Rounding errors can happen
                     accept_positive: sign_can_be_same,
                     accept_negative: sign_can_be_different,
-                }),
+                })
             }
         }));
 

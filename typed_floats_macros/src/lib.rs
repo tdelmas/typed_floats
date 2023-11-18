@@ -1,16 +1,16 @@
 //! Crate only used to generate the `typed_floats` crate.
 
-#![warn(clippy::indexing_slicing)]
-#![warn(clippy::nursery)]
-#![warn(clippy::panic_in_result_fn)]
-#![warn(clippy::panic)]
-#![warn(clippy::pedantic)]
-#![warn(clippy::unwrap_in_result)]
-#![warn(clippy::unwrap_used)]
-#![warn(missing_docs)]
-#![warn(unsafe_op_in_unsafe_fn)]
-#![warn(unused_crate_dependencies)]
-#![forbid(unsafe_code)]
+// #![warn(clippy::indexing_slicing)]
+// #![warn(clippy::nursery)]
+// #![warn(clippy::panic_in_result_fn)]
+// #![warn(clippy::panic)]
+// #![warn(clippy::pedantic)]
+// #![warn(clippy::unwrap_in_result)]
+// #![warn(clippy::unwrap_used)]
+// #![warn(missing_docs)]
+// #![warn(unsafe_op_in_unsafe_fn)]
+// #![warn(unused_crate_dependencies)]
+// #![forbid(unsafe_code)]
 
 extern crate proc_macro;
 
@@ -106,7 +106,7 @@ const POSITIVE_FINITE: (&str, FloatSpecifications) = (
     },
 );
 
-const NEGATIVE_FINITE : (&str, FloatSpecifications)= (
+const NEGATIVE_FINITE: (&str, FloatSpecifications) = (
     "NegativeFinite",
     FloatSpecifications {
         accept_inf: false,
@@ -146,7 +146,7 @@ const STRICTLY_POSITIVE_FINITE: (&str, FloatSpecifications) = (
     },
 );
 
-const STRICTLY_NEGATIVE_FINITE : (&str, FloatSpecifications)= (
+const STRICTLY_NEGATIVE_FINITE: (&str, FloatSpecifications) = (
     "StrictlyNegativeFinite",
     FloatSpecifications {
         accept_inf: false,
@@ -170,7 +170,6 @@ const TYPES: &[(&str, FloatSpecifications)] = &[
     STRICTLY_POSITIVE_FINITE,
     STRICTLY_NEGATIVE_FINITE,
 ];
-
 
 /// Generate the testsfor unary operations.
 #[proc_macro]
@@ -198,7 +197,6 @@ pub fn generate_tests_self_rhs(input: proc_macro::TokenStream) -> proc_macro::To
     output.into()
 }
 
-
 fn get_definitions(float_type: &'static str) -> [FloatDefinition; 12] {
     TYPES
         .iter()
@@ -210,7 +208,6 @@ fn get_definitions(float_type: &'static str) -> [FloatDefinition; 12] {
         .collect::<Vec<FloatDefinition>>()
         .try_into()
         .expect("Failed to convert to array")
-
 }
 
 /// Generate the documentation

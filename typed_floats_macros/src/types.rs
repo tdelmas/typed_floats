@@ -382,17 +382,17 @@ impl OpRhsBuilder {
         self
     }
 
-    pub(crate) fn op_is_commutative(mut self) -> Self {
+    pub(crate) const fn op_is_commutative(mut self) -> Self {
         self.op.op_is_commutative = true;
         self
     }
 
-    pub(crate) fn comment(mut self, comment: &'static str) -> Self {
+    pub(crate) const fn comment(mut self, comment: &'static str) -> Self {
         self.op.comment = Some(comment);
         self
     }
 
-    pub(crate) fn with_assign(
+    pub(crate) const fn with_assign(
         mut self,
         assign_trait: &'static str,
         assign_fn: &'static str,
