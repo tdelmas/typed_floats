@@ -181,9 +181,6 @@ use crate::traits::*;
 #[cfg(all(feature = "libm", not(feature = "std")))]
 use num_traits::Float;
 
-use core::num::{NonZeroI16, NonZeroI32, NonZeroI64, NonZeroI8};
-use core::num::{NonZeroU16, NonZeroU32, NonZeroU64, NonZeroU8};
-
 mod f32;
 mod f64;
 mod impls;

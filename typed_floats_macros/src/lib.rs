@@ -17,7 +17,7 @@ extern crate proc_macro;
 use quote::quote;
 
 mod try_from;
-use try_from::{generate_try_ints, impl_from_or_try_from};
+use try_from::impl_from_or_try_from;
 
 mod types;
 use types::{FloatDefinition, FloatSpecifications, ReturnTypeDefinition};
@@ -243,10 +243,6 @@ fn do_generate_floats(floats: &[FloatDefinition]) -> proc_macro2::TokenStream {
 
     let ops = get_impl_self();
     let ops_rhs = get_impl_self_rhs();
-
-    for float in floats {
-        output.extend(generate_try_ints(float));
-    }
 
     for float_a in floats {
         for float_b in floats {
