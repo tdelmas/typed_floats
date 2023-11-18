@@ -54,7 +54,7 @@ fn test_op_checks(
     res
 }
 
-fn get_test_values(float_type: Ident) -> proc_macro2::TokenStream {
+fn get_test_values(float_type: &Ident) -> proc_macro2::TokenStream {
     quote! {
         const MAX_NEGATIVE: #float_type = -core::#float_type::MIN_POSITIVE;
         const SUBNORMAL : #float_type = 1.0e-308;
@@ -108,7 +108,7 @@ pub fn generate_tests_self(float_type: &'static str, filter: &str) -> proc_macro
 
     let mut output = proc_macro2::TokenStream::new();
 
-    let float_type = floats_f64[0].float_type_ident();
+    let float_type = floats_f64.get(0).expect("no float returned").float_type_ident();
 
     let test_fn_name = quote::format_ident!("test_{float_type}_{filter}");
 
@@ -197,7 +197,7 @@ pub fn generate_tests_self(float_type: &'static str, filter: &str) -> proc_macro
         });
     }
 
-    let values = get_test_values(float_type);
+    let values = get_test_values(&float_type);
 
     quote! {
         #[test]
@@ -214,7 +214,7 @@ pub fn generate_tests_self_rhs(float_type: &'static str, filter: &str) -> proc_m
 
     let mut output = proc_macro2::TokenStream::new();
 
-    let float_type = floats_f64[0].float_type_ident();
+    let float_type = floats_f64.get(0).expect("no floats returned").float_type_ident();
 
     let test_fn_name = quote::format_ident!("test_{float_type}_{filter}");
 
@@ -330,7 +330,7 @@ pub fn generate_tests_self_rhs(float_type: &'static str, filter: &str) -> proc_m
         }
     }
 
-    let values = get_test_values(float_type);
+    let values = get_test_values(&float_type);
 
     quote! {
         #[test]

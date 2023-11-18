@@ -34,7 +34,7 @@ mod tests {
         let x = NonNaN::new(2.0).unwrap(); // not nan, so we can unwrap
         let y = NonNaN::new(0.0).unwrap(); // not nan, so we can unwrap
 
-        //TODO assert_eq!(x.powf(y).try_into::<NonNaN<f64>>().unwrap().get(), 1.0); // not nan, so we can unwrap
+        assert_eq!(x.powf(y).try_into::<NonNaN<f64>>().unwrap().get(), 1.0); // not nan, so we can unwrap
 
         let z: Result<NonNaN, _> = (y / y).try_into(); // 0/0 is nan, so we get Err
         assert!(z.is_err());

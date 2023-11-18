@@ -199,8 +199,7 @@ pub fn generate_tests_self_rhs(input: proc_macro::TokenStream) -> proc_macro::To
 }
 
 
-fn get_definitions(float_type: &'static str) -> Vec<FloatDefinition> {
-
+fn get_definitions(float_type: &'static str) -> [FloatDefinition; 12] {
     TYPES
         .iter()
         .map(|specification| FloatDefinition {
@@ -208,7 +207,10 @@ fn get_definitions(float_type: &'static str) -> Vec<FloatDefinition> {
             float_type,
             s: specification.1.clone(),
         })
-        .collect::<Vec<_>>()
+        .collect::<Vec<FloatDefinition>>()
+        .try_into()
+        .expect("Failed to convert to array")
+
 }
 
 /// Generate the documentation

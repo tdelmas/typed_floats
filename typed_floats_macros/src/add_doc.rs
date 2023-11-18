@@ -34,6 +34,8 @@ fn print_table(content: Vec<Vec<String>>) -> proc_macro2::TokenStream {
 
     output.extend(comment_line(""));
 
+    assert!(!content.is_empty());
+
     let first_line = content[0].clone();
     let lines = content[1..].to_vec();
 
