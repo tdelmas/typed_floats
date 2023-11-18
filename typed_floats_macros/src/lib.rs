@@ -1,17 +1,5 @@
 //! Crate only used to generate the `typed_floats` crate.
 
-// #![warn(clippy::indexing_slicing)]
-// #![warn(clippy::nursery)]
-// #![warn(clippy::panic_in_result_fn)]
-// #![warn(clippy::panic)]
-// #![warn(clippy::pedantic)]
-// #![warn(clippy::unwrap_in_result)]
-// #![warn(clippy::unwrap_used)]
-// #![warn(missing_docs)]
-// #![warn(unsafe_op_in_unsafe_fn)]
-// #![warn(unused_crate_dependencies)]
-// #![forbid(unsafe_code)]
-
 extern crate proc_macro;
 
 use quote::quote;
@@ -197,6 +185,7 @@ pub fn generate_tests_self_rhs(input: proc_macro::TokenStream) -> proc_macro::To
     output.into()
 }
 
+/// Return the FloatDefinition for the given type
 fn get_definitions(float_type: &'static str) -> [FloatDefinition; 12] {
     TYPES
         .iter()
