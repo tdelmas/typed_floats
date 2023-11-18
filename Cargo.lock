@@ -159,6 +159,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "ordered-float"
+version = "4.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "536900a8093134cf9ccf00a27deb3532421099e958d9dd431135d0c7543ca1e8"
+dependencies = [
+ "num-traits",
+]
+
+[[package]]
 name = "proc-macro2"
 version = "1.0.69"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -278,6 +287,7 @@ name = "typed_floats"
 version = "0.6.0"
 dependencies = [
  "num-traits",
+ "ordered-float",
  "serde",
  "serde_json",
  "typed_floats_macros",

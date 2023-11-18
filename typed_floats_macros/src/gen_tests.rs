@@ -160,7 +160,7 @@ pub fn generate_tests_self(float_type: &'static str, filter: &str) -> proc_macro
                 if original.is_nan() {
                     assert_eq!(original.is_nan(), as_float.is_nan());
                 } else {
-                    assert_relative_eq!(as_float, original, 1e-6);
+                    assert_eq!(as_float, original);
                 }
 
                 // Add the result to the list of values to check is the result type is as strict as possible

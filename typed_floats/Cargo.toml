@@ -42,6 +42,7 @@ optional = true
 
 [dev-dependencies]
 serde_json = { version = "1.0" }
+ordered-float = "4.1.0"
 
 [package.metadata.docs.rs]
 features = ["serde"]
