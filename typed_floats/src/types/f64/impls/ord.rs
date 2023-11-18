@@ -8,7 +8,7 @@ use crate::{
 
 macro_rules! impl_ord {
     ($type:ident) => {
-        impl Ord for $type {
+        impl Ord for $type<f64> {
             #[inline]
             fn cmp(&self, other: &Self) -> core::cmp::Ordering {
                 if *self < *other {
@@ -21,7 +21,7 @@ macro_rules! impl_ord {
             }
         }
 
-        impl PartialOrd for $type {
+        impl PartialOrd for $type<f64> {
             #[inline]
             fn partial_cmp(&self, other: &Self) -> Option<core::cmp::Ordering> {
                 Some(self.cmp(other))

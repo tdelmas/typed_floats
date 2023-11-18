@@ -115,8 +115,8 @@ impl NegativeFinite<f64> {
     /// See [`f64::is_infinite()`] for more details.
     #[inline]
     #[must_use]
-    pub fn is_infinite(&self) -> bool {
-        self.0.is_infinite()
+    pub const fn is_infinite(&self) -> bool {
+        false
     }
 
     /// Returns `true` if this number is positive infinity nor negative infinity.
@@ -133,8 +133,8 @@ impl NegativeFinite<f64> {
     /// See [`f64::is_finite()`] for more details.
     #[inline]
     #[must_use]
-    pub fn is_finite(&self) -> bool {
-        self.0.is_finite()
+    pub const fn is_finite(&self) -> bool {
+        true
     }
 
     /// Returns `true` if the number is [subnormal](https://en.wikipedia.org/wiki/Denormal_number).
@@ -207,8 +207,8 @@ impl NegativeFinite<f64> {
     /// See [`f64::is_sign_positive()`] for more details.
     #[inline]
     #[must_use]
-    pub fn is_sign_positive(&self) -> bool {
-        self.0.is_sign_positive()
+    pub const fn is_sign_positive(&self) -> bool {
+        false
     }
 
     /// Returns `true` if `self` has a negative sign, including `-0.0` and negative infinity.
@@ -225,8 +225,8 @@ impl NegativeFinite<f64> {
     /// See [`f64::is_sign_negative()`] for more details.
     #[inline]
     #[must_use]
-    pub fn is_sign_negative(&self) -> bool {
-        self.0.is_sign_negative()
+    pub const fn is_sign_negative(&self) -> bool {
+        true
     }
 
     /// Returns `true` if the number is negative zero.
@@ -246,7 +246,7 @@ impl NegativeFinite<f64> {
     #[inline]
     #[must_use]
     pub fn is_negative_zero(&self) -> bool {
-        self.0 == 0.0 && self.0.is_sign_negative()
+        self.0 == 0.0
     }
 
     /// Returns `true` if the number is positive zero.
@@ -265,7 +265,7 @@ impl NegativeFinite<f64> {
     /// ```
     #[inline]
     #[must_use]
-    pub fn is_positive_zero(&self) -> bool {
-        self.0 == 0.0 && self.0.is_sign_positive()
+    pub const fn is_positive_zero(&self) -> bool {
+        false
     }
 }

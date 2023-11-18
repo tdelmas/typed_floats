@@ -111,8 +111,8 @@ impl NonNaNFinite<f64> {
     /// See [`f64::is_infinite()`] for more details.
     #[inline]
     #[must_use]
-    pub fn is_infinite(&self) -> bool {
-        self.0.is_infinite()
+    pub const fn is_infinite(&self) -> bool {
+        false
     }
 
     /// Returns `true` if this number is positive infinity nor negative infinity.
@@ -129,8 +129,8 @@ impl NonNaNFinite<f64> {
     /// See [`f64::is_finite()`] for more details.
     #[inline]
     #[must_use]
-    pub fn is_finite(&self) -> bool {
-        self.0.is_finite()
+    pub const fn is_finite(&self) -> bool {
+        true
     }
 
     /// Returns `true` if the number is [subnormal](https://en.wikipedia.org/wiki/Denormal_number).

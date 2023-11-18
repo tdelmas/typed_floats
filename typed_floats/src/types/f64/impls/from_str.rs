@@ -6,7 +6,7 @@ use crate::{
 
 macro_rules! impl_from_str {
     ($type:ident) => {
-        impl core::str::FromStr for $type {
+        impl core::str::FromStr for $type<f64> {
             type Err = FromStrError;
 
             #[inline]
