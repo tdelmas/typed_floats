@@ -4,134 +4,30 @@ use crate::{
     StrictlyPositive, StrictlyPositiveFinite,
 };
 
-impl core::str::FromStr for NonNaN<f64> {
-    type Err = FromStrError;
+macro_rules! impl_from_str {
+    ($type:ident) => {
+        impl core::str::FromStr for $type {
+            type Err = FromStrError;
 
-    #[inline]
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let f: f64 = s.parse::<f64>().map_err(FromStrError::ParseFloatError)?;
+            #[inline]
+            fn from_str(s: &str) -> Result<Self, Self::Err> {
+                let f: f64 = s.parse::<f64>().map_err(FromStrError::ParseFloatError)?;
 
-        Self::try_from(f).map_err(FromStrError::InvalidNumber)
-    }
+                Self::try_from(f).map_err(FromStrError::InvalidNumber)
+            }
+        }
+    };
 }
 
-impl core::str::FromStr for NonZeroNonNaN<f64> {
-    type Err = FromStrError;
-
-    #[inline]
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let f: f64 = s.parse::<f64>().map_err(FromStrError::ParseFloatError)?;
-
-        Self::try_from(f).map_err(FromStrError::InvalidNumber)
-    }
-}
-
-impl core::str::FromStr for NonNaNFinite<f64> {
-    type Err = FromStrError;
-
-    #[inline]
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let f: f64 = s.parse::<f64>().map_err(FromStrError::ParseFloatError)?;
-
-        Self::try_from(f).map_err(FromStrError::InvalidNumber)
-    }
-}
-
-impl core::str::FromStr for NonZeroNonNaNFinite<f64> {
-    type Err = FromStrError;
-
-    #[inline]
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let f: f64 = s.parse::<f64>().map_err(FromStrError::ParseFloatError)?;
-
-        Self::try_from(f).map_err(FromStrError::InvalidNumber)
-    }
-}
-
-impl core::str::FromStr for Positive<f64> {
-    type Err = FromStrError;
-
-    #[inline]
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let f: f64 = s.parse::<f64>().map_err(FromStrError::ParseFloatError)?;
-
-        Self::try_from(f).map_err(FromStrError::InvalidNumber)
-    }
-}
-
-impl core::str::FromStr for Negative<f64> {
-    type Err = FromStrError;
-
-    #[inline]
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let f: f64 = s.parse::<f64>().map_err(FromStrError::ParseFloatError)?;
-
-        Self::try_from(f).map_err(FromStrError::InvalidNumber)
-    }
-}
-
-impl core::str::FromStr for PositiveFinite<f64> {
-    type Err = FromStrError;
-
-    #[inline]
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let f: f64 = s.parse::<f64>().map_err(FromStrError::ParseFloatError)?;
-
-        Self::try_from(f).map_err(FromStrError::InvalidNumber)
-    }
-}
-
-impl core::str::FromStr for NegativeFinite<f64> {
-    type Err = FromStrError;
-
-    #[inline]
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let f: f64 = s.parse::<f64>().map_err(FromStrError::ParseFloatError)?;
-
-        Self::try_from(f).map_err(FromStrError::InvalidNumber)
-    }
-}
-
-impl core::str::FromStr for StrictlyPositive<f64> {
-    type Err = FromStrError;
-
-    #[inline]
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let f: f64 = s.parse::<f64>().map_err(FromStrError::ParseFloatError)?;
-
-        Self::try_from(f).map_err(FromStrError::InvalidNumber)
-    }
-}
-
-impl core::str::FromStr for StrictlyNegative<f64> {
-    type Err = FromStrError;
-
-    #[inline]
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let f: f64 = s.parse::<f64>().map_err(FromStrError::ParseFloatError)?;
-
-        Self::try_from(f).map_err(FromStrError::InvalidNumber)
-    }
-}
-
-impl core::str::FromStr for StrictlyPositiveFinite<f64> {
-    type Err = FromStrError;
-
-    #[inline]
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let f: f64 = s.parse::<f64>().map_err(FromStrError::ParseFloatError)?;
-
-        Self::try_from(f).map_err(FromStrError::InvalidNumber)
-    }
-}
-
-impl core::str::FromStr for StrictlyNegativeFinite<f64> {
-    type Err = FromStrError;
-
-    #[inline]
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let f: f64 = s.parse::<f64>().map_err(FromStrError::ParseFloatError)?;
-
-        Self::try_from(f).map_err(FromStrError::InvalidNumber)
-    }
-}
+impl_from_str!(NonNaN);
+impl_from_str!(NonZeroNonNaN);
+impl_from_str!(NonNaNFinite);
+impl_from_str!(NonZeroNonNaNFinite);
+impl_from_str!(Positive);
+impl_from_str!(Negative);
+impl_from_str!(PositiveFinite);
+impl_from_str!(NegativeFinite);
+impl_from_str!(StrictlyPositive);
+impl_from_str!(StrictlyNegative);
+impl_from_str!(StrictlyPositiveFinite);
+impl_from_str!(StrictlyNegativeFinite);

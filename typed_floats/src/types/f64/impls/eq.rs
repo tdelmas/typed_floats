@@ -4,10 +4,9 @@ use crate::{
     StrictlyPositiveFinite,
 };
 
-// This is safe because we know that both values are not NaN
-
 macro_rules! impl_eq {
-    (  $type:ident  ) => {
+    ($type:ident) => {
+        // This is safe because we know that both values are not NaN
         impl Eq for $type<f64> {}
 
         impl PartialEq for $type<f64> {

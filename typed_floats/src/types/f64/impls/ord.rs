@@ -6,242 +6,39 @@ use crate::{
     StrictlyPositiveFinite,
 };
 
-impl Ord for NonNaN<f64> {
-    #[inline]
-    fn cmp(&self, other: &Self) -> core::cmp::Ordering {
-        if *self < *other {
-            core::cmp::Ordering::Less
-        } else if *self == *other {
-            core::cmp::Ordering::Equal
-        } else {
-            core::cmp::Ordering::Greater
+macro_rules! impl_ord {
+    ($type:ident) => {
+        impl Ord for $type {
+            #[inline]
+            fn cmp(&self, other: &Self) -> core::cmp::Ordering {
+                if *self < *other {
+                    core::cmp::Ordering::Less
+                } else if *self == *other {
+                    core::cmp::Ordering::Equal
+                } else {
+                    core::cmp::Ordering::Greater
+                }
+            }
         }
-    }
-}
 
-impl Ord for NonZeroNonNaN<f64> {
-    #[inline]
-    fn cmp(&self, other: &Self) -> core::cmp::Ordering {
-        if *self < *other {
-            core::cmp::Ordering::Less
-        } else if *self == *other {
-            core::cmp::Ordering::Equal
-        } else {
-            core::cmp::Ordering::Greater
+        impl PartialOrd for $type {
+            #[inline]
+            fn partial_cmp(&self, other: &Self) -> Option<core::cmp::Ordering> {
+                Some(self.cmp(other))
+            }
         }
-    }
+    };
 }
 
-impl Ord for NonNaNFinite<f64> {
-    #[inline]
-    fn cmp(&self, other: &Self) -> core::cmp::Ordering {
-        if *self < *other {
-            core::cmp::Ordering::Less
-        } else if *self == *other {
-            core::cmp::Ordering::Equal
-        } else {
-            core::cmp::Ordering::Greater
-        }
-    }
-}
-
-impl Ord for NonZeroNonNaNFinite<f64> {
-    #[inline]
-    fn cmp(&self, other: &Self) -> core::cmp::Ordering {
-        if *self < *other {
-            core::cmp::Ordering::Less
-        } else if *self == *other {
-            core::cmp::Ordering::Equal
-        } else {
-            core::cmp::Ordering::Greater
-        }
-    }
-}
-
-impl Ord for Positive<f64> {
-    #[inline]
-    fn cmp(&self, other: &Self) -> core::cmp::Ordering {
-        if *self < *other {
-            core::cmp::Ordering::Less
-        } else if *self == *other {
-            core::cmp::Ordering::Equal
-        } else {
-            core::cmp::Ordering::Greater
-        }
-    }
-}
-
-impl Ord for Negative<f64> {
-    #[inline]
-    fn cmp(&self, other: &Self) -> core::cmp::Ordering {
-        if *self < *other {
-            core::cmp::Ordering::Less
-        } else if *self == *other {
-            core::cmp::Ordering::Equal
-        } else {
-            core::cmp::Ordering::Greater
-        }
-    }
-}
-
-impl Ord for PositiveFinite<f64> {
-    #[inline]
-    fn cmp(&self, other: &Self) -> core::cmp::Ordering {
-        if *self < *other {
-            core::cmp::Ordering::Less
-        } else if *self == *other {
-            core::cmp::Ordering::Equal
-        } else {
-            core::cmp::Ordering::Greater
-        }
-    }
-}
-
-impl Ord for NegativeFinite<f64> {
-    #[inline]
-    fn cmp(&self, other: &Self) -> core::cmp::Ordering {
-        if *self < *other {
-            core::cmp::Ordering::Less
-        } else if *self == *other {
-            core::cmp::Ordering::Equal
-        } else {
-            core::cmp::Ordering::Greater
-        }
-    }
-}
-
-impl Ord for StrictlyPositive<f64> {
-    #[inline]
-    fn cmp(&self, other: &Self) -> core::cmp::Ordering {
-        if *self < *other {
-            core::cmp::Ordering::Less
-        } else if *self == *other {
-            core::cmp::Ordering::Equal
-        } else {
-            core::cmp::Ordering::Greater
-        }
-    }
-}
-
-impl Ord for StrictlyNegative<f64> {
-    #[inline]
-    fn cmp(&self, other: &Self) -> core::cmp::Ordering {
-        if *self < *other {
-            core::cmp::Ordering::Less
-        } else if *self == *other {
-            core::cmp::Ordering::Equal
-        } else {
-            core::cmp::Ordering::Greater
-        }
-    }
-}
-
-impl Ord for StrictlyPositiveFinite<f64> {
-    #[inline]
-    fn cmp(&self, other: &Self) -> core::cmp::Ordering {
-        if *self < *other {
-            core::cmp::Ordering::Less
-        } else if *self == *other {
-            core::cmp::Ordering::Equal
-        } else {
-            core::cmp::Ordering::Greater
-        }
-    }
-}
-
-impl Ord for StrictlyNegativeFinite<f64> {
-    #[inline]
-    fn cmp(&self, other: &Self) -> core::cmp::Ordering {
-        if *self < *other {
-            core::cmp::Ordering::Less
-        } else if *self == *other {
-            core::cmp::Ordering::Equal
-        } else {
-            core::cmp::Ordering::Greater
-        }
-    }
-}
-
-impl PartialOrd for NonNaN<f64> {
-    #[inline]
-    fn partial_cmp(&self, other: &Self) -> Option<core::cmp::Ordering> {
-        Some(self.cmp(other))
-    }
-}
-
-impl PartialOrd for NonZeroNonNaN<f64> {
-    #[inline]
-    fn partial_cmp(&self, other: &Self) -> Option<core::cmp::Ordering> {
-        Some(self.cmp(other))
-    }
-}
-
-impl PartialOrd for NonNaNFinite<f64> {
-    #[inline]
-    fn partial_cmp(&self, other: &Self) -> Option<core::cmp::Ordering> {
-        Some(self.cmp(other))
-    }
-}
-
-impl PartialOrd for NonZeroNonNaNFinite<f64> {
-    #[inline]
-    fn partial_cmp(&self, other: &Self) -> Option<core::cmp::Ordering> {
-        Some(self.cmp(other))
-    }
-}
-
-impl PartialOrd for Positive<f64> {
-    #[inline]
-    fn partial_cmp(&self, other: &Self) -> Option<core::cmp::Ordering> {
-        Some(self.cmp(other))
-    }
-}
-
-impl PartialOrd for Negative<f64> {
-    #[inline]
-    fn partial_cmp(&self, other: &Self) -> Option<core::cmp::Ordering> {
-        Some(self.cmp(other))
-    }
-}
-
-impl PartialOrd for PositiveFinite<f64> {
-    #[inline]
-    fn partial_cmp(&self, other: &Self) -> Option<core::cmp::Ordering> {
-        Some(self.cmp(other))
-    }
-}
-
-impl PartialOrd for NegativeFinite<f64> {
-    #[inline]
-    fn partial_cmp(&self, other: &Self) -> Option<core::cmp::Ordering> {
-        Some(self.cmp(other))
-    }
-}
-
-impl PartialOrd for StrictlyPositive {
-    #[inline]
-    fn partial_cmp(&self, other: &Self) -> Option<core::cmp::Ordering> {
-        Some(self.cmp(other))
-    }
-}
-
-impl PartialOrd for StrictlyNegative {
-    #[inline]
-    fn partial_cmp(&self, other: &Self) -> Option<core::cmp::Ordering> {
-        Some(self.cmp(other))
-    }
-}
-
-impl PartialOrd for StrictlyPositiveFinite {
-    #[inline]
-    fn partial_cmp(&self, other: &Self) -> Option<core::cmp::Ordering> {
-        Some(self.cmp(other))
-    }
-}
-
-impl PartialOrd for StrictlyNegativeFinite {
-    #[inline]
-    fn partial_cmp(&self, other: &Self) -> Option<core::cmp::Ordering> {
-        Some(self.cmp(other))
-    }
-}
+impl_ord!(NonNaN);
+impl_ord!(NonZeroNonNaN);
+impl_ord!(NonNaNFinite);
+impl_ord!(NonZeroNonNaNFinite);
+impl_ord!(Positive);
+impl_ord!(Negative);
+impl_ord!(PositiveFinite);
+impl_ord!(NegativeFinite);
+impl_ord!(StrictlyPositive);
+impl_ord!(StrictlyNegative);
+impl_ord!(StrictlyPositiveFinite);
+impl_ord!(StrictlyNegativeFinite);

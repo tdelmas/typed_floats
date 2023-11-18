@@ -36,6 +36,143 @@ mod gen_tests;
 static F32: &str = "f32";
 static F64: &str = "f64";
 
+const NON_NAN: (&str, FloatSpecifications) = (
+    "NonNaN",
+    FloatSpecifications {
+        accept_inf: true,
+        accept_zero: true,
+        accept_positive: true,
+        accept_negative: true,
+    },
+);
+
+const NON_ZERO_NON_NAN: (&str, FloatSpecifications) = (
+    "NonZeroNonNaN",
+    FloatSpecifications {
+        accept_inf: true,
+        accept_zero: false,
+        accept_positive: true,
+        accept_negative: true,
+    },
+);
+
+const NON_NAN_FINITE: (&str, FloatSpecifications) = (
+    "NonNaNFinite",
+    FloatSpecifications {
+        accept_inf: false,
+        accept_zero: true,
+        accept_positive: true,
+        accept_negative: true,
+    },
+);
+
+const NON_ZERO_NON_NAN_FINITE: (&str, FloatSpecifications) = (
+    "NonZeroNonNaNFinite",
+    FloatSpecifications {
+        accept_inf: false,
+        accept_zero: false,
+        accept_positive: true,
+        accept_negative: true,
+    },
+);
+
+const POSITIVE: (&str, FloatSpecifications) = (
+    "Positive",
+    FloatSpecifications {
+        accept_inf: true,
+        accept_zero: true,
+        accept_positive: true,
+        accept_negative: false,
+    },
+);
+
+const NEGATIVE: (&str, FloatSpecifications) = (
+    "Negative",
+    FloatSpecifications {
+        accept_inf: true,
+        accept_zero: true,
+        accept_positive: false,
+        accept_negative: true,
+    },
+);
+
+const POSITIVE_FINITE: (&str, FloatSpecifications) = (
+    "PositiveFinite",
+    FloatSpecifications {
+        accept_inf: false,
+        accept_zero: true,
+        accept_positive: true,
+        accept_negative: false,
+    },
+);
+
+const NEGATIVE_FINITE : (&str, FloatSpecifications)= (
+    "NegativeFinite",
+    FloatSpecifications {
+        accept_inf: false,
+        accept_zero: true,
+        accept_positive: false,
+        accept_negative: true,
+    },
+);
+
+const STRICTLY_POSITIVE: (&str, FloatSpecifications) = (
+    "StrictlyPositive",
+    FloatSpecifications {
+        accept_inf: true,
+        accept_zero: false,
+        accept_positive: true,
+        accept_negative: false,
+    },
+);
+
+const STRICTLY_NEGATIVE: (&str, FloatSpecifications) = (
+    "StrictlyNegative",
+    FloatSpecifications {
+        accept_inf: true,
+        accept_zero: false,
+        accept_positive: false,
+        accept_negative: true,
+    },
+);
+
+const STRICTLY_POSITIVE_FINITE: (&str, FloatSpecifications) = (
+    "StrictlyPositiveFinite",
+    FloatSpecifications {
+        accept_inf: false,
+        accept_zero: false,
+        accept_positive: true,
+        accept_negative: false,
+    },
+);
+
+const STRICTLY_NEGATIVE_FINITE : (&str, FloatSpecifications)= (
+    "StrictlyNegativeFinite",
+    FloatSpecifications {
+        accept_inf: false,
+        accept_zero: false,
+        accept_positive: false,
+        accept_negative: true,
+    },
+);
+
+const TYPES: &[(&str, FloatSpecifications)] = &[
+    NON_NAN,
+    NON_ZERO_NON_NAN,
+    NON_NAN_FINITE,
+    NON_ZERO_NON_NAN_FINITE,
+    POSITIVE,
+    NEGATIVE,
+    POSITIVE_FINITE,
+    NEGATIVE_FINITE,
+    STRICTLY_POSITIVE,
+    STRICTLY_NEGATIVE,
+    STRICTLY_POSITIVE_FINITE,
+    STRICTLY_NEGATIVE_FINITE,
+];
+
+
+/// Generate the testsfor unary operations.
 #[proc_macro]
 pub fn generate_tests_self(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let filter = input.to_string();
@@ -48,6 +185,7 @@ pub fn generate_tests_self(input: proc_macro::TokenStream) -> proc_macro::TokenS
     output.into()
 }
 
+/// Generate the tests for binary operations.
 #[proc_macro]
 pub fn generate_tests_self_rhs(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let filter = input.to_string();
@@ -60,123 +198,10 @@ pub fn generate_tests_self_rhs(input: proc_macro::TokenStream) -> proc_macro::To
     output.into()
 }
 
-fn get_specifications() -> Vec<(&'static str, FloatSpecifications)> {
-    vec![
-        (
-            "NonNaN",
-            FloatSpecifications {
-                accept_inf: true,
-                accept_zero: true,
-                accept_positive: true,
-                accept_negative: true,
-            },
-        ),
-        (
-            "NonZeroNonNaN",
-            FloatSpecifications {
-                accept_inf: true,
-                accept_zero: false,
-                accept_positive: true,
-                accept_negative: true,
-            },
-        ),
-        (
-            "NonNaNFinite",
-            FloatSpecifications {
-                accept_inf: false,
-                accept_zero: true,
-                accept_positive: true,
-                accept_negative: true,
-            },
-        ),
-        (
-            "NonZeroNonNaNFinite",
-            FloatSpecifications {
-                accept_inf: false,
-                accept_zero: false,
-                accept_positive: true,
-                accept_negative: true,
-            },
-        ),
-        (
-            "Positive",
-            FloatSpecifications {
-                accept_inf: true,
-                accept_zero: true,
-                accept_positive: true,
-                accept_negative: false,
-            },
-        ),
-        (
-            "Negative",
-            FloatSpecifications {
-                accept_inf: true,
-                accept_zero: true,
-                accept_positive: false,
-                accept_negative: true,
-            },
-        ),
-        (
-            "PositiveFinite",
-            FloatSpecifications {
-                accept_inf: false,
-                accept_zero: true,
-                accept_positive: true,
-                accept_negative: false,
-            },
-        ),
-        (
-            "NegativeFinite",
-            FloatSpecifications {
-                accept_inf: false,
-                accept_zero: true,
-                accept_positive: false,
-                accept_negative: true,
-            },
-        ),
-        (
-            "StrictlyPositive",
-            FloatSpecifications {
-                accept_inf: true,
-                accept_zero: false,
-                accept_positive: true,
-                accept_negative: false,
-            },
-        ),
-        (
-            "StrictlyNegative",
-            FloatSpecifications {
-                accept_inf: true,
-                accept_zero: false,
-                accept_positive: false,
-                accept_negative: true,
-            },
-        ),
-        (
-            "StrictlyPositiveFinite",
-            FloatSpecifications {
-                accept_inf: false,
-                accept_zero: false,
-                accept_positive: true,
-                accept_negative: false,
-            },
-        ),
-        (
-            "StrictlyNegativeFinite",
-            FloatSpecifications {
-                accept_inf: false,
-                accept_zero: false,
-                accept_positive: false,
-                accept_negative: true,
-            },
-        ),
-    ]
-}
 
 fn get_definitions(float_type: &'static str) -> Vec<FloatDefinition> {
-    let specifications = get_specifications();
 
-    specifications
+    TYPES
         .iter()
         .map(|specification| FloatDefinition {
             name: specification.0,
@@ -186,6 +211,7 @@ fn get_definitions(float_type: &'static str) -> Vec<FloatDefinition> {
         .collect::<Vec<_>>()
 }
 
+/// Generate the documentation
 #[proc_macro]
 pub fn generate_docs(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let floats_f64 = get_definitions("f64");
@@ -199,6 +225,7 @@ pub fn generate_docs(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
     output.into()
 }
 
+/// Generate the `PartialEq`, `From` and `TryFrom` implementations.
 #[proc_macro]
 pub fn generate_floats(_input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let floats_f64 = get_definitions("f64");

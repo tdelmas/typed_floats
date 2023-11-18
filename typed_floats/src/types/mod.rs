@@ -186,5 +186,6 @@ use core::num::{NonZeroU16, NonZeroU32, NonZeroU64, NonZeroU8};
 
 mod f32;
 mod f64;
+mod impls;
 
 typed_floats_macros::generate_floats!();
