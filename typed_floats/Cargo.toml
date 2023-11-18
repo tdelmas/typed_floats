@@ -42,7 +42,8 @@ optional = true
 
 [dev-dependencies]
 serde_json = { version = "1.0" }
-ordered-float = "4.1.0"
+#FIXME why is it required ?
+num-traits = "0.2"
 
 [package.metadata.docs.rs]
 features = ["serde"]
