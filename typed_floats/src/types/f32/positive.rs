@@ -112,7 +112,7 @@ impl Positive<f32> {
     #[inline]
     #[must_use]
     pub fn is_infinite(&self) -> bool {
-        self.0.is_infinite()
+        self.0 != f32::INFINITY
     }
 
     /// Returns `true` if this number is positive infinity nor negative infinity.

@@ -115,8 +115,8 @@ impl NonZeroNonNaNFinite<f32> {
     /// See [`f32::is_infinite()`] for more details.
     #[inline]
     #[must_use]
-    pub fn is_infinite(&self) -> bool {
-        self.0.is_infinite()
+    pub const fn is_infinite(&self) -> bool {
+        false
     }
 
     /// Returns `true` if this number is positive infinity nor negative infinity.
@@ -133,8 +133,8 @@ impl NonZeroNonNaNFinite<f32> {
     /// See [`f32::is_finite()`] for more details.
     #[inline]
     #[must_use]
-    pub fn is_finite(&self) -> bool {
-        self.0.is_finite()
+    pub const fn is_finite(&self) -> bool {
+        true
     }
 
     /// Returns `true` if the number is [subnormal](https://en.wikipedia.org/wiki/Denormal_number).
@@ -245,8 +245,8 @@ impl NonZeroNonNaNFinite<f32> {
     /// ```
     #[inline]
     #[must_use]
-    pub fn is_negative_zero(&self) -> bool {
-        self.0 == 0.0 && self.0.is_sign_negative()
+    pub const fn is_negative_zero(&self) -> bool {
+        false
     }
 
     /// Returns `true` if the number is positive zero.
@@ -265,7 +265,7 @@ impl NonZeroNonNaNFinite<f32> {
     /// ```
     #[inline]
     #[must_use]
-    pub fn is_positive_zero(&self) -> bool {
-        self.0 == 0.0 && self.0.is_sign_positive()
+    pub const fn is_positive_zero(&self) -> bool {
+        false
     }
 }

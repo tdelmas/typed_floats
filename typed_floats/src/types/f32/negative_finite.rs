@@ -133,7 +133,7 @@ impl NegativeFinite<f32> {
     /// See [`f32::is_finite()`] for more details.
     #[inline]
     #[must_use]
-    pub fn is_finite(&self) -> bool {
+    pub const fn is_finite(&self) -> bool {
         true
     }
 
@@ -207,7 +207,7 @@ impl NegativeFinite<f32> {
     /// See [`f32::is_sign_positive()`] for more details.
     #[inline]
     #[must_use]
-    pub fn is_sign_positive(&self) -> bool {
+    pub const fn is_sign_positive(&self) -> bool {
         false
     }
 
@@ -225,7 +225,7 @@ impl NegativeFinite<f32> {
     /// See [`f32::is_sign_negative()`] for more details.
     #[inline]
     #[must_use]
-    pub fn is_sign_negative(&self) -> bool {
+    pub const fn is_sign_negative(&self) -> bool {
         true
     }
 

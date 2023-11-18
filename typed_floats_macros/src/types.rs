@@ -117,7 +117,12 @@ pub fn return_type_definition(
     //keep only the highest score
     floats.retain(|f| compute_similarity(float, &f.s) == highest_score);
 
-    assert!(floats.len() <= 1, "Ambiguous float type: {:?} => {:?}", &float, floats);
+    assert!(
+        floats.len() <= 1,
+        "Ambiguous float type: {:?} => {:?}",
+        &float,
+        floats
+    );
 
     let found = floats.first().map(|float| (*float).clone());
 
@@ -127,10 +132,7 @@ pub fn return_type_definition(
     }
 }
 
-pub fn output_name(
-    output: &ReturnTypeDefinition,
-    float_type: &Ident,
-) -> proc_macro2::TokenStream {
+pub fn output_name(output: &ReturnTypeDefinition, float_type: &Ident) -> proc_macro2::TokenStream {
     match output {
         ReturnTypeDefinition::FloatDefinition(output) => {
             let full_type = output.full_type_ident();
