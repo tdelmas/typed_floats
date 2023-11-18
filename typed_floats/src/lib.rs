@@ -109,7 +109,7 @@
 #![warn(missing_docs)]
 #![warn(unsafe_op_in_unsafe_fn)]
 #![warn(unused_crate_dependencies)]
-//#![forbid(unsafe_code)]
+
 #![cfg_attr(not(feature = "std"), no_std)]
 
 mod traits;

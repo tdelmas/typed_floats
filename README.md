@@ -5,7 +5,6 @@
 [![Documentation](https://docs.rs/typed_floats/badge.svg)](https://docs.rs/typed_floats)
 [![License](https://img.shields.io/crates/l/typed_floats.svg)](https://github.com/tdelmas/typed_floats/blob/main/LICENSE)
 [![dependency status](https://deps.rs/repo/github/tdelmas/typed_floats/status.svg)](https://deps.rs/repo/github/tdelmas/typed_floats)
-[![unsafe forbidden](https://img.shields.io/badge/unsafe-forbidden-success.svg)](https://github.com/rust-secure-code/safety-dance/)
 
 This crate helps you to ensure the kind of floats you are using, without `panic!` (except if the `unsafe` function is used in an unsound way).
 
