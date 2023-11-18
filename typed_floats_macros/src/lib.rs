@@ -171,7 +171,7 @@ const TYPES: &[(&str, FloatSpecifications)] = &[
     STRICTLY_NEGATIVE_FINITE,
 ];
 
-/// Generate the testsfor unary operations.
+/// Generate the tests for unary operations.
 #[proc_macro]
 pub fn generate_tests_self(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let filter = input.to_string();

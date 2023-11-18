@@ -37,72 +37,24 @@ impl core::hash::Hash for NonNaNFinite<f32> {
     }
 }
 
-impl core::hash::Hash for NonZeroNonNaN<f32> {
-    #[inline]
-    fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
-        self.0.to_bits().hash(state);
-    }
+macro_rules! impl_hash {
+    ($type:ident) => {
+        impl core::hash::Hash for $type<f32> {
+            #[inline]
+            fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
+                self.0.to_bits().hash(state);
+            }
+        }
+    };
 }
 
-impl core::hash::Hash for NonZeroNonNaNFinite<f32> {
-    #[inline]
-    fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
-        self.0.to_bits().hash(state);
-    }
-}
-
-impl core::hash::Hash for Positive<f32> {
-    #[inline]
-    fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
-        self.0.to_bits().hash(state);
-    }
-}
-
-impl core::hash::Hash for Negative<f32> {
-    #[inline]
-    fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
-        self.0.to_bits().hash(state);
-    }
-}
-
-impl core::hash::Hash for PositiveFinite<f32> {
-    #[inline]
-    fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
-        self.0.to_bits().hash(state);
-    }
-}
-
-impl core::hash::Hash for NegativeFinite<f32> {
-    #[inline]
-    fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
-        self.0.to_bits().hash(state);
-    }
-}
-
-impl core::hash::Hash for StrictlyPositive<f32> {
-    #[inline]
-    fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
-        self.0.to_bits().hash(state);
-    }
-}
-
-impl core::hash::Hash for StrictlyNegative<f32> {
-    #[inline]
-    fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
-        self.0.to_bits().hash(state);
-    }
-}
-
-impl core::hash::Hash for StrictlyPositiveFinite<f32> {
-    #[inline]
-    fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
-        self.0.to_bits().hash(state);
-    }
-}
-
-impl core::hash::Hash for StrictlyNegativeFinite<f32> {
-    #[inline]
-    fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
-        self.0.to_bits().hash(state);
-    }
-}
+impl_hash!(NonZeroNonNaN);
+impl_hash!(NonZeroNonNaNFinite);
+impl_hash!(Positive);
+impl_hash!(Negative);
+impl_hash!(PositiveFinite);
+impl_hash!(NegativeFinite);
+impl_hash!(StrictlyPositive);
+impl_hash!(StrictlyNegative);
+impl_hash!(StrictlyPositiveFinite);
+impl_hash!(StrictlyNegativeFinite);
