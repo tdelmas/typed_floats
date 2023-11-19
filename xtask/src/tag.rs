@@ -6,6 +6,8 @@ pub struct TagArgs {
     version: Option<String>,
     #[clap(long, help = "Force the tag")]
     force: bool,
+    #[clap(long, help = "Skip tests")]
+    skip_tests: bool,
 }
 
 pub fn tag(args: &TagArgs) {
@@ -18,12 +20,17 @@ pub fn tag(args: &TagArgs) {
         .unwrap()
         .join(std::path::Path::new("typed_floats"));
 
-    std::process::Command::new("./tests.sh")
-        .current_dir(dir)
-        .stdout(std::process::Stdio::inherit())
-        .stderr(std::process::Stdio::inherit())
-        .output()
-        .expect("failed run tests");
+    if !args.skip_tests {
+        println!("Running tests...");
+        std::process::Command::new("./tests.sh")
+            .current_dir(dir)
+            .stdout(std::process::Stdio::inherit())
+            .stderr(std::process::Stdio::inherit())
+            .output()
+            .expect("failed run tests");
+    } else {
+        println!("Skipping tests...");
+    }
 
     let is_clean = std::process::Command::new("git")
         .args(["status", "--porcelain"])
