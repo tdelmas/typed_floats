@@ -50,7 +50,7 @@ jobs:
 
   publish-dry-run:
     runs-on: ubuntu-latest
-    name: Clippy
+    name: Publish dry run
 
     steps:
       - uses: actions/checkout@v3
