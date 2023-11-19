@@ -91,7 +91,7 @@ As none of the types of this crate can be `NaN`, the following traits are implem
 
 - [`core::cmp::Ord`]
 - [`core::cmp::Eq`]
-- [`core::hash::Hash`] 
+- [`Hash`] 
 
 Note: for [`Hash`] on [`NonNaN`] and [`NonNaNFinite`] there is a (small) overhead because they both accept `0.0` and `-0.0`, which are equal so they mush `hash` to the same value.
 
@@ -267,3 +267,10 @@ Is on [docs.rs](https://docs.rs/typed_floats).
 [`NonZeroI16`]: https://doc.rust-lang.org/core/num/struct.NonZeroI16.html
 [`NonZeroI32`]: https://doc.rust-lang.org/core/num/struct.NonZeroI32.html
 [`NonZeroI64`]: https://doc.rust-lang.org/core/num/struct.NonZeroI64.html
+[`Hypot`]: https://docs.rs/typed_floats/latest/typed_floats/trait.Hypot.html
+[`Min`]: https://docs.rs/typed_floats/latest/typed_floats/trait.Min.html
+[`Max`]: https://docs.rs/typed_floats/latest/typed_floats/trait.Max.html
+[`Copysign`]: https://docs.rs/typed_floats/latest/typed_floats/trait.Copysign.html
+[`DivEuclid`]: https://docs.rs/typed_floats/latest/typed_floats/trait.DivEuclid.html
+[`Atan2`]: https://docs.rs/typed_floats/latest/typed_floats/trait.Atan2.html
+
