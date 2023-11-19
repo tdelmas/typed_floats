@@ -18,7 +18,7 @@ macro_rules! impl_deserialize {
                 val.try_into().map_err(serde::de::Error::custom)
             }
         }
-        
+
         impl<'de> Deserialize<'de> for $type<f32> {
             fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
             where

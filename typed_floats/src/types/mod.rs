@@ -176,7 +176,10 @@ pub struct StrictlyPositiveFinite<T = f64>(pub(crate) T);
 #[repr(transparent)]
 pub struct StrictlyNegativeFinite<T = f64>(pub(crate) T);
 
-use crate::traits::*;
+use crate::traits::{Max, Min};
+
+#[cfg(any(feature = "std", feature = "libm"))]
+use crate::traits::{Atan2, Copysign, DivEuclid, Hypot, Powf};
 
 #[cfg(all(feature = "libm", not(feature = "std")))]
 use num_traits::Float;

@@ -109,7 +109,7 @@ pub fn generate_tests_self(float_type: &'static str, filter: &str) -> proc_macro
     let mut output = proc_macro2::TokenStream::new();
 
     let float_type = floats_f64
-        .get(0)
+        .first()
         .expect("no float returned")
         .float_type_ident();
 
@@ -218,7 +218,7 @@ pub fn generate_tests_self_rhs(float_type: &'static str, filter: &str) -> proc_m
     let mut output = proc_macro2::TokenStream::new();
 
     let float_type = floats_f64
-        .get(0)
+        .first()
         .expect("no floats returned")
         .float_type_ident();
 
