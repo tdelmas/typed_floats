@@ -275,7 +275,7 @@ dependencies = [
 
 [[package]]
 name = "typed_floats"
-version = "0.6.0"
+version = "0.7.0"
 dependencies = [
  "num-traits",
  "serde",
@@ -285,7 +285,7 @@ dependencies = [
 
 [[package]]
 name = "typed_floats_macros"
-version = "0.6.0"
+version = "0.7.0"
 dependencies = [
  "proc-macro2",
  "quote",
