@@ -91,9 +91,9 @@ As none of the types of this crate can be `NaN`, the following traits are implem
 
 - [`core::cmp::Ord`]
 - [`core::cmp::Eq`]
-- `Hash` 
+- [`core::hash::Hash`] 
 
-Note: for `Hash` on [`NonNaN`] and [`NonNaNFinite`] there is a (small) overhead because they both accept `0.0` and `-0.0`, which are equal so they mush `hash` to the same value.
+Note: for [`Hash`] on [`NonNaN`] and [`NonNaNFinite`] there is a (small) overhead because they both accept `0.0` and `-0.0`, which are equal so they mush `hash` to the same value.
 
 # Methods implemented
 
