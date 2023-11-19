@@ -57,15 +57,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d468802bab17cbc0cc575e9b053f41e72aa36bfa6b7f55e3529ffa43161b97fa"
 
 [[package]]
-name = "checked-float"
-version = "0.1.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4b4d181aba8ba92a3128886d1ede3fea014e108470401ca75c5d2669f65458d7"
-dependencies = [
- "num-traits",
-]
-
-[[package]]
 name = "clap"
 version = "4.4.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -165,15 +156,6 @@ checksum = "39e3200413f237f41ab11ad6d161bc7239c84dcb631773ccd7de3dfe4b5c267c"
 dependencies = [
  "autocfg",
  "libm",
-]
-
-[[package]]
-name = "ordered-float"
-version = "4.1.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "536900a8093134cf9ccf00a27deb3532421099e958d9dd431135d0c7543ca1e8"
-dependencies = [
- "num-traits",
 ]
 
 [[package]]
@@ -295,9 +277,7 @@ dependencies = [
 name = "typed_floats"
 version = "0.6.0"
 dependencies = [
- "checked-float",
  "num-traits",
- "ordered-float",
  "serde",
  "serde_json",
  "typed_floats_macros",

@@ -1,41 +1,165 @@
 //! Crate only used to generate the `typed_floats` crate.
 
-#![warn(clippy::indexing_slicing)]
-#![warn(clippy::nursery)]
-#![warn(clippy::panic_in_result_fn)]
-#![warn(clippy::panic)]
-#![warn(clippy::pedantic)]
-#![warn(clippy::unwrap_in_result)]
-#![warn(clippy::unwrap_used)]
-#![warn(missing_docs)]
-#![warn(unsafe_op_in_unsafe_fn)]
-#![warn(unused_crate_dependencies)]
-#![forbid(unsafe_code)]
-
 extern crate proc_macro;
 
 use quote::quote;
 
 mod try_from;
-use try_from::*;
+use try_from::impl_from_or_try_from;
 
 mod types;
-use types::*;
+use types::{FloatDefinition, FloatSpecifications, ReturnTypeDefinition};
 
 mod impl_self;
-use impl_self::*;
+use impl_self::get_impl_self;
 
 mod impl_self_rhs;
-use impl_self_rhs::*;
+use impl_self_rhs::get_impl_self_rhs;
 
 mod add_doc;
-use add_doc::*;
+use add_doc::generate_main_description;
 
 mod gen_tests;
 
 static F32: &str = "f32";
 static F64: &str = "f64";
 
+const NON_NAN: (&str, FloatSpecifications) = (
+    "NonNaN",
+    FloatSpecifications {
+        accept_inf: true,
+        accept_zero: true,
+        accept_positive: true,
+        accept_negative: true,
+    },
+);
+
+const NON_ZERO_NON_NAN: (&str, FloatSpecifications) = (
+    "NonZeroNonNaN",
+    FloatSpecifications {
+        accept_inf: true,
+        accept_zero: false,
+        accept_positive: true,
+        accept_negative: true,
+    },
+);
+
+const NON_NAN_FINITE: (&str, FloatSpecifications) = (
+    "NonNaNFinite",
+    FloatSpecifications {
+        accept_inf: false,
+        accept_zero: true,
+        accept_positive: true,
+        accept_negative: true,
+    },
+);
+
+const NON_ZERO_NON_NAN_FINITE: (&str, FloatSpecifications) = (
+    "NonZeroNonNaNFinite",
+    FloatSpecifications {
+        accept_inf: false,
+        accept_zero: false,
+        accept_positive: true,
+        accept_negative: true,
+    },
+);
+
+const POSITIVE: (&str, FloatSpecifications) = (
+    "Positive",
+    FloatSpecifications {
+        accept_inf: true,
+        accept_zero: true,
+        accept_positive: true,
+        accept_negative: false,
+    },
+);
+
+const NEGATIVE: (&str, FloatSpecifications) = (
+    "Negative",
+    FloatSpecifications {
+        accept_inf: true,
+        accept_zero: true,
+        accept_positive: false,
+        accept_negative: true,
+    },
+);
+
+const POSITIVE_FINITE: (&str, FloatSpecifications) = (
+    "PositiveFinite",
+    FloatSpecifications {
+        accept_inf: false,
+        accept_zero: true,
+        accept_positive: true,
+        accept_negative: false,
+    },
+);
+
+const NEGATIVE_FINITE: (&str, FloatSpecifications) = (
+    "NegativeFinite",
+    FloatSpecifications {
+        accept_inf: false,
+        accept_zero: true,
+        accept_positive: false,
+        accept_negative: true,
+    },
+);
+
+const STRICTLY_POSITIVE: (&str, FloatSpecifications) = (
+    "StrictlyPositive",
+    FloatSpecifications {
+        accept_inf: true,
+        accept_zero: false,
+        accept_positive: true,
+        accept_negative: false,
+    },
+);
+
+const STRICTLY_NEGATIVE: (&str, FloatSpecifications) = (
+    "StrictlyNegative",
+    FloatSpecifications {
+        accept_inf: true,
+        accept_zero: false,
+        accept_positive: false,
+        accept_negative: true,
+    },
+);
+
+const STRICTLY_POSITIVE_FINITE: (&str, FloatSpecifications) = (
+    "StrictlyPositiveFinite",
+    FloatSpecifications {
+        accept_inf: false,
+        accept_zero: false,
+        accept_positive: true,
+        accept_negative: false,
+    },
+);
+
+const STRICTLY_NEGATIVE_FINITE: (&str, FloatSpecifications) = (
+    "StrictlyNegativeFinite",
+    FloatSpecifications {
+        accept_inf: false,
+        accept_zero: false,
+        accept_positive: false,
+        accept_negative: true,
+    },
+);
+
+const TYPES: &[(&str, FloatSpecifications)] = &[
+    NON_NAN,
+    NON_ZERO_NON_NAN,
+    NON_NAN_FINITE,
+    NON_ZERO_NON_NAN_FINITE,
+    POSITIVE,
+    NEGATIVE,
+    POSITIVE_FINITE,
+    NEGATIVE_FINITE,
+    STRICTLY_POSITIVE,
+    STRICTLY_NEGATIVE,
+    STRICTLY_POSITIVE_FINITE,
+    STRICTLY_NEGATIVE_FINITE,
+];
+
+/// Generate the tests for unary operations.
 #[proc_macro]
 pub fn generate_tests_self(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let filter = input.to_string();
@@ -48,6 +172,7 @@ pub fn generate_tests_self(input: proc_macro::TokenStream) -> proc_macro::TokenS
     output.into()
 }
 
+/// Generate the tests for binary operations.
 #[proc_macro]
 pub fn generate_tests_self_rhs(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let filter = input.to_string();
@@ -60,144 +185,21 @@ pub fn generate_tests_self_rhs(input: proc_macro::TokenStream) -> proc_macro::To
     output.into()
 }
 
-fn get_specifications() -> Vec<(&'static str, &'static str, FloatSpecifications)> {
-    vec![
-        (
-            "NonNaN",
-            "A non-NaN floating point number",
-            FloatSpecifications {
-                accept_inf: true,
-                accept_zero: true,
-                accept_positive: true,
-                accept_negative: true,
-            },
-        ),
-        (
-            "NonZeroNonNaN",
-            "A non-NaN floating point number different from zero",
-            FloatSpecifications {
-                accept_inf: true,
-                accept_zero: false,
-                accept_positive: true,
-                accept_negative: true,
-            },
-        ),
-        (
-            "NonNaNFinite",
-            "A non-NaN finite floating point number",
-            FloatSpecifications {
-                accept_inf: false,
-                accept_zero: true,
-                accept_positive: true,
-                accept_negative: true,
-            },
-        ),
-        (
-            "NonZeroNonNaNFinite",
-            "A non-NaN finite floating point number different from zero",
-            FloatSpecifications {
-                accept_inf: false,
-                accept_zero: false,
-                accept_positive: true,
-                accept_negative: true,
-            },
-        ),
-        (
-            "Positive",
-            "A non-NaN positive floating point number",
-            FloatSpecifications {
-                accept_inf: true,
-                accept_zero: true,
-                accept_positive: true,
-                accept_negative: false,
-            },
-        ),
-        (
-            "Negative",
-            "A non-NaN negative floating point number",
-            FloatSpecifications {
-                accept_inf: true,
-                accept_zero: true,
-                accept_positive: false,
-                accept_negative: true,
-            },
-        ),
-        (
-            "PositiveFinite",
-            "A non-NaN positive finite floating point number",
-            FloatSpecifications {
-                accept_inf: false,
-                accept_zero: true,
-                accept_positive: true,
-                accept_negative: false,
-            },
-        ),
-        (
-            "NegativeFinite",
-            "A non-NaN negative finite floating point number",
-            FloatSpecifications {
-                accept_inf: false,
-                accept_zero: true,
-                accept_positive: false,
-                accept_negative: true,
-            },
-        ),
-        (
-            "StrictlyPositive",
-            "A non-NaN strictly positive floating point number",
-            FloatSpecifications {
-                accept_inf: true,
-                accept_zero: false,
-                accept_positive: true,
-                accept_negative: false,
-            },
-        ),
-        (
-            "StrictlyNegative",
-            "A non-NaN strictly negative floating point number",
-            FloatSpecifications {
-                accept_inf: true,
-                accept_zero: false,
-                accept_positive: false,
-                accept_negative: true,
-            },
-        ),
-        (
-            "StrictlyPositiveFinite",
-            "A non-NaN strictly positive finite floating point number",
-            FloatSpecifications {
-                accept_inf: false,
-                accept_zero: false,
-                accept_positive: true,
-                accept_negative: false,
-            },
-        ),
-        (
-            "StrictlyNegativeFinite",
-            "A non-NaN strictly negative finite floating point number",
-            FloatSpecifications {
-                accept_inf: false,
-                accept_zero: false,
-                accept_positive: false,
-                accept_negative: true,
-            },
-        ),
-    ]
-}
-
-fn get_definitions(float_type: &'static str) -> Vec<FloatDefinition> {
-    let specifications = get_specifications();
-
-    specifications
+/// Return the FloatDefinition for the given type
+fn get_definitions(float_type: &'static str) -> [FloatDefinition; 12] {
+    TYPES
         .iter()
         .map(|specification| FloatDefinition {
             name: specification.0,
             float_type,
-            s: specification.2.clone(),
+            s: specification.1.clone(),
         })
-        .collect::<Vec<_>>()
+        .collect::<Vec<FloatDefinition>>()
+        .try_into()
+        .expect("Failed to convert to array")
 }
 
+/// Generate the documentation
 #[proc_macro]
 pub fn generate_docs(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let floats_f64 = get_definitions("f64");
@@ -211,74 +213,18 @@ pub fn generate_docs(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
     output.into()
 }
 
+/// Generate the `PartialEq`, `From` and `TryFrom` implementations.
 #[proc_macro]
 pub fn generate_floats(_input: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    let specifications = get_specifications();
     let floats_f64 = get_definitions("f64");
     let floats_f32 = get_definitions("f32");
 
     let mut output = proc_macro2::TokenStream::new();
 
-    output.extend(do_generate_generic_floats(&specifications, "f64"));
     output.extend(do_generate_floats(&floats_f64));
     output.extend(do_generate_floats(&floats_f32));
 
     output.into()
-}
-
-fn do_generate_generic_floats(
-    specifications: &[(&'static str, &'static str, FloatSpecifications)],
-    default_float_type: &str,
-) -> proc_macro2::TokenStream {
-    let mut output = proc_macro2::TokenStream::new();
-
-    let default_float_type = syn::Ident::new(default_float_type, proc_macro2::Span::call_site());
-
-    for (name, description, s) in specifications {
-        let name = syn::Ident::new(name, proc_macro2::Span::call_site());
-        let description = add_doc::comment_line(description);
-
-        let mut constraints = quote! {
-            /// - It is not NaN.
-        };
-
-        if !s.accept_inf {
-            constraints.extend(quote! {
-                /// - It is not infinite.
-            });
-        }
-
-        if !s.accept_zero {
-            constraints.extend(quote! {
-                /// - It is not zero.
-            });
-        }
-
-        if !s.accept_positive {
-            constraints.extend(quote! {
-                /// - It is not positive.
-            });
-        }
-
-        if !s.accept_negative {
-            constraints.extend(quote! {
-                /// - It is not negative.
-            });
-        }
-
-        output.extend(quote! {
-            #description
-            ///
-            /// It satisfies the following constraints:
-            #constraints
-            #[cfg_attr(feature = "serde", derive(Serialize))]
-            #[derive(Debug, Copy, Clone)]
-            #[repr(transparent)]
-            pub struct #name<T=#default_float_type>(T);
-        });
-    }
-
-    output
 }
 
 fn do_generate_floats(floats: &[FloatDefinition]) -> proc_macro2::TokenStream {
@@ -286,378 +232,6 @@ fn do_generate_floats(floats: &[FloatDefinition]) -> proc_macro2::TokenStream {
 
     let ops = get_impl_self();
     let ops_rhs = get_impl_self_rhs();
-
-    for float in floats {
-        let name = float.name_ident();
-        let float_type = float.float_type_ident();
-        let full_type = float.full_type_ident();
-
-        let compiler_hints = float
-            .s
-            .get_compiler_hints(&syn::Ident::new("value", proc_macro2::Span::call_site()));
-
-        output.extend(quote! {
-            #[cfg(feature = "serde")]
-            impl<'de> Deserialize<'de> for #full_type {
-                fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-                where
-                    D: Deserializer<'de>,
-                {
-                    let val: #float_type = Deserialize::deserialize(deserializer)?;
-
-                    val.try_into().map_err(serde::de::Error::custom)
-                }
-            }
-
-            impl #full_type {
-                /// Creates a new value from a primitive type
-                /// It adds a little overhead compared to `new_unchecked`
-                /// because it checks that the value is valid
-                ///
-                /// # Examples
-                ///
-                /// ```
-                /// # use typed_floats::tf64::NonNaN;
-                /// let x = NonNaN::new(3.0).unwrap();
-                ///
-                /// assert_eq!(x, 3.0);
-                /// ```
-                ///
-                /// # Errors
-                /// Returns an error if the value is not valid
-                #[inline]
-                pub fn new(value: #float_type) -> Result<Self, InvalidNumber> {
-                    Self::try_from(value)
-                }
-
-                /// Creates a new value from a primitive type with zero overhead (in release mode).
-                /// It is up to the caller to ensure that the value is valid
-                ///
-                /// # Examples
-                ///
-                /// ```
-                /// # use typed_floats::tf64::NonNaN;
-                /// let x = unsafe { NonNaN::new_unchecked(3.0) };
-                ///
-                /// assert_eq!(x, 3.0);
-                /// ```
-                /// # Safety
-                /// The caller must ensure that the value is valid.
-                /// It will panic in debug mode if the value is not valid,
-                /// but in release mode the behavior is undefined
-                #[inline]
-                #[must_use]
-                pub unsafe fn new_unchecked(value: #float_type) -> Self {
-                    debug_assert!(
-                        Self::try_from(value).is_ok(),
-                        "{value} is not a valid {name}",
-                        value = value,
-                        name = stringify!(#name)
-                    );
-
-                    #compiler_hints
-
-                    Self(value)
-                }
-
-                /// Returns the value as a primitive type
-                /// 
-                /// # Examples
-                /// 
-                /// ```
-                /// use typed_floats::tf64::NonNaN;
-                /// 
-                /// let x = NonNaN::new(3.0).unwrap();
-                /// 
-                /// let y: f64 = x.into();
-                /// 
-                /// assert_eq!(y, 3.0);
-                /// ```
-                #[inline]
-                #[must_use]
-                pub fn get(&self) -> #float_type {
-                    self.0
-                }
-
-                /// Returns `true` if this value is NaN.
-                /// This is never the case for the provided types
-                ///
-                /// # Examples
-                ///
-                /// ```
-                /// # use typed_floats::*;
-                /// let x: NonNaN = 3.0.try_into().unwrap();
-                ///
-                /// assert_eq!(x.is_nan(), false);
-                /// ```
-                ///
-                /// See [`f64::is_nan()`] for more details.
-                #[inline]
-                #[must_use]
-                pub fn is_nan(&self) -> bool {
-                    return false;
-                }
-
-                /// Returns `true` if this value is positive infinity or negative infinity.
-                ///
-                /// # Examples
-                ///
-                /// ```
-                /// # use typed_floats::*;
-                /// let x: NonNaN = 3.0.try_into().unwrap();
-                ///
-                /// assert_eq!(x.is_infinite(), false);
-                /// ```
-                ///
-                /// See [`f64::is_infinite()`] for more details.
-                #[inline]
-                #[must_use]
-                pub fn is_infinite(&self) -> bool {
-                    self.0.is_infinite()
-                }
-
-                /// Returns `true` if this number is positive infinity nor negative infinity.
-                ///
-                /// # Examples
-                ///
-                /// ```
-                /// # use typed_floats::*;
-                /// let x: NonNaN = 3.0.try_into().unwrap();
-                ///
-                /// assert_eq!(x.is_finite(), true);
-                /// ```
-                ///
-                /// See [`f64::is_finite()`] for more details.
-                #[inline]
-                #[must_use]
-                pub fn is_finite(&self) -> bool {
-                    self.0.is_finite()
-                }
-
-                /// Returns `true` if the number is [subnormal](https://en.wikipedia.org/wiki/Denormal_number).
-                ///
-                /// # Examples
-                ///
-                /// ```
-                /// # use typed_floats::*;
-                /// let x: NonNaN = 3.0.try_into().unwrap();
-                ///
-                /// assert_eq!(x.is_subnormal(), false);
-                /// ```
-                ///
-                /// See [`f64::is_subnormal()`] for more details.
-                #[inline]
-                #[must_use]
-                pub fn is_subnormal(&self) -> bool {
-                    self.0.is_subnormal()
-                }
-
-                /// Returns `true` if the number is neither zero, infinite or [subnormal](https://en.wikipedia.org/wiki/Denormal_number).
-                ///
-                /// # Examples
-                ///
-                /// ```
-                /// # use typed_floats::*;
-                /// let x: NonNaN = 3.0.try_into().unwrap();
-                ///
-                /// assert_eq!(x.is_normal(), true);
-                /// ```
-                ///
-                /// See [`f64::is_normal()`] for more details.
-                #[inline]
-                #[must_use]
-                pub fn is_normal(&self) -> bool {
-                    self.0.is_normal()
-                }
-
-                /// Returns the floating point category of the number. If only one property
-                /// is going to be tested, it is generally faster to use the specific
-                /// predicate instead.
-                ///
-                /// # Examples
-                ///
-                /// ```
-                /// # use typed_floats::*;
-                /// let x: NonNaN = 3.0.try_into().unwrap();
-                ///
-                /// assert_eq!(x.classify(), core::num::FpCategory::Normal);
-                /// ```
-                ///
-                /// See [`f64::classify()`] for more details.
-                #[inline]
-                #[must_use]
-                pub fn classify(&self) -> core::num::FpCategory {
-                    self.0.classify()
-                }
-
-                /// Returns `true` if `self` has a positive sign, including `+0.0` and positive infinity.
-                ///
-                /// # Examples
-                ///
-                /// ```
-                /// # use typed_floats::*;
-                /// let x: NonNaN = 3.0.try_into().unwrap();
-                ///
-                /// assert_eq!(x.is_sign_positive(), true);
-                /// ```
-                ///
-                /// See [`f64::is_sign_positive()`] for more details.
-                #[inline]
-                #[must_use]
-                pub fn is_sign_positive(&self) -> bool {
-                    self.0.is_sign_positive()
-                }
-
-                /// Returns `true` if `self` has a negative sign, including `-0.0` and negative infinity.
-                ///
-                /// # Examples
-                ///
-                /// ```
-                /// # use typed_floats::*;
-                /// let x: NonNaN = 3.0.try_into().unwrap();
-                ///
-                /// assert_eq!(x.is_sign_negative(), false);
-                /// ```
-                ///
-                /// See [`f64::is_sign_negative()`] for more details.
-                #[inline]
-                #[must_use]
-                pub fn is_sign_negative(&self) -> bool {
-                    self.0.is_sign_negative()
-                }
-
-                /// Returns `true` if the number is negative zero.
-                ///     
-                /// # Examples
-                ///
-                /// ```
-                /// # use typed_floats::*;
-                /// let x: NonNaN = 3.0.try_into().unwrap();
-                /// let y: NonNaN = (-0.0).try_into().unwrap();
-                /// let z: NonNaN = (0.0).try_into().unwrap();
-                ///
-                /// assert_eq!(x.is_negative_zero(), false);
-                /// assert_eq!(y.is_negative_zero(), true);
-                /// assert_eq!(z.is_negative_zero(), false);
-                /// ```
-                #[inline]
-                #[must_use]
-                pub fn is_negative_zero(&self) -> bool {
-                    self.0 == 0.0 && self.0.is_sign_negative()
-                }
-
-                /// Returns `true` if the number is positive zero.
-                ///
-                /// # Examples
-                ///
-                /// ```
-                /// # use typed_floats::*;
-                /// let x: NonNaN = 3.0.try_into().unwrap();
-                /// let y: NonNaN = (-0.0).try_into().unwrap();
-                /// let z: NonNaN = (0.0).try_into().unwrap();
-                ///
-                /// assert_eq!(x.is_positive_zero(), false);
-                /// assert_eq!(y.is_positive_zero(), false);
-                /// assert_eq!(z.is_positive_zero(), true);
-                /// ```
-                #[inline]
-                #[must_use]
-                pub fn is_positive_zero(&self) -> bool {
-                    self.0 == 0.0 && self.0.is_sign_positive()
-                }
-            }
-
-            impl PartialEq for #full_type {
-                fn eq(&self, other: &Self) -> bool {
-                    self.0 == other.0
-                }
-            }
-
-            impl Eq for #full_type {
-                // This is safe because we know that both values are not NaN
-            }
-
-            impl Ord for #full_type {
-                #[inline]
-                fn cmp(&self, other: &Self) -> core::cmp::Ordering {
-                    match self.0.partial_cmp(&other.0) {
-                        Some(ordering) => ordering,
-                        // This is safe because we know that both values are not NaN
-                        None => unsafe { core::hint::unreachable_unchecked() },
-                    }
-                }
-            }
-
-            impl PartialOrd for #full_type {
-                #[inline]
-                fn partial_cmp(&self, other: &Self) -> Option<core::cmp::Ordering> {
-                    Some(self.cmp(other))
-                }
-            }
-
-            impl From<#name<Self>> for #float_type {
-                #[inline]
-                #[must_use]
-                fn from(value: #name<Self>) -> Self {
-                    value.0
-                }
-            }
-
-            impl core::fmt::Display for #full_type {
-                #[inline]
-                #[must_use]
-                fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-                    write!(f, "{}", self.0)
-                }
-            }
-
-            impl core::str::FromStr for #full_type {
-                type Err = FromStrError;
-
-                #[inline]
-                #[must_use]
-                fn from_str(s: &str) -> Result<Self, Self::Err> {
-                    let f: #float_type = s.parse::<#float_type>().map_err(FromStrError::ParseFloatError)?;
-
-                    Self::try_from(f).map_err(FromStrError::InvalidNumber)
-                }
-            }
-        });
-
-        // > When implementing both Hash and Eq, it is important that the following property holds:
-        // > `k1 == k2 -> hash(k1) == hash(k2)`
-        // This is sound because `NaN` is not a possible value.
-        // https://doc.rust-lang.org/core/hash/trait.Hash.html
-        if !float.s.accept_zero || !float.s.accept_positive || !float.s.accept_negative {
-            output.extend(quote! {
-                impl core::hash::Hash for #full_type {
-                    #[inline]
-                    fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
-                        self.0.to_bits().hash(state)
-                    }
-                }
-            });
-        } else {
-            output.extend(quote! {
-                impl core::hash::Hash for #full_type {
-                    #[inline]
-                    fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
-                        let f = if self.0 == 0.0 {
-                            // `+0.0` and `-0.0` are equal to they must have the same hash
-                            0.0
-                        } else {
-                            self.0
-                        };
-
-                        f.to_bits().hash(state)
-                    }
-                }
-            });
-        }
-
-        output.extend(generate_try_from_float(float));
-        output.extend(generate_try_ints(float));
-    }
 
     for float_a in floats {
         for float_b in floats {
@@ -668,23 +242,7 @@ fn do_generate_floats(floats: &[FloatDefinition]) -> proc_macro2::TokenStream {
     }
 
     for float_a in floats {
-        let float_type = float_a.float_type_ident();
         let a_full_type = &float_a.full_type_ident();
-
-        output.extend(quote! {
-            impl PartialEq<#a_full_type> for #float_type {
-                #[inline]
-                fn eq(&self, other: &#a_full_type) -> bool {
-                    self == &other.0
-                }
-            }
-            impl PartialEq<#float_type> for #a_full_type {
-                #[inline]
-                fn eq(&self, other: &#float_type) -> bool {
-                    &self.0 == other
-                }
-            }
-        });
 
         for float_b in floats {
             if float_a.name != float_b.name {

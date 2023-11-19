@@ -16,7 +16,8 @@ version = "0.6.0"
 rust-version = "1.70"
 
 [features]
-default = ["std"]
+default = ["std", "compiler_hints"]
+compiler_hints = []
 serde = ["dep:serde"]
 std = ["typed_floats_macros/std"]
 libm = ["dep:num-traits", "typed_floats_macros/libm"]
@@ -40,7 +41,9 @@ features = ["libm"]
 optional = true
 
 [dev-dependencies]
-# For examples
-checked-float = "0.1.4"
-ordered-float = "4.1.0"
 serde_json = { version = "1.0" }
+#FIXME why is it required ?
+num-traits = "0.2"
+
+[package.metadata.docs.rs]
+features = ["serde"]

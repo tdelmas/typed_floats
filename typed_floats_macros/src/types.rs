@@ -3,59 +3,15 @@ use quote::quote;
 use syn::Ident;
 
 #[derive(Clone, Debug)]
-pub(crate) struct FloatSpecifications {
+pub struct FloatSpecifications {
     pub(crate) accept_inf: bool,
     pub(crate) accept_zero: bool,
     pub(crate) accept_positive: bool,
     pub(crate) accept_negative: bool,
 }
 
-impl FloatSpecifications {
-    pub(crate) fn get_compiler_hints(&self, var_name: &Ident) -> proc_macro2::TokenStream {
-        let mut res = quote! {
-            if #var_name.is_nan() {
-                core::hint::unreachable_unchecked();
-            }
-        };
-
-        if !self.accept_zero {
-            res.extend(quote! {
-               if #var_name == 0.0 {
-                   core::hint::unreachable_unchecked();
-               }
-            });
-        }
-
-        if !self.accept_inf {
-            res.extend(quote! {
-               if #var_name.is_infinite() {
-                   core::hint::unreachable_unchecked();
-               }
-            });
-        }
-
-        if !self.accept_positive {
-            res.extend(quote! {
-               if #var_name.is_sign_positive() {
-                   core::hint::unreachable_unchecked();
-               }
-            });
-        }
-
-        if !self.accept_negative {
-            res.extend(quote! {
-               if #var_name.is_sign_negative() {
-                   core::hint::unreachable_unchecked();
-               }
-            });
-        }
-
-        res
-    }
-}
-
 #[derive(Clone, Debug)]
-pub(crate) struct FloatDefinition {
+pub struct FloatDefinition {
     pub(crate) name: &'static str,
     pub(crate) float_type: &'static str,
     pub(crate) s: FloatSpecifications,
@@ -86,7 +42,7 @@ impl FloatDefinition {
 }
 
 impl FloatSpecifications {
-    pub(crate) fn can_fit_into(&self, into: &FloatSpecifications) -> bool {
+    pub(crate) const fn can_fit_into(&self, into: &Self) -> bool {
         (!self.accept_inf || into.accept_inf)
             && (!self.accept_zero || into.accept_zero)
             && (!self.accept_positive || into.accept_positive)
@@ -94,7 +50,7 @@ impl FloatSpecifications {
     }
 }
 
-fn compute_similarity(float_a: &FloatSpecifications, float_b: &FloatSpecifications) -> usize {
+const fn compute_similarity(float_a: &FloatSpecifications, float_b: &FloatSpecifications) -> usize {
     let mut score = 0;
 
     if float_a.accept_inf == float_b.accept_inf {
@@ -113,17 +69,17 @@ fn compute_similarity(float_a: &FloatSpecifications, float_b: &FloatSpecificatio
     score
 }
 
-pub(crate) enum ReturnTypeSpecification {
+pub enum ReturnTypeSpecification {
     NativeFloat,
     FloatSpecifications(FloatSpecifications),
 }
 
-pub(crate) enum ReturnTypeDefinition {
+pub enum ReturnTypeDefinition {
     NativeFloat,
     FloatDefinition(FloatDefinition),
 }
 
-pub(crate) fn return_type_definition(
+pub fn return_type_definition(
     float: &ReturnTypeSpecification,
     floats: &[FloatDefinition],
 ) -> ReturnTypeDefinition {
@@ -156,14 +112,17 @@ pub(crate) fn return_type_definition(
         .iter()
         .map(|f| compute_similarity(float, &f.s))
         .max()
-        .unwrap();
+        .expect("No compatible float type found");
 
     //keep only the highest score
     floats.retain(|f| compute_similarity(float, &f.s) == highest_score);
 
-    if floats.len() > 1 {
-        panic!("Ambiguous float type: {:?} => {:?}", &float, floats);
-    }
+    assert!(
+        floats.len() <= 1,
+        "Ambiguous float type: {:?} => {:?}",
+        &float,
+        floats
+    );
 
     let found = floats.first().map(|float| (*float).clone());
 
@@ -173,10 +132,7 @@ pub(crate) fn return_type_definition(
     }
 }
 
-pub(crate) fn output_name(
-    output: &ReturnTypeDefinition,
-    float_type: &Ident,
-) -> proc_macro2::TokenStream {
+pub fn output_name(output: &ReturnTypeDefinition, float_type: &Ident) -> proc_macro2::TokenStream {
     match output {
         ReturnTypeDefinition::FloatDefinition(output) => {
             let full_type = output.full_type_ident();
@@ -192,7 +148,7 @@ type SimpleResultCallback = Box<dyn Fn(&FloatDefinition) -> ReturnTypeSpecificat
 type ResultCallback = Box<dyn Fn(&FloatDefinition, &[FloatDefinition]) -> ReturnTypeDefinition>;
 type TestCallback = Box<dyn Fn(&Ident) -> proc_macro2::TokenStream>;
 
-pub(crate) struct Op {
+pub struct Op {
     pub(crate) key: &'static str,
     pub(crate) display: &'static str,
     pub(crate) fn_name: &'static str,
@@ -206,7 +162,7 @@ pub(crate) struct Op {
     test: TestCallback,
 }
 
-pub(crate) struct OpBuilder {
+pub struct OpBuilder {
     op: Op,
 }
 
@@ -231,17 +187,17 @@ impl OpBuilder {
         }
     }
 
-    pub(crate) fn skip_check_return_type_strictness(mut self) -> Self {
+    pub(crate) const fn skip_check_return_type_strictness(mut self) -> Self {
         self.op.skip_check_return_type_strictness = true;
         self
     }
 
-    pub fn display(mut self, display: &'static str) -> Self {
+    pub const fn display(mut self, display: &'static str) -> Self {
         self.op.display = display;
         self
     }
 
-    pub fn trait_name(mut self, trait_name: &'static str) -> Self {
+    pub const fn trait_name(mut self, trait_name: &'static str) -> Self {
         self.op.trait_name = Some(trait_name);
         self
     }
@@ -373,7 +329,7 @@ type ResultRhsCallback =
 type SimpleResultRhsCallback =
     Box<dyn Fn(&FloatDefinition, &FloatDefinition) -> ReturnTypeSpecification>;
 
-pub(crate) struct OpRhsBuilder {
+pub struct OpRhsBuilder {
     op: OpRhs,
 }
 
@@ -406,7 +362,7 @@ impl OpRhsBuilder {
         }
     }
 
-    pub(crate) fn skip_check_return_type_strictness(mut self) -> Self {
+    pub(crate) const fn skip_check_return_type_strictness(mut self) -> Self {
         self.op.skip_check_return_type_strictness = true;
         self
     }
@@ -426,17 +382,17 @@ impl OpRhsBuilder {
         self
     }
 
-    pub(crate) fn op_is_commutative(mut self) -> Self {
+    pub(crate) const fn op_is_commutative(mut self) -> Self {
         self.op.op_is_commutative = true;
         self
     }
 
-    pub(crate) fn comment(mut self, comment: &'static str) -> Self {
+    pub(crate) const fn comment(mut self, comment: &'static str) -> Self {
         self.op.comment = Some(comment);
         self
     }
 
-    pub(crate) fn with_assign(
+    pub(crate) const fn with_assign(
         mut self,
         assign_trait: &'static str,
         assign_fn: &'static str,
@@ -475,7 +431,7 @@ impl OpRhsBuilder {
     }
 }
 
-pub(crate) struct OpRhs {
+pub struct OpRhs {
     pub(crate) key: &'static str,
     pub(crate) display: &'static str,
     pub(crate) fn_name: &'static str,
@@ -577,7 +533,7 @@ impl OpRhs {
                                 }
                             }
                         }
-                    })
+                    });
                 }
             }
         }
