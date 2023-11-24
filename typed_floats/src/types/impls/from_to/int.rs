@@ -6,6 +6,13 @@ use crate::{
 
 macro_rules! impl_from_int {
     ($type:ident,$int:ident) => {
+        impl From<$int> for $type<f32> {
+            #[inline]
+            #[must_use]
+            fn from(value: $int) -> Self {
+                unsafe { Self::new_unchecked(value as f32) }
+            }
+        }
         impl From<$int> for $type<f64> {
             #[inline]
             #[must_use]
@@ -18,6 +25,14 @@ macro_rules! impl_from_int {
 
 macro_rules! impl_try_from_int {
     ($type:ident,$int:ident) => {
+        impl TryFrom<$int> for $type<f32> {
+            type Error = InvalidNumber;
+
+            #[inline]
+            fn try_from(value: $int) -> Result<Self, Self::Error> {
+                Self::new(value as f32)
+            }
+        }
         impl TryFrom<$int> for $type<f64> {
             type Error = InvalidNumber;
 
@@ -63,6 +78,7 @@ macro_rules! impl_test {
 
         for &i in &ints {
             // Will panic if an invalid value is created.
+            let _ = crate::$type::<f32>::try_from(i);
             let _ = crate::$type::<f64>::try_from(i);
         }
 
@@ -70,6 +86,7 @@ macro_rules! impl_test {
 
         for &i in &uints {
             // Will panic if an invalid value is created.
+            let _ = crate::$type::<f32>::try_from(i);
             let _ = crate::$type::<f64>::try_from(i);
         }
     };
