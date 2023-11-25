@@ -1,0 +1,23 @@
+name: Semver checks
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+env:
+  CARGO_TERM_COLOR: always
+  CARGO_INCREMENTAL: 0 
+
+jobs:
+  semver-checks:
+    runs-on: ubuntu-latest
+    name: Semver checks
+
+    steps:
+      - uses: actions/checkout@v3
+      - run: cargo install cargo-semver-checks 
+      - run: cargo xtask pre-build
+      - run: cd typed_floats && cargo semver-checks
