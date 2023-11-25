@@ -6,7 +6,6 @@ use crate::{
     StrictlyPositive, StrictlyPositiveFinite,
 };
 
-
 macro_rules! impl_from {
     ($test:ident, $type:ident) => {
         impl From<$type<Self>> for f32 {
