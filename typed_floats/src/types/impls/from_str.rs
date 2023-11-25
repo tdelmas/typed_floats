@@ -16,6 +16,17 @@ macro_rules! impl_from_str {
                 Self::try_from(f).map_err(FromStrError::InvalidNumber)
             }
         }
+
+        impl core::str::FromStr for $type<f64> {
+            type Err = FromStrError;
+
+            #[inline]
+            fn from_str(s: &str) -> Result<Self, Self::Err> {
+                let f: f64 = s.parse::<f64>().map_err(FromStrError::ParseFloatError)?;
+
+                Self::try_from(f).map_err(FromStrError::InvalidNumber)
+            }
+        }
     };
 }
 

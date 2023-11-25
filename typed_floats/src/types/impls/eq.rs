@@ -8,7 +8,14 @@ use crate::{
 
 macro_rules! impl_eq {
     ($type:ident) => {
+        impl Eq for $type<f32> {}
         impl Eq for $type<f64> {}
+
+        impl PartialEq for $type<f32> {
+            fn eq(&self, other: &Self) -> bool {
+                self.0 == other.0
+            }
+        }
 
         impl PartialEq for $type<f64> {
             fn eq(&self, other: &Self) -> bool {
@@ -16,10 +23,24 @@ macro_rules! impl_eq {
             }
         }
 
+        impl PartialEq<$type<f32>> for f32 {
+            #[inline]
+            fn eq(&self, other: &$type<f32>) -> bool {
+                self == &other.0
+            }
+        }
+
         impl PartialEq<$type<f64>> for f64 {
             #[inline]
             fn eq(&self, other: &$type<f64>) -> bool {
                 self == &other.0
+            }
+        }
+
+        impl PartialEq<f32> for $type<f32> {
+            #[inline]
+            fn eq(&self, other: &f32) -> bool {
+                &self.0 == other
             }
         }
 

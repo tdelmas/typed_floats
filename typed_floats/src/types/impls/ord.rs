@@ -8,6 +8,19 @@ use crate::{
 
 macro_rules! impl_ord {
     ($type:ident) => {
+        impl Ord for $type<f32> {
+            #[inline]
+            fn cmp(&self, other: &Self) -> core::cmp::Ordering {
+                if *self < *other {
+                    core::cmp::Ordering::Less
+                } else if *self == *other {
+                    core::cmp::Ordering::Equal
+                } else {
+                    core::cmp::Ordering::Greater
+                }
+            }
+        }
+
         impl Ord for $type<f64> {
             #[inline]
             fn cmp(&self, other: &Self) -> core::cmp::Ordering {
@@ -18,6 +31,13 @@ macro_rules! impl_ord {
                 } else {
                     core::cmp::Ordering::Greater
                 }
+            }
+        }
+
+        impl PartialOrd for $type<f32> {
+            #[inline]
+            fn partial_cmp(&self, other: &Self) -> Option<core::cmp::Ordering> {
+                Some(self.cmp(other))
             }
         }
 

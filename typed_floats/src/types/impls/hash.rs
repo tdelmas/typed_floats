@@ -9,13 +9,27 @@ use crate::{
 // This is sound because `NaN` is not a possible value.
 // https://doc.rust-lang.org/core/hash/trait.Hash.html
 
-const ZERO_BITS: u32 = 0;
+const ZERO_BITS_F32: u32 = 0;
+const ZERO_BITS_F64: u64 = 0;
 
 impl core::hash::Hash for NonNaN<f32> {
     fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
         let bits = if self.0 == 0.0 {
             // `+0.0` and `-0.0` are equal to they must have the same hash
-            ZERO_BITS
+            ZERO_BITS_F32
+        } else {
+            self.0.to_bits()
+        };
+
+        bits.hash(state);
+    }
+}
+
+impl core::hash::Hash for NonNaN<f64> {
+    fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
+        let bits = if self.0 == 0.0 {
+            // `+0.0` and `-0.0` are equal to they must have the same hash
+            ZERO_BITS_F64
         } else {
             self.0.to_bits()
         };
@@ -28,7 +42,20 @@ impl core::hash::Hash for NonNaNFinite<f32> {
     fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
         let bits = if self.0 == 0.0 {
             // `+0.0` and `-0.0` are equal to they must have the same hash
-            ZERO_BITS
+            ZERO_BITS_F32
+        } else {
+            self.0.to_bits()
+        };
+
+        bits.hash(state);
+    }
+}
+
+impl core::hash::Hash for NonNaNFinite<f64> {
+    fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
+        let bits = if self.0 == 0.0 {
+            // `+0.0` and `-0.0` are equal to they must have the same hash
+            ZERO_BITS_F64
         } else {
             self.0.to_bits()
         };
@@ -40,6 +67,13 @@ impl core::hash::Hash for NonNaNFinite<f32> {
 macro_rules! impl_hash {
     ($type:ident) => {
         impl core::hash::Hash for $type<f32> {
+            #[inline]
+            fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
+                self.0.to_bits().hash(state);
+            }
+        }
+
+        impl core::hash::Hash for $type<f64> {
             #[inline]
             fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
                 self.0.to_bits().hash(state);
