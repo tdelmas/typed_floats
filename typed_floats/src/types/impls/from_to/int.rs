@@ -60,48 +60,49 @@ macro_rules! impl_try_from_ints {
     };
 }
 
-macro_rules! impl_test {
-    ($type:ident, $int:ident, $uint:ident) => {
-        let ints = [
-            $int::MIN,
-            $int::MIN + 1,
-            $int::MIN / 2,
-            -2,
-            -1,
-            0,
-            1,
-            2,
-            $int::MAX / 2,
-            $int::MAX - 1,
-            $int::MAX,
-        ];
+#[cfg(test)]
+mod tests {
+    macro_rules! impl_test {
+        ($type:ident, $int:ident, $uint:ident) => {
+            let ints = [
+                $int::MIN,
+                $int::MIN + 1,
+                $int::MIN / 2,
+                -2,
+                -1,
+                0,
+                1,
+                2,
+                $int::MAX / 2,
+                $int::MAX - 1,
+                $int::MAX,
+            ];
 
-        for &i in &ints {
-            // Will panic if an invalid value is created.
-            let _ = crate::$type::<f32>::try_from(i);
-            let _ = crate::$type::<f64>::try_from(i);
-        }
+            for &i in &ints {
+                // Will panic if an invalid value is created.
+                let _ = crate::$type::<f32>::try_from(i);
+                let _ = crate::$type::<f64>::try_from(i);
+            }
 
-        let uints = [0, 1, 2, $uint::MAX / 2, $uint::MAX - 1, $uint::MAX];
+            let uints = [0, 1, 2, $uint::MAX / 2, $uint::MAX - 1, $uint::MAX];
 
-        for &i in &uints {
-            // Will panic if an invalid value is created.
-            let _ = crate::$type::<f32>::try_from(i);
-            let _ = crate::$type::<f64>::try_from(i);
-        }
-    };
-}
+            for &i in &uints {
+                // Will panic if an invalid value is created.
+                let _ = crate::$type::<f32>::try_from(i);
+                let _ = crate::$type::<f64>::try_from(i);
+            }
+        };
+    }
 
-macro_rules! impl_tests {
-    ($type:ident) => {
-        impl_test!($type, i8, u8);
-        impl_test!($type, i16, u16);
-        impl_test!($type, i32, u32);
-        impl_test!($type, i64, u64);
-    };
-}
+    macro_rules! impl_tests {
+        ($type:ident) => {
+            impl_test!($type, i8, u8);
+            impl_test!($type, i16, u16);
+            impl_test!($type, i32, u32);
+            impl_test!($type, i64, u64);
+        };
+    }
 
-mod test {
     #[test]
     fn non_nan() {
         impl_tests!(NonNaN);

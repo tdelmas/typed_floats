@@ -63,50 +63,51 @@ macro_rules! impl_try_from_ints {
     };
 }
 
-macro_rules! impl_test {
-    ($type:ident, $int:ident, $uint:ident, $non_zero_int:ident, $non_zero_uint:ident) => {
-        let ints = [
-            $int::MIN,
-            $int::MIN + 1,
-            $int::MIN / 2,
-            -2,
-            -1,
-            1,
-            2,
-            $int::MAX / 2,
-            $int::MAX - 1,
-            $int::MAX,
-        ];
+#[cfg(test)]
+mod tests {
+    macro_rules! impl_test {
+        ($type:ident, $int:ident, $uint:ident, $non_zero_int:ident, $non_zero_uint:ident) => {
+            let ints = [
+                $int::MIN,
+                $int::MIN + 1,
+                $int::MIN / 2,
+                -2,
+                -1,
+                1,
+                2,
+                $int::MAX / 2,
+                $int::MAX - 1,
+                $int::MAX,
+            ];
 
-        for &i in &ints {
-            // Will panic if an invalid value is created.
-            let _ = crate::$type::<f64>::try_from($non_zero_int::new(i).unwrap());
-            let _ = crate::$type::<f32>::try_from($non_zero_int::new(i).unwrap());
-        }
+            for &i in &ints {
+                // Will panic if an invalid value is created.
+                let _ = crate::$type::<f64>::try_from($non_zero_int::new(i).unwrap());
+                let _ = crate::$type::<f32>::try_from($non_zero_int::new(i).unwrap());
+            }
 
-        let uints = [1, 2, $uint::MAX / 2, $uint::MAX - 1, $uint::MAX];
+            let uints = [1, 2, $uint::MAX / 2, $uint::MAX - 1, $uint::MAX];
 
-        for &i in &uints {
-            // Will panic if an invalid value is created.
-            let _ = crate::$type::<f64>::try_from($non_zero_uint::new(i).unwrap());
-            let _ = crate::$type::<f32>::try_from($non_zero_uint::new(i).unwrap());
-        }
-    };
-}
+            for &i in &uints {
+                // Will panic if an invalid value is created.
+                let _ = crate::$type::<f64>::try_from($non_zero_uint::new(i).unwrap());
+                let _ = crate::$type::<f32>::try_from($non_zero_uint::new(i).unwrap());
+            }
+        };
+    }
 
-macro_rules! impl_tests {
-    ($type:ident) => {
-        use core::num::{NonZeroI16, NonZeroI32, NonZeroI64, NonZeroI8};
-        use core::num::{NonZeroU16, NonZeroU32, NonZeroU64, NonZeroU8};
+    macro_rules! impl_tests {
+        ($type:ident) => {
+            use core::num::{NonZeroI16, NonZeroI32, NonZeroI64, NonZeroI8};
+            use core::num::{NonZeroU16, NonZeroU32, NonZeroU64, NonZeroU8};
 
-        impl_test!($type, i8, u8, NonZeroI8, NonZeroU8);
-        impl_test!($type, i16, u16, NonZeroI16, NonZeroU16);
-        impl_test!($type, i32, u32, NonZeroI32, NonZeroU32);
-        impl_test!($type, i64, u64, NonZeroI64, NonZeroU64);
-    };
-}
+            impl_test!($type, i8, u8, NonZeroI8, NonZeroU8);
+            impl_test!($type, i16, u16, NonZeroI16, NonZeroU16);
+            impl_test!($type, i32, u32, NonZeroI32, NonZeroU32);
+            impl_test!($type, i64, u64, NonZeroI64, NonZeroU64);
+        };
+    }
 
-mod test {
     #[test]
     fn non_nan() {
         impl_tests!(NonNaN);
