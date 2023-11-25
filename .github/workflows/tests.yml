@@ -59,7 +59,7 @@ jobs:
     
   miri:
     runs-on: ubuntu-latest
-    name: Publish dry run
+    name: Miri
 
     steps:
       - uses: actions/checkout@v3
