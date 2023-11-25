@@ -118,19 +118,40 @@ mod ints {
         NonZeroNonNaNFinite, Positive, PositiveFinite, StrictlyNegative, StrictlyNegativeFinite,
         StrictlyPositive, StrictlyPositiveFinite,
     };
-    
+
     impl_from_ints!(non_nan, NonNaN, i8, i16, i32, i64);
     impl_try_from_ints!(non_zero_non_nan, NonZeroNonNaN, i8, i16, i32, i64);
     impl_from_ints!(non_nan_finite, NonNaNFinite, i8, i16, i32, i64);
-    impl_try_from_ints!(non_zero_non_nan_finite, NonZeroNonNaNFinite, i8, i16, i32, i64);
-    impl_try_from_ints!(postitive, Positive, i8, i16, i32, i64);
+    impl_try_from_ints!(
+        non_zero_non_nan_finite,
+        NonZeroNonNaNFinite,
+        i8,
+        i16,
+        i32,
+        i64
+    );
+    impl_try_from_ints!(positive, Positive, i8, i16, i32, i64);
     impl_try_from_ints!(negative, Negative, i8, i16, i32, i64);
-    impl_try_from_ints!(positve_finite, PositiveFinite, i8, i16, i32, i64);
+    impl_try_from_ints!(positive_finite, PositiveFinite, i8, i16, i32, i64);
     impl_try_from_ints!(negative_finite, NegativeFinite, i8, i16, i32, i64);
     impl_try_from_ints!(strictly_positive, StrictlyPositive, i8, i16, i32, i64);
     impl_try_from_ints!(strictly_negative, StrictlyNegative, i8, i16, i32, i64);
-    impl_try_from_ints!(strictly_positive_finite, StrictlyPositiveFinite, i8, i16, i32, i64);
-    impl_try_from_ints!(strictly_negative_finite, StrictlyNegativeFinite, i8, i16, i32, i64);
+    impl_try_from_ints!(
+        strictly_positive_finite,
+        StrictlyPositiveFinite,
+        i8,
+        i16,
+        i32,
+        i64
+    );
+    impl_try_from_ints!(
+        strictly_negative_finite,
+        StrictlyNegativeFinite,
+        i8,
+        i16,
+        i32,
+        i64
+    );
 }
 
 // from unsigned integers
@@ -141,17 +162,38 @@ mod uints {
         NonZeroNonNaNFinite, Positive, PositiveFinite, StrictlyNegative, StrictlyNegativeFinite,
         StrictlyPositive, StrictlyPositiveFinite,
     };
-    
+
     impl_from_ints!(non_nan, NonNaN, u8, u16, u32, u64);
     impl_try_from_ints!(non_zero_non_nan, NonZeroNonNaN, u8, u16, u32, u64);
     impl_from_ints!(non_nan_finite, NonNaNFinite, u8, u16, u32, u64);
-    impl_try_from_ints!(non_zero_non_nan_finite, NonZeroNonNaNFinite, u8, u16, u32, u64);
-    impl_from_ints!(postitive, Positive, u8, u16, u32, u64);
+    impl_try_from_ints!(
+        non_zero_non_nan_finite,
+        NonZeroNonNaNFinite,
+        u8,
+        u16,
+        u32,
+        u64
+    );
+    impl_from_ints!(positive, Positive, u8, u16, u32, u64);
     impl_try_from_ints!(negative, Negative, u8, u16, u32, u64);
     impl_from_ints!(positive_finite, PositiveFinite, u8, u16, u32, u64);
     impl_try_from_ints!(negative_finite, NegativeFinite, u8, u16, u32, u64);
     impl_try_from_ints!(strictly_positive, StrictlyPositive, u8, u16, u32, u64);
     impl_try_from_ints!(strictly_negative, StrictlyNegative, u8, u16, u32, u64);
-    impl_try_from_ints!(strictly_positive_finite, StrictlyPositiveFinite, u8, u16, u32, u64);
-    impl_try_from_ints!(strictly_negative_finite, StrictlyNegativeFinite, u8, u16, u32, u64);
+    impl_try_from_ints!(
+        strictly_positive_finite,
+        StrictlyPositiveFinite,
+        u8,
+        u16,
+        u32,
+        u64
+    );
+    impl_try_from_ints!(
+        strictly_negative_finite,
+        StrictlyNegativeFinite,
+        u8,
+        u16,
+        u32,
+        u64
+    );
 }
