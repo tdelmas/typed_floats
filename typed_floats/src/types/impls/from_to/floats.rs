@@ -1,8 +1,11 @@
+#![allow(clippy::float_cmp)]
+
 use crate::{
     InvalidNumber, Negative, NegativeFinite, NonNaN, NonNaNFinite, NonZeroNonNaN,
     NonZeroNonNaNFinite, Positive, PositiveFinite, StrictlyNegative, StrictlyNegativeFinite,
     StrictlyPositive, StrictlyPositiveFinite,
 };
+
 
 macro_rules! impl_from {
     ($test:ident, $type:ident) => {
@@ -56,7 +59,6 @@ macro_rules! impl_from {
 
             for &value in &values_f32 {
                 if let Ok(t) = $type::<f32>::new(value) {
-                    #[allow(clippy::float_cmp)]
                     assert_eq!(value, t.get());
                     assert_eq!(t, unsafe { $type::<f32>::new_unchecked(value) });
                 }
@@ -76,7 +78,6 @@ macro_rules! impl_from {
 
             for &value in &values_f64 {
                 if let Ok(t) = $type::<f64>::new(value) {
-                    #[allow(clippy::float_cmp)]
                     assert_eq!(value, t.get());
                     assert_eq!(t, unsafe { $type::<f64>::new_unchecked(value) });
                 }
