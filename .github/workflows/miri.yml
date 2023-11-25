@@ -1,0 +1,25 @@
+name: Miri
+
+on:
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+  CARGO_INCREMENTAL: 0 
+
+jobs:
+  miri:
+    runs-on: ubuntu-latest
+    name: Miri
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install Miri
+        run: |
+          rustup toolchain install nightly --component miri
+          rustup override set nightly
+          cargo miri setup
+      - run: cargo xtask pre-build
+      - name: Test with Miri
+        run: cargo miri test
+          
