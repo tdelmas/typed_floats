@@ -32,6 +32,7 @@ macro_rules! impl_display {
                 1.0,
                 f32::MAX / 2.0,
                 f32::MAX,
+                f32::INFINITY,
             ];
 
             for &value in &values_f32 {
@@ -52,6 +53,7 @@ macro_rules! impl_display {
                 1.0,
                 f64::MAX / 2.0,
                 f64::MAX,
+                f64::INFINITY,
             ];
 
             for &value in &values_f64 {
