@@ -27,7 +27,7 @@ macro_rules! impl_from_str {
                 Self::try_from(f).map_err(FromStrError::InvalidNumber)
             }
         }
-        
+
         #[test]
         fn $test() {
             let values_f32 = [
@@ -71,12 +71,11 @@ macro_rules! impl_from_str {
                     let str = format!("{}", value);
 
                     let t = str.parse::<$type<f64>>().unwrap();
-                    
+
                     assert_eq!(t.get(), value);
                 }
             }
         }
-
     };
 }
 
