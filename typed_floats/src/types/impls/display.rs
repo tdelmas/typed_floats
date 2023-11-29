@@ -12,14 +12,14 @@ macro_rules! impl_display {
                 write!(f, "{}", self.0)
             }
         }
-        
+
         impl core::fmt::Display for $type<f64> {
             #[inline]
             fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
                 write!(f, "{}", self.0)
             }
         }
-        
+
         #[test]
         fn $test() {
             let values_f32 = [

@@ -8,10 +8,10 @@ impl Negative<f64> {
     /// # Examples
     ///
     /// ```
-    /// # use typed_floats::tf64::NonNaN;
-    /// let x = NonNaN::new(3.0).unwrap();
+    /// # use typed_floats::tf64::Negative;
+    /// let x = Negative::new(-3.0).unwrap();
     ///
-    /// assert_eq!(x, 3.0);
+    /// assert_eq!(x, -3.0);
     /// ```
     ///
     /// # Errors
@@ -35,10 +35,10 @@ impl Negative<f64> {
     /// # Examples
     ///
     /// ```
-    /// # use typed_floats::tf64::NonNaN;
-    /// let x = unsafe { NonNaN::new_unchecked(3.0) };
+    /// # use typed_floats::tf64::Negative;
+    /// let x = unsafe { Negative::new_unchecked(-3.0) };
     ///
-    /// assert_eq!(x, 3.0);
+    /// assert_eq!(x, -3.0);
     /// ```
     /// # Safety
     /// The caller must ensure that the value is valid.
@@ -64,13 +64,13 @@ impl Negative<f64> {
     /// # Examples
     ///
     /// ```
-    /// use typed_floats::tf64::NonNaN;
+    /// use typed_floats::tf64::Negative;
     ///
-    /// let x = NonNaN::new(3.0).unwrap();
+    /// let x = Negative::new(-3.0).unwrap();
     ///
     /// let y: f64 = x.into();
     ///
-    /// assert_eq!(y, 3.0);
+    /// assert_eq!(y, -3.0);
     /// ```
     #[inline]
     #[must_use]
@@ -84,8 +84,8 @@ impl Negative<f64> {
     /// # Examples
     ///
     /// ```
-    /// # use typed_floats::*;
-    /// let x: NonNaN = 3.0.try_into().unwrap();
+    /// use typed_floats::tf64::Negative;
+    /// let x: Negative = (-3.0).try_into().unwrap();
     ///
     /// assert_eq!(x.is_nan(), false);
     /// ```
@@ -102,8 +102,8 @@ impl Negative<f64> {
     /// # Examples
     ///
     /// ```
-    /// # use typed_floats::*;
-    /// let x: NonNaN = 3.0.try_into().unwrap();
+    /// use typed_floats::tf64::Negative;
+    /// let x: Negative = (-3.0).try_into().unwrap();
     ///
     /// assert_eq!(x.is_infinite(), false);
     /// ```
@@ -112,7 +112,7 @@ impl Negative<f64> {
     #[inline]
     #[must_use]
     pub fn is_infinite(&self) -> bool {
-        self.0 == f64::INFINITY
+        self.0 == f64::NEG_INFINITY
     }
 
     /// Returns `true` if this number is positive infinity nor negative infinity.
@@ -120,8 +120,8 @@ impl Negative<f64> {
     /// # Examples
     ///
     /// ```
-    /// # use typed_floats::*;
-    /// let x: NonNaN = 3.0.try_into().unwrap();
+    /// use typed_floats::tf64::Negative;
+    /// let x: Negative = (-3.0).try_into().unwrap();
     ///
     /// assert_eq!(x.is_finite(), true);
     /// ```
@@ -138,8 +138,8 @@ impl Negative<f64> {
     /// # Examples
     ///
     /// ```
-    /// # use typed_floats::*;
-    /// let x: NonNaN = 3.0.try_into().unwrap();
+    /// use typed_floats::tf64::Negative;
+    /// let x: Negative = (-3.0).try_into().unwrap();
     ///
     /// assert_eq!(x.is_subnormal(), false);
     /// ```
@@ -156,8 +156,8 @@ impl Negative<f64> {
     /// # Examples
     ///
     /// ```
-    /// # use typed_floats::*;
-    /// let x: NonNaN = 3.0.try_into().unwrap();
+    /// use typed_floats::tf64::Negative;
+    /// let x: Negative = (-3.0).try_into().unwrap();
     ///
     /// assert_eq!(x.is_normal(), true);
     /// ```
@@ -176,8 +176,8 @@ impl Negative<f64> {
     /// # Examples
     ///
     /// ```
-    /// # use typed_floats::*;
-    /// let x: NonNaN = 3.0.try_into().unwrap();
+    /// use typed_floats::tf64::Negative;
+    /// let x: Negative = (-3.0).try_into().unwrap();
     ///
     /// assert_eq!(x.classify(), core::num::FpCategory::Normal);
     /// ```
@@ -194,10 +194,10 @@ impl Negative<f64> {
     /// # Examples
     ///
     /// ```
-    /// # use typed_floats::*;
-    /// let x: NonNaN = 3.0.try_into().unwrap();
+    /// use typed_floats::tf64::Negative;
+    /// let x: Negative = (-3.0).try_into().unwrap();
     ///
-    /// assert_eq!(x.is_sign_positive(), true);
+    /// assert_eq!(x.is_sign_positive(), false);
     /// ```
     ///
     /// See [`f64::is_sign_positive()`] for more details.
@@ -212,10 +212,10 @@ impl Negative<f64> {
     /// # Examples
     ///
     /// ```
-    /// # use typed_floats::*;
-    /// let x: NonNaN = 3.0.try_into().unwrap();
+    /// use typed_floats::tf64::Negative;
+    /// let x: Negative = (-3.0).try_into().unwrap();
     ///
-    /// assert_eq!(x.is_sign_negative(), false);
+    /// assert_eq!(x.is_sign_negative(), true);
     /// ```
     ///
     /// See [`f64::is_sign_negative()`] for more details.
@@ -230,14 +230,12 @@ impl Negative<f64> {
     /// # Examples
     ///
     /// ```
-    /// # use typed_floats::*;
-    /// let x: NonNaN = 3.0.try_into().unwrap();
-    /// let y: NonNaN = (-0.0).try_into().unwrap();
-    /// let z: NonNaN = (0.0).try_into().unwrap();
+    /// use typed_floats::tf64::Negative;
+    /// let x: Negative = (-3.0).try_into().unwrap();
+    /// let y: Negative = (-0.0).try_into().unwrap();
     ///
     /// assert_eq!(x.is_negative_zero(), false);
     /// assert_eq!(y.is_negative_zero(), true);
-    /// assert_eq!(z.is_negative_zero(), false);
     /// ```
     #[inline]
     #[must_use]
@@ -250,14 +248,12 @@ impl Negative<f64> {
     /// # Examples
     ///
     /// ```
-    /// # use typed_floats::*;
-    /// let x: NonNaN = 3.0.try_into().unwrap();
-    /// let y: NonNaN = (-0.0).try_into().unwrap();
-    /// let z: NonNaN = (0.0).try_into().unwrap();
+    /// use typed_floats::tf64::Negative;
+    /// let x: Negative = (-3.0).try_into().unwrap();
+    /// let y: Negative = (-0.0).try_into().unwrap();
     ///
     /// assert_eq!(x.is_positive_zero(), false);
     /// assert_eq!(y.is_positive_zero(), false);
-    /// assert_eq!(z.is_positive_zero(), true);
     /// ```
     #[inline]
     #[must_use]

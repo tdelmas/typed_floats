@@ -8,10 +8,10 @@ impl NegativeFinite<f32> {
     /// # Examples
     ///
     /// ```
-    /// # use typed_floats::tf32::NonNaN;
-    /// let x = NonNaN::new(3.0).unwrap();
+    /// # use typed_floats::tf32::NegativeFinite;
+    /// let x = NegativeFinite::new(-3.0).unwrap();
     ///
-    /// assert_eq!(x, 3.0);
+    /// assert_eq!(x, -3.0);
     /// ```
     ///
     /// # Errors
@@ -39,10 +39,10 @@ impl NegativeFinite<f32> {
     /// # Examples
     ///
     /// ```
-    /// # use typed_floats::tf32::NonNaN;
-    /// let x = unsafe { NonNaN::new_unchecked(3.0) };
+    /// # use typed_floats::tf32::NegativeFinite;
+    /// let x = unsafe { NegativeFinite::new_unchecked(-3.0) };
     ///
-    /// assert_eq!(x, 3.0);
+    /// assert_eq!(x, -3.0);
     /// ```
     /// # Safety
     /// The caller must ensure that the value is valid.
@@ -68,13 +68,13 @@ impl NegativeFinite<f32> {
     /// # Examples
     ///
     /// ```
-    /// use typed_floats::tf32::NonNaN;
+    /// use typed_floats::tf32::NegativeFinite;
     ///
-    /// let x = NonNaN::new(3.0).unwrap();
+    /// let x = NegativeFinite::new(-3.0).unwrap();
     ///
     /// let y: f32 = x.into();
     ///
-    /// assert_eq!(y, 3.0);
+    /// assert_eq!(y, -3.0);
     /// ```
     #[inline]
     #[must_use]
@@ -88,8 +88,8 @@ impl NegativeFinite<f32> {
     /// # Examples
     ///
     /// ```
-    /// # use typed_floats::*;
-    /// let x: NonNaN = 3.0.try_into().unwrap();
+    /// use typed_floats::tf32::NegativeFinite;
+    /// let x: NegativeFinite = (-3.0).try_into().unwrap();
     ///
     /// assert_eq!(x.is_nan(), false);
     /// ```
@@ -106,8 +106,8 @@ impl NegativeFinite<f32> {
     /// # Examples
     ///
     /// ```
-    /// # use typed_floats::*;
-    /// let x: NonNaN = 3.0.try_into().unwrap();
+    /// use typed_floats::tf32::NegativeFinite;
+    /// let x: NegativeFinite = (-3.0).try_into().unwrap();
     ///
     /// assert_eq!(x.is_infinite(), false);
     /// ```
@@ -124,8 +124,8 @@ impl NegativeFinite<f32> {
     /// # Examples
     ///
     /// ```
-    /// # use typed_floats::*;
-    /// let x: NonNaN = 3.0.try_into().unwrap();
+    /// use typed_floats::tf32::NegativeFinite;
+    /// let x: NegativeFinite = (-3.0).try_into().unwrap();
     ///
     /// assert_eq!(x.is_finite(), true);
     /// ```
@@ -142,8 +142,8 @@ impl NegativeFinite<f32> {
     /// # Examples
     ///
     /// ```
-    /// # use typed_floats::*;
-    /// let x: NonNaN = 3.0.try_into().unwrap();
+    /// use typed_floats::tf32::NegativeFinite;
+    /// let x: NegativeFinite = (-3.0).try_into().unwrap();
     ///
     /// assert_eq!(x.is_subnormal(), false);
     /// ```
@@ -160,8 +160,8 @@ impl NegativeFinite<f32> {
     /// # Examples
     ///
     /// ```
-    /// # use typed_floats::*;
-    /// let x: NonNaN = 3.0.try_into().unwrap();
+    /// use typed_floats::tf32::NegativeFinite;
+    /// let x: NegativeFinite = (-3.0).try_into().unwrap();
     ///
     /// assert_eq!(x.is_normal(), true);
     /// ```
@@ -180,8 +180,8 @@ impl NegativeFinite<f32> {
     /// # Examples
     ///
     /// ```
-    /// # use typed_floats::*;
-    /// let x: NonNaN = 3.0.try_into().unwrap();
+    /// use typed_floats::tf32::NegativeFinite;
+    /// let x: NegativeFinite = (-3.0).try_into().unwrap();
     ///
     /// assert_eq!(x.classify(), core::num::FpCategory::Normal);
     /// ```
@@ -198,10 +198,10 @@ impl NegativeFinite<f32> {
     /// # Examples
     ///
     /// ```
-    /// # use typed_floats::*;
-    /// let x: NonNaN = 3.0.try_into().unwrap();
+    /// use typed_floats::tf32::NegativeFinite;
+    /// let x: NegativeFinite = (-3.0).try_into().unwrap();
     ///
-    /// assert_eq!(x.is_sign_positive(), true);
+    /// assert_eq!(x.is_sign_positive(), false);
     /// ```
     ///
     /// See [`f32::is_sign_positive()`] for more details.
@@ -216,10 +216,10 @@ impl NegativeFinite<f32> {
     /// # Examples
     ///
     /// ```
-    /// # use typed_floats::*;
-    /// let x: NonNaN = 3.0.try_into().unwrap();
+    /// use typed_floats::tf32::NegativeFinite;
+    /// let x: NegativeFinite = (-3.0).try_into().unwrap();
     ///
-    /// assert_eq!(x.is_sign_negative(), false);
+    /// assert_eq!(x.is_sign_negative(), true);
     /// ```
     ///
     /// See [`f32::is_sign_negative()`] for more details.
@@ -234,14 +234,12 @@ impl NegativeFinite<f32> {
     /// # Examples
     ///
     /// ```
-    /// # use typed_floats::*;
-    /// let x: NonNaN = 3.0.try_into().unwrap();
-    /// let y: NonNaN = (-0.0).try_into().unwrap();
-    /// let z: NonNaN = (0.0).try_into().unwrap();
+    /// use typed_floats::tf32::NegativeFinite;
+    /// let x: NegativeFinite = (-3.0).try_into().unwrap();
+    /// let y: NegativeFinite = (-0.0).try_into().unwrap();
     ///
     /// assert_eq!(x.is_negative_zero(), false);
     /// assert_eq!(y.is_negative_zero(), true);
-    /// assert_eq!(z.is_negative_zero(), false);
     /// ```
     #[inline]
     #[must_use]
@@ -254,14 +252,12 @@ impl NegativeFinite<f32> {
     /// # Examples
     ///
     /// ```
-    /// # use typed_floats::*;
-    /// let x: NonNaN = 3.0.try_into().unwrap();
-    /// let y: NonNaN = (-0.0).try_into().unwrap();
-    /// let z: NonNaN = (0.0).try_into().unwrap();
+    /// use typed_floats::tf32::NegativeFinite;
+    /// let x: NegativeFinite = (-3.0).try_into().unwrap();
+    /// let y: NegativeFinite = (-0.0).try_into().unwrap();
     ///
     /// assert_eq!(x.is_positive_zero(), false);
     /// assert_eq!(y.is_positive_zero(), false);
-    /// assert_eq!(z.is_positive_zero(), true);
     /// ```
     #[inline]
     #[must_use]
