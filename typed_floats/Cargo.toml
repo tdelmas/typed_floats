@@ -13,7 +13,7 @@ license = "MIT OR Apache-2.0"
 name = "typed_floats"
 readme = "./README.md"
 repository = "https://github.com/tdelmas/typed_floats"
-version = "0.7.2"
+version = "0.7.3"
 rust-version = "1.70"
 
 [features]
@@ -26,7 +26,7 @@ libm = ["dep:num-traits", "typed_floats_macros/libm"]
 [dependencies]
 
 [dependencies.typed_floats_macros]
-version = "=0.7.2"
+version = "=0.7.3"
 path = "../typed_floats_macros"
 
 [dependencies.serde]
