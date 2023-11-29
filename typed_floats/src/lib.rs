@@ -115,6 +115,9 @@ mod macros;
 mod traits;
 mod types;
 
+#[macro_use]
+extern crate alloc;
+
 #[cfg(feature = "serde")]
 mod serde;
 
@@ -134,10 +137,10 @@ pub mod tf64 {
     pub type NonNaNFinite = crate::NonNaNFinite<f64>;
 
     /// Equivalent to `NonZeroNonNaN<f64>`
-    pub type NonZero = crate::NonZeroNonNaN<f64>;
+    pub type NonZeroNonNaN = crate::NonZeroNonNaN<f64>;
 
     /// Equivalent to `NonZeroNonNaNFinite<f64>`
-    pub type NonZeroFinite = crate::NonZeroNonNaNFinite<f64>;
+    pub type NonZeroNonNaNFinite = crate::NonZeroNonNaNFinite<f64>;
 
     /// Equivalent to `StrictlyPositive<f64>`
     pub type StrictlyPositive = crate::StrictlyPositive<f64>;
@@ -288,10 +291,10 @@ pub mod tf32 {
     pub type NonNaNFinite = crate::NonNaNFinite<f32>;
 
     /// Equivalent to `NonZeroNonNaN<f32>`
-    pub type NonZero = crate::NonZeroNonNaN<f32>;
+    pub type NonZeroNonNaN = crate::NonZeroNonNaN<f32>;
 
     /// Equivalent to `NonZeroNonNaNFinite<f32>`
-    pub type NonZeroFinite = crate::NonZeroNonNaNFinite<f32>;
+    pub type NonZeroNonNaNFinite = crate::NonZeroNonNaNFinite<f32>;
 
     /// Equivalent to `StrictlyPositive<f32>`
     pub type StrictlyPositive = crate::StrictlyPositive<f32>;

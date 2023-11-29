@@ -8,8 +8,8 @@ impl NonZeroNonNaNFinite<f32> {
     /// # Examples
     ///
     /// ```
-    /// # use typed_floats::tf32::NonNaN;
-    /// let x = NonNaN::new(3.0).unwrap();
+    /// # use typed_floats::tf32::NonZeroNonNaNFinite;
+    /// let x = NonZeroNonNaNFinite::new(3.0).unwrap();
     ///
     /// assert_eq!(x, 3.0);
     /// ```
@@ -39,8 +39,8 @@ impl NonZeroNonNaNFinite<f32> {
     /// # Examples
     ///
     /// ```
-    /// # use typed_floats::tf32::NonNaN;
-    /// let x = unsafe { NonNaN::new_unchecked(3.0) };
+    /// # use typed_floats::tf32::NonZeroNonNaNFinite;
+    /// let x = unsafe { NonZeroNonNaNFinite::new_unchecked(3.0) };
     ///
     /// assert_eq!(x, 3.0);
     /// ```
@@ -68,9 +68,9 @@ impl NonZeroNonNaNFinite<f32> {
     /// # Examples
     ///
     /// ```
-    /// use typed_floats::tf32::NonNaN;
+    /// use typed_floats::tf32::NonZeroNonNaNFinite;
     ///
-    /// let x = NonNaN::new(3.0).unwrap();
+    /// let x = NonZeroNonNaNFinite::new(3.0).unwrap();
     ///
     /// let y: f32 = x.into();
     ///
@@ -88,8 +88,8 @@ impl NonZeroNonNaNFinite<f32> {
     /// # Examples
     ///
     /// ```
-    /// # use typed_floats::*;
-    /// let x: NonNaN = 3.0.try_into().unwrap();
+    /// use typed_floats::tf32::NonZeroNonNaNFinite;
+    /// let x: NonZeroNonNaNFinite = 3.0.try_into().unwrap();
     ///
     /// assert_eq!(x.is_nan(), false);
     /// ```
@@ -106,8 +106,8 @@ impl NonZeroNonNaNFinite<f32> {
     /// # Examples
     ///
     /// ```
-    /// # use typed_floats::*;
-    /// let x: NonNaN = 3.0.try_into().unwrap();
+    /// use typed_floats::tf32::NonZeroNonNaNFinite;
+    /// let x: NonZeroNonNaNFinite = 3.0.try_into().unwrap();
     ///
     /// assert_eq!(x.is_infinite(), false);
     /// ```
@@ -124,8 +124,8 @@ impl NonZeroNonNaNFinite<f32> {
     /// # Examples
     ///
     /// ```
-    /// # use typed_floats::*;
-    /// let x: NonNaN = 3.0.try_into().unwrap();
+    /// use typed_floats::tf32::NonZeroNonNaNFinite;
+    /// let x: NonZeroNonNaNFinite = 3.0.try_into().unwrap();
     ///
     /// assert_eq!(x.is_finite(), true);
     /// ```
@@ -142,8 +142,8 @@ impl NonZeroNonNaNFinite<f32> {
     /// # Examples
     ///
     /// ```
-    /// # use typed_floats::*;
-    /// let x: NonNaN = 3.0.try_into().unwrap();
+    /// use typed_floats::tf32::NonZeroNonNaNFinite;
+    /// let x: NonZeroNonNaNFinite = 3.0.try_into().unwrap();
     ///
     /// assert_eq!(x.is_subnormal(), false);
     /// ```
@@ -160,8 +160,8 @@ impl NonZeroNonNaNFinite<f32> {
     /// # Examples
     ///
     /// ```
-    /// # use typed_floats::*;
-    /// let x: NonNaN = 3.0.try_into().unwrap();
+    /// use typed_floats::tf32::NonZeroNonNaNFinite;
+    /// let x: NonZeroNonNaNFinite = 3.0.try_into().unwrap();
     ///
     /// assert_eq!(x.is_normal(), true);
     /// ```
@@ -180,8 +180,8 @@ impl NonZeroNonNaNFinite<f32> {
     /// # Examples
     ///
     /// ```
-    /// # use typed_floats::*;
-    /// let x: NonNaN = 3.0.try_into().unwrap();
+    /// use typed_floats::tf32::NonZeroNonNaNFinite;
+    /// let x: NonZeroNonNaNFinite = 3.0.try_into().unwrap();
     ///
     /// assert_eq!(x.classify(), core::num::FpCategory::Normal);
     /// ```
@@ -198,8 +198,8 @@ impl NonZeroNonNaNFinite<f32> {
     /// # Examples
     ///
     /// ```
-    /// # use typed_floats::*;
-    /// let x: NonNaN = 3.0.try_into().unwrap();
+    /// use typed_floats::tf32::NonZeroNonNaNFinite;
+    /// let x: NonZeroNonNaNFinite = 3.0.try_into().unwrap();
     ///
     /// assert_eq!(x.is_sign_positive(), true);
     /// ```
@@ -216,8 +216,8 @@ impl NonZeroNonNaNFinite<f32> {
     /// # Examples
     ///
     /// ```
-    /// # use typed_floats::*;
-    /// let x: NonNaN = 3.0.try_into().unwrap();
+    /// use typed_floats::tf32::NonZeroNonNaNFinite;
+    /// let x: NonZeroNonNaNFinite = 3.0.try_into().unwrap();
     ///
     /// assert_eq!(x.is_sign_negative(), false);
     /// ```
@@ -234,14 +234,12 @@ impl NonZeroNonNaNFinite<f32> {
     /// # Examples
     ///
     /// ```
-    /// # use typed_floats::*;
-    /// let x: NonNaN = 3.0.try_into().unwrap();
-    /// let y: NonNaN = (-0.0).try_into().unwrap();
-    /// let z: NonNaN = (0.0).try_into().unwrap();
+    /// use typed_floats::tf32::NonZeroNonNaNFinite;
+    /// let x: NonZeroNonNaNFinite = 3.0.try_into().unwrap();
+    /// let y: NonZeroNonNaNFinite = (-3.0).try_into().unwrap();
     ///
     /// assert_eq!(x.is_negative_zero(), false);
-    /// assert_eq!(y.is_negative_zero(), true);
-    /// assert_eq!(z.is_negative_zero(), false);
+    /// assert_eq!(y.is_negative_zero(), false);
     /// ```
     #[inline]
     #[must_use]
@@ -254,14 +252,10 @@ impl NonZeroNonNaNFinite<f32> {
     /// # Examples
     ///
     /// ```
-    /// # use typed_floats::*;
-    /// let x: NonNaN = 3.0.try_into().unwrap();
-    /// let y: NonNaN = (-0.0).try_into().unwrap();
-    /// let z: NonNaN = (0.0).try_into().unwrap();
+    /// use typed_floats::tf32::NonZeroNonNaNFinite;
+    /// let x: NonZeroNonNaNFinite = 3.0.try_into().unwrap();
     ///
     /// assert_eq!(x.is_positive_zero(), false);
-    /// assert_eq!(y.is_positive_zero(), false);
-    /// assert_eq!(z.is_positive_zero(), true);
     /// ```
     #[inline]
     #[must_use]
