@@ -47,9 +47,9 @@ The following conversions are implemented:
 - Between all the types of this crate (of the same kind, [`f32`] or [`f64`])
 - From [`f32`] and [`f64`]
 - From integers types (except [`u128`] and [`i128`])
-- From `NonZero*` ([`NonZeroU8`], [`NonZeroU16`], [`NonZeroU32`], [`NonZeroU64`], [`NonZeroI8`], [`NonZeroI16`], [`NonZeroI32`], [`NonZeroI64`])
+- From `NonZero*` ([`core::num::NonZeroU8`], [`core::num::NonZeroU16`], [`core::num::NonZeroU32`], [`core::num::NonZeroU64`], [`core::num::NonZeroI8`], [`core::num::NonZeroI16`], [`core::num::NonZeroI32`], [`core::num::NonZeroI64`])
 
-(The trait `From` or `TryFrom` is implemented depending on the situation. Impossible conversions - for example between [`Positive`] and [`Negative`] - are not implemented.)
+(The traits `From` and `TryFrom` are implemented depending on the situation. Impossible conversions - for example between [`Positive`] and [`Negative`] - are not implemented.)
 
 # When to use it
 
@@ -92,9 +92,9 @@ As none of the types of this crate can be `NaN`, the following traits are implem
 
 - [`core::cmp::Ord`]
 - [`core::cmp::Eq`]
-- [`Hash`] 
+- [`core::hash::Hash`] 
 
-Note: for [`Hash`] on [`NonNaN`] and [`NonNaNFinite`] there is a (small) overhead because they both accept `0.0` and `-0.0`, which are equal so they mush `hash` to the same value.
+Note: for [`core::hash::Hash`] on [`NonNaN`] and [`NonNaNFinite`] there is a (small) overhead because they both accept `0.0` and `-0.0`, which are equal so they mush `core::hash::Hash` to the same value.
 
 # Methods implemented
 
@@ -193,7 +193,7 @@ cargo test --all
 - [float-ord](https://crates.io/crates/float-ord) A total ordering for floating-point numbers.
 - [nanbox](https://crates.io/crates/nanbox) NaN boxing implementation.
 - [noisy_float](https://crates.io/crates/noisy_float) Contains floating point types that panic if they are set to an illegal value, such as NaN.
-- [num-order](https://crates.io/crates/num-order) Numerically consistent `Eq`, `Ord` and `Hash` implementations for various `num` types (`u32`, `f64`, `num_bigint::BigInt`, etc.)
+- [num-order](https://crates.io/crates/num-order) Numerically consistent `core::cmp::Eq`, `core::cmp::Ord` and `core::hash::Hash` implementations for various `num` types (`u32`, `f64`, `num_bigint::BigInt`, etc.)
 - [ordered-float](https://crates.io/crates/ordered-float) Provides several wrapper types for Ord and Eq implementations on f64 and friends.
 - [partial-min-max](https://crates.io/crates/partial-min-max) `min` and `max` functions that work with `PartialOrd`.
 - [real_float](https://crates.io/crates/real_float) Floating point types that check for correctness and implement total ordering.
@@ -243,6 +243,8 @@ Is on [docs.rs](https://docs.rs/typed_floats).
 [`core::cmp::Ord`]: https://doc.rust-lang.org/core/cmp/trait.Ord.html "`Ord`"
 [`core::cmp::Eq`]: https://doc.rust-lang.org/core/cmp/trait.Eq.html "`Eq`"
 [`core::hash::Hash`]: https://doc.rust-lang.org/core/hash/trait.Hash.html "`Hash`"
+[`core::convert::From`]: https://doc.rust-lang.org/core/convert/trait.From.html "`From`"
+[`core::convert::TryFrom`]: https://doc.rust-lang.org/core/convert/trait.TryFrom.html "`TryFrom`"
 [`NonNaN`]: https://docs.rs/typed_floats/latest/typed_floats/struct.NonNaN.html
 [`NonNaNFinite`]: https://docs.rs/typed_floats/latest/typed_floats/struct.NonNaNFinite.html
 [`NonZeroNonNaN`]: https://docs.rs/typed_floats/latest/typed_floats/struct.NonZeroNonNaN.html
@@ -260,14 +262,14 @@ Is on [docs.rs](https://docs.rs/typed_floats).
 [`tf32`]: https://docs.rs/typed_floats/latest/typed_floats/tf32/index.html
 [`tf64::consts`]: https://docs.rs/typed_floats/latest/typed_floats/tf64/consts/index.html
 [`tf32::consts`]: https://docs.rs/typed_floats/latest/typed_floats/tf32/consts/index.html
-[`NonZeroU8`]: https://doc.rust-lang.org/core/num/struct.NonZeroU8.html
-[`NonZeroU16`]: https://doc.rust-lang.org/core/num/struct.NonZeroU16.html
-[`NonZeroU32`]: https://doc.rust-lang.org/core/num/struct.NonZeroU32.html
-[`NonZeroU64`]: https://doc.rust-lang.org/core/num/struct.NonZeroU64.html
-[`NonZeroI8`]: https://doc.rust-lang.org/core/num/struct.NonZeroI8.html
-[`NonZeroI16`]: https://doc.rust-lang.org/core/num/struct.NonZeroI16.html
-[`NonZeroI32`]: https://doc.rust-lang.org/core/num/struct.NonZeroI32.html
-[`NonZeroI64`]: https://doc.rust-lang.org/core/num/struct.NonZeroI64.html
+[`core::num::NonZeroU8`]: https://doc.rust-lang.org/core/num/struct.NonZeroU8.html "`NonZeroU8`"
+[`core::num::NonZeroU16`]: https://doc.rust-lang.org/core/num/struct.NonZeroU16.html "`NonZeroU16`"
+[`core::num::NonZeroU32`]: https://doc.rust-lang.org/core/num/struct.NonZeroU32.html "`NonZeroU32`"
+[`core::num::NonZeroU64`]: https://doc.rust-lang.org/core/num/struct.NonZeroU64.html "`NonZeroU64`"
+[`core::num::NonZeroI8`]: https://doc.rust-lang.org/core/num/struct.NonZeroI8.html "`NonZeroI8`"
+[`core::num::NonZeroI16`]: https://doc.rust-lang.org/core/num/struct.NonZeroI16.html "`NonZeroI16`"
+[`core::num::NonZeroI32`]: https://doc.rust-lang.org/core/num/struct.NonZeroI32.html "`NonZeroI32`"
+[`core::num::NonZeroI64`]: https://doc.rust-lang.org/core/num/struct.NonZeroI64.html "`NonZeroI64`"
 [`Hypot`]: https://docs.rs/typed_floats/latest/typed_floats/trait.Hypot.html
 [`Min`]: https://docs.rs/typed_floats/latest/typed_floats/trait.Min.html
 [`Max`]: https://docs.rs/typed_floats/latest/typed_floats/trait.Max.html
