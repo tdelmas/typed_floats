@@ -1,26 +1,50 @@
+version: 2.1
 
-jobs:
-  build_and_test:
+executors:
+  docker:
     docker:
       - image: cimg/rust:1.70.0
-    steps:
-      - checkout
-      - run: cargo xtask pre-build
-      - run: cd typed_floats && ./tests-ci.sh
-
-  build_and_test_arm:
+  arm:
     machine:
       image: ubuntu-2004:current 
     resource_class: arm.medium
+    environment:
+      INSTALL_CMD: curl https://sh.rustup.rs -sSf | sh -s -- -y
+
+jobs:
+  build_and_test:
+    executor: << parameters.executor >>
     steps:
       - checkout
-      - run: curl https://sh.rustup.rs -sSf | sh -s -- -y
+      - run: if [ -z "$INSTALL_CMD" ]; then $INSTALL_CMD; fi
+      - run: rustup default ${{ matrix.version }}
       - run: cargo xtask pre-build
-      - run: cd typed_floats && ./tests-ci.sh
+      - run: cd typed_floats && cargo build --no-default-features --features "${{ matrix.features }}" ${{ matrix.release }}
+      - run: cd typed_floats && cargo test --no-default-features --features "${{ matrix.features }}" ${{ matrix.release }}
 
 workflows:
-  version: 2
   build_and_test:
     jobs:
       - build_and_test
-      - build_and_test_arm
+          matrix:
+            parameters:
+              executor: [docker, arm]
+            version: [
+              "beta",
+              "stable",
+              "1.70",
+            ]
+            release: [
+              "",
+              "--release",
+            ]
+            features: [
+                "",
+                "std",
+                "serde",
+                "libm",
+                "std,serde",
+                "std,libm",
+                "serde,libm",
+                "std,serde,libm",
+            ]
