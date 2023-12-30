@@ -29,22 +29,22 @@ workflows:
           matrix:
             parameters:
               executor: [docker, arm]
-            version: [
-              "beta",
-              "stable",
-              "1.70",
-            ]
-            release: [
-              "",
-              "--release",
-            ]
-            features: [
+              version: [
+                "beta",
+                "stable",
+                "1.70",
+              ]
+              release: [
                 "",
-                "std",
-                "serde",
-                "libm",
-                "std,serde",
-                "std,libm",
-                "serde,libm",
-                "std,serde,libm",
-            ]
+                "--release",
+              ]
+              features: [
+                  "",
+                  "std",
+                  "serde",
+                  "libm",
+                  "std,serde",
+                  "std,libm",
+                  "serde,libm",
+                  "std,serde,libm",
+              ]
