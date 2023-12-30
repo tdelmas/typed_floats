@@ -23,13 +23,17 @@ jobs:
       features:
         type: string
     executor: << parameters.executor >>
+    environment:
+      MY_BUILD_FEATURES: << parameters.features >>
+      MY_BUILD_RELEASE: << parameters.release >>
+      RUSTUP_VERSION: << parameters.version >>
     steps:
       - checkout
       - run: if [ -z "$INSTALL_CMD" ]; then $INSTALL_CMD; fi
-      - run: rustup default ${{ matrix.version }}
+      - run: rustup default $RUSTUP_VERSION
       - run: cargo xtask pre-build
-      - run: cd typed_floats && cargo build --no-default-features --features "${{ matrix.features }}" ${{ matrix.release }}
-      - run: cd typed_floats && cargo test --no-default-features --features "${{ matrix.features }}" ${{ matrix.release }}
+      - run: cd typed_floats && cargo build --no-default-features --features "$MY_BUILD_FEATURES" $MY_BUILD_RELEASE
+      - run: cd typed_floats && cargo test --no-default-features --features "$MY_BUILD_FEATURES" $MY_BUILD_RELEASE
 
 workflows:
   build_and_test:
