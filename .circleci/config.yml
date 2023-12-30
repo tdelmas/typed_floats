@@ -13,6 +13,15 @@ executors:
 
 jobs:
   build_and_test:
+    parameters:
+      executor:
+        type: executor
+      version:
+        type: string
+      release:
+        type: string
+      features:
+        type: string
     executor: << parameters.executor >>
     steps:
       - checkout
