@@ -9,7 +9,7 @@ executors:
       image: ubuntu-2004:current 
     resource_class: arm.medium
     environment:
-      INSTALL_CMD: curl https://sh.rustup.rs -sSf | sh -s -- -y
+      INSTALL_RUSTUP: "1"
 
 jobs:
   build_and_test:
@@ -29,7 +29,7 @@ jobs:
       RUSTUP_VERSION: << parameters.version >>
     steps:
       - checkout
-      - run: if [ -n "$INSTALL_CMD" ]; then $INSTALL_CMD; fi
+      - run: if [ -n "$INSTALL_RUSTUP" ]; then curl https://sh.rustup.rs -sSf | sh -s -- -y; fi
       - run: rustup default $RUSTUP_VERSION
       - run: cargo xtask pre-build
       - run: cd typed_floats && cargo build --no-default-features --features "$MY_BUILD_FEATURES" $MY_BUILD_RELEASE
