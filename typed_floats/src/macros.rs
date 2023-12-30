@@ -140,9 +140,9 @@ macro_rules! assert_is_negative_zero {
 /// - If they are both NaN, they are considered equal;
 /// - If they are zero, they are considered equal if they have the same sign;
 /// - All other cases are tested with `assert_eq!`.
-/// 
+///
 /// # Examples
-/// 
+///
 /// ```
 /// # use typed_floats::*;
 /// assert_float_eq!(f64::NAN, f64::NAN);
@@ -153,17 +153,17 @@ macro_rules! assert_is_negative_zero {
 /// assert_float_eq!(core::f64::INFINITY, core::f64::INFINITY);
 /// assert_float_eq!(core::f64::NEG_INFINITY, core::f64::NEG_INFINITY);
 /// ```
-/// 
+///
 /// ```should_panic
 /// # use typed_floats::*;
 /// assert_float_eq!(1.0_f64, 2.0_f64);
 /// ```
-/// 
+///
 /// ```should_panic
 /// # use typed_floats::*;
 /// assert_float_eq!(1.0_f64, f64::NAN);
 /// ```
-/// 
+///
 /// ```should_panic
 /// # use typed_floats::*;
 /// assert_float_eq!(0.0_f64, -0.0_f64);

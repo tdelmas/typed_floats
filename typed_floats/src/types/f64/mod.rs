@@ -40,8 +40,14 @@ macro_rules! test_type {
                     assert_eq!(v.classify(), value.classify());
                     assert_eq!(v.is_sign_positive(), value.is_sign_positive());
                     assert_eq!(v.is_sign_negative(), value.is_sign_negative());
-                    assert_eq!(v.is_positive_zero(), value.is_sign_positive() && value == 0.0);
-                    assert_eq!(v.is_negative_zero(), value.is_sign_negative() && value == 0.0);
+                    assert_eq!(
+                        v.is_positive_zero(),
+                        value.is_sign_positive() && value == 0.0
+                    );
+                    assert_eq!(
+                        v.is_negative_zero(),
+                        value.is_sign_negative() && value == 0.0
+                    );
                 }
             }
         }
