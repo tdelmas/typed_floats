@@ -111,6 +111,12 @@
 #![warn(unused_crate_dependencies)]
 #![cfg_attr(not(feature = "std"), no_std)]
 
+
+// `format!` is used during the tests even in `no_std` environments
+#[cfg(all(test, not(feature = "std")))]
+#[macro_use]
+extern crate alloc;
+
 mod macros;
 mod traits;
 mod types;
