@@ -11,6 +11,5 @@
       },
       "extensions": ["rust-lang.rust-analyzer", "serayuzgur.crates"]
     }
-  },
-  "initializeCommand": "rustup update && rustup toolchain install nightly"
+  }
 }
