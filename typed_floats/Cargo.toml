@@ -1,7 +1,11 @@
 [package]
-categories = ["mathematics", "data-structures"]
+name = "typed_floats"
 description = "Types for handling floats with type checking at compile time."
-edition = "2021"
+categories = ["mathematics", "data-structures"]
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
 include = [
   "Cargo.toml",
   "src/*.rs",
@@ -9,12 +13,8 @@ include = [
   "*.md",
 ]
 keywords = ["floats", "non-zero", "nan", "no_std"]
-license = "MIT OR Apache-2.0"
-name = "typed_floats"
 readme = "./README.md"
-repository = "https://github.com/tdelmas/typed_floats"
-version = "0.7.3"
-rust-version = "1.70"
+rust-version.workspace = true
 
 [features]
 default = ["std", "compiler_hints"]

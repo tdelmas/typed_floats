@@ -111,7 +111,6 @@
 #![warn(unused_crate_dependencies)]
 #![cfg_attr(not(feature = "std"), no_std)]
 
-
 // `format!` is used during the tests even in `no_std` environments
 #[cfg(all(test, not(feature = "std")))]
 #[macro_use]
@@ -283,7 +282,7 @@ pub mod tf64 {
         pub const LN_10: crate::PositiveFinite<f64> =
             crate::PositiveFinite::<f64>(core::f64::consts::LN_10);
     }
-    
+
     #[cfg(test)]
     pub(crate) const TEST_VALUES: [f64; 21] = typed_floats_macros::test_values!(f64);
 }
