@@ -1,6 +1,9 @@
 name: Miri
 
 on:
+  schedule:
+    # 1 of the month
+    - cron:  '0 0 1 * *'
   workflow_dispatch:
 
 env:
