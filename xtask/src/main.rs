@@ -1,27 +1,14 @@
-use clap::{Parser, Subcommand};
-
 mod pre_build;
 mod tag;
 
-#[derive(Parser, Debug)]
-#[command(arg_required_else_help(true))]
-struct Cli {
-    #[command(subcommand)]
-    command: Option<Commands>,
-}
-
-#[derive(Subcommand, Debug)]
-enum Commands {
-    Tag(tag::TagArgs),
-    PreBuild,
-}
-
 fn main() {
-    let cli: Cli = Cli::parse();
+    let command: Option<String> = std::env::args().nth(1);
+    let args = std::env::args().skip(2).collect::<Vec<_>>();
 
-    match &cli.command {
-        Some(Commands::PreBuild) => pre_build::create_creadmes(),
-        Some(Commands::Tag(args)) => tag::tag(args),
-        None => {}
+    match command.as_deref() {
+        Some("pre_build") => pre_build::create_creadmes(),
+        Some("tag") => tag::tag(args),
+        Some(command) => panic!("Invalid command: {command}"),
+        None => panic!("No command provided"),
     }
 }

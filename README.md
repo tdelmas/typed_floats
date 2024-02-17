@@ -165,7 +165,7 @@ This crate is tested when a new version is release with:
 
 Also, tests on `nightly`, `beta` and `stable` are run weekly on [GitHub actions](https://github.com/tdelmas/typed_floats/actions/workflows/weekly-tests.yml).
 
-The minimum supported Rust version is 1.70.0 because of the use of `dep:` in `Cargo.toml` and the usage of `clap`.
+The minimum supported Rust version is 1.70.0 because of the use of `dep:` in `Cargo.toml`.
 
 ## Testing
 
