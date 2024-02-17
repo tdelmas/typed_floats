@@ -20,6 +20,7 @@ jobs:
           rustup override set nightly
           cargo miri setup
       - run: cargo xtask pre-build
-      - run: cargo miri test --doc
+      - run: cargo miri test --no-default-features
+      - run: cargo miri test --all-features
 
           
