@@ -64,8 +64,6 @@ macro_rules! impl_eq {
                     assert_ne!(t, -value);
                     assert_ne!(-value, t);
                     assert_ne!(t, 0.0);
-
-
                 }
             }
         }

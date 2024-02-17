@@ -111,12 +111,15 @@
 #![warn(unused_crate_dependencies)]
 #![cfg_attr(not(feature = "std"), no_std)]
 
+
+// `format!` is used during the tests even in `no_std` environments
+#[cfg(all(test, not(feature = "std")))]
+#[macro_use]
+extern crate alloc;
+
 mod macros;
 mod traits;
 mod types;
-
-#[macro_use]
-extern crate alloc;
 
 #[cfg(feature = "serde")]
 mod serde;
@@ -280,6 +283,9 @@ pub mod tf64 {
         pub const LN_10: crate::PositiveFinite<f64> =
             crate::PositiveFinite::<f64>(core::f64::consts::LN_10);
     }
+    
+    #[cfg(test)]
+    pub(crate) const TEST_VALUES: [f64; 21] = typed_floats_macros::test_values!(f64);
 }
 
 /// This module contains constants from [`core::f32`], casted to the corresponding type
@@ -434,4 +440,7 @@ pub mod tf32 {
         pub const LN_10: crate::PositiveFinite<f32> =
             crate::PositiveFinite::<f32>(core::f32::consts::LN_10);
     }
+
+    #[cfg(test)]
+    pub(crate) const TEST_VALUES: [f32; 21] = typed_floats_macros::test_values!(f32);
 }

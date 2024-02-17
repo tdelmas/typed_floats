@@ -11,22 +11,12 @@ mod strictly_negative_finite;
 mod strictly_positive;
 mod strictly_positive_finite;
 
+#[cfg(test)]
 macro_rules! test_type {
     ($test:ident, $type:ty) => {
         #[test]
         fn $test() {
-            let values = [
-                f32::NEG_INFINITY,
-                f32::MIN,
-                f32::MIN / 2.0,
-                -1.0,
-                -0.0,
-                0.0,
-                1.0,
-                f32::MAX / 2.0,
-                f32::MAX,
-                f32::INFINITY,
-            ];
+            let values = crate::tf32::TEST_VALUES;
 
             for &value in &values {
                 let v: Option<$type> = value.try_into().ok();

@@ -1,6 +1,9 @@
 name: Miri
 
 on:
+  schedule:
+    # 1 of the month
+    - cron:  '0 0 1 * *'
   workflow_dispatch:
 
 env:
@@ -19,9 +22,8 @@ jobs:
           rustup toolchain install nightly --component miri
           rustup override set nightly
           cargo miri setup
-          cargo install nextest
       - run: cargo xtask pre-build
-      - run: cargo miri test --doc
-      - run: cargo miri nextest run -j128
+      - run: cargo miri test --no-default-features
+      - run: cargo miri test --all-features
 
           

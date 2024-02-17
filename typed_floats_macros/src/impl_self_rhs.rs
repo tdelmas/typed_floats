@@ -49,6 +49,7 @@ fn can_one_be_zero_neg_and_the_other_zero_pos(
 }
 
 pub fn get_impl_self_rhs() -> Vec<OpRhs> {
+    #[allow(unused_mut)] // depending on the enabled features, `mut` may be unused
     let mut ops = vec![
         OpRhsBuilder::new("core::ops::Add", "add")
             .with_assign("core::ops::AddAssign", "add_assign")

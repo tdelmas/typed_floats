@@ -187,6 +187,7 @@ impl OpBuilder {
         }
     }
 
+    #[allow(dead_code)] // depending on the enabled features, this function might not be used
     pub(crate) const fn skip_check_return_type_strictness(mut self) -> Self {
         self.op.skip_check_return_type_strictness = true;
         self
@@ -212,6 +213,7 @@ impl OpBuilder {
         self
     }
 
+    #[allow(dead_code)] // depending on the enabled features, this function might not be used
     pub fn params(mut self, params: proc_macro2::TokenStream) -> Self {
         self.op.params = params;
         self
@@ -222,6 +224,7 @@ impl OpBuilder {
         self
     }
 
+    #[allow(dead_code)] // depending on the enabled features, this function might not be used
     pub fn comment(mut self, comment: &'static str) -> Self {
         self.op.comment = Some(comment);
         self
@@ -362,6 +365,7 @@ impl OpRhsBuilder {
         }
     }
 
+    #[allow(dead_code)] // depending on the enabled features, this function might not be used
     pub(crate) const fn skip_check_return_type_strictness(mut self) -> Self {
         self.op.skip_check_return_type_strictness = true;
         self
