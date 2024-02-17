@@ -56,18 +56,21 @@ fn test_op_checks(
 
 fn get_test_values(float_type: &Ident) -> proc_macro2::TokenStream {
     quote! {
-        const MAX_NEGATIVE: #float_type = -core::#float_type::MIN_POSITIVE;
+        use core::#float_type::*;
+
+        const MAX_NEGATIVE: #float_type = -MIN_POSITIVE;
         const SUBNORMAL : #float_type = 1.0e-308;
         const NEG_SUBNORMAL : #float_type = -1.0e-308;
 
-        const PI : #float_type = core::#float_type::consts::PI; // 3.14...
-        const FRAC_PI_2 : #float_type = core::#float_type::consts::FRAC_PI_2; // 1.57...
-        const E : #float_type = core::#float_type::consts::E; // 2.71...
+        const PI : #float_type = consts::PI; // 3.14...
+        const FRAC_PI_2 : #float_type = consts::FRAC_PI_2; // 1.57...
+        const E : #float_type = consts::E; // 2.71...
 
-        let values = [
-            core::#float_type::NAN,
-            core::#float_type::NEG_INFINITY,
-            core::#float_type::MIN,
+
+        let values: [#float_type; 21] = [
+            NAN,
+            NEG_INFINITY,
+            MIN,
             -PI,
             -E,
             -2.0,
@@ -78,14 +81,14 @@ fn get_test_values(float_type: &Ident) -> proc_macro2::TokenStream {
             -0.0,
             0.0,
             SUBNORMAL,
-            core::#float_type::MIN_POSITIVE,
+            MIN_POSITIVE,
             1.0,
             FRAC_PI_2,
             2.0,
             E,
             PI,
-            core::#float_type::MAX,
-            core::#float_type::INFINITY,
+            MAX,
+            INFINITY,
         ];
 
         for i in 1..values.len() {
