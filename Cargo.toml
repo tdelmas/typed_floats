@@ -1,3 +1,10 @@
 [workspace]
 members = ["xtask", "typed_floats", "typed_floats_macros"]
 resolver = "2"
+
+[workspace.package]
+edition = "2021"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/tdelmas/typed_floats"
+version = "0.7.3"
+rust-version = "1.70"

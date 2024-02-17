@@ -49,13 +49,7 @@ pub fn tag(args: Vec<String>) {
         }
     }
 
-    let crate_version = get_version("./typed_floats".into());
-    let macros_version = get_version("./typed_floats_macros".into());
-
-    if crate_version != macros_version {
-        println!("The crate version and the macros version must be the same");
-        std::process::exit(1);
-    }
+    let crate_version = get_version();
 
     let (major, minor, patch) = parse_version(&crate_version);
 
@@ -79,13 +73,7 @@ pub fn tag(args: Vec<String>) {
 
     println!("Updating version in Cargo.toml files...");
 
-    update_version(&crate_version, &new_version, "./typed_floats/Cargo.toml");
-    update_version(
-        &crate_version,
-        &new_version,
-        "./typed_floats_macros/Cargo.toml",
-    );
-
+    update_version(&crate_version, &new_version, "./Cargo.toml");
     //build
     std::process::Command::new("cargo")
         .args(["build", "--release"])
@@ -141,11 +129,14 @@ fn parse_version(version: &str) -> (u8, u8, u8) {
     (major, minor, patch)
 }
 
-fn get_version(path: std::path::PathBuf) -> String {
-    let v = std::fs::read_to_string(path.join("Cargo.toml")).unwrap();
+fn get_version() -> String {
+    let v = std::fs::read_to_string("./Cargo.toml").unwrap();
     let v = v.parse::<toml::Value>().unwrap();
 
-    v["package"]["version"].as_str().unwrap().into()
+    v["workspace"]["package"]["version"]
+        .as_str()
+        .unwrap()
+        .into()
 }
 
 fn update_version(previous: &str, next: &str, path: &str) {
