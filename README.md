@@ -6,6 +6,7 @@
 [![License](https://img.shields.io/crates/l/typed_floats.svg)](https://github.com/tdelmas/typed_floats/blob/main/LICENSE)
 [![dependency status](https://deps.rs/repo/github/tdelmas/typed_floats/status.svg)](https://deps.rs/repo/github/tdelmas/typed_floats)
 [![Minimum Supported Rust Version](https://img.shields.io/badge/MSRV-1.70-blue)](https://github.com/rust-lang/rust/releases/tag/1.70.0)
+[![Miri](https://github.com/tdelmas/typed_floats/actions/workflows/miri.yml/badge.svg)](https://github.com/tdelmas/typed_floats/actions/workflows/miri.yml)
 
 This crate helps you to ensure the kind of floats you are using, without `panic!` (except if the `unsafe` function is used in an unsound way).
 
