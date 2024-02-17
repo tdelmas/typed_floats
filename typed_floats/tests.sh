@@ -6,6 +6,8 @@ set -e
 # Display executed commands
 set -x
 
+cd $(dirname $0)
+
 cd .. && cargo xtask pre-build
 
 # First check that it builds with all features combinations

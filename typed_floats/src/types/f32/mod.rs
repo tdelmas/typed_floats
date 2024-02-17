@@ -11,6 +11,7 @@ mod strictly_negative_finite;
 mod strictly_positive;
 mod strictly_positive_finite;
 
+#[cfg(test)]
 macro_rules! test_type {
     ($test:ident, $type:ty) => {
         #[test]

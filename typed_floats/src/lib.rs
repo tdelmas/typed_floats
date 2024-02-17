@@ -115,6 +115,7 @@ mod macros;
 mod traits;
 mod types;
 
+#[cfg(not(feature = "std"))]
 #[macro_use]
 extern crate alloc;
 
