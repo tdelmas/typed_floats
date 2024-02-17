@@ -16,7 +16,7 @@ macro_rules! test_type {
     ($test:ident, $type:ty) => {
         #[test]
         fn $test() {
-            let values =crate::tf32::TEST_VALUES;
+            let values =crate::tf64::TEST_VALUES;
 
             for &value in &values {
                 let v: Option<$type> = value.try_into().ok();
