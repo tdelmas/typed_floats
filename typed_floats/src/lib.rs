@@ -283,6 +283,20 @@ pub mod tf64 {
         pub const LN_10: crate::PositiveFinite<f64> =
             crate::PositiveFinite::<f64>(core::f64::consts::LN_10);
     }
+    
+    #[cfg(test)]
+    pub(crate) const TEST_VALUES: [f64; 10] = [
+        core::f64::NEG_INFINITY,
+        core::f64::MIN,
+        core::f64::MIN / 2.0,
+        -1.0,
+        -0.0,
+        0.0,
+        1.0,
+        core::f64::MAX / 2.0,
+        core::f64::MAX,
+        core::f64::INFINITY,
+    ];
 }
 
 /// This module contains constants from [`core::f32`], casted to the corresponding type
@@ -437,4 +451,18 @@ pub mod tf32 {
         pub const LN_10: crate::PositiveFinite<f32> =
             crate::PositiveFinite::<f32>(core::f32::consts::LN_10);
     }
+
+    #[cfg(test)]
+    pub(crate) const TEST_VALUES: [f32; 10] = [
+        core::f32::NEG_INFINITY,
+        core::f32::MIN,
+        core::f32::MIN / 2.0,
+        -1.0,
+        -0.0,
+        0.0,
+        1.0,
+        core::f32::MAX / 2.0,
+        core::f32::MAX,
+        core::f32::INFINITY,
+    ];
 }

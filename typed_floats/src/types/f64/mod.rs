@@ -16,18 +16,7 @@ macro_rules! test_type {
     ($test:ident, $type:ty) => {
         #[test]
         fn $test() {
-            let values = [
-                f64::NEG_INFINITY,
-                f64::MIN,
-                f64::MIN / 2.0,
-                -1.0,
-                -0.0,
-                0.0,
-                1.0,
-                f64::MAX / 2.0,
-                f64::MAX,
-                f64::INFINITY,
-            ];
+            let values =crate::tf32::TEST_VALUES;
 
             for &value in &values {
                 let v: Option<$type> = value.try_into().ok();
