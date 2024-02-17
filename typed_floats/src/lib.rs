@@ -285,18 +285,7 @@ pub mod tf64 {
     }
     
     #[cfg(test)]
-    pub(crate) const TEST_VALUES: [f64; 10] = [
-        core::f64::NEG_INFINITY,
-        core::f64::MIN,
-        core::f64::MIN / 2.0,
-        -1.0,
-        -0.0,
-        0.0,
-        1.0,
-        core::f64::MAX / 2.0,
-        core::f64::MAX,
-        core::f64::INFINITY,
-    ];
+    pub(crate) const TEST_VALUES: [f64; 21] = typed_floats_macros::test_values!(f64);
 }
 
 /// This module contains constants from [`core::f32`], casted to the corresponding type
@@ -453,16 +442,5 @@ pub mod tf32 {
     }
 
     #[cfg(test)]
-    pub(crate) const TEST_VALUES: [f32; 10] = [
-        core::f32::NEG_INFINITY,
-        core::f32::MIN,
-        core::f32::MIN / 2.0,
-        -1.0,
-        -0.0,
-        0.0,
-        1.0,
-        core::f32::MAX / 2.0,
-        core::f32::MAX,
-        core::f32::INFINITY,
-    ];
+    pub(crate) const TEST_VALUES: [f32; 21] = typed_floats_macros::test_values!(f32);
 }
