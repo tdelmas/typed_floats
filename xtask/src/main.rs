@@ -6,7 +6,7 @@ fn main() {
     let args = std::env::args().skip(2).collect::<Vec<_>>();
 
     match command.as_deref() {
-        Some("pre_build") => pre_build::create_creadmes(),
+        Some("pre-build") => pre_build::create_creadmes(),
         Some("tag") => tag::tag(args),
         Some(command) => panic!("Invalid command: {command}"),
         None => panic!("No command provided"),
