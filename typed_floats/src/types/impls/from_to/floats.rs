@@ -44,17 +44,7 @@ macro_rules! impl_from {
 
         #[test]
         fn $test() {
-            let values_f32 = [
-                f32::NEG_INFINITY,
-                f32::MIN,
-                f32::MIN / 2.0,
-                -1.0,
-                -0.0,
-                0.0,
-                1.0,
-                f32::MAX / 2.0,
-                f32::MAX,
-            ];
+            let values_f32 = crate::tf32::TEST_VALUES;
 
             for &value in &values_f32 {
                 if let Ok(t) = $type::<f32>::new(value) {
@@ -63,17 +53,7 @@ macro_rules! impl_from {
                 }
             }
 
-            let values_f64 = [
-                f64::NEG_INFINITY,
-                f64::MIN,
-                f64::MIN / 2.0,
-                -1.0,
-                -0.0,
-                0.0,
-                1.0,
-                f64::MAX / 2.0,
-                f64::MAX,
-            ];
+            let values_f64 = crate::tf64::TEST_VALUES;
 
             for &value in &values_f64 {
                 if let Ok(t) = $type::<f64>::new(value) {

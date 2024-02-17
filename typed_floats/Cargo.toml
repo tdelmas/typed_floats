@@ -1,7 +1,11 @@
 [package]
-categories = ["mathematics", "data-structures"]
+name = "typed_floats"
 description = "Types for handling floats with type checking at compile time."
-edition = "2021"
+categories = ["mathematics", "data-structures"]
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
 include = [
   "Cargo.toml",
   "src/*.rs",
@@ -9,18 +13,18 @@ include = [
   "*.md",
 ]
 keywords = ["floats", "non-zero", "nan", "no_std"]
-license = "MIT OR Apache-2.0"
-name = "typed_floats"
 readme = "./README.md"
-repository = "https://github.com/tdelmas/typed_floats"
-version = "0.7.3"
-rust-version = "1.70"
+rust-version.workspace = true
 
 [features]
 default = ["std", "compiler_hints"]
+# follows each debug_assert! with core::hint::unreachable_unchecked
 compiler_hints = []
+# Add the `serde` dependency to enable serialization and deserialization of the types.
 serde = ["dep:serde"]
+# Allow to switch between `std` and `no_std` environments.
 std = ["typed_floats_macros/std"]
+# Add the the `num-traits` dependency to have access to most math functions in `no_std` environments.
 libm = ["dep:num-traits", "typed_floats_macros/libm"]
 
 [dependencies]

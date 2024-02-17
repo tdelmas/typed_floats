@@ -1,16 +1,18 @@
-use clap::Parser;
+pub fn tag(args: Vec<String>) {
+    let mut version = None;
+    let mut force = false;
+    let mut skip_tests = false;
 
-#[derive(Parser, Debug)]
-pub struct TagArgs {
-    #[clap(long, help = "The new version")]
-    version: Option<String>,
-    #[clap(long, help = "Force the tag")]
-    force: bool,
-    #[clap(long, help = "Skip tests")]
-    skip_tests: bool,
-}
+    let mut args = args.into_iter();
+    while let Some(arg) = args.next() {
+        match arg.as_str() {
+            "--skip-tests" => skip_tests = true,
+            "--force" => force = true,
+            "--version" => version = args.next(),
+            _ => panic!("Invalid argument"),
+        }
+    }
 
-pub fn tag(args: &TagArgs) {
     std::process::Command::new("cargo")
         .args(["fmt"])
         .output()
@@ -20,7 +22,7 @@ pub fn tag(args: &TagArgs) {
         .unwrap()
         .join(std::path::Path::new("typed_floats"));
 
-    if !args.skip_tests {
+    if !skip_tests {
         println!("Running tests...");
         std::process::Command::new("./tests.sh")
             .current_dir(dir)
@@ -41,30 +43,23 @@ pub fn tag(args: &TagArgs) {
 
     if !is_clean {
         println!("The git repository is not clean");
-        if !args.force {
+        if !force {
             println!("Use --force to force the tag");
             std::process::exit(1);
         }
     }
 
-    let crate_version = get_version("./typed_floats".into());
-    let macros_version = get_version("./typed_floats_macros".into());
-
-    if crate_version != macros_version {
-        println!("The crate version and the macros version must be the same");
-        std::process::exit(1);
-    }
+    let crate_version = get_version();
 
     let (major, minor, patch) = parse_version(&crate_version);
 
-    let (major, minor, patch) = if args.version.is_some() {
-        let version = args.version.clone().unwrap();
+    let (major, minor, patch) = if let Some(version) = version {
         let version = parse_version(&version);
 
         if version.0 > major || version.1 > minor || version.2 > patch {
             version
         } else {
-            println!("The version must be greater than the current version");
+            println!("The version must be greater than the current version. Provided: {version:?}, Current: {crate_version:?}");
             std::process::exit(1);
         }
     } else {
@@ -78,13 +73,7 @@ pub fn tag(args: &TagArgs) {
 
     println!("Updating version in Cargo.toml files...");
 
-    update_version(&crate_version, &new_version, "./typed_floats/Cargo.toml");
-    update_version(
-        &crate_version,
-        &new_version,
-        "./typed_floats_macros/Cargo.toml",
-    );
-
+    update_version(&crate_version, &new_version, "./Cargo.toml");
     //build
     std::process::Command::new("cargo")
         .args(["build", "--release"])
@@ -140,11 +129,14 @@ fn parse_version(version: &str) -> (u8, u8, u8) {
     (major, minor, patch)
 }
 
-fn get_version(path: std::path::PathBuf) -> String {
-    let v = std::fs::read_to_string(path.join("Cargo.toml")).unwrap();
+fn get_version() -> String {
+    let v = std::fs::read_to_string("./Cargo.toml").unwrap();
     let v = v.parse::<toml::Value>().unwrap();
 
-    v["package"]["version"].as_str().unwrap().into()
+    v["workspace"]["package"]["version"]
+        .as_str()
+        .unwrap()
+        .into()
 }
 
 fn update_version(previous: &str, next: &str, path: &str) {

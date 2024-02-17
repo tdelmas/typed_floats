@@ -6,6 +6,8 @@ set -e
 # Display executed commands
 set -x
 
+cd $(dirname $0)
+
 # First check that it builds with all features combinations
 cargo build
 cargo build --no-default-features

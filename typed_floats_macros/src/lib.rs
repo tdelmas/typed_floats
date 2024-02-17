@@ -274,3 +274,10 @@ fn do_generate_floats(floats: &[FloatDefinition]) -> proc_macro2::TokenStream {
 
     output
 }
+
+#[proc_macro]
+pub fn test_values(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
+    let ident = syn::parse_macro_input!(input as syn::Ident);
+
+    gen_tests::test_values(&ident).into()
+}

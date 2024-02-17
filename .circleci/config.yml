@@ -1,26 +1,63 @@
+version: 2.1
 
-jobs:
-  build_and_test:
+executors:
+  docker:
     docker:
       - image: cimg/rust:1.70.0
-    steps:
-      - checkout
-      - run: cargo xtask pre-build
-      - run: cd typed_floats && ./tests-ci.sh
-
-  build_and_test_arm:
+  arm:
     machine:
       image: ubuntu-2004:current 
     resource_class: arm.medium
+    environment:
+      INSTALL_RUSTUP: "1"
+
+jobs:
+  build_and_test:
+    parameters:
+      executor:
+        type: executor
+      version:
+        type: string
+      release:
+        type: string
+      features:
+        type: string
+    executor: << parameters.executor >>
+    environment:
+      MY_BUILD_FEATURES: << parameters.features >>
+      MY_BUILD_RELEASE: << parameters.release >>
+      RUSTUP_VERSION: << parameters.version >>
     steps:
       - checkout
-      - run: curl https://sh.rustup.rs -sSf | sh -s -- -y
+      - run: if [ -n "$INSTALL_RUSTUP" ]; then curl https://sh.rustup.rs -sSf | sh -s -- -y; fi
+      - run: rustup default $RUSTUP_VERSION
       - run: cargo xtask pre-build
-      - run: cd typed_floats && ./tests-ci.sh
+      - run: cd typed_floats && cargo build --no-default-features --features "$MY_BUILD_FEATURES" $MY_BUILD_RELEASE
+      - run: cd typed_floats && cargo test --no-default-features --features "$MY_BUILD_FEATURES" $MY_BUILD_RELEASE
 
 workflows:
-  version: 2
   build_and_test:
     jobs:
-      - build_and_test
-      - build_and_test_arm
+      - build_and_test:
+          matrix:
+            parameters:
+              executor: [docker, arm]
+              version: [
+                "beta",
+                "stable",
+                "1.70",
+              ]
+              release: [
+                "",
+                "--release",
+              ]
+              features: [
+                  "",
+                  "std",
+                  "serde",
+                  "libm",
+                  "std,serde",
+                  "std,libm",
+                  "serde,libm",
+                  "std,serde,libm",
+              ]
