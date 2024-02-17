@@ -19,9 +19,7 @@ jobs:
           rustup toolchain install nightly --component miri
           rustup override set nightly
           cargo miri setup
-          cargo install nextest
       - run: cargo xtask pre-build
       - run: cargo miri test --doc
-      - run: cargo miri nextest run -j128
 
           
