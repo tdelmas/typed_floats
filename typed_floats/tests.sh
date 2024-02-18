@@ -19,6 +19,7 @@ cargo build --no-default-features --features serde,std
 cargo build --no-default-features --features serde,libm
 cargo build --no-default-features --features std,libm
 cargo build --no-default-features --features serde,std,libm
+cargo build --all-features
 
 cargo test --no-default-features
 cargo test --no-default-features --features std
@@ -28,6 +29,7 @@ cargo test --no-default-features --features serde,std
 cargo test --no-default-features --features serde,libm
 cargo test --no-default-features --features std,libm
 cargo test --no-default-features --features serde,std,libm
+cargo test --all-features
 
 cargo test --release --no-default-features
 cargo test --release --no-default-features --features std
@@ -37,3 +39,4 @@ cargo test --release --no-default-features --features serde,std
 cargo test --release --no-default-features --features serde,libm
 cargo test --release --no-default-features --features std,libm
 cargo test --release --no-default-features --features serde,std,libm
+cargo test --release --all-features

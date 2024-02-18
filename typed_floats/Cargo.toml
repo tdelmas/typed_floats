@@ -48,17 +48,17 @@ features = ["libm"]
 optional = true
 
 [dependencies.napi]
-version = "2.13.3"
+version = "2.13"
 default-features = false
 #features = ["napi6"]
 optional = true
 
 [dependencies.napi-derive]
-version = "2.13.0"
+version = "2.13"
 optional = true
 
 [dependencies.pyo3]
-version = "0.20.0"
+version = "0.20"
 #features = ["serde"]
 optional = true
 
