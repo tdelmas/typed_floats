@@ -51,8 +51,8 @@ macro_rules! impl_ord {
         #[cfg(test)]
         mod $test {
             extern crate std;
-            use std::vec::Vec; // Required for the tests to compile in no_std mode
             use crate::*;
+            use std::vec::Vec; // Required for the tests to compile in no_std mode
 
             fn is_sorted<T: Ord>(slice: &[T]) -> bool {
                 slice.windows(2).all(|w| w[0] <= w[1])
@@ -72,7 +72,8 @@ macro_rules! impl_ord {
 
                 assert!(!is_sorted(&reversed));
 
-                let sorted = values.iter().collect::<Vec<_>>();
+                let mut sorted = reversed.clone();
+                sorted.sort();
 
                 assert!(is_sorted(&sorted));
             }
@@ -91,7 +92,8 @@ macro_rules! impl_ord {
 
                 assert!(!is_sorted(&reversed));
 
-                let sorted = values.iter().collect::<Vec<_>>();
+                let mut sorted = reversed.clone();
+                sorted.sort();
 
                 assert!(is_sorted(&sorted));
             }
