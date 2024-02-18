@@ -50,6 +50,8 @@ macro_rules! impl_ord {
 
         #[cfg(test)]
         mod $test {
+            extern crate std;
+            use std::vec::Vec; // Required for the tests to compile in no_std mode
             use crate::*;
 
             fn is_sorted<T: Ord>(slice: &[T]) -> bool {
