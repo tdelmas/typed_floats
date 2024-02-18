@@ -21,7 +21,39 @@ env:
   CARGO_INCREMENTAL: 0 
 
 jobs:
-  build:
+  cargo-build:
+    runs-on: ubuntu-latest
+    name: Tests on rust ${{ matrix.version }} features "${{ matrix.features }}"
+    strategy:
+      matrix:
+        version: [
+          "beta",
+          "stable",
+          "1.70",
+        ]
+        features: [
+            "",
+            "std",
+            "serde",
+            "libm",
+            "std,serde",
+            "std,libm",
+            "serde,libm",
+            "std,serde,libm",
+        ]
+
+    steps:
+      - uses: actions/checkout@v3
+      - run: rustup default ${{ matrix.version }}
+      - run: cargo xtask pre-build
+      # Check that it builds with all features combinations
+      - run: cd typed_floats && cargo build --no-default-features --features "${{ matrix.features }}"
+      # Check that it builds in release mode with all features combinations
+      - run: cd typed_floats && cargo build --release --no-default-features --features "${{ matrix.features }}"
+      # Check that it builds test in release mode with all features combinations
+      - run: cd typed_floats && cargo test --no-run --release --no-default-features --features "${{ matrix.features }}"
+
+  cargo-test:
     runs-on: ubuntu-latest
     name: Tests on rust toolchain ${{ matrix.version }}
     strategy:
@@ -32,12 +64,25 @@ jobs:
           "1.70",
         ]
 
+        cargo_options: [
+          # Default tests (with std feature only)
+          "",
+          ## Test without any feature (no std)
+          "--no-default-features",
+          "--test 'serde' --no-default-features --features serde",
+          "--no-default-features --features libm",
+          # Test serde (with std)
+          "test --features serde",
+          ## Run tests in release mode with the two main features: serde and std
+          "--release --no-default-features --features serde,std",
+        ]
+
     steps:
       - uses: actions/checkout@v3
       - run: rustup default ${{ matrix.version }}
       - run: cargo --version
       - run: cargo xtask pre-build
-      - run: cd typed_floats && ./tests-ci.sh
+      - run: cd typed_floats && cargo test ${{ matrix.cargo_options }}
         
   clippy:
     runs-on: ubuntu-latest
