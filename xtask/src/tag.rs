@@ -74,6 +74,7 @@ pub fn tag(args: Vec<String>) {
     println!("Updating version in Cargo.toml files...");
 
     update_version(&crate_version, &new_version, "./Cargo.toml");
+    update_version(&crate_version, &new_version, "./typed_floats/Cargo.toml");
     //build
     std::process::Command::new("cargo")
         .args(["build", "--release"])
@@ -85,6 +86,7 @@ pub fn tag(args: Vec<String>) {
     std::process::Command::new("git")
         .args([
             "add",
+            "./Cargo.toml",
             "./typed_floats/Cargo.toml",
             "./typed_floats_macros/Cargo.toml",
             "./Cargo.lock",

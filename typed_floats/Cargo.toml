@@ -30,7 +30,7 @@ libm = ["dep:num-traits", "typed_floats_macros/libm"]
 [dependencies]
 
 [dependencies.typed_floats_macros]
-version = "=0.7.3"
+version = "=0.7.4"
 path = "../typed_floats_macros"
 
 [dependencies.serde]
