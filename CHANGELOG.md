@@ -11,6 +11,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - First version to commit to semantic versioning.
 
+## 0.6.1 - 2024-02-18
+
+- `Default` implementation for types accepting `0.0` or `-0.0`
+- Fix `Ord` implementation (Stack overflow) and add tests
+- New macro `assert_float_eq` that differentiate `0.0` from `-0.0`.
+- Improved documentation and tests
+
 ## 0.6.0 - 2023-11-15
 
 - `Hash` implementation for all 12 types.
