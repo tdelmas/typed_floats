@@ -11,6 +11,7 @@ macro_rules! impl_ord {
         impl Ord for $type<f32> {
             #[inline]
             fn cmp(&self, other: &Self) -> core::cmp::Ordering {
+                #[allow(clippy::float_cmp)]
                 if self.get() < other.get() {
                     core::cmp::Ordering::Less
                 } else if self.get() == other.get() {
@@ -24,6 +25,7 @@ macro_rules! impl_ord {
         impl Ord for $type<f64> {
             #[inline]
             fn cmp(&self, other: &Self) -> core::cmp::Ordering {
+                #[allow(clippy::float_cmp)]
                 if self.get() < other.get() {
                     core::cmp::Ordering::Less
                 } else if self.get() == other.get() {
