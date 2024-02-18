@@ -46,16 +46,18 @@ macro_rules! test_type {
 
 #[cfg(test)]
 mod tests {
-    test_type!(negative, crate::Negative<f32>);
-    test_type!(negative_finite, crate::NegativeFinite<f32>);
-    test_type!(non_nan, crate::NonNaN<f32>);
-    test_type!(non_nan_finite, crate::NonNaNFinite<f32>);
-    test_type!(non_zero_non_nan, crate::NonZeroNonNaN<f32>);
-    test_type!(non_zero_non_nan_finite, crate::NonZeroNonNaNFinite<f32>);
-    test_type!(positive, crate::Positive<f32>);
-    test_type!(positive_finite, crate::PositiveFinite<f32>);
-    test_type!(strictly_negative, crate::StrictlyNegative<f32>);
-    test_type!(strictly_negative_finite, crate::StrictlyNegativeFinite<f32>);
-    test_type!(strictly_positive, crate::StrictlyPositive<f32>);
-    test_type!(strictly_positive_finite, crate::StrictlyPositiveFinite<f32>);
+    use crate::tf32::*;
+
+    test_type!(negative, Negative);
+    test_type!(negative_finite, NegativeFinite);
+    test_type!(non_nan, NonNaN);
+    test_type!(non_nan_finite, NonNaNFinite);
+    test_type!(non_zero_non_nan, NonZeroNonNaN);
+    test_type!(non_zero_non_nan_finite, NonZeroNonNaNFinite);
+    test_type!(positive, Positive);
+    test_type!(positive_finite, PositiveFinite);
+    test_type!(strictly_negative, StrictlyNegative);
+    test_type!(strictly_negative_finite, StrictlyNegativeFinite);
+    test_type!(strictly_positive, StrictlyPositive);
+    test_type!(strictly_positive_finite, StrictlyPositiveFinite);
 }
