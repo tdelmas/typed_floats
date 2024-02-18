@@ -89,13 +89,21 @@ To facilitate comparisons, the methods `is_positive_zero` and `is_negative_zero`
 
 # Traits implemented
 
-As none of the types of this crate can be `NaN`, the following traits are implemented on all 12 types:
+## On all 12 types
+
+As none of the types of this crate can be `NaN`, the following traits are implemented on all types:
 
 - [`core::cmp::Ord`]
 - [`core::cmp::Eq`]
 - [`core::hash::Hash`] 
 
-Note: for [`core::hash::Hash`] on [`NonNaN`] and [`NonNaNFinite`] there is a (small) overhead because they both accept `0.0` and `-0.0`, which are equal so they mush `core::hash::Hash` to the same value.
+Note: for [`core::hash::Hash`] on [`NonNaN`] and [`NonNaNFinite`] there is a (small) overhead because they both accept `0.0` and `-0.0`, which are equal so they must `core::hash::Hash` to the same value.
+
+## Only on some types
+
+- [`core::default::Default`]:
+  - with the value `0.0` for [`NonNaN`], [`NonNaNFinite`], [`Positive`], and [`PositiveFinite`].
+  - with the value `-0.0` for  [`Negative`], and [`NegativeFinite`].
 
 # Methods implemented
 
@@ -243,6 +251,7 @@ Is on [docs.rs](https://docs.rs/typed_floats).
 [`core::f64::consts`]: https://doc.rust-lang.org/core/f64/consts/index.html
 [`core::cmp::Ord`]: https://doc.rust-lang.org/core/cmp/trait.Ord.html "`Ord`"
 [`core::cmp::Eq`]: https://doc.rust-lang.org/core/cmp/trait.Eq.html "`Eq`"
+[`core::default::Default`]: https://doc.rust-lang.org/core/core/default/trait.Default.html "`Default`"
 [`core::hash::Hash`]: https://doc.rust-lang.org/core/hash/trait.Hash.html "`Hash`"
 [`core::convert::From`]: https://doc.rust-lang.org/core/convert/trait.From.html "`From`"
 [`core::convert::TryFrom`]: https://doc.rust-lang.org/core/convert/trait.TryFrom.html "`TryFrom`"
@@ -277,4 +286,3 @@ Is on [docs.rs](https://docs.rs/typed_floats).
 [`Copysign`]: https://docs.rs/typed_floats/latest/typed_floats/trait.Copysign.html
 [`DivEuclid`]: https://docs.rs/typed_floats/latest/typed_floats/trait.DivEuclid.html
 [`Atan2`]: https://docs.rs/typed_floats/latest/typed_floats/trait.Atan2.html
-
