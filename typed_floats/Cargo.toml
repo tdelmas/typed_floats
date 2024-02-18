@@ -26,6 +26,10 @@ serde = ["dep:serde"]
 std = ["typed_floats_macros/std"]
 # Add the the `num-traits` dependency to have access to most math functions in `no_std` environments.
 libm = ["dep:num-traits", "typed_floats_macros/libm"]
+# Will `panic!` in release mode instead of risking undefined behavior.
+# This will override the `compiler_hints` feature, and adds a little overhead to `new_unchecked`.
+# This feature can be enabled by any parent crate to ensure no undefined behavior.
+ensure_no_undefined_behavior = []
 
 [dependencies]
 
