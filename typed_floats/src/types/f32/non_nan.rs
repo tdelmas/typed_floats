@@ -46,7 +46,13 @@ impl NonNaN<f32> {
         if Self::new(value).is_err() {
             debug_assert!(false, "{value} is not a valid NonNaN<f32>");
 
-            #[cfg(feature = "compiler_hints")]
+            #[cfg(feature = "ensure_no_undefined_behavior")]
+            panic!("{value} is not a valid NonNaN<f32>");
+
+            #[cfg(all(
+                feature = "compiler_hints",
+                not(feature = "ensure_no_undefined_behavior")
+            ))]
             unsafe {
                 core::hint::unreachable_unchecked()
             }

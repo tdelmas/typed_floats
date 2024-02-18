@@ -50,7 +50,13 @@ impl Negative<f64> {
         if Self::new(value).is_err() || value > 0.0 {
             debug_assert!(false, "{value} is not a valid Negative<f64>");
 
-            #[cfg(feature = "compiler_hints")]
+            #[cfg(feature = "ensure_no_undefined_behavior")]
+            panic!("{value} is not a valid Negative<f64>");
+
+            #[cfg(all(
+                feature = "compiler_hints",
+                not(feature = "ensure_no_undefined_behavior")
+            ))]
             unsafe {
                 core::hint::unreachable_unchecked()
             }
