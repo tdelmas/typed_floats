@@ -21,7 +21,39 @@ env:
   CARGO_INCREMENTAL: 0 
 
 jobs:
-  build:
+  test-matrix:
+    runs-on: ubuntu-latest
+    name: Tests on rust ${{ matrix.version }} features "${{ matrix.features }}"
+    strategy:
+      matrix:
+        version: [
+          "beta",
+          "stable",
+          "1.70",
+        ]
+        features: [
+            "",
+            "std",
+            "serde",
+            "libm",
+            "std,serde",
+            "std,libm",
+            "serde,libm",
+            "std,serde,libm",
+        ]
+
+    steps:
+      - uses: actions/checkout@v3
+      - run: rustup default ${{ matrix.version }}
+      - run: cargo xtask pre-build
+      # Check that it builds with all features combinations
+      - run: cd typed_floats && cargo build --no-default-features --features "${{ matrix.features }}"
+      # Check that it builds in release mode with all features combinations
+      - run: cd typed_floats && cargo build --release --no-default-features --features "${{ matrix.features }}"
+      # Check that it builds test in release mode with all features combinations
+      - run: cd typed_floats && cargo test --no-run --release --no-default-features --features "${{ matrix.features }}"
+
+  test-sh:
     runs-on: ubuntu-latest
     name: Tests on rust toolchain ${{ matrix.version }}
     strategy:
