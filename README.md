@@ -184,11 +184,11 @@ To run all tests:
 
 ```bash
 git clone https://github.com/tdelmas/typed_floats
-cd typed_floats
 
 # generate the published documentation, including some tests
 cargo xtask pre-build
 
+cd typed_floats
 cargo test --all
 ```
 
