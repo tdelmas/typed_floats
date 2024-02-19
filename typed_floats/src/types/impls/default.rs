@@ -1,4 +1,4 @@
-#![allow(clippy::comparison_chain)]
+#![allow(clippy::comparison_chain, clippy::float_cmp)]
 
 use crate::{Negative, NegativeFinite, NonNaN, NonNaNFinite, Positive, PositiveFinite};
 
@@ -22,14 +22,12 @@ macro_rules! impl_default {
 
         #[cfg(test)]
         mod $test {
-            use crate::{Negative, NegativeFinite, NonNaN, NonNaNFinite, Positive, PositiveFinite};
-
             #[derive(Default)]
             struct SomeOptions {
                 foo: f32,
                 bar: f64,
-                baz: $type<f32>,
-                qux: $type<f64>,
+                baz: crate::$type<f32>,
+                qux: crate::$type<f64>,
             }
 
             #[test]

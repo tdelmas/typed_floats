@@ -1,3 +1,5 @@
+#![allow(clippy::float_cmp)]
+
 /// This macros assert that two values are close to each other.
 ///
 /// # Examples
