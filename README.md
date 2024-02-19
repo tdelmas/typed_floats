@@ -15,7 +15,15 @@ zero overhead: everything is checked at compile time.
 
 `NaN` is rejected by all types.
 
-The 12 types provided by this crate are:
+# TL;DR
+
+This crate is for you if:
+
+- If you want to know at compile time if a float can be negative, positive, zero, finite and ensure it is not `NaN`, without `panic!`.
+
+- If you need [`core::cmp::Ord`], [`core::cmp::Eq`] or [`core::hash::Hash`] on floats.
+
+# The 12 types provided by this crate
 
 - [`NonNaN`], [`NonNaNFinite`], [`NonZeroNonNaN`], [`NonZeroNonNaNFinite`]
 
@@ -143,8 +151,11 @@ Any other overhead is considered a bug and should be reported.
 # Features
 
 - `std`: enabled by default, gives all `f32` and `f64` methods.
-- `serde`: implements `Serialize` and `Deserialize` for all `NonNaN` types.
-- `libm`: use the `Float` trait from `num-traits` and `libm` to implement the missing methods when the `std` feature is disabled. Side effect: `f32` and `f64` will implement `Float` from `num-traits`. When both `std` and `libm` features are enabled, the `std` implementation is used.
+- `serde`: implements `Serialize` and `Deserialize` for all 12 types.
+- `libm`: use the `Float` trait from `num-traits` and `libm` to implement the missing methods when the `std` feature is disabled. When both `std` and `libm` features are enabled, the `std` implementation is used.
+- `compiler_hints`: enabled by default, will add `core::hint::unreachable_unchecked` after all `debug_assert`. 
+- `ensure_no_undefined_behavior`:  Will `panic!` in release mode instead of risking undefined behavior. This will override the `compiler_hints` feature, and adds a little overhead to `new_unchecked`. This feature can be enabled by any parent crate to ensure no undefined behavior.
+
 
 ## How it works
 
