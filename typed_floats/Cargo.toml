@@ -30,12 +30,19 @@ libm = ["dep:num-traits", "typed_floats_macros/libm"]
 # This will override the `compiler_hints` feature, and adds a little overhead to `new_unchecked`.
 # This feature can be enabled by any parent crate to ensure no undefined behavior.
 ensure_no_undefined_behavior = []
+into-h3o = ["dep:h3o"]
 
 [dependencies]
 
 [dependencies.typed_floats_macros]
 version = "=0.7.4"
 path = "../typed_floats_macros"
+
+[dependencies.h3o]
+version = "0.5"
+default-features = false
+features = []
+optional = true
 
 [dependencies.serde]
 version = "1.0"

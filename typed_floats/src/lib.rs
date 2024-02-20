@@ -123,6 +123,10 @@ mod types;
 #[cfg(feature = "serde")]
 mod serde;
 
+#[cfg(feature = "into-h3o")]
+/// Conversion into the `h3o` crate
+pub mod h3o;
+
 pub use traits::*;
 pub use types::*;
 

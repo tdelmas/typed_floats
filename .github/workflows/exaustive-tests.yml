@@ -30,6 +30,7 @@ jobs:
             "std",
             "serde",
             "libm",
+            "into-h3o",
             "std,serde",
             "std,libm",
             "serde,libm",
