@@ -130,29 +130,10 @@ typed_floats_macros::generate_docs!(
     pub trait TypedFloat {}
 );
 
-/// Macro to create a constant with a positive value.
-/// The resulting constant will be of type `StrictlyPositiveFinite`.
-/// Will panic at compile time if the value is not a valid.
-macro_rules! positive_const {
-    ($type:ident, $x:expr) => {
-        if $x != $x {
-            panic!("NaN is not a valid StrictlyPositiveFinite")
-        } else if $x == core::$type::INFINITY {
-            panic!("Infinity is not a valid StrictlyPositiveFinite")
-        } else if $x == 0.0 {
-            panic!("Zero is not a valid StrictlyPositiveFinite")
-        } else if $x < 0.0 {
-            panic!("Negative value is not a valid StrictlyPositiveFinite")
-        } else {
-            crate::StrictlyPositiveFinite::<$type>($x)
-        }
-    };
-}
-
 macro_rules! generate_const {
     ($name:ident, $type:ident, $x:expr, $doc:expr) => {
         #[doc = $doc]
-        pub const $name: $crate::StrictlyPositiveFinite<$type> = positive_const!($type, $x);
+        pub const $name: $crate::StrictlyPositiveFinite<$type> = $crate::positive_const!($type, $x);
     };
 }
 

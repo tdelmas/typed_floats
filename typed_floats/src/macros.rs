@@ -179,3 +179,63 @@ macro_rules! assert_float_eq {
         }
     }};
 }
+
+/// Macro to create a constant with a positive value.
+/// The resulting constant will be of type `StrictlyPositiveFinite`.
+/// Will panic at compile time if the value is not a valid.
+///
+/// # Examples
+///
+/// ```
+/// # use typed_floats::*;
+/// const X: StrictlyPositiveFinite = positive_const!(1.0); // f64
+/// const Y: StrictlyPositiveFinite<f64> = positive_const!(f64, 2.0);
+/// const Z: StrictlyPositiveFinite<f32> = positive_const!(f32, 3.0);
+/// ```
+///
+/// Thoses examples will panic at compile time:
+///
+/// ```ignore
+/// # use typed_floats::*;
+/// const X: StrictlyPositiveFinite = positive_const!(0.0);
+/// ```
+///
+/// ```ignore
+/// # use typed_floats::*;
+/// const X: StrictlyPositiveFinite = positive_const!(1.0/0.0);
+/// ```
+///
+/// ```ignore
+/// # use typed_floats::*;
+/// const X: StrictlyPositiveFinite = positive_const!(-1.0/0.0);
+/// ```
+///
+/// ```ignore
+/// # use typed_floats::*;
+/// const X: StrictlyPositiveFinite = positive_const!(0.0/0.0);
+/// ```
+///
+#[macro_export]
+macro_rules! positive_const {
+    ($type:ident, $x:expr) => {{
+        const TMP: $type = $x;
+
+        // FIXME: Is that sound? https://github.com/rust-lang/rust/issues/57241
+
+        if TMP != TMP {
+            panic!("NaN is not a valid StrictlyPositiveFinite")
+        } else if TMP == core::$type::INFINITY {
+            panic!("Infinity is not a valid StrictlyPositiveFinite")
+        } else if TMP == 0.0 {
+            panic!("Zero is not a valid StrictlyPositiveFinite")
+        } else if TMP < 0.0 {
+            panic!("Negative value is not a valid StrictlyPositiveFinite")
+        } else {
+            // Safe because the value was just checked
+            unsafe { $crate::StrictlyPositiveFinite::<$type>::internal_only_new_unchecked(TMP) }
+        }
+    }};
+    ($x:expr) => {{
+        positive_const!(f64, $x)
+    }};
+}
