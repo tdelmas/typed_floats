@@ -130,13 +130,6 @@ typed_floats_macros::generate_docs!(
     pub trait TypedFloat {}
 );
 
-macro_rules! generate_const {
-    ($name:ident, $type:ident, $x:expr, $doc:expr) => {
-        #[doc = $doc]
-        pub const $name: $crate::StrictlyPositiveFinite<$type> = $crate::positive_const!($type, $x);
-    };
-}
-
 /// This module contains constants from [`core::f64`], casted to the corresponding type
 pub mod tf64 {
     /// Equivalent to `NonNaN<f64>`
@@ -233,55 +226,139 @@ pub mod tf64 {
 
     /// This module contains constants from [`core::f64::consts`], casted to the corresponding type
     pub mod consts {
-        generate_const!(PI, f64, core::f64::consts::PI, "Archimedes' constant (π)");
-        generate_const!(
+        crate::generate_const!(
+            PI,
+            StrictlyPositiveFinite,
+            f64,
+            core::f64::consts::PI,
+            "Archimedes' constant (π)"
+        );
+        crate::generate_const!(
             TAU,
+            StrictlyPositiveFinite,
             f64,
             core::f64::consts::TAU,
             "The full circle constant (τ). Equal to 2π."
         );
-        generate_const!(FRAC_PI_2, f64, core::f64::consts::FRAC_PI_2, "π/2");
-        generate_const!(FRAC_PI_3, f64, core::f64::consts::FRAC_PI_3, "π/3");
-        generate_const!(FRAC_PI_4, f64, core::f64::consts::FRAC_PI_4, "π/4");
-        generate_const!(FRAC_PI_6, f64, core::f64::consts::FRAC_PI_6, "π/6");
-        generate_const!(FRAC_PI_8, f64, core::f64::consts::FRAC_PI_8, "π/8");
-        generate_const!(FRAC_1_PI, f64, core::f64::consts::FRAC_1_PI, "1/π");
-        generate_const!(FRAC_2_PI, f64, core::f64::consts::FRAC_2_PI, "2/π");
-        generate_const!(
+        crate::generate_const!(
+            FRAC_PI_2,
+            StrictlyPositiveFinite,
+            f64,
+            core::f64::consts::FRAC_PI_2,
+            "π/2"
+        );
+        crate::generate_const!(
+            FRAC_PI_3,
+            StrictlyPositiveFinite,
+            f64,
+            core::f64::consts::FRAC_PI_3,
+            "π/3"
+        );
+        crate::generate_const!(
+            FRAC_PI_4,
+            StrictlyPositiveFinite,
+            f64,
+            core::f64::consts::FRAC_PI_4,
+            "π/4"
+        );
+        crate::generate_const!(
+            FRAC_PI_6,
+            StrictlyPositiveFinite,
+            f64,
+            core::f64::consts::FRAC_PI_6,
+            "π/6"
+        );
+        crate::generate_const!(
+            FRAC_PI_8,
+            StrictlyPositiveFinite,
+            f64,
+            core::f64::consts::FRAC_PI_8,
+            "π/8"
+        );
+        crate::generate_const!(
+            FRAC_1_PI,
+            StrictlyPositiveFinite,
+            f64,
+            core::f64::consts::FRAC_1_PI,
+            "1/π"
+        );
+        crate::generate_const!(
+            FRAC_2_PI,
+            StrictlyPositiveFinite,
+            f64,
+            core::f64::consts::FRAC_2_PI,
+            "2/π"
+        );
+        crate::generate_const!(
             FRAC_2_SQRT_PI,
+            StrictlyPositiveFinite,
             f64,
             core::f64::consts::FRAC_2_SQRT_PI,
             "2/sqrt(π)"
         );
-        generate_const!(SQRT_2, f64, core::f64::consts::SQRT_2, "sqrt(2)");
-        generate_const!(
+        crate::generate_const!(
+            SQRT_2,
+            StrictlyPositiveFinite,
+            f64,
+            core::f64::consts::SQRT_2,
+            "sqrt(2)"
+        );
+        crate::generate_const!(
             FRAC_1_SQRT_2,
+            StrictlyPositiveFinite,
             f64,
             core::f64::consts::FRAC_1_SQRT_2,
             "1/sqrt(2)"
         );
-        generate_const!(E, f64, core::f64::consts::E, "Euler's number (e)");
-        generate_const!(
+        crate::generate_const!(
+            E,
+            StrictlyPositiveFinite,
+            f64,
+            core::f64::consts::E,
+            "Euler's number (e)"
+        );
+        crate::generate_const!(
             LOG2_10,
+            StrictlyPositiveFinite,
             f64,
             core::f64::consts::LOG2_10,
             "log<sub>2</sub>(10)"
         );
-        generate_const!(LOG2_E, f64, core::f64::consts::LOG2_E, "log<sub>2</sub>(e)");
-        generate_const!(
+        crate::generate_const!(
+            LOG2_E,
+            StrictlyPositiveFinite,
+            f64,
+            core::f64::consts::LOG2_E,
+            "log<sub>2</sub>(e)"
+        );
+        crate::generate_const!(
             LOG10_2,
+            StrictlyPositiveFinite,
             f64,
             core::f64::consts::LOG10_2,
             "log<sub>10</sub>(2)"
         );
-        generate_const!(
+        crate::generate_const!(
             LOG10_E,
+            StrictlyPositiveFinite,
             f64,
             core::f64::consts::LOG10_E,
             "log<sub>10</sub>(e)"
         );
-        generate_const!(LN_2, f64, core::f64::consts::LN_2, "ln(2)");
-        generate_const!(LN_10, f64, core::f64::consts::LN_10, "ln(10)");
+        crate::generate_const!(
+            LN_2,
+            StrictlyPositiveFinite,
+            f64,
+            core::f64::consts::LN_2,
+            "ln(2)"
+        );
+        crate::generate_const!(
+            LN_10,
+            StrictlyPositiveFinite,
+            f64,
+            core::f64::consts::LN_10,
+            "ln(10)"
+        );
     }
 
     #[cfg(test)]
@@ -382,55 +459,139 @@ pub mod tf32 {
 
     /// This module contains constants from [`core::f32::consts`], casted to the corresponding type
     pub mod consts {
-        generate_const!(PI, f32, core::f32::consts::PI, "Archimedes' constant (π)");
-        generate_const!(
+        crate::generate_const!(
+            PI,
+            StrictlyPositiveFinite,
+            f32,
+            core::f32::consts::PI,
+            "Archimedes' constant (π)"
+        );
+        crate::generate_const!(
             TAU,
+            StrictlyPositiveFinite,
             f32,
             core::f32::consts::TAU,
             "The full circle constant (τ). Equal to 2π."
         );
-        generate_const!(FRAC_PI_2, f32, core::f32::consts::FRAC_PI_2, "π/2");
-        generate_const!(FRAC_PI_3, f32, core::f32::consts::FRAC_PI_3, "π/3");
-        generate_const!(FRAC_PI_4, f32, core::f32::consts::FRAC_PI_4, "π/4");
-        generate_const!(FRAC_PI_6, f32, core::f32::consts::FRAC_PI_6, "π/6");
-        generate_const!(FRAC_PI_8, f32, core::f32::consts::FRAC_PI_8, "π/8");
-        generate_const!(FRAC_1_PI, f32, core::f32::consts::FRAC_1_PI, "1/π");
-        generate_const!(FRAC_2_PI, f32, core::f32::consts::FRAC_2_PI, "2/π");
-        generate_const!(
+        crate::generate_const!(
+            FRAC_PI_2,
+            StrictlyPositiveFinite,
+            f32,
+            core::f32::consts::FRAC_PI_2,
+            "π/2"
+        );
+        crate::generate_const!(
+            FRAC_PI_3,
+            StrictlyPositiveFinite,
+            f32,
+            core::f32::consts::FRAC_PI_3,
+            "π/3"
+        );
+        crate::generate_const!(
+            FRAC_PI_4,
+            StrictlyPositiveFinite,
+            f32,
+            core::f32::consts::FRAC_PI_4,
+            "π/4"
+        );
+        crate::generate_const!(
+            FRAC_PI_6,
+            StrictlyPositiveFinite,
+            f32,
+            core::f32::consts::FRAC_PI_6,
+            "π/6"
+        );
+        crate::generate_const!(
+            FRAC_PI_8,
+            StrictlyPositiveFinite,
+            f32,
+            core::f32::consts::FRAC_PI_8,
+            "π/8"
+        );
+        crate::generate_const!(
+            FRAC_1_PI,
+            StrictlyPositiveFinite,
+            f32,
+            core::f32::consts::FRAC_1_PI,
+            "1/π"
+        );
+        crate::generate_const!(
+            FRAC_2_PI,
+            StrictlyPositiveFinite,
+            f32,
+            core::f32::consts::FRAC_2_PI,
+            "2/π"
+        );
+        crate::generate_const!(
             FRAC_2_SQRT_PI,
+            StrictlyPositiveFinite,
             f32,
             core::f32::consts::FRAC_2_SQRT_PI,
             "2/sqrt(π)"
         );
-        generate_const!(SQRT_2, f32, core::f32::consts::SQRT_2, "sqrt(2)");
-        generate_const!(
+        crate::generate_const!(
+            SQRT_2,
+            StrictlyPositiveFinite,
+            f32,
+            core::f32::consts::SQRT_2,
+            "sqrt(2)"
+        );
+        crate::generate_const!(
             FRAC_1_SQRT_2,
+            StrictlyPositiveFinite,
             f32,
             core::f32::consts::FRAC_1_SQRT_2,
             "1/sqrt(2)"
         );
-        generate_const!(E, f32, core::f32::consts::E, "Euler's number (e)");
-        generate_const!(
+        crate::generate_const!(
+            E,
+            StrictlyPositiveFinite,
+            f32,
+            core::f32::consts::E,
+            "Euler's number (e)"
+        );
+        crate::generate_const!(
             LOG2_10,
+            StrictlyPositiveFinite,
             f32,
             core::f32::consts::LOG2_10,
             "log<sub>2</sub>(10)"
         );
-        generate_const!(LOG2_E, f32, core::f32::consts::LOG2_E, "log<sub>2</sub>(e)");
-        generate_const!(
+        crate::generate_const!(
+            LOG2_E,
+            StrictlyPositiveFinite,
+            f32,
+            core::f32::consts::LOG2_E,
+            "log<sub>2</sub>(e)"
+        );
+        crate::generate_const!(
             LOG10_2,
+            StrictlyPositiveFinite,
             f32,
             core::f32::consts::LOG10_2,
             "log<sub>10</sub>(2)"
         );
-        generate_const!(
+        crate::generate_const!(
             LOG10_E,
+            StrictlyPositiveFinite,
             f32,
             core::f32::consts::LOG10_E,
             "log<sub>10</sub>(e)"
         );
-        generate_const!(LN_2, f32, core::f32::consts::LN_2, "ln(2)");
-        generate_const!(LN_10, f32, core::f32::consts::LN_10, "ln(10)");
+        crate::generate_const!(
+            LN_2,
+            StrictlyPositiveFinite,
+            f32,
+            core::f32::consts::LN_2,
+            "ln(2)"
+        );
+        crate::generate_const!(
+            LN_10,
+            StrictlyPositiveFinite,
+            f32,
+            core::f32::consts::LN_10,
+            "ln(10)"
+        );
     }
 
     #[cfg(test)]

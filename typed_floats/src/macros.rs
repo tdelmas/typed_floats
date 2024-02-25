@@ -180,62 +180,144 @@ macro_rules! assert_float_eq {
     }};
 }
 
-/// Macro to create a constant with a positive value.
-/// The resulting constant will be of type `StrictlyPositiveFinite`.
+/// Macro to create a constant value.
 /// Will panic at compile time if the value is not a valid.
 ///
 /// # Examples
 ///
 /// ```
 /// # use typed_floats::*;
-/// const X: StrictlyPositiveFinite = positive_const!(1.0); // f64
-/// const Y: StrictlyPositiveFinite<f64> = positive_const!(f64, 2.0);
-/// const Z: StrictlyPositiveFinite<f32> = positive_const!(f32, 3.0);
+/// const ONE: StrictlyPositiveFinite = as_const!(StrictlyPositiveFinite, 1.0); // f64
+/// const TWO: StrictlyPositiveFinite<f64> = as_const!(StrictlyPositiveFinite, f64, 2.0);
+/// const THREE: StrictlyPositiveFinite<f32> = as_const!(StrictlyPositiveFinite, f32, 3.0);
+/// const FOUR: NonNaN = as_const!(NonNaN, 4.0); // f64
+/// const FIVE: NonNaN<f64> = as_const!(NonNaN, f64, 5.0);
+/// const SIX: NonNaN<f32> = as_const!(NonNaN, f32, 6.0);
 /// ```
 ///
 /// Thoses examples will panic at compile time:
 ///
 /// ```ignore
 /// # use typed_floats::*;
-/// const X: StrictlyPositiveFinite = positive_const!(0.0);
+/// // Will panic at compile time
+/// const X: StrictlyPositiveFinite = as_const!(StrictlyPositiveFinite, 0.0);
 /// ```
 ///
 /// ```ignore
 /// # use typed_floats::*;
-/// const X: StrictlyPositiveFinite = positive_const!(1.0/0.0);
+/// // Will panic at compile time
+/// const X: StrictlyPositiveFinite = as_const!(StrictlyPositiveFinite, 1.0/0.0);
 /// ```
 ///
 /// ```ignore
 /// # use typed_floats::*;
-/// const X: StrictlyPositiveFinite = positive_const!(-1.0/0.0);
+/// // Will panic at compile time
+/// const X: StrictlyPositiveFinite = as_const!(StrictlyPositiveFinite, -1.0/0.0);
 /// ```
 ///
 /// ```ignore
 /// # use typed_floats::*;
-/// const X: StrictlyPositiveFinite = positive_const!(0.0/0.0);
+/// // Will panic at compile time
+/// const X: StrictlyPositiveFinite = as_const!(StrictlyPositiveFinite, 0.0/0.0);
 /// ```
 ///
 #[macro_export]
-macro_rules! positive_const {
-    ($type:ident, $x:expr) => {{
-        const TMP: $type = $x;
+macro_rules! as_const {
+    ($type:ident, $float:ident, $x:expr) => {{
+        const TMP: $float = $x;
 
         // FIXME: Is that sound? https://github.com/rust-lang/rust/issues/57241
 
         if TMP != TMP {
-            panic!("NaN is not a valid StrictlyPositiveFinite")
-        } else if TMP == core::$type::INFINITY {
-            panic!("Infinity is not a valid StrictlyPositiveFinite")
-        } else if TMP == 0.0 {
-            panic!("Zero is not a valid StrictlyPositiveFinite")
-        } else if TMP < 0.0 {
-            panic!("Negative value is not a valid StrictlyPositiveFinite")
+            panic!("NaN is not valid")
+        } else if TMP == core::$float::INFINITY && !$crate::$type::accept_infinity() {
+            panic!("Infinity is not valid")
+        } else if TMP == core::$float::NEG_INFINITY && !$crate::$type::accept_infinity() {
+            panic!("Infinity is not valid")
+        } else if TMP == 0.0 && !$crate::$type::accept_zero() {
+            panic!("Zero is not valid")
+        } else if TMP < 0.0 && !$crate::$type::accept_negative() {
+            panic!("Negative value is not valid")
+        } else if TMP > 0.0 && !$crate::$type::accept_positive() {
+            panic!("Negative zero is not valid")
         } else {
-            // Safe because the value was just checked
-            unsafe { $crate::StrictlyPositiveFinite::<$type>::internal_only_new_unchecked(TMP) }
+            // Safety: The value has been checked
+            unsafe { $crate::$type::<$float>::internal_only_new_unchecked(TMP) }
         }
     }};
-    ($x:expr) => {{
-        positive_const!(f64, $x)
+    ($type:ident, $x:expr) => {{
+        $crate::as_const!($type, f64, $x)
     }};
+    ($x:expr) => {{
+        $crate::as_const!(f64, $x)
+    }};
+}
+
+/// Macro to create a constant.
+/// It will generate the full declaration of the constant:
+/// ```ignore
+/// pub const NAME: TYPE = TYPE(VALUE)
+/// ```
+///
+/// Will panic at compile time if the value is not a valid.
+///
+/// # Examples
+///
+/// ```
+/// # use typed_floats::*;
+/// generate_const!(ZERO, NonNaN, f32, 0.0);
+/// generate_const!(ONE, StrictlyPositiveFinite, 1.0); // f64
+/// generate_const!(TWO, StrictlyPositiveFinite, f64, 2.0);
+/// generate_const!(THREE, StrictlyPositiveFinite, f32, 3.0);
+/// generate_const!(PI, StrictlyPositiveFinite, f32, 3.14, "The number π");
+/// generate_const!(FOUR, NonNaN, 4.0); // f64
+/// generate_const!(FIVE, NonNaN, f64, 5.0);
+/// generate_const!(INF, StrictlyPositive, f32, 1.0/0.0);
+/// ```
+///
+/// Thoses examples will panic at compile time:
+///
+/// ```ignore
+/// # use typed_floats::*;
+/// // Will panic at compile time
+/// generate_const!(X, StrictlyPositiveFinite, 0.0);
+/// ```
+///
+/// ```ignore
+/// # use typed_floats::*;
+/// // Will panic at compile time
+/// generate_const!(X, StrictlyPositiveFinite, 1.0/0.0);
+/// ```
+///
+/// ```ignore
+/// # use typed_floats::*;
+/// // Will panic at compile time
+/// generate_const!(X, StrictlyPositiveFinite, -1.0/0.0);
+/// ```
+///
+/// ```ignore
+/// # use typed_floats::*;
+/// // Will panic at compile time
+/// generate_const!(X, StrictlyPositiveFinite, 0.0/0.0);
+/// ```
+///
+#[macro_export]
+macro_rules! generate_const {
+    ($name:ident, $type:ident, $float:ident, $x:expr, $doc:expr) => {
+        #[doc = $doc]
+        pub const $name: $crate::$type<$float> = $crate::as_const!($type, $float, $x);
+    };
+    ($name:ident, $type:ident, f32, $x:expr) => {
+        pub const $name: $crate::$type<f32> = $crate::as_const!($type, f32, $x);
+    };
+    ($name:ident, $type:ident, f64, $x:expr) => {
+        pub const $name: $crate::$type<f64> = $crate::as_const!($type, f64, $x);
+    };
+    ($name:ident, $type:ident, $x:expr, $doc:expr) => {
+        #[doc = $doc]
+        pub const $name: $crate::$type = $crate::as_const!($type, f64, $x);
+    };
+    ($name:ident, $type:ident, $x:expr) => {
+        pub const $name: $crate::$type = $crate::as_const!($type, f64, $x);
+    };
 }

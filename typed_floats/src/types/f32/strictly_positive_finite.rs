@@ -73,16 +73,6 @@ impl StrictlyPositiveFinite<f32> {
         Self(value)
     }
 
-    /// Creates a new value from a primitive type without checking that the value is valid
-    ///
-    /// # Safety
-    /// This function is only meant to be used by the macros of this crate.
-    #[inline]
-    #[must_use]
-    pub const unsafe fn internal_only_new_unchecked(value: f32) -> Self {
-        Self(value)
-    }
-
     /// Returns the value as a primitive type
     ///
     /// # Examples
