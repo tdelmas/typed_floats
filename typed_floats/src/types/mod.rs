@@ -184,6 +184,7 @@ use crate::traits::{Atan2, Copysign, DivEuclid, Hypot, Powf};
 #[cfg(all(feature = "libm", not(feature = "std")))]
 use num_traits::Float;
 
+mod accept;
 mod f32;
 mod f64;
 mod impls;
