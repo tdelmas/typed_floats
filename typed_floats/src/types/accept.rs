@@ -189,6 +189,7 @@ macro_rules! accept {
             /// This function is only meant to be used by the macros of this crate.
             #[inline]
             #[must_use]
+            #[doc(hidden)]
             pub const unsafe fn internal_only_new_unchecked(value: f32) -> Self {
                 Self(value)
             }
@@ -201,6 +202,7 @@ macro_rules! accept {
             /// This function is only meant to be used by the macros of this crate.
             #[inline]
             #[must_use]
+            #[doc(hidden)]
             pub const unsafe fn internal_only_new_unchecked(value: f64) -> Self {
                 Self(value)
             }

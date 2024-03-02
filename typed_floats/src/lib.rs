@@ -202,27 +202,61 @@ pub mod tf64 {
         x == 0.0 && x.is_sign_negative()
     }
 
-    /// Infinity (∞).
-    pub const INFINITY: crate::StrictlyPositive<f64> =
-        crate::StrictlyPositive::<f64>(core::f64::INFINITY);
-    /// Negative infinity (−∞).
-    pub const NEG_INFINITY: crate::StrictlyNegative<f64> =
-        crate::StrictlyNegative::<f64>(core::f64::NEG_INFINITY);
+    crate::generate_const!(
+        INFINITY,
+        StrictlyPositive,
+        f64,
+        core::f64::INFINITY,
+        "Infinity (∞)."
+    );
 
-    /// Positive zero (+0.0).
-    pub const ZERO: crate::PositiveFinite<f64> = crate::PositiveFinite::<f64>(0.0f64);
-    /// Negative zero (-0.0).
-    pub const NEG_ZERO: crate::NegativeFinite<f64> = crate::NegativeFinite::<f64>(-0.0f64);
+    crate::generate_const!(
+        NEG_INFINITY,
+        StrictlyNegative,
+        f64,
+        core::f64::NEG_INFINITY,
+        "Negative infinity (−∞)."
+    );
 
-    /// Largest finite `f64` value.
-    pub const MAX: crate::StrictlyPositiveFinite<f64> =
-        crate::StrictlyPositiveFinite::<f64>(core::f64::MAX);
-    /// Smallest finite `f64` value.
-    pub const MIN: crate::StrictlyNegativeFinite<f64> =
-        crate::StrictlyNegativeFinite::<f64>(core::f64::MIN);
-    /// Smallest positive normal `f64` value.
-    pub const MIN_POSITIVE: crate::StrictlyPositiveFinite<f64> =
-        crate::StrictlyPositiveFinite::<f64>(core::f64::MIN_POSITIVE);
+    crate::generate_const!(
+        ZERO,
+        PositiveFinite,
+        f64,
+        0.0f64,
+        "Positive zero (+0.0)."
+    );
+
+    crate::generate_const!(
+        NEG_ZERO,
+        NegativeFinite,
+        f64,
+        -0.0f64,
+        "Negative zero (-0.0)."
+    );
+
+    crate::generate_const!(
+        MAX,
+        StrictlyPositiveFinite,
+        f64,
+        core::f64::MAX,
+        "Largest finite `f64` value."
+    );
+
+    crate::generate_const!(
+        MIN,
+        StrictlyNegativeFinite,
+        f64,
+        core::f64::MIN,
+        "Smallest finite `f64` value."
+    );
+
+    crate::generate_const!(
+        MIN_POSITIVE,
+        StrictlyPositiveFinite,
+        f64,
+        core::f64::MIN_POSITIVE,
+        "Smallest positive normal `f64` value."
+    );
 
     /// This module contains constants from [`core::f64::consts`], casted to the corresponding type
     pub mod consts {
@@ -437,25 +471,61 @@ pub mod tf32 {
         x == 0.0 && x.is_sign_negative()
     }
 
-    /// Infinity (∞).
-    pub const INFINITY: crate::StrictlyPositive<f32> =
-        crate::StrictlyPositive::<f32>(core::f32::INFINITY);
-    /// Negative infinity (−∞).
-    pub const NEG_INFINITY: crate::StrictlyNegative<f32> =
-        crate::StrictlyNegative::<f32>(core::f32::NEG_INFINITY);
-    /// Largest finite `f32` value.
-    pub const MAX: crate::StrictlyPositiveFinite<f32> =
-        crate::StrictlyPositiveFinite::<f32>(core::f32::MAX);
-    /// Smallest finite `f32` value.
-    pub const MIN: crate::StrictlyNegativeFinite<f32> =
-        crate::StrictlyNegativeFinite::<f32>(core::f32::MIN);
-    /// Smallest positive normal `f32` value.
-    pub const MIN_POSITIVE: crate::StrictlyPositiveFinite<f32> =
-        crate::StrictlyPositiveFinite::<f32>(core::f32::MIN_POSITIVE);
-    /// Positive zero (+0.0).
-    pub const ZERO: crate::PositiveFinite<f32> = crate::PositiveFinite::<f32>(0.0f32);
-    /// Negative zero (-0.0).
-    pub const NEG_ZERO: crate::NegativeFinite<f32> = crate::NegativeFinite::<f32>(-0.0f32);
+    crate::generate_const!(
+        INFINITY,
+        StrictlyPositive,
+        f32,
+        core::f32::INFINITY,
+        "Infinity (∞)."
+    );
+
+    crate::generate_const!(
+        NEG_INFINITY,
+        StrictlyNegative,
+        f32,
+        core::f32::NEG_INFINITY,
+        "Negative infinity (−∞)."
+    );
+
+    crate::generate_const!(
+        ZERO,
+        PositiveFinite,
+        f32,
+        0.0f32,
+        "Positive zero (+0.0)."
+    );
+
+    crate::generate_const!(
+        NEG_ZERO,
+        NegativeFinite,
+        f32,
+        -0.0f32,
+        "Negative zero (-0.0)."
+    );
+
+    crate::generate_const!(
+        MAX,
+        StrictlyPositiveFinite,
+        f32,
+        core::f32::MAX,
+        "Largest finite `f32` value."
+    );
+
+    crate::generate_const!(
+        MIN,
+        StrictlyNegativeFinite,
+        f32,
+        core::f32::MIN,
+        "Smallest finite `f32` value."
+    );
+
+    crate::generate_const!(
+        MIN_POSITIVE,
+        StrictlyPositiveFinite,
+        f32,
+        core::f32::MIN_POSITIVE,
+        "Smallest positive normal `f32` value."
+    );
 
     /// This module contains constants from [`core::f32::consts`], casted to the corresponding type
     pub mod consts {
