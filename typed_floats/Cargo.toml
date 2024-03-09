@@ -34,7 +34,7 @@ ensure_no_undefined_behavior = []
 [dependencies]
 
 [dependencies.typed_floats_macros]
-version = "=0.7.4"
+version = "=1.0.0"
 path = "../typed_floats_macros"
 
 [dependencies.serde]
