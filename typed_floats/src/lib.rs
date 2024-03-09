@@ -218,13 +218,7 @@ pub mod tf64 {
         "Negative infinity (−∞)."
     );
 
-    crate::generate_const!(
-        ZERO,
-        PositiveFinite,
-        f64,
-        0.0f64,
-        "Positive zero (+0.0)."
-    );
+    crate::generate_const!(ZERO, PositiveFinite, f64, 0.0f64, "Positive zero (+0.0).");
 
     crate::generate_const!(
         NEG_ZERO,
@@ -487,13 +481,7 @@ pub mod tf32 {
         "Negative infinity (−∞)."
     );
 
-    crate::generate_const!(
-        ZERO,
-        PositiveFinite,
-        f32,
-        0.0f32,
-        "Positive zero (+0.0)."
-    );
+    crate::generate_const!(ZERO, PositiveFinite, f32, 0.0f32, "Positive zero (+0.0).");
 
     crate::generate_const!(
         NEG_ZERO,
