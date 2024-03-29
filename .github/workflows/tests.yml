@@ -15,6 +15,7 @@ on:
     - 'typed_floats_macros/**'
     - 'Cargo.toml'
     - 'Cargo.lock'
+  workflow_dispatch:
 
 env:
   CARGO_TERM_COLOR: always
