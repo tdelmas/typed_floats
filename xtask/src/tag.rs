@@ -1,20 +1,22 @@
 pub fn tag(args: Vec<String>) {
-    let mut version = None;
     let mut force = false;
     let mut skip_tests = false;
 
-    let mut args = args.into_iter();
-    while let Some(arg) = args.next() {
+    for arg in args {
         match arg.as_str() {
             "--skip-tests" => skip_tests = true,
             "--force" => force = true,
-            "--version" => version = args.next(),
             _ => panic!("Invalid argument"),
         }
     }
 
     std::process::Command::new("cargo")
         .args(["fmt"])
+        .output()
+        .unwrap();
+
+    std::process::Command::new("cargo")
+        .args(["semver-checks"])
         .output()
         .unwrap();
 
@@ -49,32 +51,10 @@ pub fn tag(args: Vec<String>) {
         }
     }
 
-    let crate_version = get_version();
+    let crate_version = get_version().replace("-dev", "");
 
-    let (major, minor, patch) = parse_version(&crate_version);
-
-    let (major, minor, patch) = if let Some(version) = version {
-        let version = parse_version(&version);
-
-        if version.0 > major || version.1 > minor || version.2 > patch {
-            version
-        } else {
-            println!("The version must be greater than the current version. Provided: {version:?}, Current: {crate_version:?}");
-            std::process::exit(1);
-        }
-    } else {
-        (major, minor, patch + 1)
-    };
-
-    let new_version = format!("{}.{}.{}", major, minor, patch);
-
-    println!("Current version: {:?}", crate_version);
-    println!("New version: {:?}", new_version);
-
-    println!("Updating version in Cargo.toml files...");
-
-    update_version(&crate_version, &new_version, "./Cargo.toml");
-    update_version(&crate_version, &new_version, "./typed_floats/Cargo.toml");
+    update_version("./Cargo.toml");
+    update_version("./typed_floats/Cargo.toml");
     //build
     std::process::Command::new("cargo")
         .args(["build", "--release"])
@@ -95,7 +75,7 @@ pub fn tag(args: Vec<String>) {
         .unwrap();
 
     std::process::Command::new("git")
-        .args(["commit", "-m", &new_version])
+        .args(["commit", "-m", &crate_version])
         .output()
         .unwrap();
 
@@ -109,26 +89,16 @@ pub fn tag(args: Vec<String>) {
     println!("Tagging...");
 
     std::process::Command::new("git")
-        .args(["tag", "-a", &new_version, "-m", &new_version])
+        .args(["tag", "-a", &crate_version, "-m", &crate_version])
         .output()
         .unwrap();
 
     println!("Pushing tag to trigger publish...");
 
     std::process::Command::new("git")
-        .args(["push", "origin", &new_version])
+        .args(["push", "origin", &crate_version])
         .output()
         .unwrap();
-}
-
-fn parse_version(version: &str) -> (u8, u8, u8) {
-    let mut version = version.split('.');
-
-    let major = version.next().unwrap().parse::<u8>().unwrap();
-    let minor = version.next().unwrap().parse::<u8>().unwrap();
-    let patch = version.next().unwrap().parse::<u8>().unwrap();
-
-    (major, minor, patch)
 }
 
 fn get_version() -> String {
@@ -141,10 +111,8 @@ fn get_version() -> String {
         .into()
 }
 
-fn update_version(previous: &str, next: &str, path: &str) {
-    let str = std::fs::read_to_string(path)
-        .unwrap()
-        .replace(previous, next);
+fn update_version(path: &str) {
+    let str = std::fs::read_to_string(path).unwrap().replace("-dev", "");
 
     std::fs::write(path, str).unwrap();
 }
