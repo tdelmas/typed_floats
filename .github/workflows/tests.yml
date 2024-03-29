@@ -110,20 +110,20 @@ jobs:
       matrix:
         features: [
           "",
-          "std",
-          "serde",
-          "libm",
-          "std,serde",
-          "std,libm",
-          "serde,libm",
-          "std,serde,libm",
+          "--features std",
+          "--features serde",
+          "--features libm",
+          "--features std --features serde",
+          "--features std --features libm",
+          "--features serde --features libm",
+          "--features std --features serde --features libm",
         ]
 
     steps:
       - uses: actions/checkout@v3
       - run: cargo install cargo-semver-checks 
       - run: cargo xtask pre-build
-      - run: cd typed_floats && cargo semver-checks --only-explicit-features --features ${{ matrix.features }}
+      - run: cd typed_floats && cargo semver-checks --only-explicit-features ${{ matrix.features }}
 
   check-docs:
     runs-on: ubuntu-latest
