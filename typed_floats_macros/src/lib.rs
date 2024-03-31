@@ -255,6 +255,19 @@ fn do_generate_floats(floats: &[FloatDefinition]) -> proc_macro2::TokenStream {
                             self.0 == other.0
                         }
                     }
+
+                    impl PartialOrd<#a_full_type> for #b_full_type {
+                        #[inline]
+                        fn partial_cmp(&self, other: &#a_full_type) -> Option<core::cmp::Ordering> {
+                            Some(if self.get() < other.get() {
+                                core::cmp::Ordering::Less
+                            } else if self.get() == other.get() {
+                                core::cmp::Ordering::Equal
+                            } else {
+                                core::cmp::Ordering::Greater
+                            })
+                        }
+                    }
                 });
             }
         }
