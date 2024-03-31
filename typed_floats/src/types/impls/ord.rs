@@ -99,6 +99,46 @@ macro_rules! impl_ord {
 
                 assert!(is_sorted(&sorted));
             }
+
+            #[test]
+            fn cmp_with_others() {
+                let values_non_nan = tf64::TEST_VALUES
+                    .iter()
+                    .map(|&x| tf64::NonNaN::new(x))
+                    .filter_map(|x| x.ok())
+                    .collect::<Vec<_>>();
+                
+                let values_non_zero_non_nan = tf64::TEST_VALUES
+                    .iter()
+                    .map(|&x| tf64::NonZeroNonNaN::new(x))
+                    .filter_map(|x| x.ok())
+                    .collect::<Vec<_>>();
+                
+                let values = tf64::TEST_VALUES
+                    .iter()
+                    .map(|&x| tf64::$type::new(x))
+                    .filter_map(|x| x.ok())
+                    .collect::<Vec<_>>();
+
+                for a in &values {
+                    for b in &values_non_nan {
+                        let res = a.get().partial_cmp(&b.get());
+                        let reversed = b.get().partial_cmp(&a.get());
+
+                        assert_eq!(res, a.partial_cmp(b));
+                        assert_eq!(reversed, b.partial_cmp(a));
+                    }
+                    
+                    for b in &values_non_zero_non_nan {
+                        let res = a.get().partial_cmp(&b.get());
+                        let reversed = b.get().partial_cmp(&a.get());
+
+                        assert_eq!(res, a.partial_cmp(b));
+                        assert_eq!(reversed, b.partial_cmp(a));
+                    }
+                }
+
+            }
         }
     };
 }
