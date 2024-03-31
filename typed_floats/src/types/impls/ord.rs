@@ -43,10 +43,38 @@ macro_rules! impl_ord {
             }
         }
 
+        impl PartialOrd<f32> for $type<f32> {
+            #[inline]
+            fn partial_cmp(&self, other: &f32) -> Option<core::cmp::Ordering> {
+                self.get().partial_cmp(other)
+            }
+        }
+
+        impl PartialOrd<$type<f32>> for f32 {
+            #[inline]
+            fn partial_cmp(&self, other: &$type<f32>) -> Option<core::cmp::Ordering> {
+                self.partial_cmp(&other.0)
+            }
+        }
+
         impl PartialOrd for $type<f64> {
             #[inline]
             fn partial_cmp(&self, other: &Self) -> Option<core::cmp::Ordering> {
                 Some(self.cmp(other))
+            }
+        }
+
+        impl PartialOrd<f64> for $type<f64> {
+            #[inline]
+            fn partial_cmp(&self, other: &f64) -> Option<core::cmp::Ordering> {
+                self.get().partial_cmp(other)
+            }
+        }
+
+        impl PartialOrd<$type<f64>> for f64 {
+            #[inline]
+            fn partial_cmp(&self, other: &$type<f64>) -> Option<core::cmp::Ordering> {
+                self.partial_cmp(&other.0)
             }
         }
 
@@ -132,6 +160,14 @@ macro_rules! impl_ord {
                     for b in &values_non_zero_non_nan {
                         let res = a.get().partial_cmp(&b.get());
                         let reversed = b.get().partial_cmp(&a.get());
+
+                        assert_eq!(res, a.partial_cmp(b));
+                        assert_eq!(reversed, b.partial_cmp(a));
+                    }
+                    
+                    for b in &tf64::TEST_VALUES {
+                        let res = a.get().partial_cmp(b);
+                        let reversed = b.partial_cmp(&a.get());
 
                         assert_eq!(res, a.partial_cmp(b));
                         assert_eq!(reversed, b.partial_cmp(a));
