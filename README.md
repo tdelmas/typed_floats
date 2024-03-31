@@ -88,18 +88,16 @@ To facilitate comparisons, the methods `is_positive_zero` and `is_negative_zero`
 
 # Traits implemented
 
-## [`core::convert::From`] / [`core::convert::TryFrom`]
+## Conversions: [`core::convert::From`] / [`core::convert::TryFrom`]
 
 - Between all the types of this crate (of the same kind, [`f32`] or [`f64`])
 - From [`f32`] and [`f64`]
 - From integers types (except [`u128`] and [`i128`])
 - From `NonZero*` ([`core::num::NonZeroU8`], [`core::num::NonZeroU16`], [`core::num::NonZeroU32`], [`core::num::NonZeroU64`], [`core::num::NonZeroI8`], [`core::num::NonZeroI16`], [`core::num::NonZeroI32`], [`core::num::NonZeroI64`])
 
-(The traits `From` and `TryFrom` are implemented depending on the situation. Impossible conversions - for example between [`Positive`] and [`Negative`] - are not implemented.)
+(The traits `From` and `TryFrom` are implemented depending on the situation)
 
-## Other traits with generic parameters
-
-## [`core::cmp::PartialOrd`] and [`core::cmp::PartialEq`]
+## Comparaisons: [`core::cmp::PartialOrd`] and [`core::cmp::PartialEq`]
 | 🗘 | `f32`/`f64` | [`NonNaN`] | [`NonNaNFinite`] | [`NonZeroNonNaN`] | [`NonZeroNonNaNFinite`] | [`Positive`] | [`PositiveFinite`] | [`StrictlyPositive`] | [`StrictlyPositiveFinite`] | [`Negative`] | [`NegativeFinite`] | [`StrictlyNegative`] | [`StrictlyNegativeFinite`]
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | `f32`/`f64` | N/A |  ✔️ |  ✔️ |  ✔️ |  ✔️ |  ✔️ |  ✔️ |  ✔️ |  ✔️ |  ✔️ |  ✔️ |  ✔️ |  ✔️ | 
@@ -122,10 +120,10 @@ To facilitate comparisons, the methods `is_positive_zero` and `is_negative_zero`
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
 | [`core::cmp::Eq`] | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
 | [`core::cmp::Ord`] | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
-| [`core::hash::Hash`] | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
+| [`core::hash::Hash`] | ✔️¹ | ✔️¹ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
 | [`core::default::Default`] | `0.0` | `0.0` | ❌ | ❌  | `0.0` | `0.0` | ❌ | ❌ | `-0.0` | `-0.0` | ❌ | ❌ |
 
-Note: for [`core::hash::Hash`] on [`NonNaN`] and [`NonNaNFinite`] there is a (small) overhead because they both accept `0.0` and `-0.0`, which are equal so they must `core::hash::Hash` to the same value.
+¹: there is a (small) overhead because they accept `0.0` and `-0.0` (which are equal) so they must `core::hash::Hash` to the same value.
 
 # Methods implemented
 
