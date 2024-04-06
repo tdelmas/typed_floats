@@ -1,10 +1,14 @@
 [package]
 name = "xtask"
+description = "Action helper for the typed_floats crate"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
 repository.workspace = true
 rust-version.workspace = true
+keywords.workspace = true
+categories.workspace = true
+readme = "../CONTRIB.md"
 
 [dependencies]
 toml = "0.8"

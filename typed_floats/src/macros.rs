@@ -226,8 +226,7 @@ macro_rules! as_const {
     ($type:ident, $float:ident, $x:expr) => {{
         const TMP: $float = $x;
 
-        // FIXME: Is that sound? https://github.com/rust-lang/rust/issues/57241
-
+        #[allow(clippy::float_cmp_const)]
         if TMP != TMP {
             panic!("NaN is not valid")
         } else if TMP == core::$float::INFINITY && !$crate::$type::accept_infinity() {

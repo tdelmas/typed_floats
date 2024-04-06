@@ -8,3 +8,5 @@ license = "MIT OR Apache-2.0"
 repository = "https://github.com/tdelmas/typed_floats"
 version = "1.0.1"
 rust-version = "1.70"
+keywords = ["floats", "non-zero", "nan", "no_std"]
+categories = ["mathematics", "data-structures"]

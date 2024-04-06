@@ -1,7 +1,6 @@
 [package]
 name = "typed_floats"
 description = "Types for handling floats with type checking at compile time."
-categories = ["mathematics", "data-structures"]
 version.workspace = true
 edition.workspace = true
 license.workspace = true
@@ -12,7 +11,8 @@ include = [
   "src/**/*.rs",
   "*.md",
 ]
-keywords = ["floats", "non-zero", "nan", "no_std"]
+keywords.workspace = true
+categories.workspace = true
 readme = "./README.md"
 rust-version.workspace = true
 
@@ -55,3 +55,14 @@ num-traits = "0.2"
 
 [package.metadata.docs.rs]
 features = ["serde"]
+
+[lints.clippy]
+cargo        = { priority = -1, level = "deny" }
+complexity   = { priority = -1, level = "deny" }
+correctness  = { priority = -1, level = "deny" }
+suspicious   = { priority = -1, level = "deny" }
+style        = { priority = -1, level = "deny" }
+perf         = { priority = -1, level = "deny" }
+pedantic     = { priority = -1, level = "deny" }
+nursery      = { priority = -1, level = "deny" }
+# restriction  = { priority = -1, level = "deny" }
