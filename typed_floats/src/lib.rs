@@ -206,7 +206,7 @@ pub mod tf64 {
         INFINITY,
         StrictlyPositive,
         f64,
-        core::f64::INFINITY,
+        f64::INFINITY,
         "Infinity (∞)."
     );
 
@@ -214,7 +214,7 @@ pub mod tf64 {
         NEG_INFINITY,
         StrictlyNegative,
         f64,
-        core::f64::NEG_INFINITY,
+        f64::NEG_INFINITY,
         "Negative infinity (−∞)."
     );
 
@@ -232,7 +232,7 @@ pub mod tf64 {
         MAX,
         StrictlyPositiveFinite,
         f64,
-        core::f64::MAX,
+        f64::MAX,
         "Largest finite `f64` value."
     );
 
@@ -240,7 +240,7 @@ pub mod tf64 {
         MIN,
         StrictlyNegativeFinite,
         f64,
-        core::f64::MIN,
+        f64::MIN,
         "Smallest finite `f64` value."
     );
 
@@ -248,7 +248,7 @@ pub mod tf64 {
         MIN_POSITIVE,
         StrictlyPositiveFinite,
         f64,
-        core::f64::MIN_POSITIVE,
+        f64::MIN_POSITIVE,
         "Smallest positive normal `f64` value."
     );
 
@@ -469,7 +469,7 @@ pub mod tf32 {
         INFINITY,
         StrictlyPositive,
         f32,
-        core::f32::INFINITY,
+        f32::INFINITY,
         "Infinity (∞)."
     );
 
@@ -477,7 +477,7 @@ pub mod tf32 {
         NEG_INFINITY,
         StrictlyNegative,
         f32,
-        core::f32::NEG_INFINITY,
+        f32::NEG_INFINITY,
         "Negative infinity (−∞)."
     );
 
@@ -495,7 +495,7 @@ pub mod tf32 {
         MAX,
         StrictlyPositiveFinite,
         f32,
-        core::f32::MAX,
+        f32::MAX,
         "Largest finite `f32` value."
     );
 
@@ -503,7 +503,7 @@ pub mod tf32 {
         MIN,
         StrictlyNegativeFinite,
         f32,
-        core::f32::MIN,
+        f32::MIN,
         "Smallest finite `f32` value."
     );
 
@@ -511,7 +511,7 @@ pub mod tf32 {
         MIN_POSITIVE,
         StrictlyPositiveFinite,
         f32,
-        core::f32::MIN_POSITIVE,
+        f32::MIN_POSITIVE,
         "Smallest positive normal `f32` value."
     );
 

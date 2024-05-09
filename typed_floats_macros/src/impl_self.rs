@@ -859,7 +859,7 @@ pub fn get_impl_self() -> Vec<Op> {
                 /// assert_is_positive_zero!(tf64::ZERO.exp_m1());
                 /// assert_is_negative_zero!(tf64::NEG_ZERO.exp_m1());
                 ///
-                /// assert_eq!(tf64::INFINITY.exp_m1(), core::f64::INFINITY);
+                /// assert_eq!(tf64::INFINITY.exp_m1(), f64::INFINITY);
                 /// assert_eq!(tf64::NEG_INFINITY.exp_m1(), -1.0);
                 /// ```
                 ///
@@ -885,12 +885,12 @@ pub fn get_impl_self() -> Vec<Op> {
                 /// # use typed_floats::*;
                 /// let a: NonNaN = (-1.0).try_into().unwrap();
                 ///
-                /// assert_eq!(a.ln_1p(), core::f64::NEG_INFINITY);
+                /// assert_eq!(a.ln_1p(), f64::NEG_INFINITY);
                 ///
                 /// assert!(tf64::is_positive_zero(tf64::ZERO.ln_1p().get()));
                 /// assert!(tf64::is_negative_zero(tf64::NEG_ZERO.ln_1p()));
                 ///
-                /// assert_eq!(tf64::INFINITY.ln_1p(), core::f64::INFINITY);
+                /// assert_eq!(tf64::INFINITY.ln_1p(), f64::INFINITY);
                 /// assert_is_nan!(tf64::NEG_INFINITY.ln_1p());
                 /// ```
                 ///
