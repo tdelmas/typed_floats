@@ -58,7 +58,7 @@ macro_rules! assert_relative_eq {
 ///
 /// ```should_panic
 /// # use typed_floats::*;
-/// assert_is_nan!(core::f64::INFINITY);
+/// assert_is_nan!(f64::INFINITY);
 /// ```
 #[macro_export]
 macro_rules! assert_is_nan {
@@ -90,7 +90,7 @@ macro_rules! assert_is_nan {
 ///
 /// ```should_panic
 /// # use typed_floats::*;
-/// assert_is_positive_zero!(core::f64::INFINITY);
+/// assert_is_positive_zero!(f64::INFINITY);
 /// ```
 #[macro_export]
 macro_rules! assert_is_positive_zero {
@@ -122,7 +122,7 @@ macro_rules! assert_is_positive_zero {
 ///
 /// ```should_panic
 /// # use typed_floats::*;
-/// assert_is_negative_zero!(core::f64::NEG_INFINITY);
+/// assert_is_negative_zero!(f64::NEG_INFINITY);
 /// ```
 #[macro_export]
 macro_rules! assert_is_negative_zero {
@@ -152,8 +152,8 @@ macro_rules! assert_is_negative_zero {
 /// assert_float_eq!(-1.0_f64, -1.0_f64);
 /// assert_float_eq!(0.0_f64, 0.0_f64);
 /// assert_float_eq!(-0.0_f64, -0.0_f64);
-/// assert_float_eq!(core::f64::INFINITY, core::f64::INFINITY);
-/// assert_float_eq!(core::f64::NEG_INFINITY, core::f64::NEG_INFINITY);
+/// assert_float_eq!(f64::INFINITY, f64::INFINITY);
+/// assert_float_eq!(f64::NEG_INFINITY, f64::NEG_INFINITY);
 /// ```
 ///
 /// ```should_panic
@@ -229,9 +229,9 @@ macro_rules! as_const {
         #[allow(clippy::float_cmp_const)]
         if TMP != TMP {
             panic!("NaN is not valid")
-        } else if TMP == core::$float::INFINITY && !$crate::$type::accept_infinity() {
+        } else if TMP == $float::INFINITY && !$crate::$type::accept_infinity() {
             panic!("Infinity is not valid")
-        } else if TMP == core::$float::NEG_INFINITY && !$crate::$type::accept_infinity() {
+        } else if TMP == $float::NEG_INFINITY && !$crate::$type::accept_infinity() {
             panic!("Infinity is not valid")
         } else if TMP == 0.0 && !$crate::$type::accept_zero() {
             panic!("Zero is not valid")
