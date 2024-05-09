@@ -275,6 +275,8 @@ Is on [docs.rs](https://docs.rs/typed_floats).
 [`core::f64::consts`]: https://doc.rust-lang.org/core/f64/consts/index.html
 [`core::cmp::Ord`]: https://doc.rust-lang.org/core/cmp/trait.Ord.html "`Ord`"
 [`core::cmp::Eq`]: https://doc.rust-lang.org/core/cmp/trait.Eq.html "`Eq`"
+[`core::cmp::PartialOrd`]: https://doc.rust-lang.org/core/cmp/trait.PartialOrd.html "`PartialOrd`"
+[`core::cmp::PartialEq`]: https://doc.rust-lang.org/core/cmp/trait.PartialEq.html "`PartialEq`"
 [`core::default::Default`]: https://doc.rust-lang.org/core/core/default/trait.Default.html "`Default`"
 [`core::hash::Hash`]: https://doc.rust-lang.org/core/hash/trait.Hash.html "`Hash`"
 [`core::convert::From`]: https://doc.rust-lang.org/core/convert/trait.From.html "`From`"
