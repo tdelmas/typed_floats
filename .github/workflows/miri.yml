@@ -23,6 +23,7 @@ jobs:
           rustup override set nightly
           cargo miri setup
       - run: cargo xtask pre-build
+      - run: cargo test --doc
       - run: cargo miri test --doc
 
           
