@@ -24,7 +24,7 @@ jobs:
       - uses: actions/checkout@v3
       - run: apk add curl gcc musl-dev
       - run: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain ${{ matrix.version }} -y
-      - run: . "$HOME/.cargo/env"
+      - run: export PATH="$HOME/.cargo/bin:$PATH"
       - run: cargo xtask pre-build
       - run: cd typed_floats && cargo test --no-default-features --features "${{ matrix.features }}"
       - run: cd typed_floats && cargo test --release --no-default-features --features "${{ matrix.features }}"
