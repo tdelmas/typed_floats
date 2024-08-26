@@ -23,7 +23,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: apk add curl gcc musl-dev
-      - run: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+      - run: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
       - run: source $HOME/.cargo/env
       - run: rustup default ${{ matrix.version }}
       - run: cargo xtask pre-build
