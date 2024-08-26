@@ -1,0 +1,27 @@
+name: Tests
+
+on:
+  workflow_dispatch:
+
+jobs:
+  tests:
+    runs-on: alpine:3.20
+    name: Tests on rust ${{ matrix.version }} features "${{ matrix.features }}"
+    strategy:
+      matrix:
+        version: [
+          "beta",
+          "stable",
+          "1.70",
+        ]
+        features: [
+            "std,serde",
+            "std,libm",
+        ]
+
+    steps:
+      - uses: actions/checkout@v3
+      - run: rustup default ${{ matrix.version }}
+      - run: cargo xtask pre-build
+      - run: cd typed_floats && cargo test --no-default-features --features "${{ matrix.features }}"
+      - run: cd typed_floats && cargo test --release --no-default-features --features "${{ matrix.features }}"
