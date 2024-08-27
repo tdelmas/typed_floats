@@ -1,6 +1,20 @@
 name: Alpine (musl libc) Tests
 
 on:
+  push:
+    branches: ["main"]
+    paths:
+    - 'typed_floats/**'
+    - 'typed_floats_macros/**'
+    - 'Cargo.toml'
+    - 'Cargo.lock'
+  pull_request:
+    branches: ["main"]
+    paths:
+    - 'typed_floats/**'
+    - 'typed_floats_macros/**'
+    - 'Cargo.toml'
+    - 'Cargo.lock'
   workflow_dispatch:
 
 jobs:
