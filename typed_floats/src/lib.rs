@@ -1,7 +1,7 @@
 #![doc = include_str!("../README.truncated.md")]
 //! # Rules
 //!
-//! Conversions rules for operations are summarized in [`doc`].
+//! Conversions rules for operations are summarized in [`conversions_rules`].
 //!
 //! # Examples
 //!
@@ -127,7 +127,7 @@ pub use traits::*;
 pub use types::*;
 
 typed_floats_macros::generate_docs!(
-    pub mod doc {}
+    pub mod conversions_rules {}
 );
 
 /// This module contains constants from [`core::f64`], casted to the corresponding type
