@@ -44,7 +44,7 @@ jobs:
         ]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - run: rustup default ${{ matrix.version }}
       - run: cargo xtask pre-build
       # Check that it builds with all features combinations
@@ -79,7 +79,7 @@ jobs:
         ]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - run: rustup default ${{ matrix.version }}
       - run: cargo --version
       - run: cargo xtask pre-build
@@ -90,7 +90,7 @@ jobs:
     name: Clippy
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - run: cargo xtask pre-build
       - run: cargo clippy --verbose --all-features
 
@@ -111,7 +111,7 @@ jobs:
         ]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - run: cargo install cargo-semver-checks 
       - run: cargo xtask pre-build
       - run: cd typed_floats && cargo semver-checks --only-explicit-features ${{ matrix.features }}
@@ -120,7 +120,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - run: rustup default nightly
       - run: cargo install lychee 
       - run: cargo xtask pre-build
