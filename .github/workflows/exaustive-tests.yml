@@ -17,6 +17,7 @@ jobs:
     strategy:
       matrix:
         version: [
+          "nightly",
           "beta",
           "stable",
           "1.70",
