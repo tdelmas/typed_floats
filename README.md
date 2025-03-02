@@ -184,7 +184,7 @@ Methods that takes another float as parameter will also return the most strict t
 - Doesn't fix the floating point quirks such as `0.0 == -0.0`
 - Doesn't fix the odd methods such as:
   - `sqrt(-0.0)` returning `-0.0` instead of `NaN`
-  - `min(-0.0, 0.0)` returning `-0.0` instead of `0.0` (same for `max`)
+  - `min(-0.0, 0.0)` possibly returning `0.0` instead of `-0.0` (same for `max`)
   - `frac(-0.0)` returning `0.0` instead of `-0.0`
 
 Because that would introduce a runtime overhead and may introduce some incompatibilities with existing code.
