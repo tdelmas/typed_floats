@@ -182,6 +182,9 @@ macro_rules! assert_float_eq {
 
 /// Macro to create a constant value.
 /// Will panic at compile time if the value is not a valid.
+/// 
+/// This macro is only useful is the rust version older than 1.83,
+/// as floats methods are not yet const.
 ///
 /// # Examples
 ///

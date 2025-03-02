@@ -1,4 +1,5 @@
 use crate::types::{f64, InvalidNumber, StrictlyPositiveFinite};
+use const_fn::const_fn;
 
 impl StrictlyPositiveFinite<f64> {
     /// Creates a new value from a primitive type
@@ -17,6 +18,7 @@ impl StrictlyPositiveFinite<f64> {
     /// # Errors
     /// Returns an error if the value is not valid
     #[inline]
+    #[const_fn("1.83")]
     pub fn new(value: f64) -> Result<Self, InvalidNumber> {
         if value.is_nan() {
             return Err(InvalidNumber::NaN);
@@ -88,7 +90,8 @@ impl StrictlyPositiveFinite<f64> {
     /// ```
     #[inline]
     #[must_use]
-    pub const fn get(&self) -> f64 {
+    #[const_fn("1.83")]
+    pub fn get(&self) -> f64 {
         self.0
     }
 
@@ -107,7 +110,8 @@ impl StrictlyPositiveFinite<f64> {
     /// See [`f64::is_nan()`] for more details.
     #[inline]
     #[must_use]
-    pub const fn is_nan(&self) -> bool {
+    #[const_fn("1.83")]
+    pub fn is_nan(&self) -> bool {
         false
     }
 
@@ -125,7 +129,8 @@ impl StrictlyPositiveFinite<f64> {
     /// See [`f64::is_infinite()`] for more details.
     #[inline]
     #[must_use]
-    pub const fn is_infinite(&self) -> bool {
+    #[const_fn("1.83")]
+    pub fn is_infinite(&self) -> bool {
         false
     }
 
@@ -143,7 +148,8 @@ impl StrictlyPositiveFinite<f64> {
     /// See [`f64::is_finite()`] for more details.
     #[inline]
     #[must_use]
-    pub const fn is_finite(&self) -> bool {
+    #[const_fn("1.83")]
+    pub fn is_finite(&self) -> bool {
         true
     }
 
@@ -161,6 +167,7 @@ impl StrictlyPositiveFinite<f64> {
     /// See [`f64::is_subnormal()`] for more details.
     #[inline]
     #[must_use]
+    #[const_fn("1.83")]
     pub fn is_subnormal(&self) -> bool {
         self.0.is_subnormal()
     }
@@ -179,6 +186,7 @@ impl StrictlyPositiveFinite<f64> {
     /// See [`f64::is_normal()`] for more details.
     #[inline]
     #[must_use]
+    #[const_fn("1.83")]
     pub fn is_normal(&self) -> bool {
         self.0.is_normal()
     }
@@ -199,6 +207,7 @@ impl StrictlyPositiveFinite<f64> {
     /// See [`f64::classify()`] for more details.
     #[inline]
     #[must_use]
+    #[const_fn("1.83")]
     pub fn classify(&self) -> core::num::FpCategory {
         self.0.classify()
     }
@@ -217,7 +226,8 @@ impl StrictlyPositiveFinite<f64> {
     /// See [`f64::is_sign_positive()`] for more details.
     #[inline]
     #[must_use]
-    pub const fn is_sign_positive(&self) -> bool {
+    #[const_fn("1.83")]
+    pub fn is_sign_positive(&self) -> bool {
         true
     }
 
@@ -235,7 +245,8 @@ impl StrictlyPositiveFinite<f64> {
     /// See [`f64::is_sign_negative()`] for more details.
     #[inline]
     #[must_use]
-    pub const fn is_sign_negative(&self) -> bool {
+    #[const_fn("1.83")]
+    pub fn is_sign_negative(&self) -> bool {
         false
     }
 
@@ -251,7 +262,8 @@ impl StrictlyPositiveFinite<f64> {
     /// ```
     #[inline]
     #[must_use]
-    pub const fn is_negative_zero(&self) -> bool {
+    #[const_fn("1.83")]
+    pub fn is_negative_zero(&self) -> bool {
         false
     }
 
@@ -267,7 +279,8 @@ impl StrictlyPositiveFinite<f64> {
     /// ```
     #[inline]
     #[must_use]
-    pub const fn is_positive_zero(&self) -> bool {
+    #[const_fn("1.83")]
+    pub fn is_positive_zero(&self) -> bool {
         false
     }
 }
