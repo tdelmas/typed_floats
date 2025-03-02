@@ -33,7 +33,7 @@ And their positive and negative counterparts:
 - [`Positive`],[`PositiveFinite`], [`StrictlyPositive`], [`StrictlyPositiveFinite`]
 - [`Negative`],[`NegativeFinite`], [`StrictlyNegative`], [`StrictlyNegativeFinite`]
 
-(Negatives types reject `+0.0` and positives types reject `-0.0`)
+(Strictly negatives types reject `+0.0` and strictly positives types reject `-0.0`)
 
 | Type | -∞ | ]-∞; -0.0[ | -0.0 | +0.0 | ]+0.0; +∞[ | +∞ | `NaN` |
 |---|---|---|---|---|---|---|---|
