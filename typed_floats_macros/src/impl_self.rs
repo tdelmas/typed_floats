@@ -68,6 +68,7 @@ pub fn get_impl_self() -> Vec<Op> {
 
                 ReturnTypeSpecification::FloatSpecifications(output_spec)
             }))
+            .const_since("1.85")
             .build(),
         #[cfg(any(feature = "std", feature = "libm"))]
         OpBuilder::new("ceil")
@@ -293,6 +294,7 @@ pub fn get_impl_self() -> Vec<Op> {
 
                 ReturnTypeSpecification::FloatSpecifications(spec)
             }))
+            .const_since("1.85")
             .build(),
         #[cfg(any(feature = "std", feature = "libm"))]
         OpBuilder::new("sqrt")
@@ -570,6 +572,7 @@ pub fn get_impl_self() -> Vec<Op> {
 
                 ReturnTypeSpecification::FloatSpecifications(output_spec)
             }))
+            .const_since("1.85")
             .build(),
         OpBuilder::new("to_radians")
             .description(quote! {
@@ -598,6 +601,7 @@ pub fn get_impl_self() -> Vec<Op> {
             .result(Box::new(|float| {
                 ReturnTypeSpecification::FloatSpecifications(float.s.clone())
             }))
+            .const_since("1.85")
             .build(),
         #[cfg(any(feature = "std", feature = "libm"))]
         OpBuilder::new("cbrt")
@@ -1097,6 +1101,7 @@ pub fn get_impl_self() -> Vec<Op> {
                     accept_inf: float.s.accept_zero,
                 })
             }))
+            .const_since("1.85")
             .build(),
         #[cfg(any(feature = "std", feature = "libm"))]
         OpBuilder::new("powi")
