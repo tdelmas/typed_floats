@@ -20,6 +20,8 @@ jobs:
           "nightly",
           "beta",
           "stable",
+          "1.83",
+          "1.82",
           "1.70",
         ]
         release: [
