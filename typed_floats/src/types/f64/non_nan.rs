@@ -1,4 +1,5 @@
 use crate::types::{f64, InvalidNumber, NonNaN};
+use const_fn::const_fn;
 
 impl NonNaN<f64> {
     /// Creates a new value from a primitive type
@@ -17,6 +18,7 @@ impl NonNaN<f64> {
     /// # Errors
     /// Returns an error if the value is not valid
     #[inline]
+    #[const_fn("1.83")]
     pub fn new(value: f64) -> Result<Self, InvalidNumber> {
         if value.is_nan() {
             return Err(InvalidNumber::NaN);
@@ -76,7 +78,8 @@ impl NonNaN<f64> {
     /// ```
     #[inline]
     #[must_use]
-    pub const fn get(&self) -> f64 {
+    #[const_fn("1.83")]
+    pub fn get(&self) -> f64 {
         self.0
     }
 
@@ -95,7 +98,8 @@ impl NonNaN<f64> {
     /// See [`f64::is_nan()`] for more details.
     #[inline]
     #[must_use]
-    pub const fn is_nan(&self) -> bool {
+    #[const_fn("1.83")]
+    pub fn is_nan(&self) -> bool {
         false
     }
 
@@ -113,6 +117,7 @@ impl NonNaN<f64> {
     /// See [`f64::is_infinite()`] for more details.
     #[inline]
     #[must_use]
+    #[const_fn("1.83")]
     pub fn is_infinite(&self) -> bool {
         self.0.is_infinite()
     }
@@ -131,6 +136,7 @@ impl NonNaN<f64> {
     /// See [`f64::is_finite()`] for more details.
     #[inline]
     #[must_use]
+    #[const_fn("1.83")]
     pub fn is_finite(&self) -> bool {
         self.0.is_finite()
     }
@@ -149,6 +155,7 @@ impl NonNaN<f64> {
     /// See [`f64::is_subnormal()`] for more details.
     #[inline]
     #[must_use]
+    #[const_fn("1.83")]
     pub fn is_subnormal(&self) -> bool {
         self.0.is_subnormal()
     }
@@ -167,6 +174,7 @@ impl NonNaN<f64> {
     /// See [`f64::is_normal()`] for more details.
     #[inline]
     #[must_use]
+    #[const_fn("1.83")]
     pub fn is_normal(&self) -> bool {
         self.0.is_normal()
     }
@@ -187,6 +195,7 @@ impl NonNaN<f64> {
     /// See [`f64::classify()`] for more details.
     #[inline]
     #[must_use]
+    #[const_fn("1.83")]
     pub fn classify(&self) -> core::num::FpCategory {
         self.0.classify()
     }
@@ -205,6 +214,7 @@ impl NonNaN<f64> {
     /// See [`f64::is_sign_positive()`] for more details.
     #[inline]
     #[must_use]
+    #[const_fn("1.83")]
     pub fn is_sign_positive(&self) -> bool {
         self.0.is_sign_positive()
     }
@@ -223,6 +233,7 @@ impl NonNaN<f64> {
     /// See [`f64::is_sign_negative()`] for more details.
     #[inline]
     #[must_use]
+    #[const_fn("1.83")]
     pub fn is_sign_negative(&self) -> bool {
         self.0.is_sign_negative()
     }
@@ -243,6 +254,7 @@ impl NonNaN<f64> {
     /// ```
     #[inline]
     #[must_use]
+    #[const_fn("1.83")]
     pub fn is_negative_zero(&self) -> bool {
         self.0 == 0.0 && self.0.is_sign_negative()
     }
@@ -263,6 +275,7 @@ impl NonNaN<f64> {
     /// ```
     #[inline]
     #[must_use]
+    #[const_fn("1.83")]
     pub fn is_positive_zero(&self) -> bool {
         self.0 == 0.0 && self.0.is_sign_positive()
     }
