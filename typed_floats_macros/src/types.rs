@@ -153,6 +153,7 @@ pub struct Op {
     pub(crate) display: &'static str,
     pub(crate) fn_name: &'static str,
     pub(crate) trait_name: Option<&'static str>,
+    pub(crate) const_since: Option<&'static str>,
     pub(crate) comment: Option<&'static str>,
     pub(crate) params: proc_macro2::TokenStream,
     pub(crate) description: proc_macro2::TokenStream,
@@ -177,6 +178,7 @@ impl OpBuilder {
                 fn_name,
                 params: quote! { self },
                 trait_name: None,
+                const_since: None,
                 description: proc_macro2::TokenStream::new(),
                 comment: None,
                 skip_check_return_type_strictness: false,
@@ -240,6 +242,11 @@ impl OpBuilder {
         self
     }
 
+    pub fn const_since(mut self, version: &'static str) -> Self {
+        self.op.const_since = Some(version);
+        self
+    }
+
     pub fn build(self) -> Op {
         self.op
     }
@@ -295,6 +302,17 @@ impl Op {
 
         let params = &self.params;
 
+        let const_since = match &self.const_since {
+            
+            Some("1.85") => {
+                quote! { #[const_fn("1.85")] }
+            },
+            Some(_) => {
+                unimplemented!()
+            },
+            None => quote! {},
+        };
+
         if let Some(trait_name) = &self.trait_name {
             let trait_name: proc_macro2::TokenStream = trait_name.parse().unwrap();
 
@@ -305,6 +323,7 @@ impl Op {
                     #description
                     #[inline]
                     #[must_use]
+                    #const_since
                     fn #fn_ident(#params) -> Self::Output {
                         #return_value
                     }
@@ -316,6 +335,7 @@ impl Op {
                     #description
                     #[inline]
                     #[must_use]
+                    #const_since
                     pub fn #fn_ident(#params) -> #output_name {
                         #return_value
                     }

@@ -1,3 +1,5 @@
+use const_fn::const_fn;
+
 /// An error that can occur when converting from a string into a TypedFloat
 #[derive(Debug)]
 pub enum FromStrError {
