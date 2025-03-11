@@ -90,11 +90,13 @@ macro_rules! impl_ord {
 
             #[test]
             fn f32() {
-                let values = tf32::TEST_VALUES
+                let mut values = tf32::TEST_VALUES
                     .iter()
                     .map(|&x| tf32::$type::new(x))
                     .filter_map(|x| x.ok())
                     .collect::<Vec<_>>();
+                
+                values.sort();
 
                 assert!(is_sorted(&values));
 
@@ -110,11 +112,13 @@ macro_rules! impl_ord {
 
             #[test]
             fn f64() {
-                let values = tf64::TEST_VALUES
+                let mut values = tf64::TEST_VALUES
                     .iter()
                     .map(|&x| tf64::$type::new(x))
                     .filter_map(|x| x.ok())
                     .collect::<Vec<_>>();
+
+                values.sort();
 
                 assert!(is_sorted(&values));
 

@@ -583,11 +583,13 @@ pub fn get_impl_self() -> Vec<Op> {
                 /// let b: NonNaN = 0.0.try_into().unwrap();
                 /// let c: NonNaN = (-180.0).try_into().unwrap();
                 /// let d: NonNaN = 360.0.try_into().unwrap();
+                /// let e: StrictlyPositiveFinite = (5e-324).try_into().unwrap();
                 ///
                 /// assert_eq!(a.to_radians(), core::f64::consts::PI);
                 /// assert_eq!(b.to_radians(), 0.0);
                 /// assert_eq!(c.to_radians(), -core::f64::consts::PI);
                 /// assert_eq!(d.to_radians(), 2.0 * core::f64::consts::PI);
+                /// assert_eq!(e.to_radians(), 0.0);
                 ///
                 /// assert_eq!(tf64::INFINITY.to_radians(), tf64::INFINITY);
                 /// assert_eq!(tf64::NEG_INFINITY.to_radians(), tf64::NEG_INFINITY);
@@ -596,8 +598,13 @@ pub fn get_impl_self() -> Vec<Op> {
                 /// See [`f64::to_radians()`] for more details.
             })
             .result(Box::new(|float| {
-                ReturnTypeSpecification::FloatSpecifications(float.s.clone())
+                let mut output_spec = float.s.clone();
+
+                output_spec.accept_zero = true;
+
+                ReturnTypeSpecification::FloatSpecifications(output_spec)
             }))
+            .skip_check_return_type_strictness()
             .build(),
         #[cfg(any(feature = "std", feature = "libm"))]
         OpBuilder::new("cbrt")
@@ -1076,9 +1083,11 @@ pub fn get_impl_self() -> Vec<Op> {
                 /// # use typed_floats::*;
                 /// let a: NonNaN = 1.0.try_into().unwrap();
                 /// let b: NonNaN = (-1.0).try_into().unwrap();
+                /// let c: StrictlyPositiveFinite = (5e-324).try_into().unwrap();
                 ///
                 /// assert_eq!(a.recip(), 1.0);
                 /// assert_eq!(b.recip(), -1.0);
+                /// assert_eq!(c.recip(), tf64::INFINITY);
                 ///
                 /// assert_eq!(tf64::ZERO.recip(), tf64::INFINITY);
                 /// assert_eq!(tf64::NEG_ZERO.recip(), tf64::NEG_INFINITY);
@@ -1094,9 +1103,10 @@ pub fn get_impl_self() -> Vec<Op> {
                     accept_negative: float.s.accept_negative,
                     accept_positive: float.s.accept_positive,
                     accept_zero: float.s.accept_inf,
-                    accept_inf: float.s.accept_zero,
+                    accept_inf: true,
                 })
             }))
+            .skip_check_return_type_strictness()
             .build(),
         #[cfg(any(feature = "std", feature = "libm"))]
         OpBuilder::new("powi")
