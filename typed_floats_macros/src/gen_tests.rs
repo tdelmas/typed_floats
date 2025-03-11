@@ -67,8 +67,10 @@ pub(crate) fn test_values(float_type: &Ident) -> proc_macro2::TokenStream {
             -1.0,
             -core::#float_type::MIN_POSITIVE,
             -1.0e-308,
+            -5e-324,
             -0.0,
             0.0,
+            5e-324,
             1.0e-308,
             core::#float_type::MIN_POSITIVE,
             1.0,
@@ -86,7 +88,7 @@ pub(crate) fn get_test_values(float_type: &Ident) -> proc_macro2::TokenStream {
     let values = test_values(float_type);
 
     quote! {
-        let values: [#float_type; 21] = #values;
+        let values: [#float_type; 23] = #values;
 
         for i in 1..values.len() {
             let value = values[i];
