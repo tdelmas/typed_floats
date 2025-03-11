@@ -434,8 +434,10 @@ pub mod tf64 {
         );
     }
 
-    pub fn get_test_values() -> Vec<f64> {
-        vec![
+    /// Return an array of interesting test values
+    #[doc(hidden)]
+    pub fn get_test_values() -> [f64; 25] {
+        [
             f64::NAN,
             f64::NEG_INFINITY,
             f64::MIN,
@@ -768,8 +770,10 @@ pub mod tf32 {
         );
     }
 
-    pub fn get_test_values() -> Vec<f32> {
-        vec![
+    /// Return an array of interesting test values
+    #[doc(hidden)]
+    pub fn get_test_values() -> [f32; 25] {
+        [
             f32::NAN,
             f32::NEG_INFINITY,
             f32::MIN,
@@ -817,7 +821,7 @@ mod tests {
 
     #[test]
     fn test_f32() {
-        let mut values = tf32::get_test_values();
+        let mut values = tf32::get_test_values().to_vec();
         let first = values.remove(0);
         assert!(first.is_nan());
 
@@ -849,7 +853,7 @@ mod tests {
 
     #[test]
     fn test_f64() {
-        let mut values = tf64::get_test_values();
+        let mut values = tf64::get_test_values().to_vec();
         let first = values.remove(0);
         assert!(first.is_nan());
 
