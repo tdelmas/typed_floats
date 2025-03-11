@@ -261,7 +261,8 @@ pub mod tf64 {
         MIN_SUBNORMAL_POSITIVE,
         StrictlyPositiveFinite,
         f64,
-        f64::from_bits(0x0000_0000_0000_0001),
+        // SAFETY: it is a plain old datatype so we can always transmute from it.
+        unsafe { core::mem::transmute::<u64, f64>(0x0000_0000_0000_0001) },
         "Smallest subnormal positive `f64` value."
     );
 
@@ -269,7 +270,8 @@ pub mod tf64 {
         MAX_SUBNORMAL_POSITIVE,
         StrictlyPositiveFinite,
         f64,
-        f64::from_bits(0x000F_FFFF_FFFF_FFFF),
+        // SAFETY: it is a plain old datatype so we can always transmute from it.
+        unsafe { core::mem::transmute::<u64, f64>(0x000F_FFFF_FFFF_FFFF) },
         "Largest subnormal positive `f64` value."
     );
 
@@ -277,7 +279,8 @@ pub mod tf64 {
         MIN_SUBNORMAL_NEGATIVE,
         StrictlyNegativeFinite,
         f64,
-        f64::from_bits(0x8000_0000_0000_0001),
+        // SAFETY: it is a plain old datatype so we can always transmute from it.
+        unsafe { core::mem::transmute::<u64, f64>(0x8000_0000_0000_0001) },
         "Smallest subnormal negative `f64` value."
     );
 
@@ -285,7 +288,8 @@ pub mod tf64 {
         MAX_SUBNORMAL_NEGATIVE,
         StrictlyNegativeFinite,
         f64,
-        f64::from_bits(0x800F_FFFF_FFFF_FFFF),
+        // SAFETY: it is a plain old datatype so we can always transmute from it.
+        unsafe { core::mem::transmute::<u64, f64>(0x800F_FFFF_FFFF_FFFF) },
         "Largest subnormal negative `f64` value."
     );
 
@@ -589,7 +593,8 @@ pub mod tf32 {
         MIN_SUBNORMAL_POSITIVE,
         StrictlyPositiveFinite,
         f32,
-        f32::from_bits(0b0_00000000_00000000000000000000001),
+        // SAFETY: it is a plain old datatype so we can always transmute from it.
+        unsafe { core::mem::transmute::<u32, f32>(0b0_00000000_00000000000000000000001) },
         "Smallest subnormal positive `f32` value."
     );
 
@@ -597,7 +602,8 @@ pub mod tf32 {
         MAX_SUBNORMAL_POSITIVE,
         StrictlyPositiveFinite,
         f32,
-        f32::from_bits(0b0_00000000_11111111111111111111111),
+        // SAFETY: it is a plain old datatype so we can always transmute from it.
+        unsafe { core::mem::transmute::<u32, f32>(0b0_00000000_11111111111111111111111) },
         "Largest subnormal positive `f32` value."
     );
 
@@ -605,7 +611,8 @@ pub mod tf32 {
         MIN_SUBNORMAL_NEGATIVE,
         StrictlyNegativeFinite,
         f32,
-        f32::from_bits(0b1_00000000_00000000000000000000001),
+        // SAFETY: it is a plain old datatype so we can always transmute from it.
+        unsafe { core::mem::transmute::<u32, f32>(0b1_00000000_00000000000000000000001) },
         "Smallest subnormal negative `f32` value."
     );
 
@@ -613,7 +620,8 @@ pub mod tf32 {
         MAX_SUBNORMAL_NEGATIVE,
         StrictlyNegativeFinite,
         f32,
-        f32::from_bits(0b1_00000000_11111111111111111111111),
+        // SAFETY: it is a plain old datatype so we can always transmute from it.
+        unsafe { core::mem::transmute::<u32, f32>(0b1_00000000_11111111111111111111111) },
         "Largest subnormal negative `f32` value."
     );
 
