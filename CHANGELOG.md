@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.0.4 - 2025-03-11
+
+### Security
+
+- Invalid return type for `recip` and `to_radiants`[#200](https://github.com/tdelmas/typed_floats/pull/200)
+⚠️ This is a breaking change, and exceptionally semver is *not* respected as it will only break code with the security issue.
+
 ## 1.0.3 - 2025-03-02
 
 ### Added
