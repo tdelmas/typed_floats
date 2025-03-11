@@ -114,7 +114,7 @@ macro_rules! impl_hash {
                     assert_eq!(hash_set.len(), count);
                 }
 
-                let values = tf32::TEST_VALUES
+                let values = tf32::get_test_values()
                     .iter()
                     .map(|&x| tf32::$type::new(x))
                     .filter_map(|x| x.ok())
@@ -164,7 +164,7 @@ macro_rules! impl_hash {
                     assert_eq!(hash_set.len(), count);
                 }
 
-                let values = tf64::TEST_VALUES
+                let values = tf64::get_test_values()
                     .iter()
                     .map(|&x| tf64::$type::new(x))
                     .filter_map(|x| x.ok())
