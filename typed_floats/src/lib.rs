@@ -171,14 +171,6 @@ pub mod tf64 {
     /// Equivalent to `NegativeFinite<f64>`
     pub type NegativeFinite = crate::NegativeFinite<f64>;
 
-    const fn get_subnormal(digits: u64) -> f64 {
-        let res = f64::from_bits(digits);
-
-        assert!(res.is_subnormal());
-
-        res
-    }
-
     /// Returns `true` if the number is positive zero.
     ///     
     /// # Examples
@@ -269,7 +261,7 @@ pub mod tf64 {
         MIN_SUBNORMAL_POSITIVE,
         StrictlyPositiveFinite,
         f64,
-        get_subnormal(0x0000_0000_0000_0001),
+        f64::from_bits(0x0000_0000_0000_0001),
         "Smallest subnormal positive `f64` value."
     );
 
@@ -277,7 +269,7 @@ pub mod tf64 {
         MAX_SUBNORMAL_POSITIVE,
         StrictlyPositiveFinite,
         f64,
-        get_subnormal(0x000F_FFFF_FFFF_FFFF),
+        f64::from_bits(0x000F_FFFF_FFFF_FFFF),
         "Largest subnormal positive `f64` value."
     );
 
@@ -285,7 +277,7 @@ pub mod tf64 {
         MIN_SUBNORMAL_NEGATIVE,
         StrictlyNegativeFinite,
         f64,
-        get_subnormal(0x8000_0000_0000_0001),
+        f64::from_bits(0x8000_0000_0000_0001),
         "Smallest subnormal negative `f64` value."
     );
 
@@ -293,7 +285,7 @@ pub mod tf64 {
         MAX_SUBNORMAL_NEGATIVE,
         StrictlyNegativeFinite,
         f64,
-        get_subnormal(0x800F_FFFF_FFFF_FFFF),
+        f64::from_bits(0x800F_FFFF_FFFF_FFFF),
         "Largest subnormal negative `f64` value."
     );
 
@@ -507,14 +499,6 @@ pub mod tf32 {
     /// Equivalent to `NegativeFinite<f32>`
     pub type NegativeFinite = crate::NegativeFinite<f32>;
 
-    const fn get_subnormal(digits: u32) -> f32 {
-        let res = f32::from_bits(digits);
-
-        assert!(res.is_subnormal());
-
-        res
-    }
-
     /// Returns `true` if the number is positive zero.
     ///     
     /// # Examples
@@ -605,7 +589,7 @@ pub mod tf32 {
         MIN_SUBNORMAL_POSITIVE,
         StrictlyPositiveFinite,
         f32,
-        get_subnormal(0b0_00000000_00000000000000000000001),
+        f32::from_bits(0b0_00000000_00000000000000000000001),
         "Smallest subnormal positive `f32` value."
     );
 
@@ -613,7 +597,7 @@ pub mod tf32 {
         MAX_SUBNORMAL_POSITIVE,
         StrictlyPositiveFinite,
         f32,
-        get_subnormal(0b0_00000000_11111111111111111111111),
+        f32::from_bits(0b0_00000000_11111111111111111111111),
         "Largest subnormal positive `f32` value."
     );
 
@@ -621,7 +605,7 @@ pub mod tf32 {
         MIN_SUBNORMAL_NEGATIVE,
         StrictlyNegativeFinite,
         f32,
-        get_subnormal(0b1_00000000_00000000000000000000001),
+        f32::from_bits(0b1_00000000_00000000000000000000001),
         "Smallest subnormal negative `f32` value."
     );
 
@@ -629,7 +613,7 @@ pub mod tf32 {
         MAX_SUBNORMAL_NEGATIVE,
         StrictlyNegativeFinite,
         f32,
-        get_subnormal(0b1_00000000_11111111111111111111111),
+        f32::from_bits(0b1_00000000_11111111111111111111111),
         "Largest subnormal negative `f32` value."
     );
 
@@ -881,5 +865,18 @@ mod tests {
         assert_eq!(count_inf, 2);
         assert_eq!(count_zero, 2);
         assert!(count_subnormal >= 3);
+    }
+
+    #[test]
+    fn test_subnormals() {
+        assert!(tf64::MIN_SUBNORMAL_POSITIVE.is_subnormal());
+        assert!(tf64::MAX_SUBNORMAL_POSITIVE.is_subnormal());
+        assert!(tf64::MIN_SUBNORMAL_NEGATIVE.is_subnormal());
+        assert!(tf64::MAX_SUBNORMAL_NEGATIVE.is_subnormal());
+
+        assert!(tf32::MIN_SUBNORMAL_POSITIVE.is_subnormal());
+        assert!(tf32::MAX_SUBNORMAL_POSITIVE.is_subnormal());
+        assert!(tf32::MIN_SUBNORMAL_NEGATIVE.is_subnormal());
+        assert!(tf32::MAX_SUBNORMAL_NEGATIVE.is_subnormal());
     }
 }
