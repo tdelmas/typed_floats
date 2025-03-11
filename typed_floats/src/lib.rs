@@ -394,7 +394,7 @@ pub mod tf64 {
     }
 
     #[cfg(test)]
-    pub(crate) const TEST_VALUES: [f64; 23] = typed_floats_macros::test_values!(f64);
+    pub(crate) const TEST_VALUES: [f64; 25] = typed_floats_macros::test_values!(f64);
 }
 
 /// This module contains constants from [`core::f32`], casted to the corresponding type
@@ -661,5 +661,5 @@ pub mod tf32 {
     }
 
     #[cfg(test)]
-    pub(crate) const TEST_VALUES: [f32; 23] = typed_floats_macros::test_values!(f32);
+    pub(crate) const TEST_VALUES: [f32; 25] = typed_floats_macros::test_values!(f32);
 }

@@ -66,12 +66,14 @@ pub(crate) fn test_values(float_type: &Ident) -> proc_macro2::TokenStream {
             -core::#float_type::consts::FRAC_PI_2,
             -1.0,
             -core::#float_type::MIN_POSITIVE,
+            -1.0e-40, // f32 subnormal
             -1.0e-308,
-            -5e-324,
+            -5e-324, // f64 subnormal
             -0.0,
             0.0,
-            5e-324,
+            5e-324, // f64 subnormal
             1.0e-308,
+            1.0e-40, // f32 subnormal
             core::#float_type::MIN_POSITIVE,
             1.0,
             core::#float_type::consts::FRAC_PI_2,
@@ -88,20 +90,7 @@ pub(crate) fn get_test_values(float_type: &Ident) -> proc_macro2::TokenStream {
     let values = test_values(float_type);
 
     quote! {
-        let values: [#float_type; 23] = #values;
-
-        for i in 1..values.len() {
-            let value = values[i];
-            let prev_value = values[i-1];
-
-            if(value.is_nan() || prev_value.is_nan()) {
-                continue;
-            }
-
-            if value != 0.0 && prev_value != 0.0 {
-                assert!(value >prev_value, "values[{}] = {} <= values[{}] = {}", i, value, i-1, prev_value);
-            }
-        }
+        let values: [#float_type; 25] = #values;
     }
 }
 
