@@ -1,5 +1,4 @@
 use quote::quote;
-use syn::Ident;
 
 use crate::impl_self::get_impl_self;
 use crate::{get_definitions, get_impl_self_rhs, FloatDefinition, ReturnTypeDefinition};
@@ -52,46 +51,6 @@ fn test_op_checks(
     }
 
     res
-}
-
-pub(crate) fn test_values(float_type: &Ident) -> proc_macro2::TokenStream {
-    quote! {
-        [
-            core::#float_type::NAN,
-            core::#float_type::NEG_INFINITY,
-            core::#float_type::MIN,
-            -core::#float_type::consts::PI,
-            -core::#float_type::consts::E,
-            -2.0,
-            -core::#float_type::consts::FRAC_PI_2,
-            -1.0,
-            -core::#float_type::MIN_POSITIVE,
-            -1.0e-40, // f32 subnormal
-            -1.0e-308,
-            -5e-324, // f64 subnormal
-            -0.0,
-            0.0,
-            5e-324, // f64 subnormal
-            1.0e-308,
-            1.0e-40, // f32 subnormal
-            core::#float_type::MIN_POSITIVE,
-            1.0,
-            core::#float_type::consts::FRAC_PI_2,
-            2.0,
-            core::#float_type::consts::E,
-            core::#float_type::consts::PI,
-            core::#float_type::MAX,
-            core::#float_type::INFINITY,
-        ]
-    }
-}
-
-pub(crate) fn get_test_values(float_type: &Ident) -> proc_macro2::TokenStream {
-    let values = test_values(float_type);
-
-    quote! {
-        let values: [#float_type; 25] = #values;
-    }
 }
 
 pub fn generate_tests_self(float_type: &'static str, filter: &str) -> proc_macro2::TokenStream {
@@ -191,7 +150,11 @@ pub fn generate_tests_self(float_type: &'static str, filter: &str) -> proc_macro
         });
     }
 
-    let values = get_test_values(&float_type);
+    let values = match float_type.to_string().as_str() {
+        "f32" => quote! { let values = tf32::get_test_values(); },
+        "f64" => quote! { let values = tf64::get_test_values(); },
+        _ => panic!("unexpected float type"),
+    };
 
     quote! {
         #[test]
@@ -327,7 +290,11 @@ pub fn generate_tests_self_rhs(float_type: &'static str, filter: &str) -> proc_m
         }
     }
 
-    let values = get_test_values(&float_type);
+    let values = match float_type.to_string().as_str() {
+        "f32" => quote! { let values = tf32::get_test_values(); },
+        "f64" => quote! { let values = tf64::get_test_values(); },
+        _ => panic!("unexpected float type"),
+    };
 
     quote! {
         #[test]

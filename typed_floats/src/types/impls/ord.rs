@@ -90,12 +90,12 @@ macro_rules! impl_ord {
 
             #[test]
             fn f32() {
-                let mut values = tf32::TEST_VALUES
+                let mut values = tf32::get_test_values()
                     .iter()
                     .map(|&x| tf32::$type::new(x))
                     .filter_map(|x| x.ok())
                     .collect::<Vec<_>>();
-                
+
                 values.sort();
 
                 assert!(is_sorted(&values));
@@ -112,7 +112,7 @@ macro_rules! impl_ord {
 
             #[test]
             fn f64() {
-                let mut values = tf64::TEST_VALUES
+                let mut values = tf64::get_test_values()
                     .iter()
                     .map(|&x| tf64::$type::new(x))
                     .filter_map(|x| x.ok())
@@ -134,19 +134,19 @@ macro_rules! impl_ord {
 
             #[test]
             fn cmp_with_others() {
-                let values_non_nan = tf64::TEST_VALUES
+                let values_non_nan = tf64::get_test_values()
                     .iter()
                     .map(|&x| tf64::NonNaN::new(x))
                     .filter_map(|x| x.ok())
                     .collect::<Vec<_>>();
 
-                let values_non_zero_non_nan = tf64::TEST_VALUES
+                let values_non_zero_non_nan = tf64::get_test_values()
                     .iter()
                     .map(|&x| tf64::NonZeroNonNaN::new(x))
                     .filter_map(|x| x.ok())
                     .collect::<Vec<_>>();
 
-                let values = tf64::TEST_VALUES
+                let values = tf64::get_test_values()
                     .iter()
                     .map(|&x| tf64::$type::new(x))
                     .filter_map(|x| x.ok())
@@ -169,7 +169,7 @@ macro_rules! impl_ord {
                         assert_eq!(reversed, b.partial_cmp(a));
                     }
 
-                    for b in &tf64::TEST_VALUES {
+                    for b in &tf64::get_test_values() {
                         let res = a.get().partial_cmp(b);
                         let reversed = b.partial_cmp(&a.get());
 
