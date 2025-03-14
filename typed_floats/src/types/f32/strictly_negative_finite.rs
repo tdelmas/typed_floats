@@ -56,12 +56,13 @@ impl StrictlyNegativeFinite<f32> {
     /// but in release mode the behavior is undefined
     #[inline]
     #[must_use]
-    pub unsafe fn new_unchecked(value: f32) -> Self {
+    pub const unsafe fn new_unchecked(value: f32) -> Self {
         if Self::new(value).is_err() || value >= 0.0 {
-            debug_assert!(false, "{value} is not a valid StrictlyNegativeFinite<f32>");
+            #[cfg(debug_assertions)]
+            panic!("This value is not a valid StrictlyNegativeFinite<f32>");
 
             #[cfg(feature = "ensure_no_undefined_behavior")]
-            panic!("{value} is not a valid StrictlyNegativeFinite<f32>");
+            panic!("This value is not a valid StrictlyNegativeFinite<f32>");
 
             #[cfg(all(
                 feature = "compiler_hints",

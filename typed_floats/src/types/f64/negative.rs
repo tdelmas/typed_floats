@@ -48,12 +48,13 @@ impl Negative<f64> {
     /// but in release mode the behavior is undefined
     #[inline]
     #[must_use]
-    pub unsafe fn new_unchecked(value: f64) -> Self {
+    pub const unsafe fn new_unchecked(value: f64) -> Self {
         if Self::new(value).is_err() || value > 0.0 {
-            debug_assert!(false, "{value} is not a valid Negative<f64>");
+            #[cfg(debug_assertions)]
+            panic!("This value is not a valid Negative<f64>");
 
             #[cfg(feature = "ensure_no_undefined_behavior")]
-            panic!("{value} is not a valid Negative<f64>");
+            panic!("This value is not a valid Negative<f64>");
 
             #[cfg(all(
                 feature = "compiler_hints",

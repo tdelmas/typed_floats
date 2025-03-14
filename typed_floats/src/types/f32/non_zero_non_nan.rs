@@ -48,12 +48,13 @@ impl NonZeroNonNaN<f32> {
     /// but in release mode the behavior is undefined
     #[inline]
     #[must_use]
-    pub unsafe fn new_unchecked(value: f32) -> Self {
+    pub const unsafe fn new_unchecked(value: f32) -> Self {
         if Self::new(value).is_err() {
-            debug_assert!(false, "{value} is not a valid NonZeroNonNaN<f32>");
+            #[cfg(debug_assertions)]
+            panic!("This value is not a valid NonZeroNonNaN<f32>");
 
             #[cfg(feature = "ensure_no_undefined_behavior")]
-            panic!("{value} is not a valid NonZeroNonNaN<f32>");
+            panic!("This value is not a valid NonZeroNonNaN<f32>");
 
             #[cfg(all(
                 feature = "compiler_hints",
