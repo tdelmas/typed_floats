@@ -52,6 +52,7 @@ impl StrictlyPositive<f32> {
     /// but in release mode the behavior is undefined
     #[inline]
     #[must_use]
+    #[const_fn("1.83")]
     pub const unsafe fn new_unchecked(value: f32) -> Self {
         if Self::new(value).is_err() || value <= 0.0 {
             #[cfg(debug_assertions)]
