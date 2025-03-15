@@ -110,6 +110,7 @@
 #![warn(unsafe_op_in_unsafe_fn)]
 #![warn(unused_crate_dependencies)]
 #![cfg_attr(not(feature = "std"), no_std)]
+#![allow(clippy::unusual_byte_groupings)]
 
 // `format!` is used during the tests even in `no_std` environments
 #[cfg(all(test, not(feature = "std")))]
@@ -256,6 +257,42 @@ pub mod tf64 {
         "Smallest positive normal `f64` value."
     );
 
+    crate::generate_const!(
+        MIN_SUBNORMAL_POSITIVE,
+        StrictlyPositiveFinite,
+        f64,
+        // SAFETY: it is a plain old datatype so we can always transmute from it.
+        unsafe { core::mem::transmute::<u64, f64>(0x0000_0000_0000_0001) },
+        "Smallest subnormal positive `f64` value."
+    );
+
+    crate::generate_const!(
+        MAX_SUBNORMAL_POSITIVE,
+        StrictlyPositiveFinite,
+        f64,
+        // SAFETY: it is a plain old datatype so we can always transmute from it.
+        unsafe { core::mem::transmute::<u64, f64>(0x000F_FFFF_FFFF_FFFF) },
+        "Largest subnormal positive `f64` value."
+    );
+
+    crate::generate_const!(
+        MIN_SUBNORMAL_NEGATIVE,
+        StrictlyNegativeFinite,
+        f64,
+        // SAFETY: it is a plain old datatype so we can always transmute from it.
+        unsafe { core::mem::transmute::<u64, f64>(0x8000_0000_0000_0001) },
+        "Smallest subnormal negative `f64` value."
+    );
+
+    crate::generate_const!(
+        MAX_SUBNORMAL_NEGATIVE,
+        StrictlyNegativeFinite,
+        f64,
+        // SAFETY: it is a plain old datatype so we can always transmute from it.
+        unsafe { core::mem::transmute::<u64, f64>(0x800F_FFFF_FFFF_FFFF) },
+        "Largest subnormal negative `f64` value."
+    );
+
     /// This module contains constants from [`core::f64::consts`], casted to the corresponding type
     pub mod consts {
         crate::generate_const!(
@@ -393,8 +430,37 @@ pub mod tf64 {
         );
     }
 
-    #[cfg(test)]
-    pub(crate) const TEST_VALUES: [f64; 21] = typed_floats_macros::test_values!(f64);
+    /// Return an array of interesting test values
+    #[doc(hidden)]
+    pub fn get_test_values() -> [f64; 25] {
+        [
+            f64::NAN,
+            f64::NEG_INFINITY,
+            f64::MIN,
+            -core::f64::consts::PI,
+            -core::f64::consts::E,
+            -2.0,
+            -core::f64::consts::FRAC_PI_2,
+            -1.0,
+            -f64::MIN_POSITIVE,
+            crate::tf64::MAX_SUBNORMAL_NEGATIVE.get(),
+            -1.0e-308,
+            crate::tf64::MIN_SUBNORMAL_NEGATIVE.get(),
+            -0.0,
+            0.0,
+            crate::tf64::MIN_SUBNORMAL_POSITIVE.get(),
+            1.0e-308,
+            crate::tf64::MAX_SUBNORMAL_POSITIVE.get(),
+            f64::MIN_POSITIVE,
+            1.0,
+            core::f64::consts::FRAC_PI_2,
+            2.0,
+            core::f64::consts::E,
+            core::f64::consts::PI,
+            f64::MAX,
+            f64::INFINITY,
+        ]
+    }
 }
 
 /// This module contains constants from [`core::f32`], casted to the corresponding type
@@ -521,6 +587,42 @@ pub mod tf32 {
         f32,
         f32::MIN_POSITIVE,
         "Smallest positive normal `f32` value."
+    );
+
+    crate::generate_const!(
+        MIN_SUBNORMAL_POSITIVE,
+        StrictlyPositiveFinite,
+        f32,
+        // SAFETY: it is a plain old datatype so we can always transmute from it.
+        unsafe { core::mem::transmute::<u32, f32>(0b0_00000000_00000000000000000000001) },
+        "Smallest subnormal positive `f32` value."
+    );
+
+    crate::generate_const!(
+        MAX_SUBNORMAL_POSITIVE,
+        StrictlyPositiveFinite,
+        f32,
+        // SAFETY: it is a plain old datatype so we can always transmute from it.
+        unsafe { core::mem::transmute::<u32, f32>(0b0_00000000_11111111111111111111111) },
+        "Largest subnormal positive `f32` value."
+    );
+
+    crate::generate_const!(
+        MIN_SUBNORMAL_NEGATIVE,
+        StrictlyNegativeFinite,
+        f32,
+        // SAFETY: it is a plain old datatype so we can always transmute from it.
+        unsafe { core::mem::transmute::<u32, f32>(0b1_00000000_00000000000000000000001) },
+        "Smallest subnormal negative `f32` value."
+    );
+
+    crate::generate_const!(
+        MAX_SUBNORMAL_NEGATIVE,
+        StrictlyNegativeFinite,
+        f32,
+        // SAFETY: it is a plain old datatype so we can always transmute from it.
+        unsafe { core::mem::transmute::<u32, f32>(0b1_00000000_11111111111111111111111) },
+        "Largest subnormal negative `f32` value."
     );
 
     /// This module contains constants from [`core::f32::consts`], casted to the corresponding type
@@ -660,6 +762,129 @@ pub mod tf32 {
         );
     }
 
-    #[cfg(test)]
-    pub(crate) const TEST_VALUES: [f32; 21] = typed_floats_macros::test_values!(f32);
+    /// Return an array of interesting test values
+    #[doc(hidden)]
+    pub fn get_test_values() -> [f32; 25] {
+        [
+            f32::NAN,
+            f32::NEG_INFINITY,
+            f32::MIN,
+            -core::f32::consts::PI,
+            -core::f32::consts::E,
+            -2.0,
+            -core::f32::consts::FRAC_PI_2,
+            -1.0,
+            -f32::MIN_POSITIVE,
+            crate::tf32::MAX_SUBNORMAL_NEGATIVE.get(),
+            -1.0e-40,
+            crate::tf32::MIN_SUBNORMAL_NEGATIVE.get(),
+            -0.0,
+            0.0,
+            crate::tf32::MIN_SUBNORMAL_POSITIVE.get(),
+            1.0e-40,
+            crate::tf32::MAX_SUBNORMAL_POSITIVE.get(),
+            f32::MIN_POSITIVE,
+            1.0,
+            core::f32::consts::FRAC_PI_2,
+            2.0,
+            core::f32::consts::E,
+            core::f32::consts::PI,
+            f32::MAX,
+            f32::INFINITY,
+        ]
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn assert_sorted<T: PartialEq + PartialOrd + core::fmt::Debug>(values: &[T], zero: T) {
+        assert!(values.len() >= 2);
+        for i in 1..values.len() {
+            let a = &values[i - 1];
+            let b = &values[i];
+
+            if a != &zero || b != &zero {
+                assert!(a < b, "{a:?} < {b:?} should be true");
+            }
+        }
+    }
+
+    #[test]
+    fn test_f32() {
+        let mut values = tf32::get_test_values().to_vec();
+        let first = values.remove(0);
+        assert!(first.is_nan());
+
+        let others = values.as_slice();
+
+        assert_sorted(others, 0.0);
+
+        let mut count_inf = 0;
+        let mut count_zero = 0;
+        let mut count_subnormal = 0;
+
+        for value in others {
+            if value.is_infinite() {
+                count_inf += 1;
+            }
+            if value == &0.0 {
+                // 0.0 or -0.0
+                count_zero += 1;
+            }
+            if value.is_subnormal() {
+                count_subnormal += 1;
+            }
+        }
+
+        assert_eq!(count_inf, 2);
+        assert_eq!(count_zero, 2);
+        assert!(count_subnormal >= 3);
+    }
+
+    #[test]
+    fn test_f64() {
+        let mut values = tf64::get_test_values().to_vec();
+        let first = values.remove(0);
+        assert!(first.is_nan());
+
+        let others = values.as_slice();
+
+        assert_sorted(others, 0.0);
+
+        let mut count_inf = 0;
+        let mut count_zero = 0;
+        let mut count_subnormal = 0;
+
+        for value in others {
+            if value.is_infinite() {
+                count_inf += 1;
+            }
+            if value == &0.0 {
+                // 0.0 or -0.0
+                count_zero += 1;
+            }
+            if value.is_subnormal() {
+                count_subnormal += 1;
+            }
+        }
+
+        assert_eq!(count_inf, 2);
+        assert_eq!(count_zero, 2);
+        assert!(count_subnormal >= 3);
+    }
+
+    #[test]
+    fn test_subnormals() {
+        assert!(tf64::MIN_SUBNORMAL_POSITIVE.is_subnormal());
+        assert!(tf64::MAX_SUBNORMAL_POSITIVE.is_subnormal());
+        assert!(tf64::MIN_SUBNORMAL_NEGATIVE.is_subnormal());
+        assert!(tf64::MAX_SUBNORMAL_NEGATIVE.is_subnormal());
+
+        assert!(tf32::MIN_SUBNORMAL_POSITIVE.is_subnormal());
+        assert!(tf32::MAX_SUBNORMAL_POSITIVE.is_subnormal());
+        assert!(tf32::MIN_SUBNORMAL_NEGATIVE.is_subnormal());
+        assert!(tf32::MAX_SUBNORMAL_NEGATIVE.is_subnormal());
+    }
 }
