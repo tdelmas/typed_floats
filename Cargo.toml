@@ -10,3 +10,6 @@ version = "1.0.4"
 rust-version = "1.70"
 keywords = ["floats", "non-zero", "nan", "no_std"]
 categories = ["mathematics", "data-structures"]
+
+[workspace.dependencies]
+rustversion = "1.0.20"
