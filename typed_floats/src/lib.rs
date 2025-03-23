@@ -434,6 +434,7 @@ pub mod tf64 {
 
     /// Return an array of interesting test values
     #[doc(hidden)]
+    #[must_use]
     pub fn get_test_values() -> [f64; 25] {
         [
             f64::NAN,
@@ -766,6 +767,7 @@ pub mod tf32 {
 
     /// Return an array of interesting test values
     #[doc(hidden)]
+    #[must_use]
     pub fn get_test_values() -> [f32; 25] {
         [
             f32::NAN,

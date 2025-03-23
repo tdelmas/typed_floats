@@ -1,6 +1,6 @@
 use const_fn::const_fn;
 
-/// An error that can occur when converting from a string into a TypedFloat
+/// An error that can occur when converting from a string into a typed float
 #[derive(Debug)]
 pub enum FromStrError {
     /// The string did not contain a valid float number
