@@ -76,7 +76,6 @@ impl StrictlyNegativeFinite<f64> {
     /// ```
     #[inline]
     #[must_use]
-    #[const_fn("1.83")]
     pub const fn get(&self) -> f64 {
         self.0
     }

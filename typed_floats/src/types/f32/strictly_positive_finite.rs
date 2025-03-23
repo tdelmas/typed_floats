@@ -76,7 +76,6 @@ impl StrictlyPositiveFinite<f32> {
     /// ```
     #[inline]
     #[must_use]
-    #[const_fn("1.83")]
     pub const fn get(&self) -> f32 {
         self.0
     }
