@@ -1,4 +1,3 @@
-
 #[rustversion::since(1.85)]
 use typed_floats::*;
 
