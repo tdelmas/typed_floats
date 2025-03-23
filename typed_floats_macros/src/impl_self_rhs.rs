@@ -402,5 +402,45 @@ pub fn get_impl_self_rhs() -> Vec<OpRhs> {
         ops.push(div_euclid.build());
     };
 
+    if rustversion::cfg!(since(1.85)) {
+        let midpoint = OpRhsBuilder::new("Midpoint", "midpoint")
+            .op_test_primitive(Box::new(|var1, var2| quote! { #var1.midpoint(#var2) }))
+            .result(Box::new(|float, rhs| {
+                let can_be_neg_inf_and_pos_inf = float.s.accept_negative && float.s.accept_inf
+                    && rhs.s.accept_positive
+                    && rhs.s.accept_inf;
+
+                let can_be_pos_inf_and_neg_inf = float.s.accept_positive && float.s.accept_inf
+                    && rhs.s.accept_negative
+                    && rhs.s.accept_inf;
+
+                let can_be_nan = can_be_neg_inf_and_pos_inf || can_be_pos_inf_and_neg_inf;
+
+                let can_sign_be_different = (float.s.accept_negative && rhs.s.accept_positive)
+                || (float.s.accept_positive && rhs.s.accept_negative);
+                
+                let accept_zero = can_sign_be_different || float.s.accept_zero || rhs.s.accept_zero;
+                let accept_positive = float.s.accept_positive || rhs.s.accept_positive;
+                let accept_negative = float.s.accept_negative || rhs.s.accept_negative;
+                let accept_inf = float.s.accept_inf || rhs.s.accept_inf;
+
+                if can_be_nan {
+                    ReturnTypeSpecification::NativeFloat
+                } else {
+                    ReturnTypeSpecification::FloatSpecifications(FloatSpecifications {
+                        accept_inf,
+                        accept_zero,
+                        accept_positive,
+                        accept_negative,
+                    })
+                }
+
+
+
+            }));
+
+        ops.push(midpoint.build());
+    };
+
     ops
 }

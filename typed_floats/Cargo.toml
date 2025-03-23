@@ -32,6 +32,7 @@ libm = ["dep:num-traits", "typed_floats_macros/libm"]
 ensure_no_undefined_behavior = []
 
 [dependencies]
+rustversion = "1.0.20"
 
 [dependencies.typed_floats_macros]
 version = "=1.0.4"
