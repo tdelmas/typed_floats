@@ -405,6 +405,7 @@ pub fn get_impl_self_rhs() -> Vec<OpRhs> {
     if rustversion::cfg!(since(1.85)) {
         let midpoint = OpRhsBuilder::new("Midpoint", "midpoint")
             .op_test_primitive(Box::new(|var1, var2| quote! { #var1.midpoint(#var2) }))
+            .op_is_commutative()
             .result(Box::new(|float, rhs| {
                 let can_be_neg_inf_and_pos_inf = float.s.accept_negative
                     && float.s.accept_inf

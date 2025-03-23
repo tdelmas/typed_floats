@@ -4,6 +4,8 @@ macro_rules! impl_from_int {
             #[inline]
             #[must_use]
             fn from(value: $int) -> Self {
+                #[allow(clippy::cast_lossless)]
+                #[allow(clippy::cast_precision_loss)]
                 unsafe { Self::new_unchecked(value as f32) }
             }
         }
@@ -11,6 +13,8 @@ macro_rules! impl_from_int {
             #[inline]
             #[must_use]
             fn from(value: $int) -> Self {
+                #[allow(clippy::cast_lossless)]
+                #[allow(clippy::cast_precision_loss)]
                 unsafe { Self::new_unchecked(value as f64) }
             }
         }
@@ -24,6 +28,8 @@ macro_rules! impl_try_from_int {
 
             #[inline]
             fn try_from(value: $int) -> Result<Self, Self::Error> {
+                #[allow(clippy::cast_lossless)]
+                #[allow(clippy::cast_precision_loss)]
                 Self::new(value as f32)
             }
         }
@@ -32,6 +38,8 @@ macro_rules! impl_try_from_int {
 
             #[inline]
             fn try_from(value: $int) -> Result<Self, Self::Error> {
+                #[allow(clippy::cast_lossless)]
+                #[allow(clippy::cast_precision_loss)]
                 Self::new(value as f64)
             }
         }
