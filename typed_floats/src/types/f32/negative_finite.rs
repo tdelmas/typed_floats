@@ -19,7 +19,7 @@ impl NegativeFinite<f32> {
     /// Returns an error if the value is not valid
     #[inline]
     #[const_fn("1.83")]
-    pub fn new(value: f32) -> Result<Self, InvalidNumber> {
+    pub const fn new(value: f32) -> Result<Self, InvalidNumber> {
         if value.is_nan() {
             return Err(InvalidNumber::NaN);
         }
@@ -72,8 +72,7 @@ impl NegativeFinite<f32> {
     /// ```
     #[inline]
     #[must_use]
-    #[const_fn("1.83")]
-    pub fn get(&self) -> f32 {
+    pub const fn get(&self) -> f32 {
         self.0
     }
 
@@ -93,7 +92,7 @@ impl NegativeFinite<f32> {
     #[inline]
     #[must_use]
     #[const_fn("1.83")]
-    pub fn is_nan(&self) -> bool {
+    pub const fn is_nan(&self) -> bool {
         false
     }
 
@@ -112,7 +111,7 @@ impl NegativeFinite<f32> {
     #[inline]
     #[must_use]
     #[const_fn("1.83")]
-    pub fn is_infinite(&self) -> bool {
+    pub const fn is_infinite(&self) -> bool {
         false
     }
 
@@ -131,7 +130,7 @@ impl NegativeFinite<f32> {
     #[inline]
     #[must_use]
     #[const_fn("1.83")]
-    pub fn is_finite(&self) -> bool {
+    pub const fn is_finite(&self) -> bool {
         true
     }
 
@@ -150,7 +149,7 @@ impl NegativeFinite<f32> {
     #[inline]
     #[must_use]
     #[const_fn("1.83")]
-    pub fn is_subnormal(&self) -> bool {
+    pub const fn is_subnormal(&self) -> bool {
         self.0.is_subnormal()
     }
 
@@ -169,7 +168,7 @@ impl NegativeFinite<f32> {
     #[inline]
     #[must_use]
     #[const_fn("1.83")]
-    pub fn is_normal(&self) -> bool {
+    pub const fn is_normal(&self) -> bool {
         self.0.is_normal()
     }
 
@@ -190,7 +189,7 @@ impl NegativeFinite<f32> {
     #[inline]
     #[must_use]
     #[const_fn("1.83")]
-    pub fn classify(&self) -> core::num::FpCategory {
+    pub const fn classify(&self) -> core::num::FpCategory {
         self.0.classify()
     }
 
@@ -209,7 +208,7 @@ impl NegativeFinite<f32> {
     #[inline]
     #[must_use]
     #[const_fn("1.83")]
-    pub fn is_sign_positive(&self) -> bool {
+    pub const fn is_sign_positive(&self) -> bool {
         false
     }
 
@@ -228,7 +227,7 @@ impl NegativeFinite<f32> {
     #[inline]
     #[must_use]
     #[const_fn("1.83")]
-    pub fn is_sign_negative(&self) -> bool {
+    pub const fn is_sign_negative(&self) -> bool {
         true
     }
 
@@ -247,7 +246,7 @@ impl NegativeFinite<f32> {
     #[inline]
     #[must_use]
     #[const_fn("1.83")]
-    pub fn is_negative_zero(&self) -> bool {
+    pub const fn is_negative_zero(&self) -> bool {
         self.0 == 0.0
     }
 
@@ -266,7 +265,7 @@ impl NegativeFinite<f32> {
     #[inline]
     #[must_use]
     #[const_fn("1.83")]
-    pub fn is_positive_zero(&self) -> bool {
+    pub const fn is_positive_zero(&self) -> bool {
         false
     }
 }
