@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.0.5 - Unreleased
+
+### Added
+
+- Add [`midpoint`](https://doc.rust-lang.org/core/primitive.f32.html#method.midpoint) method for (rust>=85)
+- Method `get` is now `const`
+- When possible, floats methods are const (rust>=1.85)
+
 ## 1.0.4 - 2025-03-11
 
 ### Security
