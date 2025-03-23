@@ -83,6 +83,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "rustversion"
+version = "1.0.20"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "eded382c5f5f786b989652c49544c4877d9f015cc22e145a5ea8ea66c2921cd2"
+
+[[package]]
 name = "ryu"
 version = "1.0.20"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -180,6 +186,7 @@ version = "1.0.4"
 dependencies = [
  "const_fn",
  "num-traits",
+ "rustversion",
  "serde",
  "serde_json",
  "typed_floats_macros",
@@ -191,6 +198,7 @@ version = "1.0.4"
 dependencies = [
  "proc-macro2",
  "quote",
+ "rustversion",
  "syn",
 ]
 
