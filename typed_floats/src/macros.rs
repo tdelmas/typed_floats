@@ -323,3 +323,24 @@ macro_rules! generate_const {
         pub const $name: $crate::$type = $crate::as_const!($type, f64, $x);
     };
 }
+
+macro_rules! new_unchecked {
+    ($value:ident, $name:ident) => {{
+        if cfg!(any(
+            debug_assertions,
+            feature = "ensure_no_undefined_behavior"
+        )) {
+            if Self::new($value).is_err() {
+                panic!(concat!("This value is not a valid ", stringify!($name)));
+            }
+        } else if cfg!(feature = "compiler_hints") {
+            if Self::new($value).is_err() {
+                unsafe { core::hint::unreachable_unchecked() }
+            }
+        }
+
+        Self($value)
+    }};
+}
+
+pub(crate) use new_unchecked;

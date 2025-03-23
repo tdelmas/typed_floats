@@ -50,23 +50,7 @@ impl Negative<f64> {
     #[must_use]
     #[const_fn("1.83")]
     pub const unsafe fn new_unchecked(value: f64) -> Self {
-        if Self::new(value).is_err() || value > 0.0 {
-            #[cfg(debug_assertions)]
-            panic!("This value is not a valid Negative<f64>");
-
-            #[cfg(feature = "ensure_no_undefined_behavior")]
-            panic!("This value is not a valid Negative<f64>");
-
-            #[cfg(all(
-                feature = "compiler_hints",
-                not(feature = "ensure_no_undefined_behavior")
-            ))]
-            unsafe {
-                core::hint::unreachable_unchecked()
-            }
-        }
-
-        Self(value)
+        crate::macros::new_unchecked!(value, Negative)
     }
 
     /// Returns the value as a primitive type

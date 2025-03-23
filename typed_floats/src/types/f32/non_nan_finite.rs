@@ -50,23 +50,7 @@ impl NonNaNFinite<f32> {
     #[must_use]
     #[const_fn("1.83")]
     pub const unsafe fn new_unchecked(value: f32) -> Self {
-        if Self::new(value).is_err() {
-            #[cfg(debug_assertions)]
-            panic!("This value is not a valid NonNaNFinite<f32>");
-
-            #[cfg(feature = "ensure_no_undefined_behavior")]
-            panic!("This value is not a valid NonNaNFinite<f32>");
-
-            #[cfg(all(
-                feature = "compiler_hints",
-                not(feature = "ensure_no_undefined_behavior")
-            ))]
-            unsafe {
-                core::hint::unreachable_unchecked()
-            }
-        }
-
-        Self(value)
+        crate::macros::new_unchecked!(value, NonNaNFinite)
     }
 
     /// Returns the value as a primitive type
