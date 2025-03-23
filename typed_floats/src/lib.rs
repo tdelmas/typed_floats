@@ -185,7 +185,7 @@ pub mod tf64 {
     #[inline]
     #[must_use]
     #[const_fn("1.83")]
-    pub fn is_positive_zero(x: f64) -> bool {
+    pub const fn is_positive_zero(x: f64) -> bool {
         x == 0.0 && x.is_sign_positive()
     }
 
@@ -203,7 +203,7 @@ pub mod tf64 {
     #[inline]
     #[must_use]
     #[const_fn("1.83")]
-    pub fn is_negative_zero(x: f64) -> bool {
+    pub const fn is_negative_zero(x: f64) -> bool {
         x == 0.0 && x.is_sign_negative()
     }
 
@@ -517,7 +517,7 @@ pub mod tf32 {
     #[inline]
     #[must_use]
     #[const_fn("1.83")]
-    pub fn is_positive_zero(x: f32) -> bool {
+    pub const fn is_positive_zero(x: f32) -> bool {
         x == 0.0 && x.is_sign_positive()
     }
 
@@ -535,7 +535,7 @@ pub mod tf32 {
     #[inline]
     #[must_use]
     #[const_fn("1.83")]
-    pub fn is_negative_zero(x: f32) -> bool {
+    pub const fn is_negative_zero(x: f32) -> bool {
         x == 0.0 && x.is_sign_negative()
     }
 
