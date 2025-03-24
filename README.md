@@ -12,7 +12,7 @@
 This crate helps you to ensure the kind of floats you are using, without `panic!` (except if the `unsafe` function `new_unchecked` is used in an unsound way).
 
 zero overhead: everything is checked at compile time.
-(only `try_from` adds a little overhead at runtime)
+(only `new` and `try_from` adds a little overhead at runtime)
 
 `NaN` is rejected by all types.
 
