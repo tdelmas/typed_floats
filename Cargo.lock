@@ -182,7 +182,7 @@ dependencies = [
 
 [[package]]
 name = "typed_floats"
-version = "1.0.4"
+version = "1.0.5"
 dependencies = [
  "const_fn",
  "num-traits",
@@ -194,7 +194,7 @@ dependencies = [
 
 [[package]]
 name = "typed_floats_macros"
-version = "1.0.4"
+version = "1.0.5"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -219,7 +219,7 @@ dependencies = [
 
 [[package]]
 name = "xtask"
-version = "1.0.4"
+version = "1.0.5"
 dependencies = [
  "toml",
 ]

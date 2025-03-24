@@ -35,7 +35,7 @@ ensure_no_undefined_behavior = []
 rustversion.workspace = true
 
 [dependencies.typed_floats_macros]
-version = "=1.0.4"
+version = "=1.0.5"
 path = "../typed_floats_macros"
 
 [dependencies.serde]
