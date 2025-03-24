@@ -22,7 +22,7 @@ This crate is for you if:
 
 - If you want to know at compile time if a float can be negative, positive, zero, finite and ensure it is not `NaN`, without `panic!`.
 
-- If you need [`core::cmp::Ord`], [`core::cmp::Eq`] or [`core::hash::Hash`] on floats.
+- If you need [`core::cmp::Ord`], [`core::cmp::Eq`] or [`core::hash::Hash`] on (non-`NaN`) floats.
 
 # The 12 types provided by this crate
 
@@ -35,7 +35,7 @@ And their positive and negative counterparts:
 
 (Strictly negatives types reject `+0.0` and strictly positives types reject `-0.0`)
 
-| Type | -∞ | ]-∞; -0.0[ | -0.0 | +0.0 | ]+0.0; +∞[ | +∞ | `NaN` |
+| Type | `-∞` | `]-∞; -0.0[` | `-0.0` | `+0.0` | `]+0.0; +∞[` | `+∞` | `NaN` |
 |---|---|---|---|---|---|---|---|
 | [`NonNaN`] | ✔️ | ✔️ | ✔️ | ✔️  | ✔️ | ✔️ | ❌ |
 | [`NonNaNFinite`] | ❌ | ✔️ | ✔️ | ✔️ | ✔️ | ❌ |  ❌ |
