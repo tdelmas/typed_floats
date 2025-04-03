@@ -881,14 +881,29 @@ mod tests {
 
     #[test]
     fn test_subnormals() {
-        assert!(tf64::MIN_SUBNORMAL_POSITIVE.is_subnormal());
-        assert!(tf64::MAX_SUBNORMAL_POSITIVE.is_subnormal());
-        assert!(tf64::MIN_SUBNORMAL_NEGATIVE.is_subnormal());
-        assert!(tf64::MAX_SUBNORMAL_NEGATIVE.is_subnormal());
+        const SUBNORMALS_F64 : [f64; 4] = [
+            tf64::MAX_SUBNORMAL_NEGATIVE.get(),
+            tf64::MIN_SUBNORMAL_NEGATIVE.get(),
+            tf64::MIN_SUBNORMAL_POSITIVE.get(),
+            tf64::MAX_SUBNORMAL_POSITIVE.get(),
+        ];
 
-        assert!(tf32::MIN_SUBNORMAL_POSITIVE.is_subnormal());
-        assert!(tf32::MAX_SUBNORMAL_POSITIVE.is_subnormal());
-        assert!(tf32::MIN_SUBNORMAL_NEGATIVE.is_subnormal());
-        assert!(tf32::MAX_SUBNORMAL_NEGATIVE.is_subnormal());
+        const SUBNORMALS_F32 : [f32; 4] = [
+            tf32::MAX_SUBNORMAL_NEGATIVE.get(),
+            tf32::MIN_SUBNORMAL_NEGATIVE.get(),
+            tf32::MIN_SUBNORMAL_POSITIVE.get(),
+            tf32::MAX_SUBNORMAL_POSITIVE.get(),
+        ];
+
+        assert_sorted(&SUBNORMALS_F64, 0.0);
+        assert_sorted(&SUBNORMALS_F32, 0.0);
+
+        for value in SUBNORMALS_F64 {
+            assert!(value.is_subnormal());
+        }
+
+        for value in SUBNORMALS_F32 {
+            assert!(value.is_subnormal());
+        }
     }
 }
