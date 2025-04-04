@@ -3,7 +3,7 @@ use quote::quote;
 use crate::types::{FloatSpecifications, Op, OpBuilder, ReturnTypeSpecification};
 
 pub fn get_impl_self() -> Vec<Op> {
-    vec![
+    let mut ops = vec![
         OpBuilder::new("neg")
             .trait_name("core::ops::Neg")
             .display("-")
@@ -1157,5 +1157,45 @@ pub fn get_impl_self() -> Vec<Op> {
                 quote! { #var.powi(2) }
             }))
             .build(),
-    ]
+    ];
+
+    if rustversion::cfg!(since(1.86)) {
+        let next_up = OpBuilder::new("next_up")
+            .description(quote! {
+                /// Returns the least number greater than `self``.
+                ///
+                /// See [`f64::next_up()`] for more details.
+            })
+            .result(Box::new(|float| {
+                ReturnTypeSpecification::FloatSpecifications(FloatSpecifications {
+                    accept_negative: float.s.accept_negative,
+                    accept_positive: float.s.accept_positive
+                        || (float.s.accept_negative && float.s.accept_zero),
+                    accept_zero: float.s.accept_negative,
+                    accept_inf: float.s.accept_positive,
+                })
+            }));
+
+        ops.push(next_up.build());
+
+        let next_down = OpBuilder::new("next_down")
+            .description(quote! {
+                /// Returns the greatest number less than `self``.
+                ///
+                /// See [`f64::next_down()`] for more details.
+            })
+            .result(Box::new(|float| {
+                ReturnTypeSpecification::FloatSpecifications(FloatSpecifications {
+                    accept_negative: float.s.accept_negative
+                        || (float.s.accept_positive && float.s.accept_zero),
+                    accept_positive: float.s.accept_positive,
+                    accept_zero: float.s.accept_positive,
+                    accept_inf: float.s.accept_negative,
+                })
+            }));
+
+        ops.push(next_down.build());
+    }
+
+    ops
 }
