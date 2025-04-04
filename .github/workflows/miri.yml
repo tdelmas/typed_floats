@@ -8,7 +8,7 @@ on:
     inputs:
       test:
         required: true
-        default: '--doc --features=compiler_hints'
+        default: 'test --doc --features=compiler_hints'
         type: choice
         options:
         - 'test --doc --features=compiler_hints'
