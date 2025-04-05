@@ -881,14 +881,14 @@ mod tests {
 
     #[test]
     fn test_subnormals() {
-        const SUBNORMALS_F64 : [f64; 4] = [
+        const SUBNORMALS_F64: [f64; 4] = [
             tf64::MAX_SUBNORMAL_NEGATIVE.get(),
             tf64::MIN_SUBNORMAL_NEGATIVE.get(),
             tf64::MIN_SUBNORMAL_POSITIVE.get(),
             tf64::MAX_SUBNORMAL_POSITIVE.get(),
         ];
 
-        const SUBNORMALS_F32 : [f32; 4] = [
+        const SUBNORMALS_F32: [f32; 4] = [
             tf32::MAX_SUBNORMAL_NEGATIVE.get(),
             tf32::MIN_SUBNORMAL_NEGATIVE.get(),
             tf32::MIN_SUBNORMAL_POSITIVE.get(),

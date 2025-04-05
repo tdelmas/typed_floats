@@ -2,20 +2,22 @@ macro_rules! impl_from_int {
     ($type:ident,$int:ident) => {
         impl From<$int> for $type<f32> {
             #[inline]
-            #[must_use]
             fn from(value: $int) -> Self {
                 #[allow(clippy::cast_lossless)]
                 #[allow(clippy::cast_precision_loss)]
-                unsafe { Self::new_unchecked(value as f32) }
+                unsafe {
+                    Self::new_unchecked(value as f32)
+                }
             }
         }
         impl From<$int> for $type<f64> {
             #[inline]
-            #[must_use]
             fn from(value: $int) -> Self {
                 #[allow(clippy::cast_lossless)]
                 #[allow(clippy::cast_precision_loss)]
-                unsafe { Self::new_unchecked(value as f64) }
+                unsafe {
+                    Self::new_unchecked(value as f64)
+                }
             }
         }
     };

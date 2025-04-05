@@ -8,7 +8,6 @@ macro_rules! impl_from {
     ($test:ident, $type:ident) => {
         impl From<$type<Self>> for f32 {
             #[inline]
-            #[must_use]
             fn from(value: $type<Self>) -> Self {
                 value.0
             }
@@ -16,7 +15,6 @@ macro_rules! impl_from {
 
         impl From<$type<Self>> for f64 {
             #[inline]
-            #[must_use]
             fn from(value: $type<Self>) -> Self {
                 value.0
             }
