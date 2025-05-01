@@ -35,6 +35,6 @@ jobs:
           cargo miri setup
       - run: cargo xtask pre-build
       - run: cargo test --doc
-      - run: cargo miri ${{ github.event.inputs.test }}
+      - run: cargo miri ${{ github.event.inputs.test || "test --doc --features=compiler_hints" }}
 
           
