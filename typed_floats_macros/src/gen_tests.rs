@@ -19,28 +19,28 @@ fn test_op_checks(
                 let has_inf = #var.iter().any(|x| x.is_infinite());
                 assert!(has_inf, "No inf generated with {} but the output type {} accept it. Generated: {:?}", #op_name, stringify!(#full_type), #var);
             });
-        };
+        }
 
         if def.s.accept_zero {
             res.extend(quote! {
                 let has_zero = #var.iter().any(|x| x == &0.0);
                 assert!(has_zero, "No zero generated with {} but the output type {} accept it. Generated: {:?}", #op_name, stringify!(#full_type), #var);
             });
-        };
+        }
 
         if def.s.accept_positive {
             res.extend(quote! {
                 let has_positive = #var.iter().any(|x| x.is_sign_positive());
                 assert!(has_positive, "No positive generated with {} but the output type {} accept it. Generated: {:?}", #op_name, stringify!(#full_type), #var);
             });
-        };
+        }
 
         if def.s.accept_negative {
             res.extend(quote! {
                 let has_negative = #var.iter().any(|x| x.is_sign_negative());
                 assert!(has_negative, "No negative generated with {} but the output type {} accept it. Generated: {:?}", #op_name, stringify!(#full_type), #var);
             });
-        };
+        }
     } else {
         let full_type = float.float_type;
 

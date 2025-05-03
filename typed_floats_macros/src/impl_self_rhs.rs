@@ -4,7 +4,7 @@ use crate::types::{
     FloatDefinition, FloatSpecifications, OpRhs, OpRhsBuilder, ReturnTypeSpecification,
 };
 
-fn add_result(float: &FloatDefinition, rhs: &FloatDefinition) -> ReturnTypeSpecification {
+const fn add_result(float: &FloatDefinition, rhs: &FloatDefinition) -> ReturnTypeSpecification {
     let spec_a = &float.s;
     let spec_b = &rhs.s;
 
@@ -36,7 +36,7 @@ fn add_result(float: &FloatDefinition, rhs: &FloatDefinition) -> ReturnTypeSpeci
     }
 }
 
-fn can_one_be_zero_neg_and_the_other_zero_pos(
+const fn can_one_be_zero_neg_and_the_other_zero_pos(
     spec_a: &FloatSpecifications,
     spec_b: &FloatSpecifications,
 ) -> bool {
