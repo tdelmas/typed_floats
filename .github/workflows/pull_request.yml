@@ -1,11 +1,10 @@
 on: [pull_request]
 name: benchmark pull requests
-permissions:
-  pull-requests: read
-  statuses: write
 jobs:
   runBenchmark:
     name: run benchmark
+    permissions:
+        pull-requests: write
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
