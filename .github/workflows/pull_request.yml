@@ -14,3 +14,4 @@ jobs:
         with:
           cwd: "typed_floats"
           branchName: ${{ github.base_ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
