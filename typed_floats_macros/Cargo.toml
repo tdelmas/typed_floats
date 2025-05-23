@@ -12,6 +12,8 @@ categories.workspace = true
 
 [lib]
 proc-macro = true
+# Benchmarks are handleled by Criterion
+bench = false
 
 [features]
 std = []
