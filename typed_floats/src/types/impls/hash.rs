@@ -64,21 +64,8 @@ impl core::hash::Hash for NonNaNFinite<f64> {
     }
 }
 
-macro_rules! impl_hash {
+macro_rules! impl_hash_test {
     ($test:ident, $type:ident) => {
-        impl core::hash::Hash for $type<f32> {
-            #[inline]
-            fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
-                self.0.to_bits().hash(state);
-            }
-        }
-
-        impl core::hash::Hash for $type<f64> {
-            #[inline]
-            fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
-                self.0.to_bits().hash(state);
-            }
-        }
 
         #[cfg(test)]
         mod $test {
@@ -100,6 +87,7 @@ macro_rules! impl_hash {
                     hash_set.insert(neg_zero.unwrap());
                     hash_set.insert(pos_zero.unwrap());
                     let mut count = 1; // Zeros are equal
+                    assert_eq!(hash_set.len(), count);
 
                     if pos_one.is_ok() {
                         hash_set.insert(pos_one.unwrap());
@@ -140,16 +128,17 @@ macro_rules! impl_hash {
             fn f64() {
                 let mut hash_set = std::collections::HashSet::new();
 
-                let neg_zero = $type::<f32>::new(-0.0);
-                let pos_zero = $type::<f32>::new(0.0);
+                let neg_zero = $type::<f64>::new(-0.0);
+                let pos_zero = $type::<f64>::new(0.0);
                 let accept_both_zeroes = neg_zero.is_ok() && pos_zero.is_ok();
                 if accept_both_zeroes {
-                    let pos_one = $type::<f32>::new(1.0);
-                    let neg_one = $type::<f32>::new(-1.0);
+                    let pos_one = $type::<f64>::new(1.0);
+                    let neg_one = $type::<f64>::new(-1.0);
 
                     hash_set.insert(neg_zero.unwrap());
                     hash_set.insert(pos_zero.unwrap());
                     let mut count = 1; // Zeros are equal
+                    assert_eq!(hash_set.len(), count);
 
                     if pos_one.is_ok() {
                         hash_set.insert(pos_one.unwrap());
@@ -186,6 +175,26 @@ macro_rules! impl_hash {
                 assert_eq!(hash_set.len(), distincs.len());
             }
         }
+    }
+}
+
+macro_rules! impl_hash {
+    ($test:ident, $type:ident) => {
+        impl core::hash::Hash for $type<f32> {
+            #[inline]
+            fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
+                self.0.to_bits().hash(state);
+            }
+        }
+
+        impl core::hash::Hash for $type<f64> {
+            #[inline]
+            fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
+                self.0.to_bits().hash(state);
+            }
+        }
+
+        impl_hash_test!($test, $type);
     };
 }
 
@@ -199,3 +208,6 @@ impl_hash!(strictly_positive, StrictlyPositive);
 impl_hash!(strictly_negative, StrictlyNegative);
 impl_hash!(strictly_positive_finite, StrictlyPositiveFinite);
 impl_hash!(strictly_negative_finite, StrictlyNegativeFinite);
+
+impl_hash_test!(non_nan, NonNaN);
+impl_hash_test!(non_nan_finite, NonNaNFinite);
