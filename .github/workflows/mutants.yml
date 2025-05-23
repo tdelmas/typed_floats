@@ -12,6 +12,6 @@ jobs:
       - uses: actions/checkout@v4
       - run: cargo install cargo-mutants
       - run: cargo xtask pre-build
-      - run: cargo mutants -vV --in-place
+      - run: cd typed_floats && cargo mutants --in-place
 
           
