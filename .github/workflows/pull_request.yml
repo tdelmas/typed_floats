@@ -1,5 +1,8 @@
 on: [pull_request]
 name: benchmark pull requests
+permissions:
+  pull-requests: read
+  statuses: write
 jobs:
   runBenchmark:
     name: run benchmark
