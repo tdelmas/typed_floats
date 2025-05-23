@@ -9,4 +9,5 @@ jobs:
       - run: cargo xtask pre-build
       - uses: boa-dev/criterion-compare-action@v3
         with:
+          cwd: "typed_floats"
           branchName: ${{ github.base_ref }}
