@@ -38,7 +38,6 @@ macro_rules! impl_ord {
     };
 }
 
-
 macro_rules! impl_partial_ord {
     ($type:ident) => {
         impl PartialOrd for $type<f32> {

@@ -2,8 +2,8 @@ macro_rules! impl_ord_test {
     ($test:ident, $type:ident) => {
         mod $test {
             extern crate std;
-            use typed_floats::*;
             use std::vec::Vec; // Required for the tests to compile in no_std mode
+            use typed_floats::*;
 
             fn is_sorted<T: PartialOrd>(slice: &[T]) -> bool {
                 slice.windows(2).all(|w| w[0] <= w[1])
