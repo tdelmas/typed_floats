@@ -12,12 +12,14 @@ macro_rules! impl_eq_self {
         impl Eq for $type<f64> {}
 
         impl PartialEq for $type<f32> {
+            #[inline]
             fn eq(&self, other: &Self) -> bool {
                 self.0 == other.0
             }
         }
 
         impl PartialEq for $type<f64> {
+            #[inline]
             fn eq(&self, other: &Self) -> bool {
                 self.0 == other.0
             }
@@ -64,12 +66,14 @@ macro_rules! impl_fast_eq_self {
         impl Eq for $type<f64> {}
 
         impl PartialEq for $type<f32> {
+            #[inline]
             fn eq(&self, other: &Self) -> bool {
                 self.0.to_bits() == other.0.to_bits()
             }
         }
 
         impl PartialEq for $type<f64> {
+            #[inline]
             fn eq(&self, other: &Self) -> bool {
                 self.0.to_bits() == other.0.to_bits()
             }
