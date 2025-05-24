@@ -1,7 +1,6 @@
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
 
-use serde_json::value;
-use typed_floats::NonZeroNonNaN;
+use typed_floats::{NonZeroNonNaN, Positive};
 
 criterion_group!(benches, criterion_benchmark);
 criterion_main!(benches);
@@ -40,16 +39,16 @@ pub fn criterion_benchmark(c: &mut Criterion) {
     c.bench_function("sort", |b| {
         let valid_values_f32 = values_f32
             .iter()
-            .filter_map(|&value| NonZeroNonNaN::<f32>::new(value).ok());
+            .filter_map(|&value| Positive::<f32>::new(value).ok());
 
-        let mut values = Vec::new();
-        for i in 0..100 {
+        let mut values: Vec<Positive<f32>> = Vec::new();
+        for i in 0..1000 {
             values.extend(valid_values_f32.clone());
         }
 
         b.iter(|| {
             let mut values = values.clone();
-            values.sort_by(|a, b| a.partial_cmp(b).unwrap());
+            values.sort();
             black_box(values);
         });
     });
