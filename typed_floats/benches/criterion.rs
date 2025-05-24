@@ -40,7 +40,7 @@ pub fn criterion_benchmark(c: &mut Criterion) {
     c.bench_function("sort", |b| {
         let valid_values_f32 = values_f32
             .iter()
-            .filter_map(|&value| NonZeroNonNaN::<f32>::new(value).ok());
+            .filter_map(|&value| Positive::<f32>::new(value).ok());
 
         let mut values = Vec::new();
         for i in 0..100 {
