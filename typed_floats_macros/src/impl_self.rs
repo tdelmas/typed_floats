@@ -265,7 +265,12 @@ pub fn get_impl_self() -> Vec<Op> {
                 } else if !float.s.accept_positive {
                     quote! { -1.0 }
                 } else {
-                    quote! { self.get().signum() }
+                    let float_type = float.float_type_ident();
+
+                    quote! { {
+                        let one: #float_type = 1.0;
+                        one.copysign(self.get())
+                    } }
                 }
             }))
             .result(Box::new(|float| {
