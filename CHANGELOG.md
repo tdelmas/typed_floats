@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.0.7 - Unreleased
+
+### Added
+
+- 35% faster implementation of `signum` for all types
+- 8% faster implementation of `Eq` for non-zero types
+- 4% faster implementation of `Ord` for positives and negatives types
+
 ## 1.0.6 - 2025-05-24
 
 ### Added
