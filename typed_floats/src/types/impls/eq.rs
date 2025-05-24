@@ -30,28 +30,28 @@ macro_rules! impl_eq_base {
         impl PartialEq<$type<f32>> for f32 {
             #[inline]
             fn eq(&self, other: &$type<f32>) -> bool {
-                self == &other.0
+                *self == other.0
             }
         }
 
         impl PartialEq<$type<f64>> for f64 {
             #[inline]
             fn eq(&self, other: &$type<f64>) -> bool {
-                self == &other.0
+                *self == other.0
             }
         }
 
         impl PartialEq<f32> for $type<f32> {
             #[inline]
             fn eq(&self, other: &f32) -> bool {
-                &self.0 == other
+                self.0 == *other
             }
         }
 
         impl PartialEq<f64> for $type<f64> {
             #[inline]
             fn eq(&self, other: &f64) -> bool {
-                &self.0 == other
+                self.0 == *other
             }
         }
     };
