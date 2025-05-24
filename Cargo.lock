@@ -511,7 +511,7 @@ checksum = "bfb942dfe1d8e29a7ee7fcbde5bd2b9a25fb89aa70caea2eba3bee836ff41076"
 
 [[package]]
 name = "typed_floats"
-version = "1.0.5"
+version = "1.0.6"
 dependencies = [
  "const_fn",
  "criterion",
@@ -524,7 +524,7 @@ dependencies = [
 
 [[package]]
 name = "typed_floats_macros"
-version = "1.0.5"
+version = "1.0.6"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -737,7 +737,7 @@ dependencies = [
 
 [[package]]
 name = "xtask"
-version = "1.0.5"
+version = "1.0.6"
 dependencies = [
  "toml",
 ]
