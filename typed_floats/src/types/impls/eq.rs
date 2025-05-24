@@ -124,7 +124,7 @@ macro_rules! impl_fast_eq {
                     assert_eq!(t, t);
                     assert_eq!(t, value);
                     assert_eq!(value, t);
-                    
+
                     assert_ne!(t, nan);
                     assert_ne!(nan, t);
 
@@ -165,7 +165,7 @@ macro_rules! impl_fast_eq {
                     assert_eq!(t, t);
                     assert_eq!(t, value);
                     assert_eq!(value, t);
-                    
+
                     assert_ne!(t, nan);
                     assert_ne!(nan, t);
 
