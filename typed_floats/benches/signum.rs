@@ -16,7 +16,7 @@ pub fn criterion_benchmark(c: &mut Criterion) {
         b.iter(|| {
             let mut sum = 0.0;
             for i in &valid_values_f32 {
-                sum = sum + i.signum();
+                sum += i.signum().get();
             }
             black_box(sum);
         });
