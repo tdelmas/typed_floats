@@ -149,17 +149,25 @@ The only method that can `panic!` is the `unsafe` method `new_unchecked` when us
 
 A `panic!` triggered in any other way is considered a security bug and should be reported.
 
-## Minimal overhead
+## Minimal overhead and optimizations
 
 This crate is designed to have a minimal overhead at runtime, in terms of memory, speed and binary size.
 
-It may even be faster than using primitives [`f32`] and [`f64`] directly, as it may avoids some checks by using compiler hints.
+It can even be faster than using primitives [`f32`] and [`f64`] directly, as it may avoids some checks by using compiler hints and can use some faster implementations in some cases.
+
+### Overhead
 
 The only methods that adds a little overhead are `try_from` because of the checks they do at runtime, compared to the `unsafe` method `new_unchecked`.
 
 In debug mode, a little overhead is present, both to check the validity of the values and because `inline` may not be respected.
 
 Any other overhead is considered a bug and should be reported.
+
+### Compiler optimizations
+
+The compiler hints are enabled by default to enable compiler optimization when possible.
+
+Also, some methods are faster than the default implementation. For example, when possible `Eq` is implemented by comparing the bits of the two floats instead of the slower default implementation, that had special cases for `NaN` (to handle `NaN != NaN`) and `-0.0` (to handle `-0.0 == 0.0`).
 
 # Features
 

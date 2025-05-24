@@ -66,7 +66,6 @@ impl core::hash::Hash for NonNaNFinite<f64> {
 
 macro_rules! impl_hash_test {
     ($test:ident, $type:ident) => {
-
         #[cfg(test)]
         mod $test {
             extern crate std;
@@ -175,7 +174,7 @@ macro_rules! impl_hash_test {
                 assert_eq!(hash_set.len(), distincs.len());
             }
         }
-    }
+    };
 }
 
 macro_rules! impl_hash {
