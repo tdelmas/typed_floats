@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Add [`next_up`](https://doc.rust-lang.org/stable/std/primitive.f64.html#method.next_up) and [`next_down`](https://doc.rust-lang.org/stable/std/primitive.f64.html#method.next_down) methods (rust>=86)
+- `PartialEq` optimization in most cases, faster than the default float `PartialEq` implementation (~8% faster)
+- Add benchmarks in CI using `criterion`.
+- More extaustive tests
+- https://mutants.rs in CI
 
 ## 1.0.5 - 2025-03-24
 
