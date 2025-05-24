@@ -57,6 +57,7 @@ macro_rules! impl_eq_base {
     };
 }
 
+// This fast implementation can only be used for types that rejects `-0.0` and/or `+0.0`
 macro_rules! impl_fast_eq_self {
     ($type:ident) => {
         impl Eq for $type<f32> {}
@@ -76,6 +77,7 @@ macro_rules! impl_fast_eq_self {
     };
 }
 
+// This fast implementation can only be used for types that rejects `-0.0` AND `+0.0`
 macro_rules! impl_fast_eq_base {
     ($type:ident) => {
         impl PartialEq<$type<f32>> for f32 {
@@ -108,99 +110,6 @@ macro_rules! impl_fast_eq_base {
     };
 }
 
-macro_rules! impl_eq_test {
-    ($test:ident, $type:ident) => {
-        #[test]
-        fn $test() {
-            let values_f32 = crate::tf32::get_test_values();
-            let nan = f32::NAN;
-            for &value in &values_f32 {
-                if let Ok(t) = $type::<f32>::new(value) {
-                    assert_eq!(t, t);
-                    assert_eq!(t, value);
-                    assert_eq!(value, t);
-
-                    assert_ne!(t, nan);
-                    assert_ne!(nan, t);
-
-                    if value == 0.0 {
-                        assert_eq!(t, -value);
-                        assert_eq!(-value, t);
-                        assert_eq!(t, 0.0);
-                        assert_eq!(t, -0.0);
-                    } else {
-                        assert_ne!(t, -value);
-                        assert_ne!(-value, t);
-                        assert_ne!(t, 0.0);
-                        assert_ne!(t, -0.0);
-                    }
-
-                    for &other in &values_f32 {
-                        if let Ok(other_t) = $type::<f32>::new(other) {
-                            if other == value {
-                                assert_eq!(t, other_t);
-                                assert_eq!(other_t, t);
-                                assert_eq!(t, other);
-                                assert_eq!(other, t);
-                                assert_eq!(value, other);
-                                assert_eq!(other, value);
-                            } else {
-                                assert_ne!(t, other_t);
-                                assert_ne!(other_t, t);
-                                assert_ne!(t, other);
-                                assert_ne!(other, t);
-                                assert_ne!(value, other);
-                                assert_ne!(other, value);
-                            }
-                        }
-                    }
-                }
-            }
-
-            let nan = f64::NAN;
-            let values_f64 = crate::tf64::get_test_values();
-            for &value in &values_f64 {
-                if let Ok(t) = $type::<f64>::new(value) {
-                    assert_eq!(t, t);
-                    assert_eq!(t, value);
-                    assert_eq!(value, t);
-
-                    assert_ne!(t, nan);
-                    assert_ne!(nan, t);
-
-                    if value == 0.0 {
-                        assert_eq!(t, -value);
-                        assert_eq!(-value, t);
-                        assert_eq!(t, 0.0);
-                        assert_eq!(t, -0.0);
-                    } else {
-                        assert_ne!(t, -value);
-                        assert_ne!(-value, t);
-                        assert_ne!(t, 0.0);
-                        assert_ne!(t, -0.0);
-                    }
-
-                    for &other in &values_f64 {
-                        if let Ok(other_t) = $type::<f64>::new(other) {
-                            if other == value {
-                                assert_eq!(t, other_t);
-                                assert_eq!(other_t, t);
-                                assert_eq!(t, other);
-                                assert_eq!(other, t);
-                            } else {
-                                assert_ne!(t, other_t);
-                                assert_ne!(other_t, t);
-                                assert_ne!(t, other);
-                                assert_ne!(other, t);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    };
-}
-
 impl_eq_base!(NonNaN);
 impl_eq_self!(NonNaN);
 
@@ -214,16 +123,16 @@ impl_fast_eq_base!(NonZeroNonNaNFinite);
 impl_fast_eq_self!(NonZeroNonNaNFinite);
 
 impl_eq_base!(Positive);
-impl_eq_self!(Positive);
+impl_fast_eq_self!(Positive);
 
 impl_eq_base!(Negative);
-impl_eq_self!(Negative);
+impl_fast_eq_self!(Negative);
 
 impl_eq_base!(PositiveFinite);
-impl_eq_self!(PositiveFinite);
+impl_fast_eq_self!(PositiveFinite);
 
 impl_eq_base!(NegativeFinite);
-impl_eq_self!(NegativeFinite);
+impl_fast_eq_self!(NegativeFinite);
 
 impl_fast_eq_base!(StrictlyPositive);
 impl_fast_eq_self!(StrictlyPositive);
@@ -240,6 +149,99 @@ impl_fast_eq_self!(StrictlyNegativeFinite);
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    macro_rules! impl_eq_test {
+        ($test:ident, $type:ident) => {
+            #[test]
+            fn $test() {
+                let values_f32 = crate::tf32::get_test_values();
+                let nan = f32::NAN;
+                for &value in &values_f32 {
+                    if let Ok(t) = $type::<f32>::new(value) {
+                        assert_eq!(t, t);
+                        assert_eq!(t, value);
+                        assert_eq!(value, t);
+
+                        assert_ne!(t, nan);
+                        assert_ne!(nan, t);
+
+                        if value == 0.0 {
+                            assert_eq!(t, -value);
+                            assert_eq!(-value, t);
+                            assert_eq!(t, 0.0);
+                            assert_eq!(t, -0.0);
+                        } else {
+                            assert_ne!(t, -value);
+                            assert_ne!(-value, t);
+                            assert_ne!(t, 0.0);
+                            assert_ne!(t, -0.0);
+                        }
+
+                        for &other in &values_f32 {
+                            if let Ok(other_t) = $type::<f32>::new(other) {
+                                if other == value {
+                                    assert_eq!(t, other_t);
+                                    assert_eq!(other_t, t);
+                                    assert_eq!(t, other);
+                                    assert_eq!(other, t);
+                                    assert_eq!(value, other);
+                                    assert_eq!(other, value);
+                                } else {
+                                    assert_ne!(t, other_t);
+                                    assert_ne!(other_t, t);
+                                    assert_ne!(t, other);
+                                    assert_ne!(other, t);
+                                    assert_ne!(value, other);
+                                    assert_ne!(other, value);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                let nan = f64::NAN;
+                let values_f64 = crate::tf64::get_test_values();
+                for &value in &values_f64 {
+                    if let Ok(t) = $type::<f64>::new(value) {
+                        assert_eq!(t, t);
+                        assert_eq!(t, value);
+                        assert_eq!(value, t);
+
+                        assert_ne!(t, nan);
+                        assert_ne!(nan, t);
+
+                        if value == 0.0 {
+                            assert_eq!(t, -value);
+                            assert_eq!(-value, t);
+                            assert_eq!(t, 0.0);
+                            assert_eq!(t, -0.0);
+                        } else {
+                            assert_ne!(t, -value);
+                            assert_ne!(-value, t);
+                            assert_ne!(t, 0.0);
+                            assert_ne!(t, -0.0);
+                        }
+
+                        for &other in &values_f64 {
+                            if let Ok(other_t) = $type::<f64>::new(other) {
+                                if other == value {
+                                    assert_eq!(t, other_t);
+                                    assert_eq!(other_t, t);
+                                    assert_eq!(t, other);
+                                    assert_eq!(other, t);
+                                } else {
+                                    assert_ne!(t, other_t);
+                                    assert_ne!(other_t, t);
+                                    assert_ne!(t, other);
+                                    assert_ne!(other, t);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        };
+    }
 
     impl_eq_test!(non_nan, NonNaN);
     impl_eq_test!(non_nan_finite, NonNaNFinite);
