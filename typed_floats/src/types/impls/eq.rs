@@ -6,8 +6,8 @@ use crate::{
 
 // This is safe because we know that both values are not NaN
 
-macro_rules! impl_eq {
-    ($test:ident, $type:ident) => {
+macro_rules! impl_eq_self {
+    ($type:ident) => {
         impl Eq for $type<f32> {}
         impl Eq for $type<f64> {}
 
@@ -20,58 +20,45 @@ macro_rules! impl_eq {
         impl PartialEq for $type<f64> {
             fn eq(&self, other: &Self) -> bool {
                 self.0 == other.0
-            }
-        }
-
-        impl PartialEq<$type<f32>> for f32 {
-            #[inline]
-            fn eq(&self, other: &$type<f32>) -> bool {
-                self == &other.0
-            }
-        }
-
-        impl PartialEq<$type<f64>> for f64 {
-            #[inline]
-            fn eq(&self, other: &$type<f64>) -> bool {
-                self == &other.0
-            }
-        }
-
-        impl PartialEq<f32> for $type<f32> {
-            #[inline]
-            fn eq(&self, other: &f32) -> bool {
-                &self.0 == other
-            }
-        }
-
-        impl PartialEq<f64> for $type<f64> {
-            #[inline]
-            fn eq(&self, other: &f64) -> bool {
-                &self.0 == other
-            }
-        }
-
-        #[test]
-        fn $test() {
-            let values_f32 = [-1.0, 1.0];
-
-            for &value in &values_f32 {
-                if let Ok(t) = $type::<f32>::new(value) {
-                    assert_eq!(t, t);
-                    assert_eq!(t, value);
-                    assert_eq!(value, t);
-
-                    assert_ne!(t, -value);
-                    assert_ne!(-value, t);
-                    assert_ne!(t, 0.0);
-                }
             }
         }
     };
 }
 
-macro_rules! impl_fast_eq {
-    ($test:ident, $type:ident) => {
+macro_rules! impl_eq_base {
+    ($type:ident) => {
+        impl PartialEq<$type<f32>> for f32 {
+            #[inline]
+            fn eq(&self, other: &$type<f32>) -> bool {
+                self == &other.0
+            }
+        }
+
+        impl PartialEq<$type<f64>> for f64 {
+            #[inline]
+            fn eq(&self, other: &$type<f64>) -> bool {
+                self == &other.0
+            }
+        }
+
+        impl PartialEq<f32> for $type<f32> {
+            #[inline]
+            fn eq(&self, other: &f32) -> bool {
+                &self.0 == other
+            }
+        }
+
+        impl PartialEq<f64> for $type<f64> {
+            #[inline]
+            fn eq(&self, other: &f64) -> bool {
+                &self.0 == other
+            }
+        }
+    };
+}
+
+macro_rules! impl_fast_eq_self {
+    ($type:ident) => {
         impl Eq for $type<f32> {}
         impl Eq for $type<f64> {}
 
@@ -86,7 +73,11 @@ macro_rules! impl_fast_eq {
                 self.0.to_bits() == other.0.to_bits()
             }
         }
+    };
+}
 
+macro_rules! impl_fast_eq_base {
+    ($type:ident) => {
         impl PartialEq<$type<f32>> for f32 {
             #[inline]
             fn eq(&self, other: &$type<f32>) -> bool {
@@ -114,7 +105,11 @@ macro_rules! impl_fast_eq {
                 (&self.0).to_bits() == other.to_bits()
             }
         }
+    };
+}
 
+macro_rules! impl_eq_test {
+    ($test:ident, $type:ident) => {
         #[test]
         fn $test() {
             let values_f32 = crate::tf32::get_test_values();
@@ -147,11 +142,15 @@ macro_rules! impl_fast_eq {
                                 assert_eq!(other_t, t);
                                 assert_eq!(t, other);
                                 assert_eq!(other, t);
+                                assert_eq!(value, other);
+                                assert_eq!(other, value);
                             } else {
                                 assert_ne!(t, other_t);
                                 assert_ne!(other_t, t);
                                 assert_ne!(t, other);
                                 assert_ne!(other, t);
+                                assert_ne!(value, other);
+                                assert_ne!(other, value);
                             }
                         }
                     }
@@ -202,15 +201,56 @@ macro_rules! impl_fast_eq {
     };
 }
 
-impl_eq!(non_nan, NonNaN);
-impl_fast_eq!(non_zero_non_nan, NonZeroNonNaN);
-impl_eq!(non_nan_finite, NonNaNFinite);
-impl_fast_eq!(non_zero_non_nan_finite, NonZeroNonNaNFinite);
-impl_eq!(positive, Positive);
-impl_eq!(negative, Negative);
-impl_eq!(positive_finite, PositiveFinite);
-impl_eq!(negative_finite, NegativeFinite);
-impl_fast_eq!(strictly_positive, StrictlyPositive);
-impl_fast_eq!(strictly_negative, StrictlyNegative);
-impl_fast_eq!(strictly_positive_finite, StrictlyPositiveFinite);
-impl_fast_eq!(strictly_negative_finite, StrictlyNegativeFinite);
+impl_eq_base!(NonNaN);
+impl_eq_self!(NonNaN);
+
+impl_fast_eq_base!(NonZeroNonNaN);
+impl_fast_eq_self!(NonZeroNonNaN);
+
+impl_eq_base!(NonNaNFinite);
+impl_eq_self!(NonNaNFinite);
+
+impl_fast_eq_base!(NonZeroNonNaNFinite);
+impl_fast_eq_self!(NonZeroNonNaNFinite);
+
+impl_eq_base!(Positive);
+impl_eq_self!(Positive);
+
+impl_eq_base!(Negative);
+impl_eq_self!(Negative);
+
+impl_eq_base!(PositiveFinite);
+impl_eq_self!(PositiveFinite);
+
+impl_eq_base!(NegativeFinite);
+impl_eq_self!(NegativeFinite);
+
+impl_fast_eq_base!(StrictlyPositive);
+impl_fast_eq_self!(StrictlyPositive);
+
+impl_fast_eq_base!(StrictlyNegative);
+impl_fast_eq_self!(StrictlyNegative);
+
+impl_fast_eq_base!(StrictlyPositiveFinite);
+impl_fast_eq_self!(StrictlyPositiveFinite);
+
+impl_fast_eq_base!(StrictlyNegativeFinite);
+impl_fast_eq_self!(StrictlyNegativeFinite);
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    impl_eq_test!(non_nan, NonNaN);
+    impl_eq_test!(non_nan_finite, NonNaNFinite);
+    impl_eq_test!(non_zero_non_nan, NonZeroNonNaN);
+    impl_eq_test!(non_zero_non_nan_finite, NonZeroNonNaNFinite);
+    impl_eq_test!(positive, Positive);
+    impl_eq_test!(negative, Negative);
+    impl_eq_test!(positive_finite, PositiveFinite);
+    impl_eq_test!(negative_finite, NegativeFinite);
+    impl_eq_test!(strictly_positive, StrictlyPositive);
+    impl_eq_test!(strictly_negative, StrictlyNegative);
+    impl_eq_test!(strictly_positive_finite, StrictlyPositiveFinite);
+    impl_eq_test!(strictly_negative_finite, StrictlyNegativeFinite);
+}
