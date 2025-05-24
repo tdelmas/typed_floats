@@ -167,7 +167,10 @@ Any other overhead is considered a bug and should be reported.
 
 The compiler hints are enabled by default to enable compiler optimization when possible.
 
-Also, some methods are faster than the default implementation. For example, when possible `Eq` is implemented by comparing the bits of the two floats instead of the slower default implementation, that had special cases for `NaN` (to handle `NaN != NaN`) and `-0.0` (to handle `-0.0 == 0.0`).
+Also, some methods are faster than the default implementation. For example:
+
+- When possible `Eq` is implemented by comparing the bits of the two floats instead of the slower default implementation, that had special cases for `NaN` (to handle `NaN != NaN`) and `-0.0` (to handle `-0.0 == 0.0`).
+- `Ord` is implemented by directly comparing the bits of the two floats instead of the slower default implementation for negatives and positives types.
 
 # Features
 

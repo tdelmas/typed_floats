@@ -38,6 +38,42 @@ macro_rules! impl_ord {
     };
 }
 
+macro_rules! impl_fast_ord {
+    ($type:ident) => {
+        impl Ord for $type<f32> {
+            #[inline]
+            fn cmp(&self, other: &Self) -> core::cmp::Ordering {
+                self.get().to_bits().cmp(&other.get().to_bits())
+            }
+        }
+
+        impl Ord for $type<f64> {
+            #[inline]
+            fn cmp(&self, other: &Self) -> core::cmp::Ordering {
+                self.get().to_bits().cmp(&other.get().to_bits())
+            }
+        }
+    };
+}
+
+macro_rules! impl_fast_inv_ord {
+    ($type:ident) => {
+        impl Ord for $type<f32> {
+            #[inline]
+            fn cmp(&self, other: &Self) -> core::cmp::Ordering {
+                other.get().to_bits().cmp(&self.get().to_bits())
+            }
+        }
+
+        impl Ord for $type<f64> {
+            #[inline]
+            fn cmp(&self, other: &Self) -> core::cmp::Ordering {
+                other.get().to_bits().cmp(&self.get().to_bits())
+            }
+        }
+    };
+}
+
 macro_rules! impl_partial_ord {
     ($type:ident) => {
         impl PartialOrd for $type<f32> {
@@ -88,14 +124,14 @@ impl_ord!(NonNaN);
 impl_ord!(NonZeroNonNaN);
 impl_ord!(NonNaNFinite);
 impl_ord!(NonZeroNonNaNFinite);
-impl_ord!(Positive);
-impl_ord!(Negative);
-impl_ord!(PositiveFinite);
-impl_ord!(NegativeFinite);
-impl_ord!(StrictlyPositive);
-impl_ord!(StrictlyNegative);
-impl_ord!(StrictlyPositiveFinite);
-impl_ord!(StrictlyNegativeFinite);
+impl_fast_ord!(Positive);
+impl_fast_inv_ord!(Negative);
+impl_fast_ord!(PositiveFinite);
+impl_fast_inv_ord!(NegativeFinite);
+impl_fast_ord!(StrictlyPositive);
+impl_fast_inv_ord!(StrictlyNegative);
+impl_fast_ord!(StrictlyPositiveFinite);
+impl_fast_inv_ord!(StrictlyNegativeFinite);
 
 impl_partial_ord!(NonNaN);
 impl_partial_ord!(NonZeroNonNaN);
