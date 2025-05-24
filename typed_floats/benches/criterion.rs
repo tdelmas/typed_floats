@@ -25,4 +25,14 @@ pub fn criterion_benchmark(c: &mut Criterion) {
             black_box(equals);
         });
     });
+
+    c.bench_function("signum", |b| {
+        b.iter(|| {
+            let mut sum = 0.0;
+            for i in &valid_values_f32 {
+                sum += i.signum().get();
+            }
+            black_box(sum);
+        });
+    });
 }

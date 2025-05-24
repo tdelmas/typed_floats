@@ -63,7 +63,7 @@ criterion = "0.3"
 bench = false
 
 [[bench]]
-name = "eq"
+name = "criterion"
 harness = false
 
 [package.metadata.docs.rs]
