@@ -11,13 +11,16 @@ macro_rules! impl_ord {
         impl Ord for $type<f32> {
             #[inline]
             fn cmp(&self, other: &Self) -> core::cmp::Ordering {
-                #[allow(clippy::float_cmp)]
-                if self.get() < other.get() {
-                    core::cmp::Ordering::Less
-                } else if self.get() == other.get() {
-                    core::cmp::Ordering::Equal
-                } else {
-                    core::cmp::Ordering::Greater
+                match self.get().partial_cmp(&other.get()) {
+                    Some(ordering) => ordering,
+                    None => {
+                        // This is safe because we know that both values are not NaN
+                        if cfg!(feature = "compiler_hints") {
+                            unsafe { core::hint::unreachable_unchecked() }
+                        } else {
+                            unreachable!()
+                        }
+                    }
                 }
             }
         }
@@ -25,13 +28,16 @@ macro_rules! impl_ord {
         impl Ord for $type<f64> {
             #[inline]
             fn cmp(&self, other: &Self) -> core::cmp::Ordering {
-                #[allow(clippy::float_cmp)]
-                if self.get() < other.get() {
-                    core::cmp::Ordering::Less
-                } else if self.get() == other.get() {
-                    core::cmp::Ordering::Equal
-                } else {
-                    core::cmp::Ordering::Greater
+                match self.get().partial_cmp(&other.get()) {
+                    Some(ordering) => ordering,
+                    None => {
+                        // This is safe because we know that both values are not NaN
+                        if cfg!(feature = "compiler_hints") {
+                            unsafe { core::hint::unreachable_unchecked() }
+                        } else {
+                            unreachable!()
+                        }
+                    }
                 }
             }
         }
