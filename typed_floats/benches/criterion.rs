@@ -1,6 +1,6 @@
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
 
-use typed_floats::{NonZeroNonNaN, Positive};
+use typed_floats::{NonNaN, NonZeroNonNaN, Positive};
 
 criterion_group!(benches, criterion_benchmark);
 criterion_main!(benches);
@@ -36,13 +36,47 @@ pub fn criterion_benchmark(c: &mut Criterion) {
         });
     });
 
-    c.bench_function("sort", |b| {
+    c.bench_function("sort_positive", |b| {
         let valid_values_f32 = values_f32
             .iter()
             .filter_map(|&value| Positive::<f32>::new(value).ok());
 
         let mut values: Vec<Positive<f32>> = Vec::new();
-        for i in 0..1000 {
+        for _ in 0..1000 {
+            values.extend(valid_values_f32.clone());
+        }
+
+        b.iter(|| {
+            let mut values = values.clone();
+            values.sort();
+            black_box(values);
+        });
+    });
+
+    c.bench_function("sort_nonzero", |b| {
+        let valid_values_f32 = values_f32
+            .iter()
+            .filter_map(|&value| NonZeroNonNaN::<f32>::new(value).ok());
+
+        let mut values: Vec<NonZeroNonNaN<f32>> = Vec::new();
+        for _ in 0..1000 {
+            values.extend(valid_values_f32.clone());
+        }
+
+        b.iter(|| {
+            let mut values = values.clone();
+            values.sort();
+            black_box(values);
+        });
+    });
+
+    c.bench_function("sort_nonnan", |b| {
+        let valid_values_f32 = values_f32
+            .iter()
+            .filter_map(|&value| NonNaN::<f32>::new(value).ok());
+
+        let mut values: Vec<NonNaN<f32>> = Vec::new();
+        for _ in 0..1000 {
             values.extend(valid_values_f32.clone());
         }
 
