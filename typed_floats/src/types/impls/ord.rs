@@ -11,14 +11,23 @@ macro_rules! impl_ord {
         impl Ord for $type<f32> {
             #[inline]
             fn cmp(&self, other: &Self) -> core::cmp::Ordering {
-                match self.get().partial_cmp(&other.get()) {
-                    Some(ordering) => ordering,
-                    None => {
-                        // This is safe because we know that both values are not NaN
-                        if cfg!(feature = "compiler_hints") {
-                            unsafe { core::hint::unreachable_unchecked() }
+                match (self.is_sign_positive(), other.is_sign_positive()) {
+                    (true, true) => self.get().to_bits().cmp(&other.get().to_bits()),
+                    (false, false) => other.get().to_bits().cmp(&self.get().to_bits()),
+                    (true, false) => {
+                        if self.get() == other.get() {
+                            // They are 0.0 and -0.0
+                            core::cmp::Ordering::Equal
                         } else {
-                            unreachable!()
+                            core::cmp::Ordering::Greater
+                        }
+                    }
+                    (false, true) => {
+                        if self.get() == other.get() {
+                            // They are -0.0 and 0.0
+                            core::cmp::Ordering::Equal
+                        } else {
+                            core::cmp::Ordering::Less
                         }
                     }
                 }
@@ -28,14 +37,23 @@ macro_rules! impl_ord {
         impl Ord for $type<f64> {
             #[inline]
             fn cmp(&self, other: &Self) -> core::cmp::Ordering {
-                match self.get().partial_cmp(&other.get()) {
-                    Some(ordering) => ordering,
-                    None => {
-                        // This is safe because we know that both values are not NaN
-                        if cfg!(feature = "compiler_hints") {
-                            unsafe { core::hint::unreachable_unchecked() }
+                match (self.is_sign_positive(), other.is_sign_positive()) {
+                    (true, true) => self.get().to_bits().cmp(&other.get().to_bits()),
+                    (false, false) => other.get().to_bits().cmp(&self.get().to_bits()),
+                    (true, false) => {
+                        if self.get() == other.get() {
+                            // They are 0.0 and -0.0
+                            core::cmp::Ordering::Equal
                         } else {
-                            unreachable!()
+                            core::cmp::Ordering::Greater
+                        }
+                    }
+                    (false, true) => {
+                        if self.get() == other.get() {
+                            // They are -0.0 and 0.0
+                            core::cmp::Ordering::Equal
+                        } else {
+                            core::cmp::Ordering::Less
                         }
                     }
                 }
@@ -49,14 +67,24 @@ macro_rules! impl_nonzero_ord {
         impl Ord for $type<f32> {
             #[inline]
             fn cmp(&self, other: &Self) -> core::cmp::Ordering {
-                self.get().total_cmp(&other.get())
+                match (self.is_sign_positive(), other.is_sign_positive()) {
+                    (true, true) => self.get().to_bits().cmp(&other.get().to_bits()),
+                    (false, false) => other.get().to_bits().cmp(&self.get().to_bits()),
+                    (true, false) => core::cmp::Ordering::Greater,
+                    (false, true) => core::cmp::Ordering::Less,
+                }
             }
         }
 
         impl Ord for $type<f64> {
             #[inline]
             fn cmp(&self, other: &Self) -> core::cmp::Ordering {
-                self.get().total_cmp(&other.get())
+                match (self.is_sign_positive(), other.is_sign_positive()) {
+                    (true, true) => self.get().to_bits().cmp(&other.get().to_bits()),
+                    (false, false) => other.get().to_bits().cmp(&self.get().to_bits()),
+                    (true, false) => core::cmp::Ordering::Greater,
+                    (false, true) => core::cmp::Ordering::Less,
+                }
             }
         }
     };
