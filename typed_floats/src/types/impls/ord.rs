@@ -38,6 +38,24 @@ macro_rules! impl_ord {
     };
 }
 
+macro_rules! impl_nonzero_ord {
+    ($type:ident) => {
+        impl Ord for $type<f32> {
+            #[inline]
+            fn cmp(&self, other: &Self) -> core::cmp::Ordering {
+                self.get().total_cmp(&other.get())
+            }
+        }
+
+        impl Ord for $type<f64> {
+            #[inline]
+            fn cmp(&self, other: &Self) -> core::cmp::Ordering {
+                self.get().total_cmp(&other.get())
+            }
+        }
+    };
+}
+
 macro_rules! impl_fast_ord {
     ($type:ident) => {
         impl Ord for $type<f32> {
@@ -121,9 +139,9 @@ macro_rules! impl_partial_ord {
 }
 
 impl_ord!(NonNaN);
-impl_ord!(NonZeroNonNaN);
+impl_nonzero_ord!(NonZeroNonNaN);
 impl_ord!(NonNaNFinite);
-impl_ord!(NonZeroNonNaNFinite);
+impl_nonzero_ord!(NonZeroNonNaNFinite);
 impl_fast_ord!(Positive);
 impl_fast_inv_ord!(Negative);
 impl_fast_ord!(PositiveFinite);
