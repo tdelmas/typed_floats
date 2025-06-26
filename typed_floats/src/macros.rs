@@ -230,7 +230,7 @@ macro_rules! as_const {
         const TMP: $float = $x;
 
         #[allow(clippy::float_cmp_const)]
-        if TMP != TMP {
+        const RESULT: $crate::$type::<$float> = if TMP != TMP {
             panic!("NaN is not valid")
         } else if TMP == $float::INFINITY && !$crate::$type::accept_infinity() {
             panic!("Infinity is not valid")
@@ -245,7 +245,8 @@ macro_rules! as_const {
         } else {
             // Safety: The value has been checked
             unsafe { $crate::$type::<$float>::internal_only_new_unchecked(TMP) }
-        }
+        };
+        RESULT
     }};
     ($type:ident, $x:expr) => {{
         $crate::as_const!($type, f64, $x)
