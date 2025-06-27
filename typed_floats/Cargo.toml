@@ -56,7 +56,7 @@ version = "0.4.11"
 [dev-dependencies]
 serde_json = { version = "1.0" }
 num-traits = "0.2"
-criterion = "0.3"
+criterion = "0.6"
 
 [lib]
 # Benchmarks are handleled by Criterion
