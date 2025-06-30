@@ -99,20 +99,8 @@
 //!
 //!
 //!
-#![warn(clippy::indexing_slicing)]
-#![warn(clippy::nursery)]
-#![warn(clippy::panic_in_result_fn)]
-#![warn(clippy::panic)]
-#![warn(clippy::pedantic)]
-#![warn(clippy::unwrap_in_result)]
-#![warn(clippy::unwrap_used)]
 #![warn(missing_docs)]
-#![warn(unsafe_op_in_unsafe_fn)]
-#![warn(unused_crate_dependencies)]
 #![cfg_attr(not(feature = "std"), no_std)]
-#![allow(clippy::unusual_byte_groupings)]
-// msrv is tested in CI and this lint doesn't detects the `rustversion` guard
-#![allow(clippy::incompatible_msrv)]
 
 // `format!` is used during the tests even in `no_std` environments
 #[cfg(all(test, not(feature = "std")))]
