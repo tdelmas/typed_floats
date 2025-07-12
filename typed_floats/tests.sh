@@ -8,8 +8,6 @@ set -x
 
 cd $(dirname $0)
 
-cd .. && cargo xtask pre-build
-
 # First check that it builds with all features combinations
 cargo build --no-default-features
 cargo build --no-default-features --features std

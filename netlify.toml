@@ -1,7 +1,7 @@
 [build]
 
 publish = "./target/doc/"
-command = "rustup default nightly && cargo xtask pre-build && cd typed_floats && cargo doc --all-features"
+command = "rustup default nightly && cd typed_floats && cargo doc --all-features"
 
 [[redirects]]
 from = "/"

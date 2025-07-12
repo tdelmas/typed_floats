@@ -45,6 +45,5 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: rustup default ${{ matrix.version }}
-      - run: cargo xtask pre-build
       - run: cd typed_floats && cargo build --no-default-features --features "${{ matrix.features }}" ${{ matrix.release }}
       - run: cd typed_floats && cargo test --no-default-features --features "${{ matrix.features }}" ${{ matrix.release }}

@@ -38,6 +38,5 @@ jobs:
       - uses: actions/checkout@v4
       - run: apk add curl gcc musl-dev
       - run: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain ${{ matrix.version }} -y
-      - run: ~/.cargo/bin/cargo xtask pre-build
       - run: cd typed_floats && ~/.cargo/bin/cargo test --no-default-features --features "${{ matrix.features }}"
       - run: cd typed_floats && ~/.cargo/bin/cargo test --release --no-default-features --features "${{ matrix.features }}"

@@ -31,7 +31,6 @@ jobs:
       - checkout
       - run: if [ -n "$MY_RUST_VERSION" ]; then curl https://sh.rustup.rs -sSf | sh -s -- -y; fi
       - run: rustup default $MY_RUST_VERSION
-      - run: cargo xtask pre-build
       - run: cd typed_floats && cargo build --no-default-features --features "$MY_BUILD_FEATURES" $MY_BUILD_RELEASE
       - run: cd typed_floats && cargo test --no-default-features --features "$MY_BUILD_FEATURES" $MY_BUILD_RELEASE
 

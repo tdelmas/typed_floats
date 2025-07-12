@@ -216,18 +216,6 @@ The minimum supported Rust version (MSRV) is 1.70.0 because of the use of `dep:`
 
 Tests are run on different architectures on [GitHub actions](https://github.com/tdelmas/typed_floats/actions/workflows/tests.yml) and [CircleCI](https://circleci.com/gh/tdelmas/typed_floats).
 
-To run all tests:
-
-```bash
-git clone https://github.com/tdelmas/typed_floats
-
-# generate the published documentation, including some tests
-cargo xtask pre-build
-
-cd typed_floats
-cargo test --all
-```
-
 # Similar crates
 
 - [checked-float](https://crates.io/crates/checked-float) A crate for making invariant-enforcing floating point wrappers

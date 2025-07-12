@@ -3,9 +3,3 @@
 ```bash
 cargo xtask tag
 ```
-
-# To generate the documentation or before running tests
-
-```bash
-cargo xtask pre-build
-```
