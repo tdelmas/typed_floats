@@ -5,12 +5,7 @@ version.workspace = true
 edition.workspace = true
 license.workspace = true
 repository.workspace = true
-include = [
-  "Cargo.toml",
-  "src/*.rs",
-  "src/**/*.rs",
-  "*.md",
-]
+include = ["Cargo.toml", "src/*.rs", "src/**/*.rs", "*.md"]
 keywords.workspace = true
 categories.workspace = true
 readme = "./README.md"
@@ -64,13 +59,28 @@ num-traits = "0.2"
 [package.metadata.docs.rs]
 features = ["serde"]
 
+[lints.rust]
+dead-code = { level = "deny", priority = 1 }
+# missing_docs = { level = "deny", priority = 1 }
+unsafe_op_in_unsafe_fn = { level = "deny", priority = 1 }
+# unused_crate_dependencies = { level = "warn", priority = 1 }
+warnings = { level = "deny", priority = 0 }
+
 [lints.clippy]
-cargo        = { priority = -1, level = "deny" }
-complexity   = { priority = -1, level = "deny" }
-correctness  = { priority = -1, level = "deny" }
-suspicious   = { priority = -1, level = "deny" }
-style        = { priority = -1, level = "deny" }
-perf         = { priority = -1, level = "deny" }
-pedantic     = { priority = -1, level = "deny" }
-nursery      = { priority = -1, level = "deny" }
+indexing_slicing = { priority = -1, level = "deny" }
+panic_in_result_fn = { priority = -1, level = "deny" }
+panic = { priority = -1, level = "deny" }
+unwrap_in_result = { priority = -1, level = "deny" }
+unwrap_used = { priority = -1, level = "deny" }
+cargo = { priority = -1, level = "deny" }
+complexity = { priority = -1, level = "deny" }
+correctness = { priority = -1, level = "deny" }
+suspicious = { priority = -1, level = "deny" }
+style = { priority = -1, level = "deny" }
+perf = { priority = -1, level = "deny" }
+pedantic = { priority = -1, level = "deny" }
+nursery = { priority = -1, level = "deny" }
 # restriction  = { priority = -1, level = "deny" }
+unusual_byte_groupings = { priority = 1, level = "allow" }
+# msrv is tested in CI and this lint doesn't detects the `rustversion` guard
+incompatible_msrv = { priority = 1, level = "allow" }

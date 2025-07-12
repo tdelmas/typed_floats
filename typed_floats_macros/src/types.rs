@@ -227,7 +227,7 @@ impl OpBuilder {
     }
 
     #[allow(dead_code)] // depending on the enabled features, this function might not be used
-    pub fn comment(mut self, comment: &'static str) -> Self {
+    pub const fn comment(mut self, comment: &'static str) -> Self {
         self.op.comment = Some(comment);
         self
     }
@@ -242,7 +242,7 @@ impl OpBuilder {
         self
     }
 
-    pub fn const_since(mut self, version: &'static str) -> Self {
+    pub const fn const_since(mut self, version: &'static str) -> Self {
         self.op.const_since = Some(version);
         self
     }
