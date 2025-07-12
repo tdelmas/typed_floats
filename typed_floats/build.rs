@@ -2,11 +2,11 @@ use std::fs;
 use std::path::Path;
 
 /// Creates the README.md and README.truncated.md files in the crate root.
-/// 
+///
 /// They are created from the original README.md file located in the parent directory.
 /// The README.md is used by crates.io, while the README.truncated.md is used
 /// as the introduction in the documentation.
-/// 
+///
 /// # Panics
 /// Panics if the original README.md file does not exist.
 pub fn create_creadmes() {
