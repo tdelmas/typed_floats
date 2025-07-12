@@ -230,7 +230,7 @@ macro_rules! as_const {
         const TMP: $float = $x;
 
         #[allow(clippy::float_cmp_const)]
-        const RESULT: $crate::$type::<$float> = if TMP != TMP {
+        const RESULT: $crate::$type<$float> = if TMP != TMP {
             panic!("NaN is not valid")
         } else if TMP == $float::INFINITY && !$crate::$type::accept_infinity() {
             panic!("Infinity is not valid")
