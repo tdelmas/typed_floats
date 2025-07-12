@@ -11,4 +11,4 @@ categories.workspace = true
 readme = "../CONTRIB.md"
 
 [dependencies]
-toml = "0.8"
+toml = "0.9"
