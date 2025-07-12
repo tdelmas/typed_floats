@@ -1,0 +1,21 @@
+[package]
+name = "benchmarks"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+
+[dev-dependencies]
+criterion = "0.3"
+
+[dev-dependencies.typed_floats]
+path = "../typed_floats"
+
+[lib]
+# Benchmarks are handleled by Criterion
+bench = false
+
+[[bench]]
+name = "criterion"
+harness = false
