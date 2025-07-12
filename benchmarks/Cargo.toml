@@ -7,7 +7,7 @@ repository.workspace = true
 rust-version.workspace = true
 
 [dev-dependencies]
-criterion = "0.3"
+criterion = "0.6"
 
 [dev-dependencies.typed_floats]
 path = "../typed_floats"
