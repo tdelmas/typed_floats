@@ -191,6 +191,30 @@ pub trait Powf<T> {
     fn powf(self, rhs: T) -> Self::Output;
 }
 
+pub trait RestrictInf: Sized {
+    type Output: Sized;
+
+    fn restrict_inf(self) -> Result<Self::Output, Self>;
+}
+
+pub trait RestrictZero: Sized {
+    type Output: Sized;
+
+    fn restrict_zero(self) -> Result<Self::Output, Self>;
+}
+
+pub trait RestrictPositive: Sized {
+    type Output: Sized;
+
+    fn restrict_positive(self) -> Result<Self::Output, Self>;
+}
+
+pub trait RestrictNegative: Sized {
+    type Output: Sized;
+
+    fn restrict_negative(self) -> Result<Self::Output, Self>;
+}
+
 #[rustversion::since(1.85)]
 /// This trait is used to specify the return type of the [`Midpoint::midpoint()`] function.
 pub trait Midpoint<T> {
