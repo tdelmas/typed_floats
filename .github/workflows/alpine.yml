@@ -1,0 +1,42 @@
+name: Alpine (musl libc) Tests
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+    - 'typed_floats/**'
+    - 'typed_floats_macros/**'
+    - 'Cargo.toml'
+    - 'Cargo.lock'
+  pull_request:
+    branches: ["main"]
+    paths:
+    - 'typed_floats/**'
+    - 'typed_floats_macros/**'
+    - 'Cargo.toml'
+    - 'Cargo.lock'
+  workflow_dispatch:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    container: alpine:3.20
+    name: Tests on rust ${{ matrix.version }} features "${{ matrix.features }}"
+    strategy:
+      matrix:
+        version: [
+          "beta",
+          "stable", 
+          "1.70",
+        ]
+        features: [
+            "std,serde",
+            "std,libm",
+        ]
+
+    steps:
+      - uses: actions/checkout@v4
+      - run: apk add curl gcc musl-dev
+      - run: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain ${{ matrix.version }} -y
+      - run: cd typed_floats && ~/.cargo/bin/cargo test --no-default-features --features "${{ matrix.features }}"
+      - run: cd typed_floats && ~/.cargo/bin/cargo test --release --no-default-features --features "${{ matrix.features }}"

@@ -44,9 +44,8 @@ jobs:
         ]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - run: rustup default ${{ matrix.version }}
-      - run: cargo xtask pre-build
       # Check that it builds with all features combinations
       - run: cd typed_floats && cargo build --no-default-features --features "${{ matrix.features }}"
       # Check that it builds in release mode with all features combinations
@@ -79,10 +78,9 @@ jobs:
         ]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - run: rustup default ${{ matrix.version }}
       - run: cargo --version
-      - run: cargo xtask pre-build
       - run: cd typed_floats && cargo test ${{ matrix.cargo_options }}
         
   clippy:
@@ -90,8 +88,7 @@ jobs:
     name: Clippy
 
     steps:
-      - uses: actions/checkout@v3
-      - run: cargo xtask pre-build
+      - uses: actions/checkout@v4
       - run: cargo clippy --verbose --all-features
 
   semver-checks:
@@ -111,18 +108,16 @@ jobs:
         ]
 
     steps:
-      - uses: actions/checkout@v3
-      - run: cargo install cargo-semver-checks 
-      - run: cargo xtask pre-build
+      - uses: actions/checkout@v4
+      - run: cargo install cargo-semver-checks
       - run: cd typed_floats && cargo semver-checks --only-explicit-features ${{ matrix.features }}
 
   check-docs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - run: rustup default nightly
-      - run: cargo install lychee 
-      - run: cargo xtask pre-build
+      - run: cargo install lychee
       - run: cd typed_floats && cargo doc --all-features
       - run: lychee --offline "./target/doc/typed_floats/**/*.html"

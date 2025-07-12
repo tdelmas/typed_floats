@@ -1,6 +1,6 @@
 
 [![Build Status](https://circleci.com/gh/tdelmas/typed_floats.svg?style=shield)](https://circleci.com/gh/tdelmas/typed_floats)
-[![Tests on GitHub CI](https://github.com/tdelmas/typed_floats/workflows/Tests/badge.svg?branch=main)](https://github.com/tdelmas/typed_floats/actions/workflows/tests.yml)
+[![Tests on GitHub CI](https://github.com/tdelmas/typed_floats/actions/workflows/tests.yml/badge.svg)](https://github.com/tdelmas/typed_floats/actions/workflows/tests.yml)
 [![Version](https://img.shields.io/crates/v/typed_floats.svg)](https://crates.io/crates/typed_floats)
 [![Documentation](https://docs.rs/typed_floats/badge.svg)](https://docs.rs/typed_floats)
 [![License](https://img.shields.io/crates/l/typed_floats.svg)](https://github.com/tdelmas/typed_floats/blob/main/LICENSE)
@@ -12,7 +12,7 @@
 This crate helps you to ensure the kind of floats you are using, without `panic!` (except if the `unsafe` function `new_unchecked` is used in an unsound way).
 
 zero overhead: everything is checked at compile time.
-(only `try_from` adds a little overhead at runtime)
+(only `new` and `try_from` adds a little overhead at runtime)
 
 `NaN` is rejected by all types.
 
@@ -22,7 +22,7 @@ This crate is for you if:
 
 - If you want to know at compile time if a float can be negative, positive, zero, finite and ensure it is not `NaN`, without `panic!`.
 
-- If you need [`core::cmp::Ord`], [`core::cmp::Eq`] or [`core::hash::Hash`] on floats.
+- If you need [`core::cmp::Ord`], [`core::cmp::Eq`] or [`core::hash::Hash`] on (non-`NaN`) floats.
 
 # The 12 types provided by this crate
 
@@ -33,9 +33,9 @@ And their positive and negative counterparts:
 - [`Positive`],[`PositiveFinite`], [`StrictlyPositive`], [`StrictlyPositiveFinite`]
 - [`Negative`],[`NegativeFinite`], [`StrictlyNegative`], [`StrictlyNegativeFinite`]
 
-(Negatives types reject `+0.0` and positives types reject `-0.0`)
+(Strictly negatives types reject `+0.0` and strictly positives types reject `-0.0`)
 
-| Type | -∞ | ]-∞; -0.0[ | -0.0 | +0.0 | ]+0.0; +∞[ | +∞ | `NaN` |
+| Type | `-∞` | `]-∞; -0.0[` | `-0.0` | `+0.0` | `]+0.0; +∞[` | `+∞` | `NaN` |
 |---|---|---|---|---|---|---|---|
 | [`NonNaN`] | ✔️ | ✔️ | ✔️ | ✔️  | ✔️ | ✔️ | ❌ |
 | [`NonNaNFinite`] | ❌ | ✔️ | ✔️ | ✔️ | ✔️ | ❌ |  ❌ |
@@ -82,7 +82,7 @@ In that example:
 
 Most methods and traits available on the underlying type are available on the types of this crate.
 
-Most constants are also available, with the most appropriate `TypedFloat` type (except `NAN` for obvious reasons) in the [`tf64`] and [`tf32`] modules (in [`tf64::consts`] and [`tf32::consts`] respectively when the constant comes from [`core::f64::consts`] or [`core::f32::consts`]). Those modules are named that way to avoid conflicts or confusion with the primitives [`f32`] and [`f64`].
+Most constants are also available, with the most appropriate TypedFloat type (except `NAN` for obvious reasons) in the [`tf64`] and [`tf32`] modules (in [`tf64::consts`] and [`tf32::consts`] respectively when the constant comes from [`core::f64::consts`] or [`core::f32::consts`]). Those modules are named that way to avoid conflicts or confusion with the primitives [`f32`] and [`f64`].
 
 ⚠️ Like for primitives [`f32`] and [`f64`],`-0.0 == +0.0` is `true` for all types of this crate.
 To facilitate comparisons, the methods `is_positive_zero` and `is_negative_zero` are added.
@@ -149,17 +149,29 @@ The only method that can `panic!` is the `unsafe` method `new_unchecked` when us
 
 A `panic!` triggered in any other way is considered a security bug and should be reported.
 
-## Minimal overhead
+## Minimal overhead and optimizations
 
 This crate is designed to have a minimal overhead at runtime, in terms of memory, speed and binary size.
 
-It may even be faster than using primitives [`f32`] and [`f64`] directly, as it may avoids some checks by using compiler hints.
+It can even be faster than using primitives [`f32`] and [`f64`] directly, as it may avoids some checks by using compiler hints and can use some faster implementations in some cases.
+
+### Overhead
 
 The only methods that adds a little overhead are `try_from` because of the checks they do at runtime, compared to the `unsafe` method `new_unchecked`.
 
 In debug mode, a little overhead is present, both to check the validity of the values and because `inline` may not be respected.
 
 Any other overhead is considered a bug and should be reported.
+
+### Compiler optimizations
+
+The compiler hints are enabled by default to enable compiler optimization when possible.
+
+Also, some methods are faster than the default implementation. For example:
+
+- When possible `Eq` is implemented by comparing the bits of the two floats instead of the slower default implementation, that had special cases for `NaN` (to handle `NaN != NaN`) and `-0.0` (to handle `-0.0 == 0.0`). (8% faster)
+- `Ord` is implemented by directly comparing the bits of the two floats instead of the slower default implementation for negatives and positives types. (4% faster)
+- `signum` doesn't needs to check for `NaN`. (35% faster)
 
 # Features
 
@@ -184,7 +196,7 @@ Methods that takes another float as parameter will also return the most strict t
 - Doesn't fix the floating point quirks such as `0.0 == -0.0`
 - Doesn't fix the odd methods such as:
   - `sqrt(-0.0)` returning `-0.0` instead of `NaN`
-  - `min(-0.0, 0.0)` returning `-0.0` instead of `0.0` (same for `max`)
+  - `min(-0.0, 0.0)` possibly returning `0.0` instead of `-0.0` (same for `max`)
   - `frac(-0.0)` returning `0.0` instead of `-0.0`
 
 Because that would introduce a runtime overhead and may introduce some incompatibilities with existing code.
@@ -196,25 +208,13 @@ This crate is tested when a new version is release with:
 - Rust stable
 - Rust 1.70.0
 
-Also, tests on `nightly`, `beta` and `stable` are run weekly on [GitHub actions](https://github.com/tdelmas/typed_floats/actions/workflows/weekly-tests.yml).
+Also, tests on `nightly`, `beta` and `stable` are run monthly on [GitHub actions](https://github.com/tdelmas/typed_floats/actions/workflows/exaustive-tests.yml).
 
 The minimum supported Rust version (MSRV) is 1.70.0 because of the use of `dep:` in `Cargo.toml`.
 
 ## Testing
 
 Tests are run on different architectures on [GitHub actions](https://github.com/tdelmas/typed_floats/actions/workflows/tests.yml) and [CircleCI](https://circleci.com/gh/tdelmas/typed_floats).
-
-To run all tests:
-
-```bash
-git clone https://github.com/tdelmas/typed_floats
-
-# generate the published documentation, including some tests
-cargo xtask pre-build
-
-cd typed_floats
-cargo test --all
-```
 
 # Similar crates
 

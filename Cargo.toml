@@ -6,7 +6,10 @@ resolver = "2"
 edition = "2021"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/tdelmas/typed_floats"
-version = "1.0.1"
+version = "1.0.6"
 rust-version = "1.70"
 keywords = ["floats", "non-zero", "nan", "no_std"]
 categories = ["mathematics", "data-structures"]
+
+[workspace.dependencies]
+rustversion = "1.0.20"

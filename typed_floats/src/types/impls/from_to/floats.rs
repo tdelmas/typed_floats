@@ -8,7 +8,6 @@ macro_rules! impl_from {
     ($test:ident, $type:ident) => {
         impl From<$type<Self>> for f32 {
             #[inline]
-            #[must_use]
             fn from(value: $type<Self>) -> Self {
                 value.0
             }
@@ -16,7 +15,6 @@ macro_rules! impl_from {
 
         impl From<$type<Self>> for f64 {
             #[inline]
-            #[must_use]
             fn from(value: $type<Self>) -> Self {
                 value.0
             }
@@ -42,7 +40,7 @@ macro_rules! impl_from {
 
         #[test]
         fn $test() {
-            let values_f32 = crate::tf32::TEST_VALUES;
+            let values_f32 = crate::tf32::get_test_values();
 
             for &value in &values_f32 {
                 if let Ok(t) = $type::<f32>::new(value) {
@@ -51,7 +49,7 @@ macro_rules! impl_from {
                 }
             }
 
-            let values_f64 = crate::tf64::TEST_VALUES;
+            let values_f64 = crate::tf64::get_test_values();
 
             for &value in &values_f64 {
                 if let Ok(t) = $type::<f64>::new(value) {

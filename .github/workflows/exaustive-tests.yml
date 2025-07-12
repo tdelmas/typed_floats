@@ -17,8 +17,14 @@ jobs:
     strategy:
       matrix:
         version: [
+          "nightly",
           "beta",
           "stable",
+          "1.86",
+          "1.85",
+          "1.84",
+          "1.83",
+          "1.82",
           "1.70",
         ]
         release: [
@@ -37,8 +43,7 @@ jobs:
         ]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - run: rustup default ${{ matrix.version }}
-      - run: cargo xtask pre-build
       - run: cd typed_floats && cargo build --no-default-features --features "${{ matrix.features }}" ${{ matrix.release }}
       - run: cd typed_floats && cargo test --no-default-features --features "${{ matrix.features }}" ${{ matrix.release }}

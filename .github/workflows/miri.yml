@@ -5,6 +5,18 @@ on:
     # 1 of the month
     - cron:  '0 0 1 * *'
   workflow_dispatch:
+    inputs:
+      test:
+        required: true
+        description: 'Command to run tests with Miri'
+        default: 'test --doc --features=compiler_hints'
+        type: choice
+        options:
+        - 'test --doc --features=compiler_hints'
+        - 'test --doc'
+        - 'test --features=compiler_hints'
+        - 'test'
+
 
 env:
   CARGO_TERM_COLOR: always
@@ -16,13 +28,13 @@ jobs:
     name: Miri
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install Miri
         run: |
           rustup toolchain install nightly --component miri
           rustup override set nightly
           cargo miri setup
-      - run: cargo xtask pre-build
-      - run: cargo miri test --doc
+      - run: cargo test --doc
+      - run: cargo miri ${{ github.event.inputs.test || 'test --doc --features=compiler_hints' }}
 
           

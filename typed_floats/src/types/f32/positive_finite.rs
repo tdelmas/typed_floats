@@ -1,4 +1,5 @@
 use crate::types::{f32, InvalidNumber, PositiveFinite};
+use const_fn::const_fn;
 
 impl PositiveFinite<f32> {
     /// Creates a new value from a primitive type
@@ -17,7 +18,8 @@ impl PositiveFinite<f32> {
     /// # Errors
     /// Returns an error if the value is not valid
     #[inline]
-    pub fn new(value: f32) -> Result<Self, InvalidNumber> {
+    #[const_fn("1.83")]
+    pub const fn new(value: f32) -> Result<Self, InvalidNumber> {
         if value.is_nan() {
             return Err(InvalidNumber::NaN);
         }
@@ -50,23 +52,9 @@ impl PositiveFinite<f32> {
     /// but in release mode the behavior is undefined
     #[inline]
     #[must_use]
-    pub unsafe fn new_unchecked(value: f32) -> Self {
-        if Self::new(value).is_err() || value < 0.0 {
-            debug_assert!(false, "{value} is not a valid PositiveFinite<f32>");
-
-            #[cfg(feature = "ensure_no_undefined_behavior")]
-            panic!("{value} is not a valid PositiveFinite<f32>");
-
-            #[cfg(all(
-                feature = "compiler_hints",
-                not(feature = "ensure_no_undefined_behavior")
-            ))]
-            unsafe {
-                core::hint::unreachable_unchecked()
-            }
-        }
-
-        Self(value)
+    #[const_fn("1.83")]
+    pub const unsafe fn new_unchecked(value: f32) -> Self {
+        crate::macros::new_unchecked!(value, PositiveFinite)
     }
 
     /// Returns the value as a primitive type
@@ -103,6 +91,7 @@ impl PositiveFinite<f32> {
     /// See [`f32::is_nan()`] for more details.
     #[inline]
     #[must_use]
+    #[const_fn("1.83")]
     pub const fn is_nan(&self) -> bool {
         false
     }
@@ -121,6 +110,7 @@ impl PositiveFinite<f32> {
     /// See [`f32::is_infinite()`] for more details.
     #[inline]
     #[must_use]
+    #[const_fn("1.83")]
     pub const fn is_infinite(&self) -> bool {
         false
     }
@@ -139,6 +129,7 @@ impl PositiveFinite<f32> {
     /// See [`f32::is_finite()`] for more details.
     #[inline]
     #[must_use]
+    #[const_fn("1.83")]
     pub const fn is_finite(&self) -> bool {
         true
     }
@@ -157,7 +148,8 @@ impl PositiveFinite<f32> {
     /// See [`f32::is_subnormal()`] for more details.
     #[inline]
     #[must_use]
-    pub fn is_subnormal(&self) -> bool {
+    #[const_fn("1.83")]
+    pub const fn is_subnormal(&self) -> bool {
         self.0.is_subnormal()
     }
 
@@ -175,7 +167,8 @@ impl PositiveFinite<f32> {
     /// See [`f32::is_normal()`] for more details.
     #[inline]
     #[must_use]
-    pub fn is_normal(&self) -> bool {
+    #[const_fn("1.83")]
+    pub const fn is_normal(&self) -> bool {
         self.0.is_normal()
     }
 
@@ -195,7 +188,8 @@ impl PositiveFinite<f32> {
     /// See [`f32::classify()`] for more details.
     #[inline]
     #[must_use]
-    pub fn classify(&self) -> core::num::FpCategory {
+    #[const_fn("1.83")]
+    pub const fn classify(&self) -> core::num::FpCategory {
         self.0.classify()
     }
 
@@ -213,6 +207,7 @@ impl PositiveFinite<f32> {
     /// See [`f32::is_sign_positive()`] for more details.
     #[inline]
     #[must_use]
+    #[const_fn("1.83")]
     pub const fn is_sign_positive(&self) -> bool {
         true
     }
@@ -231,6 +226,7 @@ impl PositiveFinite<f32> {
     /// See [`f32::is_sign_negative()`] for more details.
     #[inline]
     #[must_use]
+    #[const_fn("1.83")]
     pub const fn is_sign_negative(&self) -> bool {
         false
     }
@@ -249,6 +245,7 @@ impl PositiveFinite<f32> {
     /// ```
     #[inline]
     #[must_use]
+    #[const_fn("1.83")]
     pub const fn is_negative_zero(&self) -> bool {
         false
     }
@@ -267,7 +264,8 @@ impl PositiveFinite<f32> {
     /// ```
     #[inline]
     #[must_use]
-    pub fn is_positive_zero(&self) -> bool {
+    #[const_fn("1.83")]
+    pub const fn is_positive_zero(&self) -> bool {
         self.0 == 0.0
     }
 }

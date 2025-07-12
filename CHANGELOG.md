@@ -5,6 +5,45 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.0.7 - Unreleased
+
+### Added
+
+- 35% faster implementation of `signum` for all types
+- 8% faster implementation of `Eq` for non-zero types
+- 4% faster implementation of `Ord` for positives and negatives types
+
+## 1.0.6 - 2025-05-24
+
+### Added
+
+- Add [`next_up`](https://doc.rust-lang.org/stable/std/primitive.f64.html#method.next_up) and [`next_down`](https://doc.rust-lang.org/stable/std/primitive.f64.html#method.next_down) methods (rust>=86)
+- `PartialEq` optimization in most cases, faster than the default float `PartialEq` implementation (~8% faster)
+- Add benchmarks in CI using `criterion`.
+- More extaustive tests
+- https://mutants.rs in CI
+
+## 1.0.5 - 2025-03-24
+
+### Added
+
+- Add [`midpoint`](https://doc.rust-lang.org/core/primitive.f32.html#method.midpoint) method for (rust>=85)
+- Method `get` is now `const`
+- When possible, floats methods are const (rust>=1.85)
+
+## 1.0.4 - 2025-03-11
+
+### Security
+
+- Invalid return type for `recip` and `to_radiants`[#200](https://github.com/tdelmas/typed_floats/pull/200)
+⚠️ This is a breaking change, and exceptionally semver is *not* respected as it will only break code with the security issue.
+
+## 1.0.3 - 2025-03-02
+
+### Added
+
+- When possible, floats methods are const (rust>=1.83)
+
 ## 1.0.1 - 2024-04-02
 
 ### Added

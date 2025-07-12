@@ -261,7 +261,7 @@ fn do_generate_floats(floats: &[FloatDefinition]) -> proc_macro2::TokenStream {
                         fn partial_cmp(&self, other: &#a_full_type) -> Option<core::cmp::Ordering> {
                             Some(if self.get() < other.get() {
                                 core::cmp::Ordering::Less
-                            } else if self.get() == other.get() {
+                            } else if self == other {
                                 core::cmp::Ordering::Equal
                             } else {
                                 core::cmp::Ordering::Greater
@@ -286,11 +286,4 @@ fn do_generate_floats(floats: &[FloatDefinition]) -> proc_macro2::TokenStream {
     }
 
     output
-}
-
-#[proc_macro]
-pub fn test_values(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    let ident = syn::parse_macro_input!(input as syn::Ident);
-
-    gen_tests::test_values(&ident).into()
 }

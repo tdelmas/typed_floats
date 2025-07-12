@@ -3,7 +3,7 @@ use quote::quote;
 use crate::types::{FloatSpecifications, Op, OpBuilder, ReturnTypeSpecification};
 
 pub fn get_impl_self() -> Vec<Op> {
-    vec![
+    let mut ops = vec![
         OpBuilder::new("neg")
             .trait_name("core::ops::Neg")
             .display("-")
@@ -68,6 +68,7 @@ pub fn get_impl_self() -> Vec<Op> {
 
                 ReturnTypeSpecification::FloatSpecifications(output_spec)
             }))
+            .const_since("1.85")
             .build(),
         #[cfg(any(feature = "std", feature = "libm"))]
         OpBuilder::new("ceil")
@@ -264,7 +265,12 @@ pub fn get_impl_self() -> Vec<Op> {
                 } else if !float.s.accept_positive {
                     quote! { -1.0 }
                 } else {
-                    quote! { self.get().signum() }
+                    let float_type = float.float_type_ident();
+
+                    quote! { {
+                        let one: #float_type = 1.0;
+                        one.copysign(self.get())
+                    } }
                 }
             }))
             .result(Box::new(|float| {
@@ -293,6 +299,7 @@ pub fn get_impl_self() -> Vec<Op> {
 
                 ReturnTypeSpecification::FloatSpecifications(spec)
             }))
+            .const_since("1.85")
             .build(),
         #[cfg(any(feature = "std", feature = "libm"))]
         OpBuilder::new("sqrt")
@@ -570,6 +577,7 @@ pub fn get_impl_self() -> Vec<Op> {
 
                 ReturnTypeSpecification::FloatSpecifications(output_spec)
             }))
+            .const_since("1.85")
             .build(),
         OpBuilder::new("to_radians")
             .description(quote! {
@@ -583,11 +591,13 @@ pub fn get_impl_self() -> Vec<Op> {
                 /// let b: NonNaN = 0.0.try_into().unwrap();
                 /// let c: NonNaN = (-180.0).try_into().unwrap();
                 /// let d: NonNaN = 360.0.try_into().unwrap();
+                /// let e: StrictlyPositiveFinite = (5e-324).try_into().unwrap();
                 ///
                 /// assert_eq!(a.to_radians(), core::f64::consts::PI);
                 /// assert_eq!(b.to_radians(), 0.0);
                 /// assert_eq!(c.to_radians(), -core::f64::consts::PI);
                 /// assert_eq!(d.to_radians(), 2.0 * core::f64::consts::PI);
+                /// assert_eq!(e.to_radians(), 0.0);
                 ///
                 /// assert_eq!(tf64::INFINITY.to_radians(), tf64::INFINITY);
                 /// assert_eq!(tf64::NEG_INFINITY.to_radians(), tf64::NEG_INFINITY);
@@ -596,8 +606,14 @@ pub fn get_impl_self() -> Vec<Op> {
                 /// See [`f64::to_radians()`] for more details.
             })
             .result(Box::new(|float| {
-                ReturnTypeSpecification::FloatSpecifications(float.s.clone())
+                let mut output_spec = float.s.clone();
+
+                output_spec.accept_zero = true;
+
+                ReturnTypeSpecification::FloatSpecifications(output_spec)
             }))
+            .const_since("1.85")
+            .skip_check_return_type_strictness()
             .build(),
         #[cfg(any(feature = "std", feature = "libm"))]
         OpBuilder::new("cbrt")
@@ -1076,9 +1092,11 @@ pub fn get_impl_self() -> Vec<Op> {
                 /// # use typed_floats::*;
                 /// let a: NonNaN = 1.0.try_into().unwrap();
                 /// let b: NonNaN = (-1.0).try_into().unwrap();
+                /// let c: StrictlyPositiveFinite = (5e-324).try_into().unwrap();
                 ///
                 /// assert_eq!(a.recip(), 1.0);
                 /// assert_eq!(b.recip(), -1.0);
+                /// assert_eq!(c.recip(), tf64::INFINITY);
                 ///
                 /// assert_eq!(tf64::ZERO.recip(), tf64::INFINITY);
                 /// assert_eq!(tf64::NEG_ZERO.recip(), tf64::NEG_INFINITY);
@@ -1094,9 +1112,11 @@ pub fn get_impl_self() -> Vec<Op> {
                     accept_negative: float.s.accept_negative,
                     accept_positive: float.s.accept_positive,
                     accept_zero: float.s.accept_inf,
-                    accept_inf: float.s.accept_zero,
+                    accept_inf: true,
                 })
             }))
+            .const_since("1.85")
+            .skip_check_return_type_strictness()
             .build(),
         #[cfg(any(feature = "std", feature = "libm"))]
         OpBuilder::new("powi")
@@ -1142,5 +1162,45 @@ pub fn get_impl_self() -> Vec<Op> {
                 quote! { #var.powi(2) }
             }))
             .build(),
-    ]
+    ];
+
+    if rustversion::cfg!(since(1.86)) {
+        let next_up = OpBuilder::new("next_up")
+            .description(quote! {
+                /// Returns the least number greater than `self``.
+                ///
+                /// See [`f64::next_up()`] for more details.
+            })
+            .result(Box::new(|float| {
+                ReturnTypeSpecification::FloatSpecifications(FloatSpecifications {
+                    accept_negative: float.s.accept_negative,
+                    accept_positive: float.s.accept_positive
+                        || (float.s.accept_negative && float.s.accept_zero),
+                    accept_zero: float.s.accept_negative,
+                    accept_inf: float.s.accept_positive,
+                })
+            }));
+
+        ops.push(next_up.build());
+
+        let next_down = OpBuilder::new("next_down")
+            .description(quote! {
+                /// Returns the greatest number less than `self``.
+                ///
+                /// See [`f64::next_down()`] for more details.
+            })
+            .result(Box::new(|float| {
+                ReturnTypeSpecification::FloatSpecifications(FloatSpecifications {
+                    accept_negative: float.s.accept_negative
+                        || (float.s.accept_positive && float.s.accept_zero),
+                    accept_positive: float.s.accept_positive,
+                    accept_zero: float.s.accept_positive,
+                    accept_inf: float.s.accept_negative,
+                })
+            }));
+
+        ops.push(next_down.build());
+    }
+
+    ops
 }

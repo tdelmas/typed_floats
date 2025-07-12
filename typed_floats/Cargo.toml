@@ -24,7 +24,7 @@ compiler_hints = []
 serde = ["dep:serde"]
 # Allow to switch between `std` and `no_std` environments.
 std = ["typed_floats_macros/std"]
-# Add the the `num-traits` dependency to have access to most math functions in `no_std` environments.
+# Add the `num-traits` dependency to have access to most math functions in `no_std` environments.
 libm = ["dep:num-traits", "typed_floats_macros/libm"]
 # Will `panic!` in release mode instead of risking undefined behavior.
 # This will override the `compiler_hints` feature, and adds a little overhead to `new_unchecked`.
@@ -32,9 +32,10 @@ libm = ["dep:num-traits", "typed_floats_macros/libm"]
 ensure_no_undefined_behavior = []
 
 [dependencies]
+rustversion.workspace = true
 
 [dependencies.typed_floats_macros]
-version = "=1.0.1"
+version = "=1.0.6"
 path = "../typed_floats_macros"
 
 [dependencies.serde]
@@ -49,9 +50,21 @@ default-features = false
 features = ["libm"]
 optional = true
 
+[dependencies.const_fn]
+version = "0.4.11"
+
 [dev-dependencies]
 serde_json = { version = "1.0" }
 num-traits = "0.2"
+criterion = "0.3"
+
+[lib]
+# Benchmarks are handleled by Criterion
+bench = false
+
+[[bench]]
+name = "criterion"
+harness = false
 
 [package.metadata.docs.rs]
 features = ["serde"]

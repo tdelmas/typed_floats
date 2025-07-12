@@ -1,0 +1,16 @@
+name: mutants.rs
+
+on:
+  workflow_dispatch:
+
+jobs:
+  mutants:
+    runs-on: ubuntu-latest
+    name: mutants
+
+    steps:
+      - uses: actions/checkout@v4
+      - run: cargo install cargo-mutants
+      - run: cd typed_floats && cargo mutants --in-place
+
+          

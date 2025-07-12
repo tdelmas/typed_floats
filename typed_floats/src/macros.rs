@@ -183,6 +183,9 @@ macro_rules! assert_float_eq {
 /// Macro to create a constant value.
 /// Will panic at compile time if the value is not a valid.
 ///
+/// This macro is only useful is the rust version older than 1.83,
+/// as floats methods are not yet const.
+///
 /// # Examples
 ///
 /// ```
@@ -227,7 +230,7 @@ macro_rules! as_const {
         const TMP: $float = $x;
 
         #[allow(clippy::float_cmp_const)]
-        if TMP != TMP {
+        const RESULT: $crate::$type<$float> = if TMP != TMP {
             panic!("NaN is not valid")
         } else if TMP == $float::INFINITY && !$crate::$type::accept_infinity() {
             panic!("Infinity is not valid")
@@ -242,7 +245,8 @@ macro_rules! as_const {
         } else {
             // Safety: The value has been checked
             unsafe { $crate::$type::<$float>::internal_only_new_unchecked(TMP) }
-        }
+        };
+        RESULT
     }};
     ($type:ident, $x:expr) => {{
         $crate::as_const!($type, f64, $x)
@@ -320,3 +324,24 @@ macro_rules! generate_const {
         pub const $name: $crate::$type = $crate::as_const!($type, f64, $x);
     };
 }
+
+macro_rules! new_unchecked {
+    ($value:ident, $name:ident) => {{
+        if cfg!(any(
+            debug_assertions,
+            feature = "ensure_no_undefined_behavior"
+        )) {
+            if Self::new($value).is_err() {
+                panic!(concat!("This value is not a valid ", stringify!($name)));
+            }
+        } else if cfg!(feature = "compiler_hints") {
+            if Self::new($value).is_err() {
+                unsafe { core::hint::unreachable_unchecked() }
+            }
+        }
+
+        Self($value)
+    }};
+}
+
+pub(crate) use new_unchecked;
