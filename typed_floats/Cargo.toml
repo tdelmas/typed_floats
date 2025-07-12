@@ -16,6 +16,10 @@ categories.workspace = true
 readme = "./README.md"
 rust-version.workspace = true
 
+[lib]
+# Benchmarks are handleled by Criterion
+bench = false
+
 [features]
 default = ["std", "compiler_hints"]
 # follows each debug_assert! with core::hint::unreachable_unchecked
@@ -56,15 +60,6 @@ version = "0.4.11"
 [dev-dependencies]
 serde_json = { version = "1.0" }
 num-traits = "0.2"
-criterion = "0.3"
-
-[lib]
-# Benchmarks are handleled by Criterion
-bench = false
-
-[[bench]]
-name = "criterion"
-harness = false
 
 [package.metadata.docs.rs]
 features = ["serde"]
