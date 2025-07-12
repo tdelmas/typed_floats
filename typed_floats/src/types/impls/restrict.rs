@@ -17,8 +17,8 @@ macro_rules! impl_exclude {
             /// let a: Positive<f32> = 0.0.try_into().unwrap();
             /// let b: PositiveFinite<f32> = a.restrict_inf().unwrap();
             /// let c: PositiveFinite<f32> = match a.restrict_inf() {
-            /// 	Ok(x) => x,
-            /// 	Err(x) => panic!("{} is infinite", x),
+            ///   Ok(x) => x,
+            ///   Err(x) => panic!("{} is infinite", x),
             /// };
             /// ```
             #[inline]
@@ -74,13 +74,25 @@ macro_rules! impl_exclude_zero {
 
 macro_rules! impl_exclude_positive {
     ($type:ident, $output:ident) => {
-        impl_exclude!(RestrictPositive, restrict_positive, is_sign_positive, $type, $output);
+        impl_exclude!(
+            RestrictPositive,
+            restrict_positive,
+            is_sign_positive,
+            $type,
+            $output
+        );
     };
 }
 
 macro_rules! impl_exclude_negative {
     ($type:ident, $output:ident) => {
-        impl_exclude!(RestrictNegative, restrict_negative, is_sign_positive, $type, $output);
+        impl_exclude!(
+            RestrictNegative,
+            restrict_negative,
+            is_sign_positive,
+            $type,
+            $output
+        );
     };
 }
 
