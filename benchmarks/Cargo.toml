@@ -5,6 +5,11 @@ edition.workspace = true
 license.workspace = true
 repository.workspace = true
 rust-version.workspace = true
+keywords.workspace = true
+categories.workspace = true
+readme = "../README.md"
+description = "Benchmarks for typed_floats using Criterion."
+publish = false
 
 [dev-dependencies]
 criterion = "0.6"
