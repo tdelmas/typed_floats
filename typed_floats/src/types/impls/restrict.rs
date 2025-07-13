@@ -1,6 +1,6 @@
 use crate::{
     Negative, NegativeFinite, NonNaN, NonNaNFinite, NonZeroNonNaN, NonZeroNonNaNFinite, Positive,
-    PositiveFinite, RestrictInf, RestrictNegative, RestrictPositive, RestrictZero,
+    PositiveFinite, ExcludeInf, ExcludeNegative, ExcludePositive, ExcludeZero,
     StrictlyNegative, StrictlyNegativeFinite, StrictlyPositive, StrictlyPositiveFinite,
 };
 
@@ -9,18 +9,6 @@ macro_rules! impl_exclude {
         impl $trait for $type<f32> {
             type Output = $output<f32>;
 
-            /// Filters out infinite values.
-            ///
-            /// ```
-            /// use typed_floats::*;
-            ///
-            /// let a: Positive<f32> = 0.0.try_into().unwrap();
-            /// let b: PositiveFinite<f32> = a.restrict_inf().unwrap();
-            /// let c: PositiveFinite<f32> = match a.restrict_inf() {
-            ///   Ok(x) => x,
-            ///   Err(x) => panic!("{} is infinite", x),
-            /// };
-            /// ```
             #[inline]
             fn $fn(self) -> Result<Self::Output, Self> {
                 if
@@ -37,14 +25,6 @@ macro_rules! impl_exclude {
         impl $trait for $type<f64> {
             type Output = $output<f64>;
 
-            /// Filters out infinite values.
-            ///
-            /// ```
-            /// use typed_floats::*;
-            ///
-            /// let a: Positive<f64> = 0.0.try_into().unwrap();
-            /// let b: PositiveFinite<f64> = a.restrict_inf().unwrap();
-            /// ```
             #[inline]
             fn $fn(self) -> Result<Self::Output, Self> {
                 if
@@ -62,21 +42,21 @@ macro_rules! impl_exclude {
 
 macro_rules! impl_exclude_inf {
     ($type:ident, $output:ident) => {
-        impl_exclude!(RestrictInf, restrict_inf, is_infinite, $type, $output);
+        impl_exclude!(ExcludeInf, exclude_inf, is_infinite, $type, $output);
     };
 }
 
 macro_rules! impl_exclude_zero {
     ($type:ident, $output:ident) => {
-        impl_exclude!(RestrictZero, restrict_zero, 0.0, $type, $output);
+        impl_exclude!(ExcludeZero, exclude_zero, 0.0, $type, $output);
     };
 }
 
 macro_rules! impl_exclude_positive {
     ($type:ident, $output:ident) => {
         impl_exclude!(
-            RestrictPositive,
-            restrict_positive,
+            ExcludePositive,
+            exclude_positive,
             is_sign_positive,
             $type,
             $output
@@ -87,9 +67,9 @@ macro_rules! impl_exclude_positive {
 macro_rules! impl_exclude_negative {
     ($type:ident, $output:ident) => {
         impl_exclude!(
-            RestrictNegative,
-            restrict_negative,
-            is_sign_positive,
+            ExcludeNegative,
+            exclude_negative,
+            is_sign_negative,
             $type,
             $output
         );
