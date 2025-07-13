@@ -187,6 +187,7 @@ use crate::traits::{Atan2, Copysign, DivEuclid, Hypot, Powf};
 use crate::traits::Midpoint;
 
 #[cfg(all(feature = "libm", not(feature = "std")))]
+#[allow(unused_imports)]
 use num_traits::Float;
 
 mod accept;
