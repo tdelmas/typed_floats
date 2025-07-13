@@ -185,7 +185,7 @@ pub fn generate_tests_self_rhs(input: proc_macro::TokenStream) -> proc_macro::To
     output.into()
 }
 
-/// Return the FloatDefinition for the given type
+/// Return the `FloatDefinition` for the given type
 fn get_definitions(float_type: &'static str) -> [FloatDefinition; 12] {
     TYPES
         .iter()
