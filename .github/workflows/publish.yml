@@ -10,14 +10,19 @@ jobs:
   publish:
     name: Publish
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write     # Required for OIDC token exchange (CARGO_REGISTRY_TOKEN)
     steps:
       - uses: actions/checkout@v4
+      # https://crates.io/docs/trusted-publishing
+      - uses: rust-lang/crates-io-auth-action@v1
+        id: auth
       - name: cargo publish typed_floats_macros
-        run: cd typed_floats_macros && cargo publish --token ${CRATES_TOKEN}
+        run: cd typed_floats_macros && cargo publish
         env:
-          CRATES_TOKEN: ${{ secrets.CRATES_TOKEN }}
+          CARGO_REGISTRY_TOKEN: ${{ steps.auth.outputs.token }}
       - name: cargo publish typed_floats
-        run: cd typed_floats && cargo publish --allow-dirty --token ${CRATES_TOKEN}
+        run: cd typed_floats && cargo publish --allow-dirty
         env:
-          CRATES_TOKEN: ${{ secrets.CRATES_TOKEN }}
+          CARGO_REGISTRY_TOKEN: ${{ steps.auth.outputs.token }}
   
