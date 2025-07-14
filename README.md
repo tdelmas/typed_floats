@@ -213,6 +213,7 @@ This crate is tested when a new version is release with:
 Also, tests on `nightly`, `beta` and `stable` are run monthly on [GitHub actions](https://github.com/tdelmas/typed_floats/actions/workflows/exaustive-tests.yml).
 
 The minimum supported Rust version (MSRV) is 1.70.0 because of the use of `dep:` in `Cargo.toml`.
+A change in the MSRV will be treated as a breaking change.
 
 ## Testing
 
