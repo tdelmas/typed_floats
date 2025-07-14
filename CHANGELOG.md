@@ -7,8 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## 1.0.7 - Unreleased
 
-### Added
+### Fixed
 
+- Panic when using `as_const!` with non-const values [#229](https://github.com/tdelmas/typed_floats/pull/229)
+
+### Changed
+
+- Use `build.rs` instead of custom scripts [#232](https://github.com/tdelmas/typed_floats/pull/232)
+- Moved `criterion` benchmarks to a separate crate, allowing to use the latest version without breaking the 1.70 MSRV [#234](https://github.com/tdelmas/typed_floats/pull/234)
 - 35% faster implementation of `signum` for all types
 - 8% faster implementation of `Eq` for non-zero types
 - 4% faster implementation of `Ord` for positives and negatives types
