@@ -109,7 +109,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - run: cargo install cargo-semver-checks
+      - run: cargo install cargo-semver-checks --locked
       - run: cd typed_floats && cargo semver-checks --only-explicit-features ${{ matrix.features }}
 
   check-docs:
