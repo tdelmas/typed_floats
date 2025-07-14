@@ -84,8 +84,9 @@ Most methods and traits available on the underlying type are available on the ty
 
 Most constants are also available, with the most appropriate typed float type (except `NAN` for obvious reasons) in the [`tf64`] and [`tf32`] modules (in [`tf64::consts`] and [`tf32::consts`] respectively when the constant comes from [`core::f64::consts`] or [`core::f32::consts`]). Those modules are named that way to avoid conflicts or confusion with the primitives [`f32`] and [`f64`].
 
-⚠️ Like for primitives [`f32`] and [`f64`],`-0.0 == +0.0` is `true` for all types of this crate.
-To facilitate comparisons, the methods `is_positive_zero` and `is_negative_zero` are added.
+> [!WARNING]
+> Like for primitives [`f32`] and [`f64`],`-0.0 == +0.0` is `true` for all types of this crate.
+> To facilitate comparisons, the methods `is_positive_zero` and `is_negative_zero` are added.
 
 # Traits implemented
 
@@ -153,7 +154,8 @@ A `panic!` triggered in any other way is considered a security bug and should be
 
 This crate is designed to have a minimal overhead at runtime, in terms of memory, speed and binary size.
 
-It can even be faster than using primitives [`f32`] and [`f64`] directly, as it may avoids some checks by using compiler hints and can use some faster implementations in some cases.
+> [!TIP]
+> It can even be faster than using primitives [`f32`] and [`f64`] directly, as it may avoids some checks by using compiler hints and can use some faster implementations in some cases.
 
 ### Overhead
 
