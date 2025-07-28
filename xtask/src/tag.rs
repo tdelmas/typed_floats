@@ -61,7 +61,7 @@ pub fn tag(args: Vec<String>) {
         .output()
         .unwrap();
 
-    println!("Commiting files...");
+    println!("Committing files...");
 
     std::process::Command::new("git")
         .args([

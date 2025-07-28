@@ -198,7 +198,7 @@ macro_rules! assert_float_eq {
 /// const SIX: NonNaN<f32> = as_const!(NonNaN, f32, 6.0);
 /// ```
 ///
-/// Thoses examples will panic at compile time:
+/// Those examples will panic at compile time:
 ///
 /// ```ignore
 /// # use typed_floats::*;
@@ -278,7 +278,7 @@ macro_rules! as_const {
 /// generate_const!(INF, StrictlyPositive, f32, 1.0/0.0);
 /// ```
 ///
-/// Thoses examples will panic at compile time:
+/// Those examples will panic at compile time:
 ///
 /// ```ignore
 /// # use typed_floats::*;

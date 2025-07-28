@@ -19,7 +19,7 @@ pub fn create_creadmes() {
         .expect("Failed to copy README.md from project root to crate root");
 
     // Truncate the README to include it in the documentation of the crate
-    let trucated_readme = Path::new("../typed_floats/README.truncated.md");
+    let truncated_readme = Path::new("../typed_floats/README.truncated.md");
 
     // remove the parts that are not used by docs.io
     // That truncated version is the introduction of the documentation
@@ -32,7 +32,7 @@ pub fn create_creadmes() {
 
     let text = text.replace("```rust", "```ignore");
 
-    fs::write(trucated_readme, text).expect("Failed to write truncated README.md");
+    fs::write(truncated_readme, text).expect("Failed to write truncated README.md");
 }
 
 fn main() {

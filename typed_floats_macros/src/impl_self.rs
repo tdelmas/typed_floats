@@ -197,7 +197,7 @@ pub fn get_impl_self() -> Vec<Op> {
             .description(quote! {
                 /// Returns the fractional part of `self`.
                 /// For negative numbers, the result is negative except when the fractional part is zero.
-                /// For INIFINITY and NEG_INFINITY, the result is NaN.
+                /// For INFINITY and NEG_INFINITY, the result is NaN.
                 ///
                 /// # Examples
                 ///
