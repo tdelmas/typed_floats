@@ -63,7 +63,7 @@ pub fn get_impl_self_rhs() -> Vec<OpRhs> {
         OpRhsBuilder::new("core::ops::Sub", "sub")
             .with_assign("core::ops::SubAssign", "sub_assign")
             .bin_op("-")
-            .comment("The substraction of two infinity of the same sign is `NaN`")
+            .comment("The subtraction of two infinity of the same sign is `NaN`")
             .result(Box::new(|float, rhs| {
                 let spec_a = &float.s;
                 let spec_b = &rhs.s;

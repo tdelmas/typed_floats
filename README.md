@@ -99,7 +99,7 @@ Most constants are also available, with the most appropriate TypedFloat type (ex
 
 (The traits `From` and `TryFrom` are implemented depending on the situation)
 
-## Comparaisons: [`core::cmp::PartialOrd`] and [`core::cmp::PartialEq`]
+## Comparisons: [`core::cmp::PartialOrd`] and [`core::cmp::PartialEq`]
 | 🗘 | `f32`/`f64` | [`NonNaN`] | [`NonNaNFinite`] | [`NonZeroNonNaN`] | [`NonZeroNonNaNFinite`] | [`Positive`] | [`PositiveFinite`] | [`StrictlyPositive`] | [`StrictlyPositiveFinite`] | [`Negative`] | [`NegativeFinite`] | [`StrictlyNegative`] | [`StrictlyNegativeFinite`]
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | `f32`/`f64` | N/A |  ✔️ |  ✔️ |  ✔️ |  ✔️ |  ✔️ |  ✔️ |  ✔️ |  ✔️ |  ✔️ |  ✔️ |  ✔️ |  ✔️ | 

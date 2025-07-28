@@ -68,7 +68,7 @@
 //! assert_eq!(b, 1.0);
 //! ```
 //!
-//! Also, comparaison between types is available:
+//! Also, comparison between types is available:
 //!
 //! ```
 //! use typed_floats::*;
