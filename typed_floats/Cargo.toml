@@ -65,6 +65,8 @@ dead-code = { level = "deny", priority = 1 }
 unsafe_op_in_unsafe_fn = { level = "deny", priority = 1 }
 # unused_crate_dependencies = { level = "warn", priority = 1 }
 warnings = { level = "deny", priority = 0 }
+# For old rust versions
+unknown_lints = { priority = 1, level = "allow" }
 
 [lints.clippy]
 indexing_slicing = { priority = -1, level = "deny" }
