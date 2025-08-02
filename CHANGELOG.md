@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## 1.0.7 - Unreleased
 
+### Added
+
+- `exclude_inf`, `exclude_zero`, `exclude_positive` and `exclude_negative` to restrict a type [#136](https://github.com/tdelmas/typed_floats/pull/136)
+
 ### Fixed
 
 - Panic when using `as_const!` with non-const values [#229](https://github.com/tdelmas/typed_floats/pull/229)
