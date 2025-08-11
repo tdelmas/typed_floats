@@ -12,4 +12,4 @@ keywords = ["floats", "non-zero", "nan", "no_std"]
 categories = ["mathematics", "data-structures"]
 
 [workspace.dependencies]
-rustversion = "1.0.20"
+rustversion = "1.0.22"
