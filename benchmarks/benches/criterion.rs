@@ -36,6 +36,16 @@ pub fn criterion_benchmark(c: &mut Criterion) {
         });
     });
 
+
+    c.bench_function("hash", |b| {
+        b.iter(|| {
+            for i in &valid_values_f32 {
+                let hash = i.hash();
+                black_box(hash);
+            }
+        });
+    });
+
     c.bench_function("sort_positive", |b| {
         let valid_values_f32 = values_f32
             .iter()
