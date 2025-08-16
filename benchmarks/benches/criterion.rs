@@ -36,12 +36,13 @@ pub fn criterion_benchmark(c: &mut Criterion) {
         });
     });
 
-
     c.bench_function("hash", |b| {
+        use std::hash::{DefaultHasher, Hash, Hasher};
         b.iter(|| {
             for i in &valid_values_f32 {
-                let hash = i.hash();
-                black_box(hash);
+                let mut s = DefaultHasher::new();
+                let hash = i.hash(&mut s);
+                black_box(s.finish());
             }
         });
     });
