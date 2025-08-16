@@ -9,58 +9,75 @@ use crate::{
 // This is sound because `NaN` is not a possible value.
 // https://doc.rust-lang.org/core/hash/trait.Hash.html
 
-const ZERO_BITS_F32: u32 = 0;
-const ZERO_BITS_F64: u64 = 0;
-
 impl core::hash::Hash for NonNaN<f32> {
     fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
-        let bits = if self.0 == 0.0 {
-            // `+0.0` and `-0.0` are equal to they must have the same hash
-            ZERO_BITS_F32
-        } else {
-            self.0.to_bits()
-        };
-
-        bits.hash(state);
+        // `+0.0` and `-0.0` are equal to they must have the same hash
+        // -0.0 + 0.0 == +0.0 with IEEE754 roundTiesToEven use by rust
+        (self.0 + 0.0).to_bits().hash(state);
     }
 }
 
 impl core::hash::Hash for NonNaN<f64> {
     fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
-        let bits = if self.0 == 0.0 {
-            // `+0.0` and `-0.0` are equal to they must have the same hash
-            ZERO_BITS_F64
-        } else {
-            self.0.to_bits()
-        };
-
-        bits.hash(state);
+        // `+0.0` and `-0.0` are equal to they must have the same hash
+        // -0.0 + 0.0 == +0.0 with IEEE754 roundTiesToEven use by rust
+        (self.0 + 0.0).to_bits().hash(state);
     }
 }
 
 impl core::hash::Hash for NonNaNFinite<f32> {
     fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
-        let bits = if self.0 == 0.0 {
-            // `+0.0` and `-0.0` are equal to they must have the same hash
-            ZERO_BITS_F32
-        } else {
-            self.0.to_bits()
-        };
-
-        bits.hash(state);
+        // `+0.0` and `-0.0` are equal to they must have the same hash
+        // -0.0 + 0.0 == +0.0 with IEEE754 roundTiesToEven use by rust
+        (self.0 + 0.0).to_bits().hash(state);
     }
 }
 
 impl core::hash::Hash for NonNaNFinite<f64> {
     fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
-        let bits = if self.0 == 0.0 {
-            // `+0.0` and `-0.0` are equal to they must have the same hash
-            ZERO_BITS_F64
-        } else {
-            self.0.to_bits()
-        };
+        // `+0.0` and `-0.0` are equal to they must have the same hash
+        // -0.0 + 0.0 == +0.0 with IEEE754 roundTiesToEven use by rust
+        (self.0 + 0.0).to_bits().hash(state);
+    }
+}
 
-        bits.hash(state);
+#[cfg(test)]
+mod tests {
+    use crate::*;
+
+    #[test]
+    fn zero_optimization() {
+        let zero_f32 = 0.0f32;
+        let zero_f64 = 0.0f64;
+
+        let neg_zero_f32 = -0.0f32;
+        let neg_zero_f64 = -0.0f64;
+
+        let sum_f32 = zero_f32 + neg_zero_f32;
+        let sum_f64 = zero_f64 + neg_zero_f64;
+
+        assert!(sum_f32.is_sign_positive());
+        assert!(sum_f64.is_sign_positive());
+
+        let values = tf32::get_test_values();
+        for value in values {
+            if value != 0.0 && !value.is_nan() {
+                let sum = value + 0.0;
+                assert_eq!(sum, value);
+                assert_eq!(sum.to_bits(), value.to_bits());
+                assert_eq!(sum.is_sign_positive(), value.is_sign_positive());
+            }
+        }
+
+        let values = tf64::get_test_values();
+        for value in values {
+            if value != 0.0 && !value.is_nan() {
+                let sum = value + 0.0;
+                assert_eq!(sum, value);
+                assert_eq!(sum.to_bits(), value.to_bits());
+                assert_eq!(sum.is_sign_positive(), value.is_sign_positive());
+            }
+        }
     }
 }
 
