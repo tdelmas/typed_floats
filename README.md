@@ -82,7 +82,7 @@ In that example:
 
 Most methods and traits available on the underlying type are available on the types of this crate.
 
-Most constants are also available, with the most appropriate TypedFloat type (except `NAN` for obvious reasons) in the [`tf64`] and [`tf32`] modules (in [`tf64::consts`] and [`tf32::consts`] respectively when the constant comes from [`core::f64::consts`] or [`core::f32::consts`]). Those modules are named that way to avoid conflicts or confusion with the primitives [`f32`] and [`f64`].
+Most constants are also available, with the most appropriate typed float type (except `NAN` for obvious reasons) in the [`tf64`] and [`tf32`] modules (in [`tf64::consts`] and [`tf32::consts`] respectively when the constant comes from [`core::f64::consts`] or [`core::f32::consts`]). Those modules are named that way to avoid conflicts or confusion with the primitives [`f32`] and [`f64`].
 
 > [!WARNING]
 > Like for primitives [`f32`] and [`f64`],`-0.0 == +0.0` is `true` for all types of this crate.
@@ -132,14 +132,14 @@ Most constants are also available, with the most appropriate TypedFloat type (ex
 All 12 types implement the methods available on [`f32`] and [`f64`] **except**:
 
 - deprecated and nightly-only methods
-- total_cmp(&self, other: &f64) -> Ordering
-- sin_cos(self) -> (f64, f64)
-- mul_add(self, a: f64, b: f64) -> f64
-- clamp(self, min: f64, max: f64) -> f64
-- LowerExp
-- UpperExp
-- Product
-- Sum
+- `total_cmp(&self, other: &f64) -> Ordering`
+- `sin_cos(self) -> (f64, f64)`
+- `mul_add(self, a: f64, b: f64) -> f64`
+- `clamp(self, min: f64, max: f64) -> f64`
+- `LowerExp`
+- `UpperExp`
+- `Product`
+- `Sum`
 - `to_int_unchecked`
 - `to*_bits`
 - `from*_bits`
