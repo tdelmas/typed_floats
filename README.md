@@ -170,6 +170,7 @@ Also, some methods are faster than the default implementation. For example:
 - When possible `Eq` is implemented by comparing the bits of the two floats instead of the slower default implementation, that had special cases for `NaN` (to handle `NaN != NaN`) and `-0.0` (to handle `-0.0 == 0.0`). (8% faster)
 - `Ord` is implemented by directly comparing the bits of the two floats instead of the slower default implementation for negatives and positives types. (4% faster)
 - `signum` doesn't needs to check for `NaN`. (35% faster)
+- types others than [`NonNaN`] and [`NonNaNFinite`] use a faster implementation of `Eq`, opening the door to Jump Threading optimisations.
 
 # Features
 
