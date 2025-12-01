@@ -12,7 +12,7 @@ description = "Benchmarks for typed_floats using Criterion."
 publish = false
 
 [dev-dependencies]
-criterion = "0.7"
+criterion = "0.8"
 
 [dev-dependencies.typed_floats]
 path = "../typed_floats"
