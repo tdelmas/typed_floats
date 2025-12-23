@@ -73,7 +73,7 @@ pub struct NonNaN<T = f64>(T);
 #[repr(transparent)]
 pub struct NonZeroNonNaN<T = f64>(T);
 
-/// A non-NaN finite floating point number different from zero
+/// A non-NaN finite floating point number
 ///
 /// It satisfies the following constraints:
 /// - It is not NaN.
