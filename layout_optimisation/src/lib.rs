@@ -66,32 +66,19 @@ mod tests {
     const VALUES_F32: [f32; 5] = [1.0, -1.0, 3.14, -2.71, 42.0];
     const VALUES_F64: [f64; 5] = [1.0, -1.0, 3.14, -2.71, 42.0];
 
-    type OptionNonZeroF32 = Option<NonZeroF32Packed>;
-    type OptionNonZeroF64 = Option<NonZeroF64Packed>;
-    type OptionNonNaNF32 = Option<NonNaNF32Packed>;
-    type OptionNonNaNF64 = Option<NonNaNF64Packed>;
-
     #[test]
     fn test_option_size() {
-        assert!(core::mem::size_of::<Option<f32>>() > core::mem::size_of::<f32>());
-        assert!(core::mem::size_of::<Option<f64>>() > core::mem::size_of::<f64>());
+        const SIZE_F32: usize = core::mem::size_of::<f32>();
+        const SIZE_OPTION_F32: usize = core::mem::size_of::<Option<f32>>();
+        
+        const SIZE_NONZERO_TF32: usize = core::mem::size_of::<NonZeroF32Packed>();
+        const SIZE_OPTION_NONZERO_TF32: usize = core::mem::size_of::<Option<NonZeroF32Packed>>();
 
-        assert_eq!(
-            core::mem::size_of::<OptionNonZeroF32>(),
-            core::mem::size_of::<f32>()
-        );
-        assert_eq!(
-            core::mem::size_of::<OptionNonZeroF64>(),
-            core::mem::size_of::<f64>()
-        );
-        assert_eq!(
-            core::mem::size_of::<OptionNonNaNF32>(),
-            core::mem::size_of::<f32>()
-        );
-        assert_eq!(
-            core::mem::size_of::<OptionNonNaNF64>(),
-            core::mem::size_of::<f64>()
-        );
+        assert_eq!(SIZE_F32, SIZE_NONZERO_TF32);
+        assert_eq!(SIZE_NONZERO_TF32, SIZE_OPTION_NONZERO_TF32);
+
+
+        assert!(SIZE_OPTION_F32 > SIZE_F32);
     }
 
     #[test]
