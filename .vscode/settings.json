@@ -1,4 +1,17 @@
+
 {
+    "chat.disableAIFeatures": true,
+    "chat.agent.enabled": false,
+    "github.copilot.enable": {
+        "*": false
+    },
+    "github.copilot.chat.agent.currentEditorContext.enabled": false,
+    "github.copilot.chat.agent.autoFix": false,
+    "github.copilot.chat.backgroundAgent.enabled": false,
+    "github.copilot.chat.cloudAgent.enabled": false,
+    "github.copilot.nextEditSuggestions.enabled": false,
+    "chat.agent.codeBlockProgress": false,
+    "chat.agent.thinking.generateTitles": false,
     "recommendations": [
         "rust-lang.rust-analyzer",
         "serayuzgur.crates"
