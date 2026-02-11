@@ -191,6 +191,108 @@ pub trait Powf<T> {
     fn powf(self, rhs: T) -> Self::Output;
 }
 
+/// This trait is used to specify the return type of the exclude function.
+pub trait ExcludeInf: Sized {
+    /// The resulting type after applying [`ExcludeInf::exclude_inf()`].
+    type Output: Sized;
+
+    /// Filters out zeros.
+    ///
+    /// # Errors
+    ///
+    /// If the value is infinite, it returns an error with the original value.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use typed_floats::*;
+    ///
+    /// let a: Positive<f32> = 0.0.try_into().unwrap();
+    /// let b: PositiveFinite<f32> = a.exclude_inf().unwrap();
+    /// let c: PositiveFinite<f32> = match a.exclude_inf() {
+    ///   Ok(x) => x,
+    ///   Err(x) => panic!("{} is infinite", x),
+    /// };
+    /// ```
+    fn exclude_inf(self) -> Result<Self::Output, Self>;
+}
+
+/// This trait is used to specify the return type of the exclude function.
+pub trait ExcludeZero: Sized {
+    /// The resulting type after applying [`ExcludeZero::exclude_zero()`].
+    type Output: Sized;
+
+    /// Filters out zeros.
+    ///
+    /// # Errors
+    ///
+    /// If the value is zero, it returns an error with the original value.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use typed_floats::*;
+    ///
+    /// let a: Positive<f32> = 1.0.try_into().unwrap();
+    /// let b: StrictlyPositive<f32> = a.exclude_zero().unwrap();
+    /// let c: StrictlyPositive<f32> = match a.exclude_zero() {
+    ///   Ok(x) => x,
+    ///   Err(x) => panic!("{} is +/-0.0", x),
+    /// };
+    /// ```
+    fn exclude_zero(self) -> Result<Self::Output, Self>;
+}
+
+/// This trait is used to specify the return type of the exclude function.
+pub trait ExcludePositive: Sized {
+    /// The resulting type after applying [`ExcludePositive::exclude_positive()`].
+    type Output: Sized;
+
+    /// Filters out positive values.
+    ///
+    /// # Errors
+    ///
+    /// If the value is positive, it returns an error with the original value.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use typed_floats::*;
+    /// let a: NonNaN<f32> = (-0.0).try_into().unwrap();
+    /// let b: Negative<f32> = a.exclude_positive().unwrap();
+    /// let c: Negative<f32> = match a.exclude_positive() {
+    ///   Ok(x) => x,
+    ///   Err(x) => panic!("{} is positive", x),
+    /// };
+    /// ```
+    fn exclude_positive(self) -> Result<Self::Output, Self>;
+}
+
+/// This trait is used to specify the return type of the exclude function.
+pub trait ExcludeNegative: Sized {
+    /// The resulting type after applying [`ExcludeNegative::exclude_negative()`].
+    type Output: Sized;
+
+    /// Filters out negative values.
+    ///
+    /// # Errors
+    ///
+    /// If the value is negative, it returns an error with the original value.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use typed_floats::*;
+    /// let a: NonNaN<f32> = 0.0.try_into().unwrap();
+    /// let b: Positive<f32> = a.exclude_negative().unwrap();
+    /// let c: Positive<f32> = match a.exclude_negative() {
+    ///   Ok(x) => x,
+    ///   Err(x) => panic!("{} is negative", x),
+    /// };
+    /// ```
+    fn exclude_negative(self) -> Result<Self::Output, Self>;
+}
+
 #[rustversion::since(1.85)]
 /// This trait is used to specify the return type of the [`Midpoint::midpoint()`] function.
 pub trait Midpoint<T> {
