@@ -67,7 +67,7 @@ mod tests {
     const VALUES_F64: [f64; 5] = [1.0, -1.0, 3.14, -2.71, 42.0];
 
     #[test]
-    fn test_option_size() {
+    fn test_option_size_32() {
         const SIZE_F32: usize = core::mem::size_of::<f32>();
         const SIZE_OPTION_F32: usize = core::mem::size_of::<Option<f32>>();
         
@@ -79,6 +79,21 @@ mod tests {
 
 
         assert!(SIZE_OPTION_F32 > SIZE_F32);
+    }
+
+    #[test]
+    fn test_option_size_64() {
+        const SIZE_F64: usize = core::mem::size_of::<f64>();
+        const SIZE_OPTION_F64: usize = core::mem::size_of::<Option<f64>>();
+        
+        const SIZE_NONZERO_TF64: usize = core::mem::size_of::<NonZeroF64Packed>();
+        const SIZE_OPTION_NONZERO_TF64: usize = core::mem::size_of::<Option<NonZeroF64Packed>>();
+
+        assert_eq!(SIZE_F64, SIZE_NONZERO_TF64);
+        assert_eq!(SIZE_NONZERO_TF64, SIZE_OPTION_NONZERO_TF64);
+
+
+        assert!(SIZE_OPTION_F64 > SIZE_F64);
     }
 
     #[test]
