@@ -46,18 +46,15 @@ mod tests {
     use crate::*;
 
     #[test]
-    fn zero_optimization() {
+    #[cfg(feature = "f32")]
+    fn zero_optimization_f32() {
         let zero_f32 = 0.0f32;
-        let zero_f64 = 0.0f64;
 
         let neg_zero_f32 = -0.0f32;
-        let neg_zero_f64 = -0.0f64;
 
         let sum_f32 = zero_f32 + neg_zero_f32;
-        let sum_f64 = zero_f64 + neg_zero_f64;
 
         assert!(sum_f32.is_sign_positive());
-        assert!(sum_f64.is_sign_positive());
 
         let values = tf32::get_test_values();
         for value in values {
@@ -68,6 +65,18 @@ mod tests {
                 assert_eq!(sum.is_sign_positive(), value.is_sign_positive());
             }
         }
+    }
+
+    #[test]
+    #[cfg(feature = "f64")]
+    fn zero_optimization_f64() {
+        let zero_f64 = 0.0f64;
+
+        let neg_zero_f64 = -0.0f64;
+
+        let sum_f64 = zero_f64 + neg_zero_f64;
+
+        assert!(sum_f64.is_sign_positive());
 
         let values = tf64::get_test_values();
         for value in values {

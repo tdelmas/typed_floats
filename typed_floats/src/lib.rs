@@ -105,7 +105,6 @@
 #[cfg(not(any(feature = "f32", feature = "f64")))]
 compile_error!("At least one of the features `f32` or `f64` must be enabled.");
 
-
 // `format!` is used during the tests even in `no_std` environments
 #[cfg(all(test, not(feature = "std")))]
 #[macro_use]
@@ -212,14 +211,8 @@ mod tests {
     }
 
     #[test]
-    fn test_subnormals() {
-        const SUBNORMALS_F64: [f64; 4] = [
-            tf64::MAX_SUBNORMAL_NEGATIVE.get(),
-            tf64::MIN_SUBNORMAL_NEGATIVE.get(),
-            tf64::MIN_SUBNORMAL_POSITIVE.get(),
-            tf64::MAX_SUBNORMAL_POSITIVE.get(),
-        ];
-
+    #[cfg(feature = "f32")]
+    fn test_subnormals_f32() {
         const SUBNORMALS_F32: [f32; 4] = [
             tf32::MAX_SUBNORMAL_NEGATIVE.get(),
             tf32::MIN_SUBNORMAL_NEGATIVE.get(),
@@ -227,14 +220,26 @@ mod tests {
             tf32::MAX_SUBNORMAL_POSITIVE.get(),
         ];
 
-        assert_sorted(&SUBNORMALS_F64, 0.0);
         assert_sorted(&SUBNORMALS_F32, 0.0);
 
-        for value in SUBNORMALS_F64 {
+        for value in SUBNORMALS_F32 {
             assert!(value.is_subnormal());
         }
+    }
 
-        for value in SUBNORMALS_F32 {
+    #[test]
+    #[cfg(feature = "f64")]
+    fn test_subnormals_f64() {
+        const SUBNORMALS_F64: [f64; 4] = [
+            tf64::MAX_SUBNORMAL_NEGATIVE.get(),
+            tf64::MIN_SUBNORMAL_NEGATIVE.get(),
+            tf64::MIN_SUBNORMAL_POSITIVE.get(),
+            tf64::MAX_SUBNORMAL_POSITIVE.get(),
+        ];
+
+        assert_sorted(&SUBNORMALS_F64, 0.0);
+
+        for value in SUBNORMALS_F64 {
             assert!(value.is_subnormal());
         }
     }

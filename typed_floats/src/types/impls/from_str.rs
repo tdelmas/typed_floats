@@ -30,27 +30,33 @@ macro_rules! impl_from_str {
 
         #[test]
         fn $test() {
-            let values_f32 = crate::tf32::get_test_values();
+            #[cfg(feature = "f32")]
+            {
+                let values_f32 = crate::tf32::get_test_values();
 
-            for &value in &values_f32 {
-                if $type::<f32>::new(value).is_ok() {
-                    let str = format!("{}", value);
+                for &value in &values_f32 {
+                    if $type::<f32>::new(value).is_ok() {
+                        let str = format!("{}", value);
 
-                    let t = str.parse::<$type<f32>>().unwrap();
+                        let t = str.parse::<$type<f32>>().unwrap();
 
-                    assert_eq!(t.get(), value);
+                        assert_eq!(t.get(), value);
+                    }
                 }
             }
 
-            let values_f64 = crate::tf64::get_test_values();
+            #[cfg(feature = "f64")]
+            {
+                let values_f64 = crate::tf64::get_test_values();
 
-            for &value in &values_f64 {
-                if $type::<f64>::new(value).is_ok() {
-                    let str = format!("{}", value);
+                for &value in &values_f64 {
+                    if $type::<f64>::new(value).is_ok() {
+                        let str = format!("{}", value);
 
-                    let t = str.parse::<$type<f64>>().unwrap();
+                        let t = str.parse::<$type<f64>>().unwrap();
 
-                    assert_eq!(t.get(), value);
+                        assert_eq!(t.get(), value);
+                    }
                 }
             }
         }
