@@ -86,7 +86,7 @@ jobs:
       - uses: actions/checkout@v4
       - run: rustup default ${{ matrix.version }}
       - run: cargo --version
-      - run: cd typed_floats && cargo test ${{ matrix.cargo_options }}
+      - run: cd typed_floats && cargo test --lib --bins --tests ${{ matrix.cargo_options }}
         
   clippy:
     runs-on: ubuntu-latest
