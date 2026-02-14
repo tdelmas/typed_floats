@@ -6,6 +6,7 @@ use crate::{
 
 macro_rules! impl_from_str {
     ($test:ident, $type:ident) => {
+        #[cfg(feature = "f32")]
         impl core::str::FromStr for $type<f32> {
             type Err = FromStrError;
 
@@ -17,6 +18,7 @@ macro_rules! impl_from_str {
             }
         }
 
+        #[cfg(feature = "f64")]
         impl core::str::FromStr for $type<f64> {
             type Err = FromStrError;
 
