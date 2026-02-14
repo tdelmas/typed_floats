@@ -100,6 +100,7 @@ pub fn get_impl_self() -> Vec<Op> {
 
                 ReturnTypeSpecification::FloatSpecifications(output_spec)
             }))
+            .const_since("1.90")
             .build(),
         #[cfg(any(feature = "std", feature = "libm"))]
         OpBuilder::new("floor")
@@ -131,6 +132,7 @@ pub fn get_impl_self() -> Vec<Op> {
 
                 ReturnTypeSpecification::FloatSpecifications(output_spec)
             }))
+            .const_since("1.90")
             .build(),
         #[cfg(any(feature = "std", feature = "libm"))]
         OpBuilder::new("round")
@@ -161,6 +163,7 @@ pub fn get_impl_self() -> Vec<Op> {
 
                 ReturnTypeSpecification::FloatSpecifications(output_spec)
             }))
+            .const_since("1.90")
             .build(),
         #[cfg(any(feature = "std", feature = "libm"))]
         OpBuilder::new("trunc")
@@ -191,6 +194,7 @@ pub fn get_impl_self() -> Vec<Op> {
 
                 ReturnTypeSpecification::FloatSpecifications(output_spec)
             }))
+            .const_since("1.90")
             .build(),
         #[cfg(any(feature = "std", feature = "libm"))]
         OpBuilder::new("fract")
@@ -231,6 +235,7 @@ pub fn get_impl_self() -> Vec<Op> {
 
                 ReturnTypeSpecification::FloatSpecifications(output_spec)
             }))
+            .const_since("1.90")
             .build(),
         #[cfg(any(feature = "std", feature = "libm"))]
         OpBuilder::new("signum")

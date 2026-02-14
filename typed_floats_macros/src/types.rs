@@ -306,8 +306,11 @@ impl Op {
             Some("1.85") => {
                 quote! { #[const_fn("1.85")] }
             }
+            Some("1.90") => {
+                quote! { #[const_fn("1.90")] }
+            }
             Some(_) => {
-                unimplemented!()
+                unimplemented!("Please update const_since with the missing version")
             }
             None => quote! {},
         };

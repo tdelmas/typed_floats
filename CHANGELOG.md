@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Panic when using `as_const!` with non-const values [#229](https://github.com/tdelmas/typed_floats/pull/229)
+- Const methods added in rust 1.90
 
 ### Changed
 
