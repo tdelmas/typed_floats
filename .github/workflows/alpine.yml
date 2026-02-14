@@ -30,8 +30,8 @@ jobs:
           "1.70",
         ]
         features: [
-            "std,serde",
-            "std,libm",
+            "f32,f64,std,serde",
+            "f32,f64,std,libm",
         ]
 
     steps:

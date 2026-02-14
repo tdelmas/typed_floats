@@ -24,13 +24,18 @@ env:
 jobs:
   cargo-build:
     runs-on: ubuntu-latest
-    name: Tests on rust ${{ matrix.version }} features "${{ matrix.features }}"
+    name: Tests on rust ${{ matrix.version }} features "${{ matrix.features }}" floats "${{ matrix.f }}"
     strategy:
       matrix:
         version: [
           "beta",
           "stable",
           "1.70",
+        ]
+        f: [
+          "f32",
+          "f64",
+          "f32,f64",
         ]
         features: [
             "",
@@ -47,11 +52,11 @@ jobs:
       - uses: actions/checkout@v4
       - run: rustup default ${{ matrix.version }}
       # Check that it builds with all features combinations
-      - run: cd typed_floats && cargo build --no-default-features --features "${{ matrix.features }}"
+      - run: cd typed_floats && cargo build --no-default-features --features "${{ matrix.features }},${{ matrix.f }}"
       # Check that it builds in release mode with all features combinations
-      - run: cd typed_floats && cargo build --release --no-default-features --features "${{ matrix.features }}"
+      - run: cd typed_floats && cargo build --release --no-default-features --features "${{ matrix.features }},${{ matrix.f }}"
       # Check that it builds test in release mode with all features combinations
-      - run: cd typed_floats && cargo test --no-run --release --no-default-features --features "${{ matrix.features }}"
+      - run: cd typed_floats && cargo test --no-run --release --no-default-features --features "${{ matrix.features }},${{ matrix.f }}"
 
   cargo-test:
     runs-on: ubuntu-latest
@@ -69,12 +74,12 @@ jobs:
           "",
           ## Test without any feature (no std)
           "--no-default-features",
-          "--test 'serde' --no-default-features --features serde",
-          "--no-default-features --features libm",
+          "--test 'serde' --no-default-features --features f32,f64,serde",
+          "--no-default-features --features f32,f64,libm",
           # Test serde (with std)
           "test --features serde",
           ## Run tests in release mode with the two main features: serde and std
-          "--release --no-default-features --features serde,std",
+          "--release --no-default-features --features f32,f64,serde,std",
         ]
 
     steps:
