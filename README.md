@@ -212,6 +212,8 @@ Also, tests on `nightly`, `beta` and `stable` are run monthly on [GitHub actions
 The minimum supported Rust version (MSRV) is 1.70.0 because of the use of `dep:` in `Cargo.toml`.
 A change in the MSRV will be treated as a breaking change.
 
+When building with old rustc versions, some dependencies such as `syn` may break the build. The latest version compatible with the MSRV can be checked in `Cargo.lock`.
+
 ## Testing
 
 Tests are run on different architectures on [GitHub actions](https://github.com/tdelmas/typed_floats/actions/workflows/tests.yml) and [CircleCI](https://circleci.com/gh/tdelmas/typed_floats).
