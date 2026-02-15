@@ -32,7 +32,7 @@ impl NegativeFinite<f64> {
             return Err(InvalidNumber::Positive);
         }
 
-        Ok(Self(value))
+        Ok(Self(crate::container::Container::new(value)))
     }
 
     /// Creates a new value from a primitive type with zero overhead (in release mode).
@@ -73,7 +73,7 @@ impl NegativeFinite<f64> {
     #[inline]
     #[must_use]
     pub const fn get(&self) -> f64 {
-        self.0
+        *self.0.get()
     }
 
     /// Returns `true` if this value is NaN.
@@ -150,7 +150,7 @@ impl NegativeFinite<f64> {
     #[must_use]
     #[const_fn("1.83")]
     pub const fn is_subnormal(&self) -> bool {
-        self.0.is_subnormal()
+        self.get().is_subnormal()
     }
 
     /// Returns `true` if the number is neither zero, infinite or [subnormal](https://en.wikipedia.org/wiki/Denormal_number).
@@ -169,7 +169,7 @@ impl NegativeFinite<f64> {
     #[must_use]
     #[const_fn("1.83")]
     pub const fn is_normal(&self) -> bool {
-        self.0.is_normal()
+        self.get().is_normal()
     }
 
     /// Returns the floating point category of the number. If only one property
@@ -190,7 +190,7 @@ impl NegativeFinite<f64> {
     #[must_use]
     #[const_fn("1.83")]
     pub const fn classify(&self) -> core::num::FpCategory {
-        self.0.classify()
+        self.get().classify()
     }
 
     /// Returns `true` if `self` has a positive sign, including `+0.0` and positive infinity.
@@ -247,7 +247,7 @@ impl NegativeFinite<f64> {
     #[must_use]
     #[const_fn("1.83")]
     pub const fn is_negative_zero(&self) -> bool {
-        self.0 == 0.0
+        self.get() == 0.0
     }
 
     /// Returns `true` if the number is positive zero.

@@ -13,7 +13,7 @@ impl core::hash::Hash for NonNaN<f32> {
     fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
         // `+0.0` and `-0.0` are equal to they must have the same hash
         // -0.0 + 0.0 == +0.0 with IEEE754 roundTiesToEven use by rust
-        (self.0 + 0.0).to_bits().hash(state);
+        (self.get() + 0.0).to_bits().hash(state);
     }
 }
 
@@ -21,7 +21,7 @@ impl core::hash::Hash for NonNaN<f64> {
     fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
         // `+0.0` and `-0.0` are equal to they must have the same hash
         // -0.0 + 0.0 == +0.0 with IEEE754 roundTiesToEven use by rust
-        (self.0 + 0.0).to_bits().hash(state);
+        (self.get() + 0.0).to_bits().hash(state);
     }
 }
 
@@ -29,7 +29,7 @@ impl core::hash::Hash for NonNaNFinite<f32> {
     fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
         // `+0.0` and `-0.0` are equal to they must have the same hash
         // -0.0 + 0.0 == +0.0 with IEEE754 roundTiesToEven use by rust
-        (self.0 + 0.0).to_bits().hash(state);
+        (self.get() + 0.0).to_bits().hash(state);
     }
 }
 
@@ -37,7 +37,7 @@ impl core::hash::Hash for NonNaNFinite<f64> {
     fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
         // `+0.0` and `-0.0` are equal to they must have the same hash
         // -0.0 + 0.0 == +0.0 with IEEE754 roundTiesToEven use by rust
-        (self.0 + 0.0).to_bits().hash(state);
+        (self.get() + 0.0).to_bits().hash(state);
     }
 }
 
@@ -199,14 +199,14 @@ macro_rules! impl_hash {
         impl core::hash::Hash for $type<f32> {
             #[inline]
             fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
-                self.0.to_bits().hash(state);
+                self.get().to_bits().hash(state);
             }
         }
 
         impl core::hash::Hash for $type<f64> {
             #[inline]
             fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
-                self.0.to_bits().hash(state);
+                self.get().to_bits().hash(state);
             }
         }
 

@@ -110,7 +110,7 @@ extern crate alloc;
 mod macros;
 mod traits;
 mod types;
-mod layout_optimisation;
+mod container;
 
 #[cfg(feature = "serde")]
 mod serde;

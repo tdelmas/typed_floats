@@ -191,7 +191,7 @@ macro_rules! accept {
             #[must_use]
             #[doc(hidden)]
             pub const unsafe fn internal_only_new_unchecked(value: f32) -> Self {
-                Self(value)
+                Self(crate::container::Container::new(value))
             }
         }
 
@@ -204,7 +204,7 @@ macro_rules! accept {
             #[must_use]
             #[doc(hidden)]
             pub const unsafe fn internal_only_new_unchecked(value: f64) -> Self {
-                Self(value)
+                Self(crate::container::Container::new(value))
             }
         }
     };
