@@ -8,6 +8,7 @@ use crate::types::{
 
 macro_rules! impl_deserialize {
     ($type:ident) => {
+        #[cfg(feature = "f64")]
         impl<'de> Deserialize<'de> for $type<f64> {
             fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
             where
@@ -19,6 +20,7 @@ macro_rules! impl_deserialize {
             }
         }
 
+        #[cfg(feature = "f32")]
         impl<'de> Deserialize<'de> for $type<f32> {
             fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
             where
