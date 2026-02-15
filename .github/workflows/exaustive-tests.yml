@@ -51,4 +51,4 @@ jobs:
       - uses: actions/checkout@v4
       - run: rustup default ${{ matrix.version }}
       - run: cd typed_floats && cargo build --no-default-features --features "${{ matrix.features }},${{ matrix.f }}" ${{ matrix.release }}
-      - run: cd typed_floats && cargo test --no-default-features --features "${{ matrix.features }},${{ matrix.f }}" ${{ matrix.release }}
+      - run: cd typed_floats && cargo test --lib --bins --tests --no-default-features --features "${{ matrix.features }},${{ matrix.f }}" ${{ matrix.release }}
