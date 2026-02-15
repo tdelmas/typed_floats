@@ -107,10 +107,10 @@
 #[macro_use]
 extern crate alloc;
 
+mod container;
 mod macros;
 mod traits;
 mod types;
-mod container;
 
 #[cfg(feature = "serde")]
 mod serde;
