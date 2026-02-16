@@ -182,6 +182,7 @@ macro_rules! accept {
             }
         }
 
+        #[cfg(feature = "f32")]
         impl $type<f32> {
             /// Creates a new value from a primitive type without checking that the value is valid
             ///
@@ -195,6 +196,7 @@ macro_rules! accept {
             }
         }
 
+        #[cfg(feature = "f64")]
         impl $type<f64> {
             /// Creates a new value from a primitive type without checking that the value is valid
             ///
@@ -210,9 +212,14 @@ macro_rules! accept {
     };
 }
 
+#[cfg(feature = "f32")]
+use crate::types::f32;
+#[cfg(feature = "f64")]
+use crate::types::f64;
+
 use crate::types::{
-    f32, f64, Negative, NegativeFinite, NonNaN, NonNaNFinite, NonZeroNonNaN, NonZeroNonNaNFinite,
-    Positive, PositiveFinite, StrictlyNegative, StrictlyNegativeFinite, StrictlyPositive,
+    Negative, NegativeFinite, NonNaN, NonNaNFinite, NonZeroNonNaN, NonZeroNonNaNFinite, Positive,
+    PositiveFinite, StrictlyNegative, StrictlyNegativeFinite, StrictlyPositive,
     StrictlyPositiveFinite,
 };
 

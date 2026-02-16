@@ -22,17 +22,20 @@ jobs:
         type: string
       features:
         type: string
+      f:
+        type: string
     executor: << parameters.executor >>
     environment:
       MY_BUILD_FEATURES: << parameters.features >>
+      MY_BUILD_FLOATS: << parameters.f >>
       MY_BUILD_RELEASE: << parameters.release >>
       MY_RUST_VERSION: << parameters.version >>
     steps:
       - checkout
       - run: if [ -n "$MY_RUST_VERSION" ]; then curl https://sh.rustup.rs -sSf | sh -s -- -y; fi
       - run: rustup default $MY_RUST_VERSION
-      - run: cd typed_floats && cargo build --no-default-features --features "$MY_BUILD_FEATURES" $MY_BUILD_RELEASE
-      - run: cd typed_floats && cargo test --no-default-features --features "$MY_BUILD_FEATURES" $MY_BUILD_RELEASE
+      - run: cd typed_floats && cargo build --no-default-features --features "$MY_BUILD_FEATURES","$MY_BUILD_FLOATS" $MY_BUILD_RELEASE
+      - run: cd typed_floats && cargo test --lib --bins --tests --no-default-features --features "$MY_BUILD_FEATURES","$MY_BUILD_FLOATS" $MY_BUILD_RELEASE
 
 workflows:
   build_and_test:
@@ -48,6 +51,10 @@ workflows:
               release: [
                 "",
                 "--release",
+              ]
+              f: [
+                  "f32",
+                  "f32,f64",
               ]
               features: [
                   "",

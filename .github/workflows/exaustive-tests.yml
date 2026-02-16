@@ -13,7 +13,7 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-    name: Tests on rust ${{ matrix.version }} features "${{ matrix.features }}"
+    name: Tests on rust ${{ matrix.version }} features "${{ matrix.features }}" floats "${{ matrix.f }}"
     strategy:
       matrix:
         version: [
@@ -31,6 +31,11 @@ jobs:
           "",
           "--release",
         ]
+        f: [
+          "f32",
+          "f64",
+          "f32,f64",
+        ]
         features: [
             "",
             "std",
@@ -45,5 +50,5 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: rustup default ${{ matrix.version }}
-      - run: cd typed_floats && cargo build --no-default-features --features "${{ matrix.features }}" ${{ matrix.release }}
-      - run: cd typed_floats && cargo test --no-default-features --features "${{ matrix.features }}" ${{ matrix.release }}
+      - run: cd typed_floats && cargo build --no-default-features --features "${{ matrix.features }},${{ matrix.f }}" ${{ matrix.release }}
+      - run: cd typed_floats && cargo test --lib --bins --tests --no-default-features --features "${{ matrix.features }},${{ matrix.f }}" ${{ matrix.release }}

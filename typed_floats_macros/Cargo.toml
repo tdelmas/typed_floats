@@ -18,6 +18,8 @@ bench = false
 [features]
 std = []
 libm = []
+f32 = []
+f64 = []
 
 [dependencies]
 quote = "1.0"
