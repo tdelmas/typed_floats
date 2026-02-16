@@ -340,7 +340,7 @@ macro_rules! new_unchecked {
             }
         }
 
-        Self($value)
+        Self(crate::container::Container::new($value))
     }};
 }
 

@@ -93,7 +93,7 @@ macro_rules! impl_partial_ord {
         impl PartialOrd<$type<f32>> for f32 {
             #[inline]
             fn partial_cmp(&self, other: &$type<f32>) -> Option<core::cmp::Ordering> {
-                self.partial_cmp(&other.0)
+                self.partial_cmp(&other.get())
             }
         }
 
@@ -114,7 +114,7 @@ macro_rules! impl_partial_ord {
         impl PartialOrd<$type<f64>> for f64 {
             #[inline]
             fn partial_cmp(&self, other: &$type<f64>) -> Option<core::cmp::Ordering> {
-                self.partial_cmp(&other.0)
+                self.partial_cmp(&other.get())
             }
         }
     };

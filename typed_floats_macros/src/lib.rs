@@ -252,7 +252,7 @@ fn do_generate_floats(floats: &[FloatDefinition]) -> proc_macro2::TokenStream {
                     impl PartialEq<#a_full_type> for #b_full_type {
                         #[inline]
                         fn eq(&self, other: &#a_full_type) -> bool {
-                            self.0 == other.0
+                            self.get() == other.get()
                         }
                     }
 
