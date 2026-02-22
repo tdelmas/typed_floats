@@ -73,7 +73,7 @@ jobs:
           # Default tests (with std feature only)
           "",
           ## Test without any feature (no std)
-          "--no-default-features",
+          "--no-default-features --features f32,f64",
           "--test 'serde' --no-default-features --features f32,f64,serde",
           "--no-default-features --features f32,f64,libm",
           # Test serde (with std)
