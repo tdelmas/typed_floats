@@ -209,10 +209,7 @@ This crate is tested when a new version is release with:
 
 Also, tests on `nightly`, `beta` and `stable` are run monthly on [GitHub actions](https://github.com/tdelmas/typed_floats/actions/workflows/exaustive-tests.yml).
 
-The minimum supported Rust version (MSRV) is 1.85 edition 2024 to benefit
-from the MSRV-aware resolver.
-
-When building with old rustc versions, some dependencies such as `syn` may break the build. The latest version compatible with the MSRV can be checked in `Cargo.lock`.
+The minimum supported Rust version (MSRV) is 1.85 edition 2024 to benefit from the MSRV-aware resolver.
 
 ## Testing
 
