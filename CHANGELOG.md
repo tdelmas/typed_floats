@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Bump MSRV to rust 1.85 (edition 2024) to benefit from the MSRV-aware resolver.
 - Remove `as_const!` and `generate_const` macros, can be replace with the `new` constructor, even in const context.
+- Remove `accept_infinity`, `accept_zero`, `accept_negative` and `accept_positive` methods.
 
 ## 1.0.7 - 2025-09-22
 

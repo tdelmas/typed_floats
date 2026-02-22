@@ -187,7 +187,6 @@ use crate::traits::Midpoint;
 #[allow(unused_imports)]
 use num_traits::Float;
 
-mod accept;
 mod f32;
 mod f64;
 mod impls;
