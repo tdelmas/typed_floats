@@ -187,8 +187,12 @@ use crate::traits::Midpoint;
 #[allow(unused_imports)]
 use num_traits::Float;
 
+#[cfg(feature = "f32")]
 mod f32;
+
+#[cfg(feature = "f64")]
 mod f64;
+
 mod impls;
 
 typed_floats_macros::generate_floats!();

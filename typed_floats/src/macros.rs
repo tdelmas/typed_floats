@@ -199,4 +199,15 @@ macro_rules! new_unchecked {
     }};
 }
 
+macro_rules! generate_const {
+    ($name:ident, $type:ident, $float:ident, $x:expr, $doc:expr) => {
+        #[doc = $doc]
+        pub const $name: $crate::$type<$float> = match $crate::$type::<$float>::new($x) {
+            Ok(v) => v,
+            Err(_) => panic!("Invalid value"),
+        };
+    };
+}
+
 pub(crate) use new_unchecked;
+pub(crate) use generate_const;
