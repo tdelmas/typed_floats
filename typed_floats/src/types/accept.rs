@@ -181,39 +181,13 @@ macro_rules! accept {
                 accept_positive!($type)
             }
         }
-
-        impl $type<f32> {
-            /// Creates a new value from a primitive type without checking that the value is valid
-            ///
-            /// # Safety
-            /// This function is only meant to be used by the macros of this crate.
-            #[inline]
-            #[must_use]
-            #[doc(hidden)]
-            pub const unsafe fn internal_only_new_unchecked(value: f32) -> Self {
-                Self(value)
-            }
-        }
-
-        impl $type<f64> {
-            /// Creates a new value from a primitive type without checking that the value is valid
-            ///
-            /// # Safety
-            /// This function is only meant to be used by the macros of this crate.
-            #[inline]
-            #[must_use]
-            #[doc(hidden)]
-            pub const unsafe fn internal_only_new_unchecked(value: f64) -> Self {
-                Self(value)
-            }
-        }
     };
 }
 
 use crate::types::{
     Negative, NegativeFinite, NonNaN, NonNaNFinite, NonZeroNonNaN, NonZeroNonNaNFinite, Positive,
     PositiveFinite, StrictlyNegative, StrictlyNegativeFinite, StrictlyPositive,
-    StrictlyPositiveFinite, f32, f64,
+    StrictlyPositiveFinite,
 };
 
 accept!(Negative);
