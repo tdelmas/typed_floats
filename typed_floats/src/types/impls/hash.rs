@@ -89,6 +89,7 @@ macro_rules! impl_hash_test {
             use crate::*;
             use std::vec::Vec; // Required for the tests to compile in no_std mode
 
+            #[cfg(feature = "f32")]
             #[test]
             fn f32() {
                 let mut hash_set = std::collections::HashSet::new();
@@ -140,6 +141,7 @@ macro_rules! impl_hash_test {
                 assert_eq!(hash_set.len(), distincs.len());
             }
 
+            #[cfg(feature = "f64")]
             #[test]
             fn f64() {
                 let mut hash_set = std::collections::HashSet::new();
