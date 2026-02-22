@@ -4,6 +4,7 @@ use crate::{Negative, NegativeFinite, NonNaN, NonNaNFinite, Positive, PositiveFi
 
 macro_rules! impl_default {
     ($test:ident, $type:ident, $default:expr) => {
+        #[cfg(feature = "f32")]
         impl core::default::Default for $type<f32> {
             fn default() -> Self {
                 // # Safety
@@ -12,6 +13,7 @@ macro_rules! impl_default {
             }
         }
 
+        #[cfg(feature = "f64")]
         impl core::default::Default for $type<f64> {
             fn default() -> Self {
                 // # Safety
@@ -24,9 +26,13 @@ macro_rules! impl_default {
         mod $test {
             #[derive(Default)]
             struct SomeOptions {
+                #[cfg(feature = "f32")]
                 foo: f32,
+                #[cfg(feature = "f64")]
                 bar: f64,
+                #[cfg(feature = "f32")]
                 baz: crate::$type<f32>,
+                #[cfg(feature = "f64")]
                 qux: crate::$type<f64>,
             }
 
@@ -35,9 +41,14 @@ macro_rules! impl_default {
                 let options: SomeOptions = Default::default();
 
                 // N.B. The assert succeeds if the value is `0.0` or `-0.0
+
+                #[cfg(feature = "f32")]
                 assert_eq!(options.foo, 0.0);
+                #[cfg(feature = "f64")]
                 assert_eq!(options.bar, 0.0);
+                #[cfg(feature = "f32")]
                 assert_eq!(options.baz.get(), 0.0);
+                #[cfg(feature = "f64")]
                 assert_eq!(options.qux.get(), 0.0);
             }
         }

@@ -1,5 +1,6 @@
 macro_rules! impl_from_int {
     ($type:ident,$int:ident) => {
+        #[cfg(feature = "f64")]
         impl From<$int> for $type<f64> {
             #[inline]
             fn from(value: $int) -> Self {
@@ -11,6 +12,8 @@ macro_rules! impl_from_int {
                 }
             }
         }
+
+        #[cfg(feature = "f32")]
         impl From<$int> for $type<f32> {
             #[inline]
             fn from(value: $int) -> Self {

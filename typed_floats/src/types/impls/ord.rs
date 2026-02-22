@@ -8,6 +8,7 @@ use crate::{
 
 macro_rules! impl_ord {
     ($type:ident) => {
+        #[cfg(feature = "f32")]
         impl Ord for $type<f32> {
             #[inline]
             fn cmp(&self, other: &Self) -> core::cmp::Ordering {
@@ -22,6 +23,7 @@ macro_rules! impl_ord {
             }
         }
 
+        #[cfg(feature = "f64")]
         impl Ord for $type<f64> {
             #[inline]
             fn cmp(&self, other: &Self) -> core::cmp::Ordering {
@@ -40,6 +42,7 @@ macro_rules! impl_ord {
 
 macro_rules! impl_fast_ord {
     ($type:ident) => {
+        #[cfg(feature = "f32")]
         impl Ord for $type<f32> {
             #[inline]
             fn cmp(&self, other: &Self) -> core::cmp::Ordering {
@@ -47,6 +50,7 @@ macro_rules! impl_fast_ord {
             }
         }
 
+        #[cfg(feature = "f64")]
         impl Ord for $type<f64> {
             #[inline]
             fn cmp(&self, other: &Self) -> core::cmp::Ordering {
@@ -58,6 +62,7 @@ macro_rules! impl_fast_ord {
 
 macro_rules! impl_fast_inv_ord {
     ($type:ident) => {
+        #[cfg(feature = "f32")]
         impl Ord for $type<f32> {
             #[inline]
             fn cmp(&self, other: &Self) -> core::cmp::Ordering {
@@ -65,6 +70,7 @@ macro_rules! impl_fast_inv_ord {
             }
         }
 
+        #[cfg(feature = "f64")]
         impl Ord for $type<f64> {
             #[inline]
             fn cmp(&self, other: &Self) -> core::cmp::Ordering {
