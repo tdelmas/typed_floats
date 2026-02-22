@@ -4,8 +4,11 @@
 use serde::Serialize;
 
 #[cfg(feature = "serde")]
+#[allow(private_bounds)]
 pub trait Contained: Serialize {}
+
 #[cfg(not(feature = "serde"))]
+#[allow(private_bounds)]
 pub trait Contained {}
 
 impl Contained for f32 {}
