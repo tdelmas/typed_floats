@@ -9,14 +9,14 @@ macro_rules! impl_display {
         impl core::fmt::Display for $type<f32> {
             #[inline]
             fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-                write!(f, "{}", self.0)
+                write!(f, "{}", self.get())
             }
         }
 
         impl core::fmt::Display for $type<f64> {
             #[inline]
             fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-                write!(f, "{}", self.0)
+                write!(f, "{}", self.get())
             }
         }
 

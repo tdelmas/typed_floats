@@ -195,7 +195,7 @@ macro_rules! new_unchecked {
             }
         }
 
-        Self($value)
+        Self(crate::container::Container::new($value))
     }};
 }
 
@@ -209,5 +209,5 @@ macro_rules! generate_const {
     };
 }
 
-pub(crate) use new_unchecked;
 pub(crate) use generate_const;
+pub(crate) use new_unchecked;
