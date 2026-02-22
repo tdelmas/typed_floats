@@ -102,6 +102,10 @@
 #![warn(missing_docs)]
 #![cfg_attr(not(feature = "std"), no_std)]
 
+#[cfg(not(any(feature = "f32", feature = "f64")))]
+compile_error!("At least one of the features `f32` or `f64` must be enabled.");
+
+
 // `format!` is used during the tests even in `no_std` environments
 #[cfg(all(test, not(feature = "std")))]
 #[macro_use]
