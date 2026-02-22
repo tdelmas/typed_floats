@@ -22,6 +22,8 @@ jobs:
         type: string
       features:
         type: string
+      f:
+        type: string
     executor: << parameters.executor >>
     environment:
       MY_BUILD_FEATURES: << parameters.features >>
