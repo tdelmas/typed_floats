@@ -5,7 +5,7 @@
 [![Documentation](https://docs.rs/typed_floats/badge.svg)](https://docs.rs/typed_floats)
 [![License](https://img.shields.io/crates/l/typed_floats.svg)](https://github.com/tdelmas/typed_floats/blob/main/LICENSE)
 [![dependency status](https://deps.rs/repo/github/tdelmas/typed_floats/status.svg)](https://deps.rs/repo/github/tdelmas/typed_floats)
-[![Minimum Supported Rust Version](https://img.shields.io/badge/MSRV-1.70-blue)](https://github.com/rust-lang/rust/releases/tag/1.70.0)
+[![Minimum Supported Rust Version](https://img.shields.io/badge/MSRV-1.85-blue)](https://github.com/rust-lang/rust/releases/tag/1.85.0)
 [![Miri](https://github.com/tdelmas/typed_floats/actions/workflows/miri.yml/badge.svg)](https://github.com/tdelmas/typed_floats/actions/workflows/miri.yml)
 [![Changelog](https://img.shields.io/badge/CHANGELOG.md--555.svg)](https://github.com/tdelmas/typed_floats/blob/main/CHANGELOG.md)
 
@@ -205,12 +205,12 @@ Because that would introduce a runtime overhead and may introduce some incompati
 This crate is tested when a new version is release with:
 - Rust beta
 - Rust stable
-- Rust 1.70.0
+- Rust 1.85.0
 
 Also, tests on `nightly`, `beta` and `stable` are run monthly on [GitHub actions](https://github.com/tdelmas/typed_floats/actions/workflows/exaustive-tests.yml).
 
-The minimum supported Rust version (MSRV) is 1.70.0 because of the use of `dep:` in `Cargo.toml`.
-A change in the MSRV will be treated as a breaking change.
+The minimum supported Rust version (MSRV) is 1.85 edition 2024 to benefit
+from the MSRV-aware resolver.
 
 When building with old rustc versions, some dependencies such as `syn` may break the build. The latest version compatible with the MSRV can be checked in `Cargo.lock`.
 

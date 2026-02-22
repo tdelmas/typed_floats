@@ -1,4 +1,4 @@
-use crate::types::{f32, InvalidNumber, StrictlyPositive};
+use crate::types::{InvalidNumber, StrictlyPositive, f32};
 use const_fn::const_fn;
 
 impl StrictlyPositive<f32> {

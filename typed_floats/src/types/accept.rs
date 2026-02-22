@@ -211,9 +211,9 @@ macro_rules! accept {
 }
 
 use crate::types::{
-    f32, f64, Negative, NegativeFinite, NonNaN, NonNaNFinite, NonZeroNonNaN, NonZeroNonNaNFinite,
-    Positive, PositiveFinite, StrictlyNegative, StrictlyNegativeFinite, StrictlyPositive,
-    StrictlyPositiveFinite,
+    Negative, NegativeFinite, NonNaN, NonNaNFinite, NonZeroNonNaN, NonZeroNonNaNFinite, Positive,
+    PositiveFinite, StrictlyNegative, StrictlyNegativeFinite, StrictlyPositive,
+    StrictlyPositiveFinite, f32, f64,
 };
 
 accept!(Negative);

@@ -1,4 +1,4 @@
-use crate::types::{f64, InvalidNumber, StrictlyNegative};
+use crate::types::{InvalidNumber, StrictlyNegative, f64};
 use const_fn::const_fn;
 
 impl StrictlyNegative<f64> {

@@ -3,7 +3,7 @@ version: 2.1
 executors:
   docker:
     docker:
-      - image: cimg/rust:1.70.0
+      - image: cimg/rust:1.85.0
   arm:
     machine:
       image: ubuntu-2004:current 
@@ -43,7 +43,7 @@ workflows:
               executor: [docker, arm]
               version: [
                 "stable",
-                "1.70",
+                "1.85",
               ]
               release: [
                 "",
