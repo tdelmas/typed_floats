@@ -56,7 +56,7 @@ jobs:
       # Check that it builds in release mode with all features combinations
       - run: cd typed_floats && cargo build --release --no-default-features --features "${{ matrix.features }},${{ matrix.f }}"
       # Check that it builds test in release mode with all features combinations
-      - run: cd typed_floats && cargo test --no-run --release --no-default-features --features "${{ matrix.features }},${{ matrix.f }}"
+      - run: cd typed_floats && cargo test --lib --bins --tests --no-run --release --no-default-features --features "${{ matrix.features }},${{ matrix.f }}"
 
   cargo-test:
     runs-on: ubuntu-latest
