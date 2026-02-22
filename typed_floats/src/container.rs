@@ -14,10 +14,10 @@ impl Contained for f64 {}
 #[cfg_attr(feature = "serde", derive(Serialize))]
 #[derive(Debug, Copy, Clone)]
 #[repr(transparent)]
-pub(crate) struct Container<T: Contained> (T);
+pub struct Container<T: Contained>(T);
 
 impl<T: Contained> Container<T> {
-    pub const fn new(value: T) -> Container<T> {
+    pub const fn new(value: T) -> Self {
         Self(value)
     }
 

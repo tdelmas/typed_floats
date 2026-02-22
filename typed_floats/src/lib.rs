@@ -110,6 +110,7 @@ compile_error!("At least one of the features `f32` or `f64` must be enabled.");
 #[macro_use]
 extern crate alloc;
 
+mod container;
 mod macros;
 #[cfg(feature = "f32")]
 pub mod tf32;
@@ -117,7 +118,6 @@ pub mod tf32;
 pub mod tf64;
 mod traits;
 mod types;
-mod container;
 
 #[cfg(feature = "serde")]
 mod serde;

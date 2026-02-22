@@ -1,4 +1,4 @@
-use crate::container::{Container, Contained};
+use crate::container::{Contained, Container};
 
 /// An error that can occur when converting from a string into a typed float
 #[derive(Debug)]
@@ -71,7 +71,7 @@ pub struct NonNaN<T: Contained = f64>(Container<T>);
 #[cfg_attr(feature = "serde", derive(Serialize))]
 #[derive(Debug, Copy, Clone)]
 #[repr(transparent)]
-pub struct NonZeroNonNaN<T:Contained = f64>(Container<T>);
+pub struct NonZeroNonNaN<T: Contained = f64>(Container<T>);
 
 /// A non-NaN finite floating point number
 ///
@@ -81,7 +81,7 @@ pub struct NonZeroNonNaN<T:Contained = f64>(Container<T>);
 #[cfg_attr(feature = "serde", derive(Serialize))]
 #[derive(Debug, Copy, Clone)]
 #[repr(transparent)]
-pub struct NonNaNFinite<T:Contained = f64>(Container<T>);
+pub struct NonNaNFinite<T: Contained = f64>(Container<T>);
 
 /// A non-NaN finite floating point number different from zero
 ///
@@ -92,7 +92,7 @@ pub struct NonNaNFinite<T:Contained = f64>(Container<T>);
 #[cfg_attr(feature = "serde", derive(Serialize))]
 #[derive(Debug, Copy, Clone)]
 #[repr(transparent)]
-pub struct NonZeroNonNaNFinite<T:Contained = f64>(Container<T>);
+pub struct NonZeroNonNaNFinite<T: Contained = f64>(Container<T>);
 
 /// A non-NaN positive floating point number
 ///
@@ -102,7 +102,7 @@ pub struct NonZeroNonNaNFinite<T:Contained = f64>(Container<T>);
 #[cfg_attr(feature = "serde", derive(Serialize))]
 #[derive(Debug, Copy, Clone)]
 #[repr(transparent)]
-pub struct Positive<T:Contained = f64>(Container<T>);
+pub struct Positive<T: Contained = f64>(Container<T>);
 
 /// A non-NaN negative floating point number
 ///
@@ -112,7 +112,7 @@ pub struct Positive<T:Contained = f64>(Container<T>);
 #[cfg_attr(feature = "serde", derive(Serialize))]
 #[derive(Debug, Copy, Clone)]
 #[repr(transparent)]
-pub struct Negative<T:Contained = f64>(Container<T>);
+pub struct Negative<T: Contained = f64>(Container<T>);
 
 /// A non-NaN positive finite floating point number
 ///
@@ -123,7 +123,7 @@ pub struct Negative<T:Contained = f64>(Container<T>);
 #[cfg_attr(feature = "serde", derive(Serialize))]
 #[derive(Debug, Copy, Clone)]
 #[repr(transparent)]
-pub struct PositiveFinite<T:Contained = f64>(Container<T>);
+pub struct PositiveFinite<T: Contained = f64>(Container<T>);
 
 /// A non-NaN negative finite floating point number
 ///
@@ -134,7 +134,7 @@ pub struct PositiveFinite<T:Contained = f64>(Container<T>);
 #[cfg_attr(feature = "serde", derive(Serialize))]
 #[derive(Debug, Copy, Clone)]
 #[repr(transparent)]
-pub struct NegativeFinite<T:Contained = f64>(Container<T>);
+pub struct NegativeFinite<T: Contained = f64>(Container<T>);
 
 /// A non-NaN strictly positive floating point number
 ///
@@ -145,7 +145,7 @@ pub struct NegativeFinite<T:Contained = f64>(Container<T>);
 #[cfg_attr(feature = "serde", derive(Serialize))]
 #[derive(Debug, Copy, Clone)]
 #[repr(transparent)]
-pub struct StrictlyPositive<T:Contained = f64>(Container<T>);
+pub struct StrictlyPositive<T: Contained = f64>(Container<T>);
 
 /// A non-NaN strictly negative floating point number
 ///
@@ -156,7 +156,7 @@ pub struct StrictlyPositive<T:Contained = f64>(Container<T>);
 #[cfg_attr(feature = "serde", derive(Serialize))]
 #[derive(Debug, Copy, Clone)]
 #[repr(transparent)]
-pub struct StrictlyNegative<T:Contained = f64>(Container<T>);
+pub struct StrictlyNegative<T: Contained = f64>(Container<T>);
 
 /// A non-NaN strictly positive finite floating point number
 ///
@@ -166,7 +166,7 @@ pub struct StrictlyNegative<T:Contained = f64>(Container<T>);
 #[cfg_attr(feature = "serde", derive(Serialize))]
 #[derive(Debug, Copy, Clone)]
 #[repr(transparent)]
-pub struct StrictlyPositiveFinite<T:Contained = f64>(Container<T>);
+pub struct StrictlyPositiveFinite<T: Contained = f64>(Container<T>);
 
 /// A non-NaN strictly negative finite floating point number
 ///
@@ -176,7 +176,7 @@ pub struct StrictlyPositiveFinite<T:Contained = f64>(Container<T>);
 #[cfg_attr(feature = "serde", derive(Serialize))]
 #[derive(Debug, Copy, Clone)]
 #[repr(transparent)]
-pub struct StrictlyNegativeFinite<T:Contained = f64>(Container<T>);
+pub struct StrictlyNegativeFinite<T: Contained = f64>(Container<T>);
 
 use crate::traits::{Max, Min};
 
