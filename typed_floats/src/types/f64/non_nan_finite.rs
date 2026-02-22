@@ -1,4 +1,4 @@
-use crate::types::{f64, InvalidNumber, NonNaNFinite};
+use crate::types::{InvalidNumber, NonNaNFinite, f64};
 use const_fn::const_fn;
 
 impl NonNaNFinite<f64> {

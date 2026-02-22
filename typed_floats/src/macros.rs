@@ -248,12 +248,8 @@ macro_rules! as_const {
         };
         RESULT
     }};
-    ($type:ident, $x:expr) => {{
-        $crate::as_const!($type, f64, $x)
-    }};
-    ($x:expr) => {{
-        $crate::as_const!(f64, $x)
-    }};
+    ($type:ident, $x:expr) => {{ $crate::as_const!($type, f64, $x) }};
+    ($x:expr) => {{ $crate::as_const!(f64, $x) }};
 }
 
 /// Macro to create a constant.

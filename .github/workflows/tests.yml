@@ -30,7 +30,7 @@ jobs:
         version: [
           "beta",
           "stable",
-          "1.70",
+          "1.85",
         ]
         features: [
             "",
@@ -61,7 +61,7 @@ jobs:
         version: [
           "beta",
           "stable",
-          "1.70",
+          "1.85",
         ]
 
         cargo_options: [

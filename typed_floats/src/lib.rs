@@ -198,12 +198,7 @@ pub mod tf64 {
     }
 
     const fn from_bits(bits: u64) -> f64 {
-        // SAFETY: it is a plain old datatype so we can always transmute from it.
-        // `f64::from_bits` is not const for `1.70` MSRV
-        unsafe {
-            #[allow(unnecessary_transmutes)]
-            core::mem::transmute::<u64, f64>(bits)
-        }
+        f64::from_bits(bits)
     }
 
     crate::generate_const!(
@@ -518,12 +513,7 @@ pub mod tf32 {
     }
 
     const fn from_bits(bits: u32) -> f32 {
-        // SAFETY: it is a plain old datatype so we can always transmute from it.
-        // `f32::from_bits` is not const for `1.70` MSRV
-        unsafe {
-            #[allow(unnecessary_transmutes)]
-            core::mem::transmute::<u32, f32>(bits)
-        }
+        f32::from_bits(bits)
     }
 
     /// Returns `true` if the number is negative zero.

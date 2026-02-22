@@ -183,7 +183,6 @@ use crate::traits::{Max, Min};
 #[cfg(any(feature = "std", feature = "libm"))]
 use crate::traits::{Atan2, Copysign, DivEuclid, Hypot, Powf};
 
-#[rustversion::since(1.85)]
 use crate::traits::Midpoint;
 
 #[cfg(all(feature = "libm", not(feature = "std")))]

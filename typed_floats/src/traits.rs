@@ -191,7 +191,6 @@ pub trait Powf<T> {
     fn powf(self, rhs: T) -> Self::Output;
 }
 
-#[rustversion::since(1.85)]
 /// This trait is used to specify the return type of the [`Midpoint::midpoint()`] function.
 pub trait Midpoint<T> {
     /// The resulting type after applying [`Midpoint::midpoint()`].

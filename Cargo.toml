@@ -3,11 +3,11 @@ members = ["xtask", "typed_floats", "typed_floats_macros", "benchmarks"]
 resolver = "2"
 
 [workspace.package]
-edition = "2021"
+edition = "2024"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/tdelmas/typed_floats"
-version = "1.0.7"
-rust-version = "1.70"
+version = "2.0.0-dev"
+rust-version = "1.85"
 keywords = ["floats", "non-zero", "nan", "no_std"]
 categories = ["mathematics", "data-structures"]
 
