@@ -6,6 +6,22 @@ pub trait Packed<T> {
     fn get(&self) -> T;
 }
 
+#[derive(Debug, Copy, Clone)]
+#[repr(transparent)]
+pub struct NonZeroPacked<T> (T);
+
+impl Packed<T> for NonZeroPacked<T> {
+    fn set(value: T) -> Self {
+        let bits = value.to_bits();
+        debug_assert!(bits != 0, "Value cannot be zero");
+        unsafe { NonZeroPacked(NonZeroU32::new_unchecked(bits)) }
+    }
+
+    fn get(&self) -> f32 {
+        f32::from_bits(self.get().get())
+    }
+}
+
 pub struct NonZeroF32Packed(NonZeroU32);
 pub struct NonZeroF64Packed(NonZeroU64);
 pub struct NonNaNF32Packed(NonZeroU32);
@@ -19,7 +35,7 @@ impl Packed<f32> for NonZeroF32Packed {
     }
 
     fn get(&self) -> f32 {
-        f32::from_bits(self.0.get())
+        f32::from_bits(self.get().get())
     }
 }
 
@@ -31,7 +47,7 @@ impl Packed<f64> for NonZeroF64Packed {
     }
 
     fn get(&self) -> f64 {
-        f64::from_bits(self.0.get())
+        f64::from_bits(self.get().get())
     }
 }
 
@@ -43,7 +59,7 @@ impl Packed<f32> for NonNaNF32Packed {
     }
 
     fn get(&self) -> f32 {
-        f32::from_bits(self.0.get().not())
+        f32::from_bits(self.get().get().not())
     }
 }
 
@@ -55,7 +71,7 @@ impl Packed<f64> for NonNaNF64Packed {
     }
 
     fn get(&self) -> f64 {
-        f64::from_bits(self.0.get().not())
+        f64::from_bits(self.get().get().not())
     }
 }
 

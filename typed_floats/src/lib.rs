@@ -117,7 +117,7 @@ pub mod tf32;
 pub mod tf64;
 mod traits;
 mod types;
-mod layout_optimisation;
+mod container;
 
 #[cfg(feature = "serde")]
 mod serde;
