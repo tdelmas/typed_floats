@@ -1,5 +1,4 @@
 use crate::types::{InvalidNumber, NonZeroNonNaN, f32};
-use const_fn::const_fn;
 
 impl NonZeroNonNaN<f32> {
     /// Creates a new value from a primitive type
@@ -18,7 +17,6 @@ impl NonZeroNonNaN<f32> {
     /// # Errors
     /// Returns an error if the value is not valid
     #[inline]
-    #[const_fn("1.83")]
     pub const fn new(value: f32) -> Result<Self, InvalidNumber> {
         if value.is_nan() {
             return Err(InvalidNumber::NaN);
@@ -48,7 +46,6 @@ impl NonZeroNonNaN<f32> {
     /// but in release mode the behavior is undefined
     #[inline]
     #[must_use]
-    #[const_fn("1.83")]
     pub const unsafe fn new_unchecked(value: f32) -> Self {
         crate::macros::new_unchecked!(value, NonZeroNonNaN)
     }
@@ -87,7 +84,6 @@ impl NonZeroNonNaN<f32> {
     /// See [`f32::is_nan()`] for more details.
     #[inline]
     #[must_use]
-    #[const_fn("1.83")]
     pub const fn is_nan(&self) -> bool {
         false
     }
@@ -106,7 +102,6 @@ impl NonZeroNonNaN<f32> {
     /// See [`f32::is_infinite()`] for more details.
     #[inline]
     #[must_use]
-    #[const_fn("1.83")]
     pub const fn is_infinite(&self) -> bool {
         self.0.is_infinite()
     }
@@ -125,7 +120,6 @@ impl NonZeroNonNaN<f32> {
     /// See [`f32::is_finite()`] for more details.
     #[inline]
     #[must_use]
-    #[const_fn("1.83")]
     pub const fn is_finite(&self) -> bool {
         self.0.is_finite()
     }
@@ -144,7 +138,6 @@ impl NonZeroNonNaN<f32> {
     /// See [`f32::is_subnormal()`] for more details.
     #[inline]
     #[must_use]
-    #[const_fn("1.83")]
     pub const fn is_subnormal(&self) -> bool {
         self.0.is_subnormal()
     }
@@ -163,7 +156,6 @@ impl NonZeroNonNaN<f32> {
     /// See [`f32::is_normal()`] for more details.
     #[inline]
     #[must_use]
-    #[const_fn("1.83")]
     pub const fn is_normal(&self) -> bool {
         self.0.is_normal()
     }
@@ -184,7 +176,6 @@ impl NonZeroNonNaN<f32> {
     /// See [`f32::classify()`] for more details.
     #[inline]
     #[must_use]
-    #[const_fn("1.83")]
     pub const fn classify(&self) -> core::num::FpCategory {
         self.0.classify()
     }
@@ -203,7 +194,6 @@ impl NonZeroNonNaN<f32> {
     /// See [`f32::is_sign_positive()`] for more details.
     #[inline]
     #[must_use]
-    #[const_fn("1.83")]
     pub const fn is_sign_positive(&self) -> bool {
         self.0.is_sign_positive()
     }
@@ -222,7 +212,6 @@ impl NonZeroNonNaN<f32> {
     /// See [`f32::is_sign_negative()`] for more details.
     #[inline]
     #[must_use]
-    #[const_fn("1.83")]
     pub const fn is_sign_negative(&self) -> bool {
         self.0.is_sign_negative()
     }
@@ -239,7 +228,6 @@ impl NonZeroNonNaN<f32> {
     /// ```
     #[inline]
     #[must_use]
-    #[const_fn("1.83")]
     pub const fn is_negative_zero(&self) -> bool {
         false
     }
@@ -256,7 +244,6 @@ impl NonZeroNonNaN<f32> {
     /// ```
     #[inline]
     #[must_use]
-    #[const_fn("1.83")]
     pub const fn is_positive_zero(&self) -> bool {
         false
     }

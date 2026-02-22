@@ -123,8 +123,6 @@ typed_floats_macros::generate_docs!(
 
 /// This module contains constants from [`core::f64`], casted to the corresponding type
 pub mod tf64 {
-    use const_fn::const_fn;
-
     /// Equivalent to `NonNaN<f64>`
     pub type NonNaN = crate::NonNaN<f64>;
 
@@ -174,7 +172,6 @@ pub mod tf64 {
     /// ```
     #[inline]
     #[must_use]
-    #[const_fn("1.83")]
     pub const fn is_positive_zero(x: f64) -> bool {
         x == 0.0 && x.is_sign_positive()
     }
@@ -192,7 +189,6 @@ pub mod tf64 {
     /// ```
     #[inline]
     #[must_use]
-    #[const_fn("1.83")]
     pub const fn is_negative_zero(x: f64) -> bool {
         x == 0.0 && x.is_sign_negative()
     }
@@ -456,8 +452,6 @@ pub mod tf64 {
 
 /// This module contains constants from [`core::f32`], casted to the corresponding type
 pub mod tf32 {
-    use const_fn::const_fn;
-
     /// Equivalent to `NonNaN<f32>`
     pub type NonNaN = crate::NonNaN<f32>;
 
@@ -507,7 +501,6 @@ pub mod tf32 {
     /// ```
     #[inline]
     #[must_use]
-    #[const_fn("1.83")]
     pub const fn is_positive_zero(x: f32) -> bool {
         x == 0.0 && x.is_sign_positive()
     }
@@ -529,7 +522,6 @@ pub mod tf32 {
     /// ```
     #[inline]
     #[must_use]
-    #[const_fn("1.83")]
     pub const fn is_negative_zero(x: f32) -> bool {
         x == 0.0 && x.is_sign_negative()
     }

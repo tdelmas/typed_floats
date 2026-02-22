@@ -49,9 +49,6 @@ default-features = false
 features = ["libm"]
 optional = true
 
-[dependencies.const_fn]
-version = "0.4.11"
-
 [dev-dependencies]
 serde_json = { version = "1.0" }
 num-traits = "0.2"
