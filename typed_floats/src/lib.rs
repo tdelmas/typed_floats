@@ -128,16 +128,6 @@ typed_floats_macros::generate_docs!(
     pub mod conversions_rules {}
 );
 
-macro_rules! generate_const {
-    ($name:ident, $type:ident, $float:ident, $x:expr, $doc:expr) => {
-        #[doc = $doc]
-        pub const $name: $crate::$type<$float> = match $crate::$type::<$float>::new($x) {
-            Ok(v) => v,
-            Err(_) => panic!("Invalid value"),
-        };
-    };
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
