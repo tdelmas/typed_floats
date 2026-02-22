@@ -102,14 +102,14 @@ jobs:
     strategy:
       matrix:
         features: [
-          "",
-          "--features std",
-          "--features serde",
-          "--features libm",
-          "--features std --features serde",
-          "--features std --features libm",
-          "--features serde --features libm",
-          "--features std --features serde --features libm",
+          "--features f32 --features f64",
+          "--features f32 --features f64 --features std",
+          "--features f32 --features f64 --features serde",
+          "--features f32 --features f64 --features libm",
+          "--features f32 --features f64 --features std --features serde",
+          "--features f32 --features f64 --features std --features libm",
+          "--features f32 --features f64 --features serde --features libm",
+          "--features f32 --features f64 --features std --features serde --features libm",
         ]
 
     steps:
