@@ -220,7 +220,7 @@ pub fn generate_tests_self_rhs(float_type: &'static str, filter: &str) -> proc_m
                     // Check that the result is the same as if done with the float directly
                     let original = #test_float;
                     assert_float_eq!(original, f);
-                    
+
                     #vals.push(f);
                 });
 
