@@ -176,6 +176,8 @@ macro_rules! assert_float_eq {
         if (!$left.is_nan() || !$right.is_nan()) {
             assert_eq!($left, $right);
             assert_eq!($left.is_sign_positive(), $right.is_sign_positive());
+        } else {
+            assert_eq!($left.is_nan(), $right.is_nan());
         }
     }};
 }

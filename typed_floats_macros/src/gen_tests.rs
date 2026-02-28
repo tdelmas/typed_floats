@@ -107,11 +107,7 @@ pub fn generate_tests_self(float_type: &'static str, filter: &str) -> proc_macro
 
                 // Check that the result is the same as if done with the float directly
                 let original = #test_float;
-                if original.is_nan() {
-                    assert_eq!(original.is_nan(), as_float.is_nan());
-                } else {
-                    assert_eq!(as_float, original);
-                }
+                assert_float_eq!(as_float, original);
 
                 // Add the result to the list of values to check is the result type is as strict as possible
                 #vals.push(as_float);
@@ -223,12 +219,8 @@ pub fn generate_tests_self_rhs(float_type: &'static str, filter: &str) -> proc_m
 
                     // Check that the result is the same as if done with the float directly
                     let original = #test_float;
-                    if original.is_nan() {
-                        assert_eq!(original.is_nan(), f.is_nan());
-                    } else {
-                        assert_eq!(original, f, "original op result is not the same as the implemented op");
-                    }
-
+                    assert_float_eq!(original, f);
+                    
                     #vals.push(f);
                 });
 
@@ -239,11 +231,7 @@ pub fn generate_tests_self_rhs(float_type: &'static str, filter: &str) -> proc_m
                         {
                             let res2 = #test2;
 
-                            if res == res  {
-                                assert_eq!(res, #test2, "commutative property of {}", #op_name);
-                            } else if res2 == res2 {
-                                panic!("{} is not commutative. res={:?}, res2={:?}", #op_name, res, res2);
-                            }
+                            assert_float_eq!(res, res2);
                         }
                     });
                 }
