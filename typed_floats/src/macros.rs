@@ -7,7 +7,7 @@
 /// ```
 /// # use typed_floats::*;
 /// assert_relative_eq!(1.0_f64, 1.0);
-/// assert_relative_eq!(1.0_f64, 1.000000001, 1e-7);
+/// assert_relative_eq!(1.0_f64, 1.000000001);
 /// ```
 ///
 /// ```should_panic
@@ -17,7 +17,7 @@
 ///
 /// ```should_panic
 /// # use typed_floats::*;
-/// assert_relative_eq!(1.0_f64, 1.000001, 1e-7);
+/// assert_relative_eq!(1.0_f64, 1.000001);
 /// ```
 #[macro_export]
 macro_rules! assert_relative_eq {
@@ -188,58 +188,61 @@ macro_rules! assert_float_eq {
 /// - The difference must be relatively smaller than the value given
 /// - If one of them is zero, the other must be smaller than the value given
 /// - If they have different sign, both must be smaller than the value given
-/// - If no relative value is given, 1e-7 is used.
+/// - If no relative value is given, 1e-12 is used.
 ///
 /// # Examples
 ///
 /// ```
 /// # use typed_floats::*;
-/// assert_float_rel_eq!(f64::NAN, f64::NAN, 1e-7);
-/// assert_float_rel_eq!(1.0_f64, 1.0_f64, 1e-7);
-/// assert_float_rel_eq!(-1.0_f64, -1.0_f64, 1e-7);
-/// assert_float_rel_eq!(0.0_f64, 0.0_f64, 1e-7);
-/// assert_float_rel_eq!(-0.0_f64, -0.0_f64, 1e-7);
-/// assert_float_rel_eq!(f64::INFINITY, f64::INFINITY, 1e-7);
-/// assert_float_rel_eq!(f64::NEG_INFINITY, f64::NEG_INFINITY, 1e-7);
+/// assert_float_rel_eq!(f64::NAN, f64::NAN);
+/// assert_float_rel_eq!(1.0_f64, 1.0_f64);
+/// assert_float_rel_eq!(-1.0_f64, -1.0_f64);
+/// assert_float_rel_eq!(0.0_f64, 0.0_f64);
+/// assert_float_rel_eq!(-0.0_f64, -0.0_f64);
+/// assert_float_rel_eq!(f64::INFINITY, f64::INFINITY);
+/// assert_float_rel_eq!(f64::NEG_INFINITY, f64::NEG_INFINITY);
 ///
-/// assert_float_rel_eq!(0.0_f64, -0.0_f64, 1e-7);
-/// assert_float_rel_eq!(0.0_f64, 0.000_000_1_f64, 1e-7);
-/// assert_float_rel_eq!(1.0_f64, 1.000_000_1_f64, 1e-7);
-/// assert_float_rel_eq!(1_000_000.0_f64, 1_000_000.1_f64, 1e-7);
-/// assert_float_rel_eq!(0.000_1_f64, 0.000_100_000_01_f64, 1e-7);
+/// assert_float_rel_eq!(0.0_f64, -0.0_f64);
+/// assert_float_rel_eq!(0.0_f64, 0.000_000_1_f64);
+/// assert_float_rel_eq!(1.0_f64, 1.000_000_1_f64);
+/// assert_float_rel_eq!(1_000_000.0_f64, 1_000_000.1_f64);
+/// assert_float_rel_eq!(0.000_1_f64, 0.000_100_000_01_f64);
 /// ```
 ///
 /// ```should_panic
 /// # use typed_floats::*;
-/// assert_float_rel_eq!(1.0_f64, 2.0_f64, 1e-7);
+/// assert_float_rel_eq!(1.0_f64, 2.0_f64);
 /// ```
 ///
 /// ```should_panic
 /// # use typed_floats::*;
-/// assert_float_rel_eq!(1.0_f64, f64::NAN, 1e-7);
+/// assert_float_rel_eq!(1.0_f64, f64::NAN);
 /// ```
 ///
 /// ```should_panic
 /// # use typed_floats::*;
-/// assert_float_rel_eq!(0.0_f64, 0.000_001_f64, 1e-7);
+/// assert_float_rel_eq!(0.0_f64, 0.000_001_f64);
 /// ```
 ///
 /// ```should_panic
 /// # use typed_floats::*;
-/// assert_float_rel_eq!(1.0_f64, 1.000_001_f64, 1e-7);
+/// assert_float_rel_eq!(1.0_f64, 1.000_001_f64);
 /// ```
 ///
 /// ```should_panic
 /// # use typed_floats::*;
-/// assert_float_rel_eq!(100_000.0_f64, 100_001.0_f64, 1e-7);
+/// assert_float_rel_eq!(100_000.0_f64, 100_001.0_f64);
 /// ```
 ///
 /// ```should_panic
 /// # use typed_floats::*;
-/// assert_float_rel_eq!(0.000_1_f64, 0.000_100_000_1_f64, 1e-7);
+/// assert_float_rel_eq!(0.000_1_f64, 0.000_100_000_1_f64);
 /// ```
 #[macro_export]
 macro_rules! assert_float_rel_eq {
+    ($left:expr, $right:expr) => {{
+        assert_float_rel_eq!($left,$right, 1e-7);
+    }};
     ($left:expr, $right:expr, $rel_diff:expr) => {{
         assert_float_rel_eq!($left,$right, $rel_diff, "{} is not relatively equal to {} with {} tollerance", $left, $right, $rel_diff);
     }};

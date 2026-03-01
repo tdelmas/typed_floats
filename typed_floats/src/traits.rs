@@ -16,7 +16,7 @@ pub trait Hypot<T> {
     /// let x: NonNaN = 3.0.try_into().unwrap();
     /// let y: NonNaN = 4.0.try_into().unwrap();
     ///
-    /// assert_eq!(x.hypot(y), 5.0);
+    /// assert_float_rel_eq!(x.hypot(y).get(), 5.0_f64);
     /// ```
     ///
     /// See [`f64::hypot()`] for more details.

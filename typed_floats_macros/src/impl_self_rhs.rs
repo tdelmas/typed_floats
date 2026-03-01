@@ -174,6 +174,7 @@ pub fn get_impl_self_rhs() -> Vec<OpRhs> {
             #[cfg(any(feature = "std", feature = "libm"))]
         OpRhsBuilder::new("Hypot", "hypot")
             .op_is_commutative()
+            .jitter()
             .op_test_primitive(Box::new(|var1, var2| { quote! { #var1.hypot(#var2) } }))
             .result(Box::new(|float, rhs| {
                 ReturnTypeSpecification::FloatSpecifications(FloatSpecifications {

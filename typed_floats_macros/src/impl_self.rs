@@ -357,11 +357,11 @@ pub fn get_impl_self() -> Vec<Op> {
                 /// let a: NonNaN = 1.0.try_into().unwrap();
                 /// let b: NonNaN = (-1.0).try_into().unwrap();
                 ///
-                /// assert_eq!(a.exp(), core::f64::consts::E);
-                /// assert_eq!(b.exp(), 1.0 / core::f64::consts::E);
+                /// assert_relative_eq!(a.exp().get(), core::f64::consts::E);
+                /// assert_relative_eq!(b.exp().get(), 1.0 / core::f64::consts::E);
                 ///
-                /// assert_eq!(tf64::ZERO.exp(), 1.0);
-                /// assert_eq!(tf64::NEG_ZERO.exp(), 1.0);
+                /// assert_relative_eq!(tf64::ZERO.exp().get(), 1.0_f64);
+                /// assert_relative_eq!(tf64::NEG_ZERO.exp().get(), 1.0_f64);
                 ///
                 /// assert_eq!(tf64::INFINITY.exp(), tf64::INFINITY);
                 /// assert_eq!(tf64::NEG_INFINITY.exp(), tf64::ZERO);
@@ -391,8 +391,8 @@ pub fn get_impl_self() -> Vec<Op> {
                 /// let a: NonNaN = 2.0.try_into().unwrap();
                 /// let b: NonNaN = (-2.0).try_into().unwrap();
                 ///
-                /// assert_eq!(a.exp2(), 4.0);
-                /// assert_eq!(b.exp2(), 0.25);
+                /// assert_relative_eq!(a.exp2().get(), 4.0_f64);
+                /// assert_relative_eq!(b.exp2().get(), 0.25_f64);
                 ///
                 /// assert_eq!(tf64::ZERO.exp2(), 1.0);
                 /// assert_eq!(tf64::NEG_ZERO.exp2(), 1.0);
@@ -627,8 +627,8 @@ pub fn get_impl_self() -> Vec<Op> {
                 /// let a: NonNaN = 8.0.try_into().unwrap();
                 /// let b: NonNaN = (-1.0).try_into().unwrap();
                 ///
-                /// assert_eq!(a.cbrt(), 2.0);
-                /// assert_eq!(b.cbrt(), -1.0);
+                /// assert_relative_eq!(a.cbrt().get(), 2.0_f64);
+                /// assert_relative_eq!(b.cbrt().get(), -1.0_f64);
                 ///
                 /// assert_eq!(tf64::ZERO.cbrt(), tf64::ZERO);
                 /// assert_eq!(tf64::NEG_ZERO.cbrt(), tf64::NEG_ZERO);
@@ -876,7 +876,7 @@ pub fn get_impl_self() -> Vec<Op> {
                 /// assert_is_negative_zero!(tf64::NEG_ZERO.exp_m1());
                 ///
                 /// assert_eq!(tf64::INFINITY.exp_m1(), f64::INFINITY);
-                /// assert_eq!(tf64::NEG_INFINITY.exp_m1(), -1.0);
+                /// assert_relative_eq!(tf64::NEG_INFINITY.exp_m1(), -1.0);
                 /// ```
                 ///
                 /// See [`f64::exp_m1()`] for more details.
@@ -1140,13 +1140,13 @@ pub fn get_impl_self() -> Vec<Op> {
                 /// # use typed_floats::*;
                 /// let x: NonNaN = (-2.0).try_into().unwrap();
                 ///
-                /// assert_eq!(x.powi(3), -8.0);
-                /// assert_eq!(x.powi(2), 4.0);
-                /// assert_eq!(x.powi(1), -2.0);
-                /// assert_eq!(x.powi(0), 1.0);
-                /// assert_eq!(x.powi(-1), -0.5);
-                /// assert_eq!(x.powi(-2), 0.25);
-                /// assert_eq!(x.powi(-3), -0.125);
+                /// assert_relative_eq!(x.powi(3), -8.0);
+                /// assert_relative_eq!(x.powi(2), 4.0);
+                /// assert_relative_eq!(x.powi(1), -2.0);
+                /// assert_relative_eq!(x.powi(0), 1.0);
+                /// assert_relative_eq!(x.powi(-1), -0.5);
+                /// assert_relative_eq!(x.powi(-2), 0.25);
+                /// assert_relative_eq!(x.powi(-3), -0.125);
                 /// ```
                 /// See [`f64::powi()`] for more details.
             })

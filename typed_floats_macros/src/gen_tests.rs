@@ -228,10 +228,21 @@ pub fn generate_tests_self_rhs(float_type: &'static str, filter: &str) -> proc_m
 
                     let f: #float_type = #get;
 
-                    // Check that the result is the same as if done with the float directly
+                    // Will check that the result is the same as if done with the float directly
                     let original = #test_float;
-                    assert_float_eq!(original, f, "The result is not (relatively) equal to bare floats");
+                });
 
+                if op.jitter {
+                    test_ops.extend(quote! {
+                        assert_float_rel_eq!(f, original, 1e-12, "The result is not (relatively) equal to bare floats ({} vs {})", f, original);
+                    });
+                } else {
+                    test_ops.extend(quote! {
+                        assert_float_eq!(f, original, "The result is not equal to bare floats ({} vs {})", f, original);
+                    });
+                }
+
+                test_ops.extend(quote! {
                     #vals.push(f);
                 });
 
