@@ -157,6 +157,7 @@ pub struct Op {
     pub(crate) params: proc_macro2::TokenStream,
     pub(crate) description: proc_macro2::TokenStream,
     pub(crate) skip_check_return_type_strictness: bool,
+    pub(crate) jitter: bool,
     op: OpCallback,
     result: ResultCallback,
     test: TestCallback,
@@ -180,6 +181,7 @@ impl OpBuilder {
                 description: proc_macro2::TokenStream::new(),
                 comment: None,
                 skip_check_return_type_strictness: false,
+                jitter: false,
                 op: Box::new(move |_| quote! { self.get().#fn_op() }),
                 result: Box::new(|_, _| panic!("No result defined")),
                 test: Box::new(move |var| quote! { #var.#fn_test() }),
@@ -190,6 +192,12 @@ impl OpBuilder {
     #[allow(dead_code)] // depending on the enabled features, this function might not be used
     pub(crate) const fn skip_check_return_type_strictness(mut self) -> Self {
         self.op.skip_check_return_type_strictness = true;
+        self
+    }
+
+    /// If the result may vary a little (For example with miri)
+    pub(crate) const fn jitter(mut self) -> Self {
+        self.op.jitter = true;
         self
     }
 

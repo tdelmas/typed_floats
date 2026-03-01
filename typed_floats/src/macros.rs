@@ -173,10 +173,13 @@ macro_rules! assert_is_negative_zero {
 #[macro_export]
 macro_rules! assert_float_eq {
     ($left:expr, $right:expr) => {{
-        assert_eq!($left.is_nan(), $right.is_nan());
+        $crate::assert_float_eq!($left, $right, "The two floats are not strictly equals");
+    }};
+    ($left:expr, $right:expr, $($arg:tt)+) => {{
+        assert_eq!($left.is_nan(), $right.is_nan(), $($arg)*);
         if (!$left.is_nan() && !$right.is_nan()) {
-            assert_eq!($left, $right);
-            assert_eq!($left.is_sign_positive(), $right.is_sign_positive());
+            assert_eq!($left, $right, $($arg)*);
+            assert_eq!($left.is_sign_positive(), $right.is_sign_positive(), $($arg)*);
         }
     }};
 }
@@ -191,62 +194,64 @@ macro_rules! assert_float_eq {
 ///
 /// ```
 /// # use typed_floats::*;
-/// assert_float_rel_eq!(f64::NAN, f64::NAN);
-/// assert_float_rel_eq!(1.0_f64, 1.0_f64);
-/// assert_float_rel_eq!(-1.0_f64, -1.0_f64);
-/// assert_float_rel_eq!(0.0_f64, 0.0_f64);
-/// assert_float_rel_eq!(-0.0_f64, -0.0_f64);
-/// assert_float_rel_eq!(f64::INFINITY, f64::INFINITY);
-/// assert_float_rel_eq!(f64::NEG_INFINITY, f64::NEG_INFINITY);
+/// assert_float_rel_eq!(f64::NAN, f64::NAN, 1e-7);
+/// assert_float_rel_eq!(1.0_f64, 1.0_f64, 1e-7);
+/// assert_float_rel_eq!(-1.0_f64, -1.0_f64, 1e-7);
+/// assert_float_rel_eq!(0.0_f64, 0.0_f64, 1e-7);
+/// assert_float_rel_eq!(-0.0_f64, -0.0_f64, 1e-7);
+/// assert_float_rel_eq!(f64::INFINITY, f64::INFINITY, 1e-7);
+/// assert_float_rel_eq!(f64::NEG_INFINITY, f64::NEG_INFINITY, 1e-7);
 ///
-/// assert_float_rel_eq!(0.0_f64, -0.0_f64);
-/// assert_float_rel_eq!(0.0_f64, 0.000_000_1_f64);
-/// assert_float_rel_eq!(1.0_f64, 1.000_000_1_f64);
-/// assert_float_rel_eq!(1_000_000.0_f64, 1_000_000.1_f64);
-/// assert_float_rel_eq!(0.000_1_f64, 0.000_100_000_01_f64);
+/// assert_float_rel_eq!(0.0_f64, -0.0_f64, 1e-7);
+/// assert_float_rel_eq!(0.0_f64, 0.000_000_1_f64, 1e-7);
+/// assert_float_rel_eq!(1.0_f64, 1.000_000_1_f64, 1e-7);
+/// assert_float_rel_eq!(1_000_000.0_f64, 1_000_000.1_f64, 1e-7);
+/// assert_float_rel_eq!(0.000_1_f64, 0.000_100_000_01_f64, 1e-7);
 /// ```
 ///
 /// ```should_panic
 /// # use typed_floats::*;
-/// assert_float_rel_eq!(1.0_f64, 2.0_f64);
+/// assert_float_rel_eq!(1.0_f64, 2.0_f64, 1e-7);
 /// ```
 ///
 /// ```should_panic
 /// # use typed_floats::*;
-/// assert_float_rel_eq!(1.0_f64, f64::NAN);
+/// assert_float_rel_eq!(1.0_f64, f64::NAN, 1e-7);
 /// ```
 ///
 /// ```should_panic
 /// # use typed_floats::*;
-/// assert_float_rel_eq!(0.0_f64, 0.000_001_f64);
+/// assert_float_rel_eq!(0.0_f64, 0.000_001_f64, 1e-7);
 /// ```
 ///
 /// ```should_panic
 /// # use typed_floats::*;
-/// assert_float_rel_eq!(1.0_f64, 1.000_001_f64);
+/// assert_float_rel_eq!(1.0_f64, 1.000_001_f64, 1e-7);
 /// ```
 ///
 /// ```should_panic
 /// # use typed_floats::*;
-/// assert_float_rel_eq!(100_000.0_f64, 100_001.0_f64);
+/// assert_float_rel_eq!(100_000.0_f64, 100_001.0_f64, 1e-7);
 /// ```
 ///
 /// ```should_panic
 /// # use typed_floats::*;
-/// assert_float_rel_eq!(0.000_1_f64, 0.000_100_000_1_f64);
+/// assert_float_rel_eq!(0.000_1_f64, 0.000_100_000_1_f64, 1e-7);
 /// ```
 #[macro_export]
 macro_rules! assert_float_rel_eq {
-    ($left:expr, $right:expr) => {{ assert_float_rel_eq!($left, $right, 1e-7) }};
     ($left:expr, $right:expr, $rel_diff:expr) => {{
+        assert_float_rel_eq!($left,$right, $rel_diff, "{} is not relatively equal to {} with {} tollerance", $left, $right, $rel_diff);
+    }};
+    ($left:expr, $right:expr, $rel_diff:expr, $($arg:tt)+) => {{
         let (left, right, rel_diff) = ($left, $right, $rel_diff);
         if (!left.is_nan() && !right.is_nan()) {
             let abs_left = left.abs();
             let abs_right = right.abs();
 
             if left.is_sign_positive() != right.is_sign_positive() {
-                assert!(abs_left <= rel_diff);
-                assert!(abs_right <= rel_diff);
+                assert!(abs_left <= rel_diff, $($arg)*);
+                assert!(abs_right <= rel_diff, $($arg)*);
             } else if abs_left != abs_right {
                 let (biggest, smallest) = if abs_left > abs_right {
                     (abs_left, abs_right)
@@ -257,14 +262,14 @@ macro_rules! assert_float_rel_eq {
                 let max_allowed_diff = biggest * rel_diff;
 
                 if smallest == 0.0 {
-                    assert!(biggest <= rel_diff);
+                    assert!(biggest <= rel_diff, $($arg)*);
                 } else {
                     let diff = biggest - smallest;
-                    assert!(diff <= max_allowed_diff);
+                    assert!(diff <= max_allowed_diff, $($arg)*);
                 }
             }
         } else {
-            assert_eq!($left.is_nan(), $right.is_nan());
+            assert_eq!($left.is_nan(), $right.is_nan(), $($arg)*);
         }
     }};
 }

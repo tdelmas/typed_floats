@@ -829,6 +829,7 @@ pub fn get_impl_self() -> Vec<Op> {
                 /// See [`f64::acos()`] for more details.
             })
             .result(Box::new(|_| ReturnTypeSpecification::NativeFloat))
+            .jitter()
             .build(),
         #[cfg(any(feature = "std", feature = "libm"))]
         OpBuilder::new("atan")
