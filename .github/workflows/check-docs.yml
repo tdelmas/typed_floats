@@ -28,7 +28,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: rustup default nightly
-      - run: cd typed_floats && cargo doc --all-features
+      - run: cd typed_floats && cargo build && cargo doc --all-features
       - uses: lycheeverse/lychee-action@v2
         with:
           args: --offline "./target/doc/typed_floats/**/*.html"
