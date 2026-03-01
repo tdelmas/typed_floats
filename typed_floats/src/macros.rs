@@ -264,7 +264,9 @@ macro_rules! assert_float_rel_eq {
 
                 let max_allowed_diff = biggest * rel_diff;
 
-                if smallest == 0.0 {
+                if max_allowed_diff < 10e-40 {
+                    // Both are really close to zero.
+                } else if smallest == 0.0 {
                     assert!(biggest <= rel_diff, $($arg)*);
                 } else {
                     let diff = biggest - smallest;

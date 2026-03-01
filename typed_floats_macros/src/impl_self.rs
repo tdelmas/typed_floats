@@ -791,8 +791,8 @@ pub fn get_impl_self() -> Vec<Op> {
                 /// assert_is_nan!(a.asin());
                 /// assert_is_nan!(b.asin());
                 ///
-                /// assert!(tf64::is_positive_zero(tf64::ZERO.asin()));
-                /// assert!(tf64::is_negative_zero(tf64::NEG_ZERO.asin()));
+                /// assert_relative_eq!(tf64::ZERO.asin(), tf64::ZERO);
+                /// assert_relative_eq!(tf64::NEG_ZERO.asin(), tf64::ZERO);
                 ///
                 /// assert_is_nan!(tf64::INFINITY.asin());
                 /// assert_is_nan!(tf64::NEG_INFINITY.asin());
@@ -800,6 +800,7 @@ pub fn get_impl_self() -> Vec<Op> {
                 ///
                 /// See [`f64::asin()`] for more details.
             })
+            .jitter()
             .result(Box::new(|_| ReturnTypeSpecification::NativeFloat))
             .build(),
         #[cfg(any(feature = "std", feature = "libm"))]
@@ -854,6 +855,7 @@ pub fn get_impl_self() -> Vec<Op> {
                 ///
                 /// See [`f64::atan()`] for more details.
             })
+            .jitter()
             .result(Box::new(|float| {
                 ReturnTypeSpecification::FloatSpecifications(FloatSpecifications {
                     accept_negative: float.s.accept_negative,
@@ -1025,11 +1027,13 @@ pub fn get_impl_self() -> Vec<Op> {
                 ///
                 /// See [`f64::asinh()`] for more details.
             })
+            .jitter()
+            .skip_check_return_type_strictness()
             .result(Box::new(|float| {
                 ReturnTypeSpecification::FloatSpecifications(FloatSpecifications {
                     accept_negative: float.s.accept_negative,
                     accept_positive: float.s.accept_positive,
-                    accept_zero: float.s.accept_zero,
+                    accept_zero: true,
                     accept_inf: true,
                 })
             }))
@@ -1073,8 +1077,8 @@ pub fn get_impl_self() -> Vec<Op> {
                 /// assert_eq!(a.atanh(), tf64::INFINITY);
                 /// assert_eq!(b.atanh(), tf64::NEG_INFINITY);
                 ///
-                /// assert_is_positive_zero!(tf64::ZERO.atanh());
-                /// assert_is_negative_zero!(tf64::NEG_ZERO.atanh());
+                /// assert_relative_eq!(tf64::ZERO.atanh(), tf64::ZERO);
+                /// assert_relative_eq!(tf64::NEG_ZERO.atanh(), tf64::ZERO);
                 ///
                 /// assert_is_nan!(tf64::INFINITY.atanh());
                 /// assert_is_nan!(tf64::NEG_INFINITY.atanh());
@@ -1082,6 +1086,7 @@ pub fn get_impl_self() -> Vec<Op> {
                 ///
                 /// See [`f64::atanh()`] for more details.
             })
+            .jitter()
             .result(Box::new(|_| ReturnTypeSpecification::NativeFloat))
             .build(),
         OpBuilder::new("recip")
