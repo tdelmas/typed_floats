@@ -369,6 +369,7 @@ pub fn get_impl_self() -> Vec<Op> {
                 ///
                 /// See [`f64::exp()`] for more details.
             })
+            .jitter()
             .result(Box::new(|float| {
                 ReturnTypeSpecification::FloatSpecifications(FloatSpecifications {
                     accept_negative: false,
@@ -402,6 +403,7 @@ pub fn get_impl_self() -> Vec<Op> {
                 ///
                 /// See [`f64::exp2()`] for more details.
             })
+            .jitter()
             .result(Box::new(|float| {
                 ReturnTypeSpecification::FloatSpecifications(FloatSpecifications {
                     accept_negative: false,
@@ -637,6 +639,7 @@ pub fn get_impl_self() -> Vec<Op> {
                 ///
                 /// See [`f64::cbrt()`] for more details.
             })
+            .jitter()
             .result(Box::new(|float| {
                 ReturnTypeSpecification::FloatSpecifications(float.s.clone())
             }))
@@ -878,6 +881,7 @@ pub fn get_impl_self() -> Vec<Op> {
                 ///
                 /// See [`f64::exp_m1()`] for more details.
             })
+            .jitter()
             .result(Box::new(|float| {
                 ReturnTypeSpecification::FloatSpecifications(FloatSpecifications {
                     accept_negative: float.s.accept_negative,
@@ -1052,6 +1056,7 @@ pub fn get_impl_self() -> Vec<Op> {
                 /// See [`f64::acosh()`] for more details.
             })
             .result(Box::new(|_| ReturnTypeSpecification::NativeFloat))
+            .jitter()
             .build(),
         #[cfg(any(feature = "std", feature = "libm"))]
         OpBuilder::new("atanh")
@@ -1153,6 +1158,7 @@ pub fn get_impl_self() -> Vec<Op> {
                     accept_inf: true,
                 })
             }))
+            .jitter()
             .skip_check_return_type_strictness()
             .op_test(Box::new(|var| {
                 quote! { #var.powi(2) }
