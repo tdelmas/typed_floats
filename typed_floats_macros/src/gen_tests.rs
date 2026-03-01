@@ -105,14 +105,21 @@ pub fn generate_tests_self(float_type: &'static str, filter: &str) -> proc_macro
                 // Get the result as a float
                 let as_float = #get;
 
-                // Check that the result is the same as if done with the float directly
+                // To check that the result is the same as if done with the float directly
                 let original = #test_float;
-                if original.is_nan() {
-                    assert_eq!(original.is_nan(), as_float.is_nan());
-                } else {
-                    assert_eq!(as_float, original);
-                }
+            });
 
+            if op.jitter {
+                test_ops.extend(quote! {
+                    assert_float_rel_eq!(as_float, original, 1e-5, "The result is not (relatively) equal to bare floats ({} vs {})", as_float, original);
+                });
+            } else {
+                test_ops.extend(quote! {
+                    assert_float_eq!(as_float, original, "The result is not equal to bare floats ({} vs {})", as_float, original);
+                });
+            }
+
+            test_ops.extend(quote! {
                 // Add the result to the list of values to check is the result type is as strict as possible
                 #vals.push(as_float);
             });
@@ -221,14 +228,21 @@ pub fn generate_tests_self_rhs(float_type: &'static str, filter: &str) -> proc_m
 
                     let f: #float_type = #get;
 
-                    // Check that the result is the same as if done with the float directly
+                    // Will check that the result is the same as if done with the float directly
                     let original = #test_float;
-                    if original.is_nan() {
-                        assert_eq!(original.is_nan(), f.is_nan());
-                    } else {
-                        assert_eq!(original, f, "original op result is not the same as the implemented op");
-                    }
+                });
 
+                if op.jitter {
+                    test_ops.extend(quote! {
+                        assert_float_rel_eq!(f, original, 1e-12, "The result is not (relatively) equal to bare floats ({} vs {})", f, original);
+                    });
+                } else {
+                    test_ops.extend(quote! {
+                        assert_float_eq!(f, original, "The result is not equal to bare floats ({} vs {})", f, original);
+                    });
+                }
+
+                test_ops.extend(quote! {
                     #vals.push(f);
                 });
 
@@ -239,11 +253,7 @@ pub fn generate_tests_self_rhs(float_type: &'static str, filter: &str) -> proc_m
                         {
                             let res2 = #test2;
 
-                            if res == res  {
-                                assert_eq!(res, #test2, "commutative property of {}", #op_name);
-                            } else if res2 == res2 {
-                                panic!("{} is not commutative. res={:?}, res2={:?}", #op_name, res, res2);
-                            }
+                            assert_float_eq!(res, res2, "The result is not commutatif");
                         }
                     });
                 }

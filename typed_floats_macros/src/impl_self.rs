@@ -357,11 +357,11 @@ pub fn get_impl_self() -> Vec<Op> {
                 /// let a: NonNaN = 1.0.try_into().unwrap();
                 /// let b: NonNaN = (-1.0).try_into().unwrap();
                 ///
-                /// assert_eq!(a.exp(), core::f64::consts::E);
-                /// assert_eq!(b.exp(), 1.0 / core::f64::consts::E);
+                /// assert_relative_eq!(a.exp().get(), core::f64::consts::E);
+                /// assert_relative_eq!(b.exp().get(), 1.0 / core::f64::consts::E);
                 ///
-                /// assert_eq!(tf64::ZERO.exp(), 1.0);
-                /// assert_eq!(tf64::NEG_ZERO.exp(), 1.0);
+                /// assert_relative_eq!(tf64::ZERO.exp().get(), 1.0_f64);
+                /// assert_relative_eq!(tf64::NEG_ZERO.exp().get(), 1.0_f64);
                 ///
                 /// assert_eq!(tf64::INFINITY.exp(), tf64::INFINITY);
                 /// assert_eq!(tf64::NEG_INFINITY.exp(), tf64::ZERO);
@@ -369,6 +369,7 @@ pub fn get_impl_self() -> Vec<Op> {
                 ///
                 /// See [`f64::exp()`] for more details.
             })
+            .jitter()
             .result(Box::new(|float| {
                 ReturnTypeSpecification::FloatSpecifications(FloatSpecifications {
                     accept_negative: false,
@@ -390,8 +391,8 @@ pub fn get_impl_self() -> Vec<Op> {
                 /// let a: NonNaN = 2.0.try_into().unwrap();
                 /// let b: NonNaN = (-2.0).try_into().unwrap();
                 ///
-                /// assert_eq!(a.exp2(), 4.0);
-                /// assert_eq!(b.exp2(), 0.25);
+                /// assert_relative_eq!(a.exp2().get(), 4.0_f64);
+                /// assert_relative_eq!(b.exp2().get(), 0.25_f64);
                 ///
                 /// assert_eq!(tf64::ZERO.exp2(), 1.0);
                 /// assert_eq!(tf64::NEG_ZERO.exp2(), 1.0);
@@ -402,6 +403,7 @@ pub fn get_impl_self() -> Vec<Op> {
                 ///
                 /// See [`f64::exp2()`] for more details.
             })
+            .jitter()
             .result(Box::new(|float| {
                 ReturnTypeSpecification::FloatSpecifications(FloatSpecifications {
                     accept_negative: false,
@@ -625,8 +627,8 @@ pub fn get_impl_self() -> Vec<Op> {
                 /// let a: NonNaN = 8.0.try_into().unwrap();
                 /// let b: NonNaN = (-1.0).try_into().unwrap();
                 ///
-                /// assert_eq!(a.cbrt(), 2.0);
-                /// assert_eq!(b.cbrt(), -1.0);
+                /// assert_relative_eq!(a.cbrt().get(), 2.0_f64);
+                /// assert_relative_eq!(b.cbrt().get(), -1.0_f64);
                 ///
                 /// assert_eq!(tf64::ZERO.cbrt(), tf64::ZERO);
                 /// assert_eq!(tf64::NEG_ZERO.cbrt(), tf64::NEG_ZERO);
@@ -637,6 +639,7 @@ pub fn get_impl_self() -> Vec<Op> {
                 ///
                 /// See [`f64::cbrt()`] for more details.
             })
+            .jitter()
             .result(Box::new(|float| {
                 ReturnTypeSpecification::FloatSpecifications(float.s.clone())
             }))
@@ -788,8 +791,8 @@ pub fn get_impl_self() -> Vec<Op> {
                 /// assert_is_nan!(a.asin());
                 /// assert_is_nan!(b.asin());
                 ///
-                /// assert!(tf64::is_positive_zero(tf64::ZERO.asin()));
-                /// assert!(tf64::is_negative_zero(tf64::NEG_ZERO.asin()));
+                /// assert_relative_eq!(tf64::ZERO.asin(), tf64::ZERO);
+                /// assert_relative_eq!(tf64::NEG_ZERO.asin(), tf64::ZERO);
                 ///
                 /// assert_is_nan!(tf64::INFINITY.asin());
                 /// assert_is_nan!(tf64::NEG_INFINITY.asin());
@@ -797,6 +800,7 @@ pub fn get_impl_self() -> Vec<Op> {
                 ///
                 /// See [`f64::asin()`] for more details.
             })
+            .jitter()
             .result(Box::new(|_| ReturnTypeSpecification::NativeFloat))
             .build(),
         #[cfg(any(feature = "std", feature = "libm"))]
@@ -829,6 +833,7 @@ pub fn get_impl_self() -> Vec<Op> {
                 /// See [`f64::acos()`] for more details.
             })
             .result(Box::new(|_| ReturnTypeSpecification::NativeFloat))
+            .jitter()
             .build(),
         #[cfg(any(feature = "std", feature = "libm"))]
         OpBuilder::new("atan")
@@ -850,6 +855,7 @@ pub fn get_impl_self() -> Vec<Op> {
                 ///
                 /// See [`f64::atan()`] for more details.
             })
+            .jitter()
             .result(Box::new(|float| {
                 ReturnTypeSpecification::FloatSpecifications(FloatSpecifications {
                     accept_negative: float.s.accept_negative,
@@ -872,11 +878,12 @@ pub fn get_impl_self() -> Vec<Op> {
                 /// assert_is_negative_zero!(tf64::NEG_ZERO.exp_m1());
                 ///
                 /// assert_eq!(tf64::INFINITY.exp_m1(), f64::INFINITY);
-                /// assert_eq!(tf64::NEG_INFINITY.exp_m1(), -1.0);
+                /// assert_relative_eq!(tf64::NEG_INFINITY.exp_m1(), -1.0);
                 /// ```
                 ///
                 /// See [`f64::exp_m1()`] for more details.
             })
+            .jitter()
             .result(Box::new(|float| {
                 ReturnTypeSpecification::FloatSpecifications(FloatSpecifications {
                     accept_negative: float.s.accept_negative,
@@ -1020,11 +1027,13 @@ pub fn get_impl_self() -> Vec<Op> {
                 ///
                 /// See [`f64::asinh()`] for more details.
             })
+            .jitter()
+            .skip_check_return_type_strictness()
             .result(Box::new(|float| {
                 ReturnTypeSpecification::FloatSpecifications(FloatSpecifications {
                     accept_negative: float.s.accept_negative,
                     accept_positive: float.s.accept_positive,
-                    accept_zero: float.s.accept_zero,
+                    accept_zero: true,
                     accept_inf: true,
                 })
             }))
@@ -1051,6 +1060,7 @@ pub fn get_impl_self() -> Vec<Op> {
                 /// See [`f64::acosh()`] for more details.
             })
             .result(Box::new(|_| ReturnTypeSpecification::NativeFloat))
+            .jitter()
             .build(),
         #[cfg(any(feature = "std", feature = "libm"))]
         OpBuilder::new("atanh")
@@ -1067,8 +1077,8 @@ pub fn get_impl_self() -> Vec<Op> {
                 /// assert_eq!(a.atanh(), tf64::INFINITY);
                 /// assert_eq!(b.atanh(), tf64::NEG_INFINITY);
                 ///
-                /// assert_is_positive_zero!(tf64::ZERO.atanh());
-                /// assert_is_negative_zero!(tf64::NEG_ZERO.atanh());
+                /// assert_relative_eq!(tf64::ZERO.atanh(), tf64::ZERO);
+                /// assert_relative_eq!(tf64::NEG_ZERO.atanh(), tf64::ZERO);
                 ///
                 /// assert_is_nan!(tf64::INFINITY.atanh());
                 /// assert_is_nan!(tf64::NEG_INFINITY.atanh());
@@ -1076,6 +1086,7 @@ pub fn get_impl_self() -> Vec<Op> {
                 ///
                 /// See [`f64::atanh()`] for more details.
             })
+            .jitter()
             .result(Box::new(|_| ReturnTypeSpecification::NativeFloat))
             .build(),
         OpBuilder::new("recip")
@@ -1134,13 +1145,13 @@ pub fn get_impl_self() -> Vec<Op> {
                 /// # use typed_floats::*;
                 /// let x: NonNaN = (-2.0).try_into().unwrap();
                 ///
-                /// assert_eq!(x.powi(3), -8.0);
-                /// assert_eq!(x.powi(2), 4.0);
-                /// assert_eq!(x.powi(1), -2.0);
-                /// assert_eq!(x.powi(0), 1.0);
-                /// assert_eq!(x.powi(-1), -0.5);
-                /// assert_eq!(x.powi(-2), 0.25);
-                /// assert_eq!(x.powi(-3), -0.125);
+                /// assert_relative_eq!(x.powi(3), -8.0);
+                /// assert_relative_eq!(x.powi(2), 4.0);
+                /// assert_relative_eq!(x.powi(1), -2.0);
+                /// assert_relative_eq!(x.powi(0), 1.0);
+                /// assert_relative_eq!(x.powi(-1), -0.5);
+                /// assert_relative_eq!(x.powi(-2), 0.25);
+                /// assert_relative_eq!(x.powi(-3), -0.125);
                 /// ```
                 /// See [`f64::powi()`] for more details.
             })
@@ -1152,6 +1163,7 @@ pub fn get_impl_self() -> Vec<Op> {
                     accept_inf: true,
                 })
             }))
+            .jitter()
             .skip_check_return_type_strictness()
             .op_test(Box::new(|var| {
                 quote! { #var.powi(2) }

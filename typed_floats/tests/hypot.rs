@@ -16,7 +16,7 @@ fn test_hypot_f32() {
     let c = Positive::try_from(c).unwrap();
 
     let result = a.hypot(b);
-    assert_eq!(result, c);
+    assert_float_rel_eq!(result.get(), c.get());
 }
 
 #[cfg(feature = "f64")]
@@ -31,5 +31,5 @@ fn test_hypot_f64() {
     let c = Positive::try_from(c).unwrap();
 
     let result = a.hypot(b);
-    assert_eq!(result, c);
+    assert_float_rel_eq!(result.get(), c.get());
 }

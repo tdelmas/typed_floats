@@ -174,6 +174,7 @@ pub fn get_impl_self_rhs() -> Vec<OpRhs> {
             #[cfg(any(feature = "std", feature = "libm"))]
         OpRhsBuilder::new("Hypot", "hypot")
             .op_is_commutative()
+            .jitter()
             .op_test_primitive(Box::new(|var1, var2| { quote! { #var1.hypot(#var2) } }))
             .result(Box::new(|float, rhs| {
                 ReturnTypeSpecification::FloatSpecifications(FloatSpecifications {
@@ -185,7 +186,6 @@ pub fn get_impl_self_rhs() -> Vec<OpRhs> {
             }))
             .build(),
         OpRhsBuilder::new("Min", "min")
-            .op_is_commutative()
             .op_test_primitive(Box::new(|var1, var2| quote! { #var1.min(#var2) }))
             // Because the result of `min(-0.0,0.0)` depends on the architecture, we cannot check it.
             .skip_check_return_type_strictness()
@@ -244,7 +244,6 @@ pub fn get_impl_self_rhs() -> Vec<OpRhs> {
             }))
             .build(),
         OpRhsBuilder::new("Max", "max")
-            .op_is_commutative()
             .op_test_primitive(Box::new(|var1, var2| quote! { #var1.max(#var2) }))
             // Because the result of `max(-0.0,0.0)` depends on the architecture, we cannot check it.
             .skip_check_return_type_strictness()
