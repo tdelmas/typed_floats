@@ -196,6 +196,7 @@ impl OpBuilder {
     }
 
     /// If the result may vary a little (For example with miri)
+    #[allow(dead_code)] // depending on the enabled features, this function might not be used
     pub(crate) const fn jitter(mut self) -> Self {
         self.op.jitter = true;
         self
@@ -381,6 +382,7 @@ impl OpRhsBuilder {
     }
 
     /// If the result may vary a little (For example with miri)
+    #[allow(dead_code)] // depending on the enabled features, this function might not be used
     pub(crate) const fn jitter(mut self) -> Self {
         self.op.jitter = true;
         self
