@@ -203,6 +203,7 @@ macro_rules! assert_float_eq {
 /// assert_float_rel_eq!(0.0_f64, 0.000_000_1_f64);
 /// assert_float_rel_eq!(1.0_f64, 1.000_000_1_f64);
 /// assert_float_rel_eq!(1_000_000.0_f64, 1_000_000.1_f64);
+/// assert_float_rel_eq!(0.000_1_f64, 0.000_100_000_01_f64);
 /// ```
 ///
 /// ```should_panic
@@ -227,7 +228,12 @@ macro_rules! assert_float_eq {
 ///
 /// ```should_panic
 /// # use typed_floats::*;
-/// assert_float_rel_eq!(100_000.0_f64, 101_000.0_f64);
+/// assert_float_rel_eq!(100_000.0_f64, 100_001.0_f64);
+/// ```
+///
+/// ```should_panic
+/// # use typed_floats::*;
+/// assert_float_rel_eq!(0.000_1_f64, 0.000_100_000_1_f64);
 /// ```
 #[macro_export]
 macro_rules! assert_float_rel_eq {
@@ -249,12 +255,11 @@ macro_rules! assert_float_rel_eq {
                 };
 
                 let max_allowed_diff = biggest * rel_diff;
-                //FIXME inf in left, right, and max_allowed_diff
 
                 if smallest == 0.0 {
                     assert!(biggest <= rel_diff);
                 } else {
-                    let diff = (biggest - smallest) / biggest;
+                    let diff = biggest - smallest;
                     assert!(diff <= max_allowed_diff);
                 }
             }
