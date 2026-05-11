@@ -1,8 +1,8 @@
 use serde::{Deserialize, Deserializer};
 
 use crate::types::{
-    Negative, NegativeFinite, NonNaN, NonNaNFinite, NonZeroNonNaN, NonZeroNonNaNFinite, Positive,
-    PositiveFinite, StrictlyNegative, StrictlyNegativeFinite, StrictlyPositive,
+    Negative, NegativeFinite, NonNaN, NonNaNFinite, NonZeroNonNaN, NonZeroNonNaNFinite, Normalized,
+    Positive, PositiveFinite, StrictlyNegative, StrictlyNegativeFinite, StrictlyPositive,
     StrictlyPositiveFinite,
 };
 
@@ -42,6 +42,7 @@ impl_deserialize!(Positive);
 impl_deserialize!(Negative);
 impl_deserialize!(PositiveFinite);
 impl_deserialize!(NegativeFinite);
+impl_deserialize!(Normalized);
 impl_deserialize!(StrictlyPositive);
 impl_deserialize!(StrictlyNegative);
 impl_deserialize!(StrictlyPositiveFinite);

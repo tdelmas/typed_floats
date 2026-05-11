@@ -1,6 +1,6 @@
 use crate::{
-    Negative, NegativeFinite, NonNaN, NonNaNFinite, NonZeroNonNaN, NonZeroNonNaNFinite, Positive,
-    PositiveFinite, StrictlyNegative, StrictlyNegativeFinite, StrictlyPositive,
+    Negative, NegativeFinite, NonNaN, NonNaNFinite, NonZeroNonNaN, NonZeroNonNaNFinite, Normalized,
+    Positive, PositiveFinite, StrictlyNegative, StrictlyNegativeFinite, StrictlyPositive,
     StrictlyPositiveFinite,
 };
 
@@ -55,6 +55,7 @@ impl_display!(non_nan, NonNaN);
 impl_display!(non_zero_non_nan, NonZeroNonNaN);
 impl_display!(non_nan_finite, NonNaNFinite);
 impl_display!(non_zero_non_nan_finite, NonZeroNonNaNFinite);
+impl_display!(normalized, Normalized);
 impl_display!(positive, Positive);
 impl_display!(negative, Negative);
 impl_display!(positive_finite, PositiveFinite);

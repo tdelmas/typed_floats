@@ -1,6 +1,6 @@
 use crate::{
-    Negative, NegativeFinite, NonNaN, NonNaNFinite, NonZeroNonNaN, NonZeroNonNaNFinite, Positive,
-    PositiveFinite, StrictlyNegative, StrictlyNegativeFinite, StrictlyPositive,
+    Negative, NegativeFinite, NonNaN, NonNaNFinite, NonZeroNonNaN, NonZeroNonNaNFinite, Normalized,
+    Positive, PositiveFinite, StrictlyNegative, StrictlyNegativeFinite, StrictlyPositive,
     StrictlyPositiveFinite,
 };
 
@@ -125,6 +125,9 @@ impl_eq_self!(NonNaNFinite);
 
 impl_fast_eq_base!(NonZeroNonNaNFinite);
 impl_fast_eq_self!(NonZeroNonNaNFinite);
+
+impl_fast_eq_base!(Normalized);
+impl_fast_eq_self!(Normalized);
 
 impl_eq_base!(Positive);
 impl_fast_eq_self!(Positive);

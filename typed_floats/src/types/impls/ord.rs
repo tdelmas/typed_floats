@@ -1,8 +1,8 @@
 #![allow(clippy::comparison_chain)]
 
 use crate::{
-    Negative, NegativeFinite, NonNaN, NonNaNFinite, NonZeroNonNaN, NonZeroNonNaNFinite, Positive,
-    PositiveFinite, StrictlyNegative, StrictlyNegativeFinite, StrictlyPositive,
+    Negative, NegativeFinite, NonNaN, NonNaNFinite, NonZeroNonNaN, NonZeroNonNaNFinite, Normalized,
+    Positive, PositiveFinite, StrictlyNegative, StrictlyNegativeFinite, StrictlyPositive,
     StrictlyPositiveFinite,
 };
 
@@ -136,6 +136,7 @@ impl_ord!(NonNaN);
 impl_ord!(NonZeroNonNaN);
 impl_ord!(NonNaNFinite);
 impl_ord!(NonZeroNonNaNFinite);
+impl_fast_inv_ord!(Normalized);
 impl_fast_ord!(Positive);
 impl_fast_inv_ord!(Negative);
 impl_fast_ord!(PositiveFinite);
@@ -149,6 +150,7 @@ impl_partial_ord!(NonNaN);
 impl_partial_ord!(NonZeroNonNaN);
 impl_partial_ord!(NonNaNFinite);
 impl_partial_ord!(NonZeroNonNaNFinite);
+impl_partial_ord!(Normalized);
 impl_partial_ord!(Positive);
 impl_partial_ord!(Negative);
 impl_partial_ord!(PositiveFinite);

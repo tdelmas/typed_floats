@@ -19,6 +19,27 @@ impl core::fmt::Display for FromStrError {
 #[cfg(feature = "std")]
 impl std::error::Error for FromStrError {}
 
+/// An error that can occur when converting from a string into a typed float
+#[derive(Debug)]
+pub enum NormalizedFromStrError {
+    /// The string did not contain a valid float number
+    ParseFloatError(core::num::ParseFloatError),
+    /// The string contained a valid float number but it didn't fit in the target type
+    InvalidNumber(InvalidNormalizedNumber),
+}
+
+impl core::fmt::Display for NormalizedFromStrError {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        match self {
+            Self::ParseFloatError(e) => write!(f, "{e}"),
+            Self::InvalidNumber(e) => write!(f, "{e}"),
+        }
+    }
+}
+
+#[cfg(feature = "std")]
+impl std::error::Error for NormalizedFromStrError {}
+
 #[cfg(feature = "serde")]
 use serde::Serialize;
 
@@ -51,6 +72,30 @@ impl core::fmt::Display for InvalidNumber {
 
 #[cfg(feature = "std")]
 impl std::error::Error for InvalidNumber {}
+
+/// An error that can occur when converting into a Normalized
+#[derive(Debug, Eq, PartialEq)]
+pub enum InvalidNormalizedNumber {
+    /// Any variant of `Nan`
+    NaN,
+    /// Any negative number, including `-0.0` and `-inf`
+    Negative,
+    /// `Any positive number bigger +1.0`
+    BiggerThanOne,
+}
+
+impl core::fmt::Display for InvalidNormalizedNumber {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        match self {
+            Self::NaN => write!(f, "Number is NaN"),
+            Self::Negative => write!(f, "Number is negative"),
+            Self::BiggerThanOne => write!(f, "Number is bigger than 1.0"),
+        }
+    }
+}
+
+#[cfg(feature = "std")]
+impl std::error::Error for InvalidNormalizedNumber {}
 
 /// A non-NaN floating point number
 ///
@@ -175,6 +220,17 @@ pub struct StrictlyPositiveFinite<T = f64>(T);
 #[derive(Debug, Copy, Clone)]
 #[repr(transparent)]
 pub struct StrictlyNegativeFinite<T = f64>(T);
+
+/// A non-NaN positive finite floating point number between 0..=1
+///
+/// It satisfies the following constraints:
+/// - It is not NaN.
+/// - It is not infinite
+/// - It is not negative
+#[cfg_attr(feature = "serde", derive(Serialize))]
+#[derive(Debug, Copy, Clone)]
+#[repr(transparent)]
+pub struct Normalized<T = f64>(T);
 
 use crate::traits::{Max, Min};
 

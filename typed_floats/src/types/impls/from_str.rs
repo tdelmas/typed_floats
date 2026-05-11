@@ -1,32 +1,32 @@
 use crate::{
     FromStrError, Negative, NegativeFinite, NonNaN, NonNaNFinite, NonZeroNonNaN,
-    NonZeroNonNaNFinite, Positive, PositiveFinite, StrictlyNegative, StrictlyNegativeFinite,
-    StrictlyPositive, StrictlyPositiveFinite,
+    NonZeroNonNaNFinite, Normalized, NormalizedFromStrError, Positive, PositiveFinite,
+    StrictlyNegative, StrictlyNegativeFinite, StrictlyPositive, StrictlyPositiveFinite,
 };
 
 macro_rules! impl_from_str {
-    ($test:ident, $type:ident) => {
+    ($test:ident, $type:ident, $error:ident) => {
         #[cfg(feature = "f32")]
         impl core::str::FromStr for $type<f32> {
-            type Err = FromStrError;
+            type Err = $error;
 
             #[inline]
             fn from_str(s: &str) -> Result<Self, Self::Err> {
-                let f: f32 = s.parse::<f32>().map_err(FromStrError::ParseFloatError)?;
+                let f: f32 = s.parse::<f32>().map_err($error::ParseFloatError)?;
 
-                Self::try_from(f).map_err(FromStrError::InvalidNumber)
+                Self::try_from(f).map_err(Self::Err::InvalidNumber)
             }
         }
 
         #[cfg(feature = "f64")]
         impl core::str::FromStr for $type<f64> {
-            type Err = FromStrError;
+            type Err = $error;
 
             #[inline]
             fn from_str(s: &str) -> Result<Self, Self::Err> {
-                let f: f64 = s.parse::<f64>().map_err(FromStrError::ParseFloatError)?;
+                let f: f64 = s.parse::<f64>().map_err($error::ParseFloatError)?;
 
-                Self::try_from(f).map_err(FromStrError::InvalidNumber)
+                Self::try_from(f).map_err(Self::Err::InvalidNumber)
             }
         }
 
@@ -65,15 +65,24 @@ macro_rules! impl_from_str {
     };
 }
 
-impl_from_str!(non_nan, NonNaN);
-impl_from_str!(non_zero_non_nan, NonZeroNonNaN);
-impl_from_str!(non_nan_finite, NonNaNFinite);
-impl_from_str!(non_zero_non_nan_finite, NonZeroNonNaNFinite);
-impl_from_str!(positive, Positive);
-impl_from_str!(negative, Negative);
-impl_from_str!(positive_finite, PositiveFinite);
-impl_from_str!(negative_finite, NegativeFinite);
-impl_from_str!(strictly_positive, StrictlyPositive);
-impl_from_str!(strictly_negative, StrictlyNegative);
-impl_from_str!(strictly_positive_finite, StrictlyPositiveFinite);
-impl_from_str!(strictly_negative_finite, StrictlyNegativeFinite);
+impl_from_str!(non_nan, NonNaN, FromStrError);
+impl_from_str!(non_zero_non_nan, NonZeroNonNaN, FromStrError);
+impl_from_str!(non_nan_finite, NonNaNFinite, FromStrError);
+impl_from_str!(non_zero_non_nan_finite, NonZeroNonNaNFinite, FromStrError);
+impl_from_str!(normalized, Normalized, NormalizedFromStrError);
+impl_from_str!(positive, Positive, FromStrError);
+impl_from_str!(negative, Negative, FromStrError);
+impl_from_str!(positive_finite, PositiveFinite, FromStrError);
+impl_from_str!(negative_finite, NegativeFinite, FromStrError);
+impl_from_str!(strictly_positive, StrictlyPositive, FromStrError);
+impl_from_str!(strictly_negative, StrictlyNegative, FromStrError);
+impl_from_str!(
+    strictly_positive_finite,
+    StrictlyPositiveFinite,
+    FromStrError
+);
+impl_from_str!(
+    strictly_negative_finite,
+    StrictlyNegativeFinite,
+    FromStrError
+);

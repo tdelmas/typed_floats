@@ -12,6 +12,9 @@ pub type NonZeroNonNaN = crate::NonZeroNonNaN<f32>;
 /// Equivalent to `NonZeroNonNaNFinite<f32>`
 pub type NonZeroNonNaNFinite = crate::NonZeroNonNaNFinite<f32>;
 
+/// Equivalent to `NegativeFinite<f32>`
+pub type Normalized = crate::Normalized<f32>;
+
 /// Equivalent to `StrictlyPositive<f32>`
 pub type StrictlyPositive = crate::StrictlyPositive<f32>;
 

@@ -4,6 +4,7 @@ mod non_nan;
 mod non_nan_finite;
 mod non_zero_non_nan;
 mod non_zero_non_nan_finite;
+mod normalized;
 mod positive;
 mod positive_finite;
 mod strictly_negative;
