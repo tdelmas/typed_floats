@@ -36,20 +36,20 @@ And their positive and negative counterparts:
 <pre>
 ┊ -∞ ┊ .. ┊ -0 ┊ +0 ┊ .. ┊ +∞ ┊ (NaN is never accepted)
 ┊    ┊    ┊    ┊    ┊    ┊    ┊
-┊<━━━┊━━━━┊━━━━┊━━━━┊━━━━┊━━━>┊ <a href="https://docs.rs/typed_floats/latest/typed_floats/struct.NonNaN.html">NonNaN</a>
-┊    ┊<━━━┊━━━━┊━━━━┊━━━>┊    ┊ <a href="https://docs.rs/typed_floats/latest/typed_floats/struct.NonNaNFinite.html">NonNaNFinite</a>
-┊<━━━┊━━━>┊    ┊    ┊<━━━┊━━━>┊ <a href="https://docs.rs/typed_floats/latest/typed_floats/struct.NonZeroNonNaN.html">NonZeroNonNaN</a>
-┊    ┊<━━>┊    ┊    ┊<━━>┊    ┊ <a href="https://docs.rs/typed_floats/latest/typed_floats/struct.NonZeroNonNaNFinite.html">NonZeroNonNaNFinite</a>
+┊<━━━┊━━━━┊━━━━┊━━━━┊━━━━┊━━━>┊ <a title="[−∞, +∞]" href="https://docs.rs/typed_floats/latest/typed_floats/struct.NonNaN.html">NonNaN</a>
+┊    ┊<━━━┊━━━━┊━━━━┊━━━>┊    ┊ <a title="(−∞, +∞)" href="https://docs.rs/typed_floats/latest/typed_floats/struct.NonNaNFinite.html">NonNaNFinite</a>
+┊<━━━┊━━━>┊    ┊    ┊<━━━┊━━━>┊ <a title="[−∞, 0) ∪ (0, +∞]" href="https://docs.rs/typed_floats/latest/typed_floats/struct.NonZeroNonNaN.html">NonZeroNonNaN</a>
+┊    ┊<━━>┊    ┊    ┊<━━>┊    ┊ <a title="(−∞, 0) ∪ (0, +∞)" href="https://docs.rs/typed_floats/latest/typed_floats/struct.NonZeroNonNaNFinite.html">NonZeroNonNaNFinite</a>
 ┊    ┊    ┊    ┊    ┊    ┊    ┊
-┊    ┊    ┊    ┊<━━━┊━━━━┊━━━>┊ <a href="https://docs.rs/typed_floats/latest/typed_floats/struct.Positive.html">Positive</a>
-┊    ┊    ┊    ┊<━━━┊━━━>┊    ┊ <a href="https://docs.rs/typed_floats/latest/typed_floats/struct.PositiveFinite.html">PositiveFinite</a>
-┊    ┊    ┊    ┊    ┊<━━━┊━━━>┊ <a href="https://docs.rs/typed_floats/latest/typed_floats/struct.StrictlyPositive.html">StrictlyPositive</a>
-┊    ┊    ┊    ┊    ┊<━━>┊    ┊ <a href="https://docs.rs/typed_floats/latest/typed_floats/struct.StrictlyPositiveFinite.html">StrictlyPositiveFinite</a>
+┊    ┊    ┊    ┊<━━━┊━━━━┊━━━>┊ <a title="[0, +∞]" href="https://docs.rs/typed_floats/latest/typed_floats/struct.Positive.html">Positive</a>
+┊    ┊    ┊    ┊<━━━┊━━━>┊    ┊ <a title="[0, +∞)" href="https://docs.rs/typed_floats/latest/typed_floats/struct.PositiveFinite.html">PositiveFinite</a>
+┊    ┊    ┊    ┊    ┊<━━━┊━━━>┊ <a title="(0, +∞]" href="https://docs.rs/typed_floats/latest/typed_floats/struct.StrictlyPositive.html">StrictlyPositive</a>
+┊    ┊    ┊    ┊    ┊<━━>┊    ┊ <a title="(0, +∞)" href="https://docs.rs/typed_floats/latest/typed_floats/struct.StrictlyPositiveFinite.html">StrictlyPositiveFinite</a>
 ┊    ┊    ┊    ┊    ┊    ┊    ┊
-┊<━━━┊━━━━┊━━━>┊    ┊    ┊    ┊ <a href="https://docs.rs/typed_floats/latest/typed_floats/struct.Negative.html">Negative</a>
-┊    ┊<━━━┊━━━>┊    ┊    ┊    ┊ <a href="https://docs.rs/typed_floats/latest/typed_floats/struct.NegativeFinite.html">NegativeFinite</a>
-┊<━━━┊━━━>┊    ┊    ┊    ┊    ┊ <a href="https://docs.rs/typed_floats/latest/typed_floats/struct.StrictlyNegative.html">StrictlyNegative</a>
-┊    ┊<━━>┊    ┊    ┊    ┊    ┊ <a href="https://docs.rs/typed_floats/latest/typed_floats/struct.StrictlyNegativeFinite.html">StrictlyNegativeFinite</a>
+┊<━━━┊━━━━┊━━━>┊    ┊    ┊    ┊ <a title="[−∞, 0]" href="https://docs.rs/typed_floats/latest/typed_floats/struct.Negative.html">Negative</a>
+┊    ┊<━━━┊━━━>┊    ┊    ┊    ┊ <a title="(−∞, 0]" href="https://docs.rs/typed_floats/latest/typed_floats/struct.NegativeFinite.html">NegativeFinite</a>
+┊<━━━┊━━━>┊    ┊    ┊    ┊    ┊ <a title="[−∞, 0)" href="https://docs.rs/typed_floats/latest/typed_floats/struct.StrictlyNegative.html">StrictlyNegative</a>
+┊    ┊<━━>┊    ┊    ┊    ┊    ┊ <a title="(−∞, 0)" href="https://docs.rs/typed_floats/latest/typed_floats/struct.StrictlyNegativeFinite.html">StrictlyNegativeFinite</a>
 </pre>
 
 To avoid specifying the kind of float (e.g. like [`Positive<f32>`]), you can use the modules [`tf64`] and [`tf32`] which expose aliases.
