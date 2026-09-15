@@ -157,6 +157,7 @@ pub struct Op {
     pub(crate) params: proc_macro2::TokenStream,
     pub(crate) description: proc_macro2::TokenStream,
     pub(crate) skip_check_return_type_strictness: bool,
+    pub(crate) jitter: bool,
     op: OpCallback,
     result: ResultCallback,
     test: TestCallback,
@@ -180,6 +181,7 @@ impl OpBuilder {
                 description: proc_macro2::TokenStream::new(),
                 comment: None,
                 skip_check_return_type_strictness: false,
+                jitter: false,
                 op: Box::new(move |_| quote! { self.get().#fn_op() }),
                 result: Box::new(|_, _| panic!("No result defined")),
                 test: Box::new(move |var| quote! { #var.#fn_test() }),
@@ -190,6 +192,13 @@ impl OpBuilder {
     #[allow(dead_code)] // depending on the enabled features, this function might not be used
     pub(crate) const fn skip_check_return_type_strictness(mut self) -> Self {
         self.op.skip_check_return_type_strictness = true;
+        self
+    }
+
+    /// If the result may vary a little (For example with miri)
+    #[allow(dead_code)] // depending on the enabled features, this function might not be used
+    pub(crate) const fn jitter(mut self) -> Self {
+        self.op.jitter = true;
         self
     }
 
@@ -353,6 +362,7 @@ impl OpRhsBuilder {
                 trait_name,
                 assign: None,
                 op_is_commutative: false,
+                jitter: false,
                 skip_check_return_type_strictness: false,
                 comment: None,
                 op: Box::new(move |_, _| quote! { self.get().#fn_op(rhs.get()) }),
@@ -368,6 +378,13 @@ impl OpRhsBuilder {
     #[allow(dead_code)] // depending on the enabled features, this function might not be used
     pub(crate) const fn skip_check_return_type_strictness(mut self) -> Self {
         self.op.skip_check_return_type_strictness = true;
+        self
+    }
+
+    /// If the result may vary a little (For example with miri)
+    #[allow(dead_code)] // depending on the enabled features, this function might not be used
+    pub(crate) const fn jitter(mut self) -> Self {
+        self.op.jitter = true;
         self
     }
 
@@ -442,6 +459,7 @@ pub struct OpRhs {
     pub(crate) trait_name: &'static str,
     pub(crate) assign: Option<(&'static str, &'static str)>,
     pub(crate) op_is_commutative: bool,
+    pub(crate) jitter: bool,
     pub(crate) skip_check_return_type_strictness: bool,
     pub(crate) comment: Option<&'static str>,
     op: OpRhsCallback,
