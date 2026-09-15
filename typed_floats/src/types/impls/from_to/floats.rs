@@ -10,7 +10,7 @@ macro_rules! impl_from {
         impl From<$type<Self>> for f32 {
             #[inline]
             fn from(value: $type<Self>) -> Self {
-                value.0
+                value.get()
             }
         }
 
@@ -18,7 +18,7 @@ macro_rules! impl_from {
         impl From<$type<Self>> for f64 {
             #[inline]
             fn from(value: $type<Self>) -> Self {
-                value.0
+                value.get()
             }
         }
 

@@ -22,7 +22,7 @@ impl NonNaN<f64> {
             return Err(InvalidNumber::NaN);
         }
 
-        Ok(Self(value))
+        Ok(Self(crate::container::Container::new(value)))
     }
 
     /// Creates a new value from a primitive type with zero overhead (in release mode).
@@ -62,7 +62,7 @@ impl NonNaN<f64> {
     #[inline]
     #[must_use]
     pub const fn get(&self) -> f64 {
-        self.0
+        *self.0.get()
     }
 
     /// Returns `true` if this value is NaN.
@@ -99,7 +99,7 @@ impl NonNaN<f64> {
     #[inline]
     #[must_use]
     pub const fn is_infinite(&self) -> bool {
-        self.0.is_infinite()
+        self.get().is_infinite()
     }
 
     /// Returns `true` if this number is positive infinity nor negative infinity.
@@ -117,7 +117,7 @@ impl NonNaN<f64> {
     #[inline]
     #[must_use]
     pub const fn is_finite(&self) -> bool {
-        self.0.is_finite()
+        self.get().is_finite()
     }
 
     /// Returns `true` if the number is [subnormal](https://en.wikipedia.org/wiki/Denormal_number).
@@ -135,7 +135,7 @@ impl NonNaN<f64> {
     #[inline]
     #[must_use]
     pub const fn is_subnormal(&self) -> bool {
-        self.0.is_subnormal()
+        self.get().is_subnormal()
     }
 
     /// Returns `true` if the number is neither zero, infinite or [subnormal](https://en.wikipedia.org/wiki/Denormal_number).
@@ -153,7 +153,7 @@ impl NonNaN<f64> {
     #[inline]
     #[must_use]
     pub const fn is_normal(&self) -> bool {
-        self.0.is_normal()
+        self.get().is_normal()
     }
 
     /// Returns the floating point category of the number. If only one property
@@ -173,7 +173,7 @@ impl NonNaN<f64> {
     #[inline]
     #[must_use]
     pub const fn classify(&self) -> core::num::FpCategory {
-        self.0.classify()
+        self.get().classify()
     }
 
     /// Returns `true` if `self` has a positive sign, including `+0.0` and positive infinity.
@@ -191,7 +191,7 @@ impl NonNaN<f64> {
     #[inline]
     #[must_use]
     pub const fn is_sign_positive(&self) -> bool {
-        self.0.is_sign_positive()
+        self.get().is_sign_positive()
     }
 
     /// Returns `true` if `self` has a negative sign, including `-0.0` and negative infinity.
@@ -209,7 +209,7 @@ impl NonNaN<f64> {
     #[inline]
     #[must_use]
     pub const fn is_sign_negative(&self) -> bool {
-        self.0.is_sign_negative()
+        self.get().is_sign_negative()
     }
 
     /// Returns `true` if the number is negative zero.
@@ -229,7 +229,7 @@ impl NonNaN<f64> {
     #[inline]
     #[must_use]
     pub const fn is_negative_zero(&self) -> bool {
-        self.0 == 0.0 && self.0.is_sign_negative()
+        self.get() == 0.0 && self.get().is_sign_negative()
     }
 
     /// Returns `true` if the number is positive zero.
@@ -249,6 +249,6 @@ impl NonNaN<f64> {
     #[inline]
     #[must_use]
     pub const fn is_positive_zero(&self) -> bool {
-        self.0 == 0.0 && self.0.is_sign_positive()
+        self.get() == 0.0 && self.get().is_sign_positive()
     }
 }
