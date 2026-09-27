@@ -1028,6 +1028,7 @@ pub fn get_impl_self() -> Vec<Op> {
                     accept_inf: true,
                 })
             }))
+            .skip_check_return_type_strictness()
             .build(),
         #[cfg(any(feature = "std", feature = "libm"))]
         OpBuilder::new("acosh")
