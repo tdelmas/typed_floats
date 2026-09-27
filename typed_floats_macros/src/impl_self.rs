@@ -332,7 +332,7 @@ pub fn get_impl_self() -> Vec<Op> {
                 if !float.s.accept_positive && !float.s.accept_zero {
                     let float_type = float.float_type_ident();
 
-                    quote! { core::#float_type::NAN }
+                    quote! { #float_type::NAN }
                 } else {
                     quote! { self.get().sqrt() }
                 }
@@ -443,7 +443,7 @@ pub fn get_impl_self() -> Vec<Op> {
                 if is_strictly_negative {
                     let float_type = float.float_type_ident();
 
-                    quote! { core::#float_type::NAN }
+                    quote! { #float_type::NAN }
                 } else {
                     quote! { self.get().ln() }
                 }
