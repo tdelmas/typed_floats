@@ -120,7 +120,7 @@ pub fn return_type_definition(
     assert!(
         floats.len() <= 1,
         "Ambiguous float type: {:?} => {:?}",
-        &float,
+        float,
         floats
     );
 

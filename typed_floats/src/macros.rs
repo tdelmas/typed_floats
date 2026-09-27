@@ -209,5 +209,5 @@ macro_rules! generate_const {
     };
 }
 
-pub(crate) use new_unchecked;
 pub(crate) use generate_const;
+pub(crate) use new_unchecked;

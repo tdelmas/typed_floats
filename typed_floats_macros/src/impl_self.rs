@@ -332,7 +332,7 @@ pub fn get_impl_self() -> Vec<Op> {
                 if !float.s.accept_positive && !float.s.accept_zero {
                     let float_type = float.float_type_ident();
 
-                    quote! { core::#float_type::NAN }
+                    quote! { #float_type::NAN }
                 } else {
                     quote! { self.get().sqrt() }
                 }
@@ -443,7 +443,7 @@ pub fn get_impl_self() -> Vec<Op> {
                 if is_strictly_negative {
                     let float_type = float.float_type_ident();
 
-                    quote! { core::#float_type::NAN }
+                    quote! { #float_type::NAN }
                 } else {
                     quote! { self.get().ln() }
                 }
@@ -1028,6 +1028,7 @@ pub fn get_impl_self() -> Vec<Op> {
                     accept_inf: true,
                 })
             }))
+            .skip_check_return_type_strictness()
             .build(),
         #[cfg(any(feature = "std", feature = "libm"))]
         OpBuilder::new("acosh")

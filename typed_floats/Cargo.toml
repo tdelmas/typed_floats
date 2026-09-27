@@ -61,7 +61,7 @@ num-traits = "0.2"
 features = ["serde"]
 
 [lints.rust]
-dead-code = { level = "deny", priority = 1 }
+dead_code = { level = "deny", priority = 1 }
 # missing_docs = { level = "deny", priority = 1 }
 unsafe_op_in_unsafe_fn = { level = "deny", priority = 1 }
 # unused_crate_dependencies = { level = "warn", priority = 1 }
