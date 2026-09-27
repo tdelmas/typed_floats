@@ -59,7 +59,7 @@ impl Positive<f32> {
     ///
     /// let x = Positive::new(3.0).unwrap();
     ///
-    /// let y: f32 = x.into();
+    /// let y: f32 = x.get();
     ///
     /// assert_eq!(y, 3.0);
     /// ```
