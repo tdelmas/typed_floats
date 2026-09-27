@@ -1,0 +1,34 @@
+name: Check generated documentation
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+    - 'typed_floats/**'
+    - 'typed_floats_macros/**'
+    - 'Cargo.toml'
+    - 'Cargo.lock'
+  pull_request:
+    branches: ["main"]
+    paths:
+    - 'typed_floats/**'
+    - 'typed_floats_macros/**'
+    - 'Cargo.toml'
+    - 'Cargo.lock'
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+  CARGO_INCREMENTAL: 0 
+
+jobs:
+  check-docs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - run: rustup default nightly
+      - run: cd typed_floats && cargo doc --all-features
+      - uses: lycheeverse/lychee-action@v2
+        with:
+          args: --offline "./target/doc/typed_floats/**/*.html"

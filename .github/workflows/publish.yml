@@ -14,6 +14,7 @@ jobs:
       id-token: write     # Required for OIDC token exchange (CARGO_REGISTRY_TOKEN)
     steps:
       - uses: actions/checkout@v4
+      - run: cargo build
       # https://crates.io/docs/trusted-publishing
       - uses: rust-lang/crates-io-auth-action@v1
         id: auth

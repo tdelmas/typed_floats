@@ -1,5 +1,6 @@
 macro_rules! impl_from_int {
     ($type:ident,$int:ident) => {
+        #[cfg(feature = "f32")]
         impl From<$int> for $type<f32> {
             #[inline]
             fn from(value: $int) -> Self {
@@ -10,6 +11,8 @@ macro_rules! impl_from_int {
                 }
             }
         }
+
+        #[cfg(feature = "f64")]
         impl From<$int> for $type<f64> {
             #[inline]
             fn from(value: $int) -> Self {
@@ -25,6 +28,7 @@ macro_rules! impl_from_int {
 
 macro_rules! impl_try_from_int {
     ($type:ident,$int:ident) => {
+        #[cfg(feature = "f32")]
         impl TryFrom<$int> for $type<f32> {
             type Error = InvalidNumber;
 
@@ -35,6 +39,8 @@ macro_rules! impl_try_from_int {
                 Self::new(value as f32)
             }
         }
+
+        #[cfg(feature = "f64")]
         impl TryFrom<$int> for $type<f64> {
             type Error = InvalidNumber;
 
@@ -67,7 +73,9 @@ macro_rules! impl_test {
 
         for &i in &ints {
             // Will panic if an invalid value is created.
+            #[cfg(feature = "f32")]
             let _ = crate::$type::<f32>::try_from(i);
+            #[cfg(feature = "f64")]
             let _ = crate::$type::<f64>::try_from(i);
         }
 
@@ -75,7 +83,10 @@ macro_rules! impl_test {
 
         for &i in &uints {
             // Will panic if an invalid value is created.
+            #[cfg(feature = "f32")]
             let _ = crate::$type::<f32>::try_from(i);
+
+            #[cfg(feature = "f64")]
             let _ = crate::$type::<f64>::try_from(i);
         }
     };

@@ -68,7 +68,6 @@ pub fn get_impl_self() -> Vec<Op> {
 
                 ReturnTypeSpecification::FloatSpecifications(output_spec)
             }))
-            .const_since("1.85")
             .build(),
         #[cfg(any(feature = "std", feature = "libm"))]
         OpBuilder::new("ceil")
@@ -304,7 +303,6 @@ pub fn get_impl_self() -> Vec<Op> {
 
                 ReturnTypeSpecification::FloatSpecifications(spec)
             }))
-            .const_since("1.85")
             .build(),
         #[cfg(any(feature = "std", feature = "libm"))]
         OpBuilder::new("sqrt")
@@ -339,7 +337,7 @@ pub fn get_impl_self() -> Vec<Op> {
                 if !float.s.accept_positive && !float.s.accept_zero {
                     let float_type = float.float_type_ident();
 
-                    quote! { core::#float_type::NAN }
+                    quote! { #float_type::NAN }
                 } else {
                     quote! { self.get().sqrt() }
                 }
@@ -450,7 +448,7 @@ pub fn get_impl_self() -> Vec<Op> {
                 if is_strictly_negative {
                     let float_type = float.float_type_ident();
 
-                    quote! { core::#float_type::NAN }
+                    quote! { #float_type::NAN }
                 } else {
                     quote! { self.get().ln() }
                 }
@@ -582,7 +580,6 @@ pub fn get_impl_self() -> Vec<Op> {
 
                 ReturnTypeSpecification::FloatSpecifications(output_spec)
             }))
-            .const_since("1.85")
             .build(),
         OpBuilder::new("to_radians")
             .description(quote! {
@@ -617,7 +614,6 @@ pub fn get_impl_self() -> Vec<Op> {
 
                 ReturnTypeSpecification::FloatSpecifications(output_spec)
             }))
-            .const_since("1.85")
             .skip_check_return_type_strictness()
             .build(),
         #[cfg(any(feature = "std", feature = "libm"))]
@@ -1037,6 +1033,7 @@ pub fn get_impl_self() -> Vec<Op> {
                     accept_inf: true,
                 })
             }))
+            .skip_check_return_type_strictness()
             .build(),
         #[cfg(any(feature = "std", feature = "libm"))]
         OpBuilder::new("acosh")
@@ -1120,7 +1117,6 @@ pub fn get_impl_self() -> Vec<Op> {
                     accept_inf: true,
                 })
             }))
-            .const_since("1.85")
             .skip_check_return_type_strictness()
             .build(),
         #[cfg(any(feature = "std", feature = "libm"))]

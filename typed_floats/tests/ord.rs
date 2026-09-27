@@ -10,6 +10,7 @@ macro_rules! impl_ord_test {
             }
 
             #[test]
+            #[cfg(feature = "f32")]
             fn f32() {
                 let min_positive = tf32::MIN_POSITIVE;
                 let max = tf32::MAX;
@@ -44,6 +45,7 @@ macro_rules! impl_ord_test {
             }
 
             #[test]
+            #[cfg(feature = "f64")]
             fn f64() {
                 let min_positive = tf64::MIN_POSITIVE;
                 let max = tf64::MAX;
@@ -78,6 +80,7 @@ macro_rules! impl_ord_test {
             }
 
             #[test]
+            #[cfg(feature = "f64")]
             fn cmp_with_others() {
                 let values_non_nan = tf64::get_test_values()
                     .iter()

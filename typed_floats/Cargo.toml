@@ -16,7 +16,7 @@ rust-version.workspace = true
 bench = false
 
 [features]
-default = ["std", "compiler_hints"]
+default = ["std", "compiler_hints", "f32", "f64"]
 # follows each debug_assert! with core::hint::unreachable_unchecked
 compiler_hints = []
 # Add the `serde` dependency to enable serialization and deserialization of the types.
@@ -29,12 +29,16 @@ libm = ["dep:num-traits", "typed_floats_macros/libm"]
 # This will override the `compiler_hints` feature, and adds a little overhead to `new_unchecked`.
 # This feature can be enabled by any parent crate to ensure no undefined behavior.
 ensure_no_undefined_behavior = []
+# Support for 32-bit floats.
+f32 = ["typed_floats_macros/f32"]
+# Support for 64-bit floats.
+f64 = ["typed_floats_macros/f64"]
 
 [dependencies]
 rustversion.workspace = true
 
 [dependencies.typed_floats_macros]
-version = "=1.0.6"
+version = "=2.0.0-dev"
 path = "../typed_floats_macros"
 
 [dependencies.serde]
@@ -49,9 +53,6 @@ default-features = false
 features = ["libm"]
 optional = true
 
-[dependencies.const_fn]
-version = "0.4.11"
-
 [dev-dependencies]
 serde_json = { version = "1.0" }
 num-traits = "0.2"
@@ -60,7 +61,7 @@ num-traits = "0.2"
 features = ["serde"]
 
 [lints.rust]
-dead-code = { level = "deny", priority = 1 }
+dead_code = { level = "deny", priority = 1 }
 # missing_docs = { level = "deny", priority = 1 }
 unsafe_op_in_unsafe_fn = { level = "deny", priority = 1 }
 # unused_crate_dependencies = { level = "warn", priority = 1 }

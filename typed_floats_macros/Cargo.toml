@@ -18,6 +18,8 @@ bench = false
 [features]
 std = []
 libm = []
+f32 = []
+f64 = []
 
 [dependencies]
 quote = "1.0"
@@ -26,7 +28,7 @@ proc-macro2 = "1.0"
 rustversion.workspace = true
 
 [lints.rust]
-dead-code = { level = "deny", priority = 1 }
+dead_code = { level = "deny", priority = 1 }
 missing_docs = { level = "deny", priority = 1 }
 unsafe_op_in_unsafe_fn = { level = "deny", priority = 1 }
 unused_crate_dependencies = { level = "deny", priority = 1 }

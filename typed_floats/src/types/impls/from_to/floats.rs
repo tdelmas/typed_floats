@@ -6,6 +6,7 @@ use crate::{
 
 macro_rules! impl_from {
     ($test:ident, $type:ident) => {
+        #[cfg(feature = "f32")]
         impl From<$type<Self>> for f32 {
             #[inline]
             fn from(value: $type<Self>) -> Self {
@@ -13,6 +14,7 @@ macro_rules! impl_from {
             }
         }
 
+        #[cfg(feature = "f64")]
         impl From<$type<Self>> for f64 {
             #[inline]
             fn from(value: $type<Self>) -> Self {
@@ -20,6 +22,7 @@ macro_rules! impl_from {
             }
         }
 
+        #[cfg(feature = "f32")]
         impl TryFrom<f32> for $type<f32> {
             type Error = InvalidNumber;
 
@@ -29,6 +32,7 @@ macro_rules! impl_from {
             }
         }
 
+        #[cfg(feature = "f64")]
         impl TryFrom<f64> for $type<f64> {
             type Error = InvalidNumber;
 
@@ -40,21 +44,26 @@ macro_rules! impl_from {
 
         #[test]
         fn $test() {
-            let values_f32 = crate::tf32::get_test_values();
+            #[cfg(feature = "f32")]
+            {
+                let values_f32 = crate::tf32::get_test_values();
 
-            for &value in &values_f32 {
-                if let Ok(t) = $type::<f32>::new(value) {
-                    crate::assert_float_eq!(value, t.get());
-                    assert_eq!(t, unsafe { $type::<f32>::new_unchecked(value) });
+                for &value in &values_f32 {
+                    if let Ok(t) = $type::<f32>::new(value) {
+                        crate::assert_float_eq!(value, t.get());
+                        assert_eq!(t, unsafe { $type::<f32>::new_unchecked(value) });
+                    }
                 }
             }
+            #[cfg(feature = "f64")]
+            {
+                let values_f64 = crate::tf64::get_test_values();
 
-            let values_f64 = crate::tf64::get_test_values();
-
-            for &value in &values_f64 {
-                if let Ok(t) = $type::<f64>::new(value) {
-                    crate::assert_float_eq!(value, t.get());
-                    assert_eq!(t, unsafe { $type::<f64>::new_unchecked(value) });
+                for &value in &values_f64 {
+                    if let Ok(t) = $type::<f64>::new(value) {
+                        crate::assert_float_eq!(value, t.get());
+                        assert_eq!(t, unsafe { $type::<f64>::new_unchecked(value) });
+                    }
                 }
             }
         }

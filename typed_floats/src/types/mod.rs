@@ -1,5 +1,3 @@
-use const_fn::const_fn;
-
 /// An error that can occur when converting from a string into a typed float
 #[derive(Debug)]
 pub enum FromStrError {
@@ -73,7 +71,7 @@ pub struct NonNaN<T = f64>(T);
 #[repr(transparent)]
 pub struct NonZeroNonNaN<T = f64>(T);
 
-/// A non-NaN finite floating point number different from zero
+/// A non-NaN finite floating point number
 ///
 /// It satisfies the following constraints:
 /// - It is not NaN.
@@ -183,16 +181,18 @@ use crate::traits::{Max, Min};
 #[cfg(any(feature = "std", feature = "libm"))]
 use crate::traits::{Atan2, Copysign, DivEuclid, Hypot, Powf};
 
-#[rustversion::since(1.85)]
 use crate::traits::Midpoint;
 
 #[cfg(all(feature = "libm", not(feature = "std")))]
 #[allow(unused_imports)]
 use num_traits::Float;
 
-mod accept;
+#[cfg(feature = "f32")]
 mod f32;
+
+#[cfg(feature = "f64")]
 mod f64;
+
 mod impls;
 
 typed_floats_macros::generate_floats!();

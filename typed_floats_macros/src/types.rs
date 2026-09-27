@@ -120,7 +120,7 @@ pub fn return_type_definition(
     assert!(
         floats.len() <= 1,
         "Ambiguous float type: {:?} => {:?}",
-        &float,
+        float,
         floats
     );
 
@@ -153,7 +153,6 @@ pub struct Op {
     pub(crate) display: &'static str,
     pub(crate) fn_name: &'static str,
     pub(crate) trait_name: Option<&'static str>,
-    pub(crate) const_since: Option<&'static str>,
     pub(crate) comment: Option<&'static str>,
     pub(crate) params: proc_macro2::TokenStream,
     pub(crate) description: proc_macro2::TokenStream,
@@ -178,7 +177,6 @@ impl OpBuilder {
                 fn_name,
                 params: quote! { self },
                 trait_name: None,
-                const_since: None,
                 description: proc_macro2::TokenStream::new(),
                 comment: None,
                 skip_check_return_type_strictness: false,
@@ -239,11 +237,6 @@ impl OpBuilder {
             return_type_definition(&output_spec, floats)
         });
 
-        self
-    }
-
-    pub const fn const_since(mut self, version: &'static str) -> Self {
-        self.op.const_since = Some(version);
         self
     }
 
@@ -325,7 +318,6 @@ impl Op {
                     #description
                     #[inline]
                     #[must_use]
-                    #const_since
                     fn #fn_ident(#params) -> Self::Output {
                         #return_value
                     }
@@ -337,7 +329,6 @@ impl Op {
                     #description
                     #[inline]
                     #[must_use]
-                    #const_since
                     pub fn #fn_ident(#params) -> #output_name {
                         #return_value
                     }

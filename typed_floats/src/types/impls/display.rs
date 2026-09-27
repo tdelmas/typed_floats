@@ -22,23 +22,29 @@ macro_rules! impl_display {
 
         #[test]
         fn $test() {
-            let values_f32 = crate::tf32::get_test_values();
+            #[cfg(feature = "f32")]
+            {
+                let values_f32 = crate::tf32::get_test_values();
 
-            for &value in &values_f32 {
-                if let Ok(t) = $type::<f32>::new(value) {
-                    let str1 = format!("{}", t);
-                    let str2 = format!("{}", value);
-                    assert_eq!(str1, str2);
+                for &value in &values_f32 {
+                    if let Ok(t) = $type::<f32>::new(value) {
+                        let str1 = format!("{}", t);
+                        let str2 = format!("{}", value);
+                        assert_eq!(str1, str2);
+                    }
                 }
             }
 
-            let values_f64 = crate::tf64::get_test_values();
+            #[cfg(feature = "f64")]
+            {
+                let values_f64 = crate::tf64::get_test_values();
 
-            for &value in &values_f64 {
-                if let Ok(t) = $type::<f64>::new(value) {
-                    let str1 = format!("{}", t);
-                    let str2 = format!("{}", value);
-                    assert_eq!(str1, str2);
+                for &value in &values_f64 {
+                    if let Ok(t) = $type::<f64>::new(value) {
+                        let str1 = format!("{}", t);
+                        let str2 = format!("{}", value);
+                        assert_eq!(str1, str2);
+                    }
                 }
             }
         }

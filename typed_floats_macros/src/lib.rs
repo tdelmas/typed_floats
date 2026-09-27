@@ -21,7 +21,9 @@ use add_doc::generate_main_description;
 
 mod gen_tests;
 
+#[cfg(feature = "f32")]
 static F32: &str = "f32";
+#[cfg(feature = "f64")]
 static F64: &str = "f64";
 
 const NON_NAN: (&str, FloatSpecifications) = (
@@ -166,7 +168,9 @@ pub fn generate_tests_self(input: proc_macro::TokenStream) -> proc_macro::TokenS
 
     let mut output = proc_macro2::TokenStream::new();
 
+    #[cfg(feature = "f32")]
     output.extend(gen_tests::generate_tests_self(F32, &filter));
+    #[cfg(feature = "f64")]
     output.extend(gen_tests::generate_tests_self(F64, &filter));
 
     output.into()
@@ -179,7 +183,9 @@ pub fn generate_tests_self_rhs(input: proc_macro::TokenStream) -> proc_macro::To
 
     let mut output = proc_macro2::TokenStream::new();
 
+    #[cfg(feature = "f32")]
     output.extend(gen_tests::generate_tests_self_rhs(F32, &filter));
+    #[cfg(feature = "f64")]
     output.extend(gen_tests::generate_tests_self_rhs(F64, &filter));
 
     output.into()
@@ -216,13 +222,19 @@ pub fn generate_docs(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
 /// Generate the `PartialEq`, `From` and `TryFrom` implementations.
 #[proc_macro]
 pub fn generate_floats(_input: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    let floats_f64 = get_definitions("f64");
-    let floats_f32 = get_definitions("f32");
-
     let mut output = proc_macro2::TokenStream::new();
 
-    output.extend(do_generate_floats(&floats_f64));
-    output.extend(do_generate_floats(&floats_f32));
+    #[cfg(feature = "f64")]
+    {
+        let floats_f64 = get_definitions("f64");
+        output.extend(do_generate_floats(&floats_f64));
+    }
+
+    #[cfg(feature = "f32")]
+    {
+        let floats_f32 = get_definitions("f32");
+        output.extend(do_generate_floats(&floats_f32));
+    }
 
     output.into()
 }

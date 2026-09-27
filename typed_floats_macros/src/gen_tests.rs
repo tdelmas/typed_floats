@@ -1,7 +1,7 @@
 use quote::quote;
 
 use crate::impl_self::get_impl_self;
-use crate::{get_definitions, get_impl_self_rhs, FloatDefinition, ReturnTypeDefinition};
+use crate::{FloatDefinition, ReturnTypeDefinition, get_definitions, get_impl_self_rhs};
 
 fn test_op_checks(
     float: &FloatDefinition,

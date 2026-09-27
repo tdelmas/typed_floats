@@ -1,5 +1,6 @@
 macro_rules! impl_from_int {
     ($type:ident,$int:ident) => {
+        #[cfg(feature = "f64")]
         impl From<$int> for $type<f64> {
             #[inline]
             fn from(value: $int) -> Self {
@@ -11,6 +12,8 @@ macro_rules! impl_from_int {
                 }
             }
         }
+
+        #[cfg(feature = "f32")]
         impl From<$int> for $type<f32> {
             #[inline]
             fn from(value: $int) -> Self {
@@ -27,6 +30,7 @@ macro_rules! impl_from_int {
 
 macro_rules! impl_try_from_int {
     ($type:ident,$int:ident) => {
+        #[cfg(feature = "f64")]
         impl TryFrom<$int> for $type<f64> {
             type Error = InvalidNumber;
 
@@ -37,6 +41,8 @@ macro_rules! impl_try_from_int {
                 Self::new(value.get() as f64)
             }
         }
+
+        #[cfg(feature = "f32")]
         impl TryFrom<$int> for $type<f32> {
             type Error = InvalidNumber;
 
@@ -94,7 +100,10 @@ macro_rules! impl_test {
 
         for &i in &ints {
             // Will panic if an invalid value is created.
+
+            #[cfg(feature = "f64")]
             let _ = crate::$type::<f64>::try_from($non_zero_int::new(i).unwrap());
+            #[cfg(feature = "f32")]
             let _ = crate::$type::<f32>::try_from($non_zero_int::new(i).unwrap());
         }
 
@@ -102,7 +111,10 @@ macro_rules! impl_test {
 
         for &i in &uints {
             // Will panic if an invalid value is created.
+
+            #[cfg(feature = "f64")]
             let _ = crate::$type::<f64>::try_from($non_zero_uint::new(i).unwrap());
+            #[cfg(feature = "f32")]
             let _ = crate::$type::<f32>::try_from($non_zero_uint::new(i).unwrap());
         }
     };
@@ -111,8 +123,8 @@ macro_rules! impl_test {
 #[cfg(test)]
 macro_rules! impl_tests {
     ($type:ident) => {
-        use core::num::{NonZeroI16, NonZeroI32, NonZeroI64, NonZeroI8};
-        use core::num::{NonZeroU16, NonZeroU32, NonZeroU64, NonZeroU8};
+        use core::num::{NonZeroI8, NonZeroI16, NonZeroI32, NonZeroI64};
+        use core::num::{NonZeroU8, NonZeroU16, NonZeroU32, NonZeroU64};
 
         impl_test!($type, i8, u8, NonZeroI8, NonZeroU8);
         impl_test!($type, i16, u16, NonZeroI16, NonZeroU16);
@@ -134,9 +146,11 @@ mod ints {
         StrictlyPositive, StrictlyPositiveFinite,
     };
 
-    use core::num::{NonZeroI16, NonZeroI32, NonZeroI64, NonZeroI8};
+    use core::num::{NonZeroI8, NonZeroI16, NonZeroI32, NonZeroI64};
 
-    impl_from_ints!(non_nan, NonNaN, NonZeroI8, NonZeroI16, NonZeroI32, NonZeroI64);
+    impl_from_ints!(
+        non_nan, NonNaN, NonZeroI8, NonZeroI16, NonZeroI32, NonZeroI64
+    );
     impl_from_ints!(
         non_zero_non_nan,
         NonZeroNonNaN,
@@ -161,8 +175,12 @@ mod ints {
         NonZeroI32,
         NonZeroI64
     );
-    impl_try_from_ints!(positive, Positive, NonZeroI8, NonZeroI16, NonZeroI32, NonZeroI64);
-    impl_try_from_ints!(negative, Negative, NonZeroI8, NonZeroI16, NonZeroI32, NonZeroI64);
+    impl_try_from_ints!(
+        positive, Positive, NonZeroI8, NonZeroI16, NonZeroI32, NonZeroI64
+    );
+    impl_try_from_ints!(
+        negative, Negative, NonZeroI8, NonZeroI16, NonZeroI32, NonZeroI64
+    );
     impl_try_from_ints!(
         positive_finite,
         PositiveFinite,
@@ -222,9 +240,11 @@ mod uints {
         StrictlyPositive, StrictlyPositiveFinite,
     };
 
-    use core::num::{NonZeroU16, NonZeroU32, NonZeroU64, NonZeroU8};
+    use core::num::{NonZeroU8, NonZeroU16, NonZeroU32, NonZeroU64};
 
-    impl_from_ints!(non_nan, NonNaN, NonZeroU8, NonZeroU16, NonZeroU32, NonZeroU64);
+    impl_from_ints!(
+        non_nan, NonNaN, NonZeroU8, NonZeroU16, NonZeroU32, NonZeroU64
+    );
     impl_from_ints!(
         non_zero_non_nan,
         NonZeroNonNaN,
@@ -249,8 +269,12 @@ mod uints {
         NonZeroU32,
         NonZeroU64
     );
-    impl_from_ints!(positive, Positive, NonZeroU8, NonZeroU16, NonZeroU32, NonZeroU64);
-    impl_try_from_ints!(negative, Negative, NonZeroU8, NonZeroU16, NonZeroU32, NonZeroU64);
+    impl_from_ints!(
+        positive, Positive, NonZeroU8, NonZeroU16, NonZeroU32, NonZeroU64
+    );
+    impl_try_from_ints!(
+        negative, Negative, NonZeroU8, NonZeroU16, NonZeroU32, NonZeroU64
+    );
     impl_from_ints!(
         positive_finite,
         PositiveFinite,
