@@ -59,7 +59,7 @@ impl NonNaNFinite<f64> {
     ///
     /// let x = NonNaNFinite::new(3.0).unwrap();
     ///
-    /// let y: f64 = x.into();
+    /// let y: f64 = x.get();
     ///
     /// assert_eq!(y, 3.0);
     /// ```

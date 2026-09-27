@@ -67,7 +67,7 @@ impl StrictlyPositiveFinite<f32> {
     ///
     /// let x = StrictlyPositiveFinite::new(3.0).unwrap();
     ///
-    /// let y: f32 = x.into();
+    /// let y: f32 = x.get();
     ///
     /// assert_eq!(y, 3.0);
     /// ```
