@@ -37,7 +37,7 @@ pub type PositiveFinite = crate::PositiveFinite<f32>;
 pub type NegativeFinite = crate::NegativeFinite<f32>;
 
 /// Returns `true` if the number is positive zero.
-///     
+///
 /// # Examples
 ///
 /// ```
@@ -63,7 +63,7 @@ const fn from_bits(bits: u32) -> f32 {
 }
 
 /// Returns `true` if the number is negative zero.
-///    
+///
 /// # Examples
 ///
 /// ```

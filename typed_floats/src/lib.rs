@@ -17,7 +17,7 @@
 //! let d: NonNaNFinite = a + b;
 //!
 //! assert_eq!(c, 2.0);
-//! assert_eq!(d, 0.0);   
+//! assert_eq!(d, 0.0);
 //! ```
 //!
 //! ```
@@ -28,7 +28,7 @@
 //!
 //! let c: StrictlyPositive = a + b;
 //!
-//! assert_eq!(c, 1.0);   
+//! assert_eq!(c, 1.0);
 //! ```
 //!
 //! Operations that assign the result to the left operand are only
