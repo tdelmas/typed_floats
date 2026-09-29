@@ -295,6 +295,19 @@ impl Op {
 
         let params = &self.params;
 
+        let const_since = match &self.const_since {
+            Some("1.85") => {
+                quote! { #[const_fn("1.85")] }
+            }
+            Some("1.90") => {
+                quote! { #[const_fn("1.90")] }
+            }
+            Some(_) => {
+                unimplemented!("Please update const_since with the missing version")
+            }
+            None => quote! {},
+        };
+
         if let Some(trait_name) = &self.trait_name {
             let trait_name: proc_macro2::TokenStream = trait_name.parse().unwrap();
 
