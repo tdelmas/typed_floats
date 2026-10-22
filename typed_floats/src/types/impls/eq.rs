@@ -14,14 +14,14 @@ macro_rules! impl_eq_self {
         impl PartialEq for $type<f32> {
             #[inline]
             fn eq(&self, other: &Self) -> bool {
-                self.0 == other.0
+                self.get() == other.get()
             }
         }
 
         impl PartialEq for $type<f64> {
             #[inline]
             fn eq(&self, other: &Self) -> bool {
-                self.0 == other.0
+                self.get() == other.get()
             }
         }
     };
@@ -32,28 +32,28 @@ macro_rules! impl_eq_base {
         impl PartialEq<$type<f32>> for f32 {
             #[inline]
             fn eq(&self, other: &$type<f32>) -> bool {
-                *self == other.0
+                *self == other.get()
             }
         }
 
         impl PartialEq<$type<f64>> for f64 {
             #[inline]
             fn eq(&self, other: &$type<f64>) -> bool {
-                *self == other.0
+                *self == other.get()
             }
         }
 
         impl PartialEq<f32> for $type<f32> {
             #[inline]
             fn eq(&self, other: &f32) -> bool {
-                self.0 == *other
+                self.get() == *other
             }
         }
 
         impl PartialEq<f64> for $type<f64> {
             #[inline]
             fn eq(&self, other: &f64) -> bool {
-                self.0 == *other
+                self.get() == *other
             }
         }
     };
@@ -68,14 +68,14 @@ macro_rules! impl_fast_eq_self {
         impl PartialEq for $type<f32> {
             #[inline]
             fn eq(&self, other: &Self) -> bool {
-                self.0.to_bits() == other.0.to_bits()
+                self.get().to_bits() == other.get().to_bits()
             }
         }
 
         impl PartialEq for $type<f64> {
             #[inline]
             fn eq(&self, other: &Self) -> bool {
-                self.0.to_bits() == other.0.to_bits()
+                self.get().to_bits() == other.get().to_bits()
             }
         }
     };
@@ -87,28 +87,28 @@ macro_rules! impl_fast_eq_base {
         impl PartialEq<$type<f32>> for f32 {
             #[inline]
             fn eq(&self, other: &$type<f32>) -> bool {
-                self.to_bits() == (&other.0).to_bits()
+                self.to_bits() == (&other.get()).to_bits()
             }
         }
 
         impl PartialEq<$type<f64>> for f64 {
             #[inline]
             fn eq(&self, other: &$type<f64>) -> bool {
-                self.to_bits() == (&other.0).to_bits()
+                self.to_bits() == (&other.get()).to_bits()
             }
         }
 
         impl PartialEq<f32> for $type<f32> {
             #[inline]
             fn eq(&self, other: &f32) -> bool {
-                (&self.0).to_bits() == other.to_bits()
+                (&self.get()).to_bits() == other.to_bits()
             }
         }
 
         impl PartialEq<f64> for $type<f64> {
             #[inline]
             fn eq(&self, other: &f64) -> bool {
-                (&self.0).to_bits() == other.to_bits()
+                (&self.get()).to_bits() == other.to_bits()
             }
         }
     };
