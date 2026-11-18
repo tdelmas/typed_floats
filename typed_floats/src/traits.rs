@@ -199,3 +199,53 @@ pub trait Midpoint<T> {
     /// See [`f64::midpoint()`] for more details.
     fn midpoint(self, rhs: T) -> Self::Output;
 }
+
+#[rustversion::since(1.98)]
+/// This trait is used to specify the return type of the [`AlgebraicAdd::algebraic_add()`] function.
+pub trait AlgebraicAdd<T> {
+    /// The resulting type after applying [`AlgebraicAdd::algebraic_add()`].
+    type Output;
+
+    /// See [`f64::algebraic_add()`] for more details.
+    fn algebraic_add(self, rhs: T) -> Self::Output;
+}
+
+#[rustversion::since(1.98)]
+/// This trait is used to specify the return type of the [`AlgebraicSub::algebraic_sub()`] function.
+pub trait AlgebraicSub<T> {
+    /// The resulting type after applying [`AlgebraicSub::algebraic_sub()`].
+    type Output;
+
+    /// See [`f64::algebraic_sub()`] for more details.
+    fn algebraic_sub(self, rhs: T) -> Self::Output;
+}
+
+#[rustversion::since(1.98)]
+/// This trait is used to specify the return type of the [`AlgebraicMul::algebraic_mul()`] function.
+pub trait AlgebraicMul<T> {
+    /// The resulting type after applying [`AlgebraicMul::algebraic_mul()`].
+    type Output;
+
+    /// See [`f64::algebraic_mul()`] for more details.
+    fn algebraic_mul(self, rhs: T) -> Self::Output;
+}
+
+#[rustversion::since(1.98)]
+/// This trait is used to specify the return type of the [`AlgebraicDiv::algebraic_div()`] function.
+pub trait AlgebraicDiv<T> {
+    /// The resulting type after applying [`AlgebraicDiv::algebraic_div()`].
+    type Output;
+
+    /// See [`f64::algebraic_div()`] for more details.
+    fn algebraic_div(self, rhs: T) -> Self::Output;
+}
+
+#[rustversion::since(1.98)]
+/// This trait is used to specify the return type of the [`AlgebraicRem::algebraic_rem()`] function.
+pub trait AlgebraicRem<T> {
+    /// The resulting type after applying [`AlgebraicRem::algebraic_rem()`].
+    type Output;
+
+    /// See [`f64::algebraic_rem()`] for more details.
+    fn algebraic_rem(self, rhs: T) -> Self::Output;
+}
