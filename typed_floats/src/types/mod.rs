@@ -183,6 +183,9 @@ use crate::traits::{Atan2, Copysign, DivEuclid, Hypot, Powf};
 
 use crate::traits::Midpoint;
 
+#[rustversion::since(1.98)]
+use crate::traits::{AlgebraicAdd, AlgebraicDiv, AlgebraicMul, AlgebraicRem, AlgebraicSub};
+
 #[cfg(all(feature = "libm", not(feature = "std")))]
 #[allow(unused_imports)]
 use num_traits::Float;
